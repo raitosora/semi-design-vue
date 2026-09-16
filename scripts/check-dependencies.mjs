@@ -73,12 +73,25 @@ const tree = JSON.parse(
   }),
 );
 const aliasErrors = [];
-for (const command of ["serve", "build"]) {
-  const config = await resolveConfig(
-    { configFile: join(root, "vite.config.ts") },
-    command,
-  );
-  aliasErrors.push(...checkAliases(config));
+for (const configFile of [
+  "vite.config.ts",
+  "vite.test.config.ts",
+  "vitest.config.ts",
+]) {
+  for (const command of ["serve", "build"]) {
+    const config = await resolveConfig(
+      { configFile: join(root, configFile) },
+      command,
+    );
+    aliasErrors.push(...checkAliases(config));
+    for (const project of config.test?.projects ?? []) {
+      if (!project || typeof project !== "object")
+        throw new Error(
+          "Dependency policy requires explicit inline test project configurations.",
+        );
+      aliasErrors.push(...checkAliases(project));
+    }
+  }
 }
 const packageManifests = files.filter(
   (file) =>

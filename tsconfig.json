@@ -10,7 +10,15 @@
     "packages/*/src/**/*.tsx",
     "playground/src/**/*.ts",
     "playground/src/**/*.tsx",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "tests/browser/**/*.ts",
+    "tests/browser/**/*.tsx",
+    "tests/compiler/**/*.ts",
+    "tests/fixtures/**/*.tsx",
+    "tests/harness/**/*.tsx",
+    "tests/support/**/*.ts",
+    "tests/e2e/**/*.ts",
+    "tests/types/StrictFixture.tsx"
   ],
   "exclude": ["node_modules", "**/dist", "artifacts"]
 }

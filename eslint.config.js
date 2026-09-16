@@ -12,6 +12,7 @@ export default [
       "artifacts/**",
       "playwright-report/**",
       "test-results/**",
+      ".vitest/**",
     ],
   },
   vueJsx({

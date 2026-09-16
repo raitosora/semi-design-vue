@@ -1,0 +1,67 @@
+import { afterAll, beforeAll, expect, test } from "vitest";
+import { build, createServer, type ViteDevServer } from "vite";
+import vueJsx from "vue-jsx/vite";
+import { jsxOptions } from "../../config/vue-jsx.ts";
+let server: ViteDevServer;
+beforeAll(async () => {
+  server = await createServer({
+    configFile: false,
+    plugins: [vueJsx(jsxOptions)],
+    optimizeDeps: { noDiscovery: true, include: [] },
+    server: { middlewareMode: true, hmr: false },
+    appType: "custom",
+  });
+});
+afterAll(async () => {
+  await server?.close();
+});
+test("compiles the lifecycle fixture to direct Vapor DOM operations", async () => {
+  const result = await server.transformRequest(
+    "/tests/fixtures/Lifecycle.vapor.tsx",
+  );
+  expect(result?.code).toMatch(/template\(/);
+  expect(result?.code).toMatch(/(?:renderEffect|setText)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|createElementBlock|h)\(/,
+  );
+  expect(
+    result?.map &&
+      "sources" in result.map &&
+      result.map.sources.some((source: string) =>
+        source.includes("Lifecycle.vapor.tsx"),
+      ),
+  ).toBe(true);
+});
+test("lowers model and expose macros through the same Vapor compiler", async () => {
+  const result = await server.transformRequest(
+    "/tests/fixtures/Model.vapor.tsx",
+  );
+  expect(result?.code).toMatch(/useModel/);
+  expect(result?.code).not.toMatch(/\bdefine(?:Model|Expose)\(/);
+  expect(result?.code).toMatch(/template\(/);
+});
+
+test("production fixture bundle contains Vapor DOM code without the VDOM renderer", async () => {
+  const output = await build({
+    configFile: "vite.test.config.ts",
+    logLevel: "silent",
+    define: { "process.env.NODE_ENV": JSON.stringify("production") },
+    build: { write: false, minify: false },
+  });
+  if (!("output" in output)) throw new Error("Expected a single client bundle");
+  const chunks = output.output.filter((item) => item.type === "chunk");
+  expect(chunks.length).toBeGreaterThan(0);
+  const code = chunks.map((chunk) => chunk.code).join("\n");
+  expect(code).toMatch(/createVaporApp/);
+  expect(
+    code.match(/function\s+(?:baseCreateRenderer|vaporInteropPlugin)\b/g),
+  ).toBeNull();
+  expect(code.includes("react/jsx-runtime")).toBe(false);
+  expect(
+    chunks.some((chunk) =>
+      chunk.map?.sources.some((source) =>
+        source.endsWith("Lifecycle.vapor.tsx"),
+      ),
+    ),
+  ).toBe(true);
+});
