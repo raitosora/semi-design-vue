@@ -1,0 +1,10 @@
+{
+  "component": "macro-define-model",
+  "macros_required": true,
+  "vite_option": "vueJsx({ macros: true })",
+  "ts_macro_option": "vueJsx({ macros: true })",
+  "model_signature": "defineModel<string>()!",
+  "consumer_example": "<MyInput v-model={text.value} />",
+  "synchronous_reads": true,
+  "do_not": ["await nextTick()", "onMounted watch() for model sync"]
+}

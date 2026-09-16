@@ -1,0 +1,33 @@
+{
+  "name": "semi-design-vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": "24.14.0",
+    "pnpm": "10.33.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@ts-macro/tsc": "0.3.7",
+    "@types/node": "24.12.0",
+    "@typescript-eslint/parser": "8.70.0",
+    "@vue-jsx/eslint": "3.3.0-rc.1",
+    "@vue-jsx/runtime": "3.3.0-rc.1",
+    "@vue/server-renderer": "3.6.0-rc.8",
+    "@vue/shared": "3.6.0-rc.8",
+    "eslint": "9.39.4",
+    "monocart-coverage-reports": "2.12.6",
+    "prettier": "3.8.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.0",
+    "vue": "3.6.0-rc.8",
+    "vue-jsx": "3.3.0-rc.1"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsmc --noEmit -p tsconfig.json",
+    "check": "pnpm lint && pnpm typecheck"
+  }
+}

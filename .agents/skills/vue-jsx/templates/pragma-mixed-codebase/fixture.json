@@ -1,0 +1,8 @@
+{
+  "component": "pragma-mixed-codebase",
+  "tsconfig_jsxImportSource": null,
+  "file_pragma": "/** @jsxImportSource vue-jsx */",
+  "pragma_position": "first line, above imports",
+  "tsconfig_setting_required": false,
+  "mixed_codebase": true
+}

@@ -1,0 +1,8 @@
+{
+  "types_file": "types.d.ts",
+  "module_marker": "export {}",
+  "augments": "vue-jsx (NOT @vue-jsx/runtime)",
+  "custom_element": "my-widget",
+  "example_usage_tsx": "<my-widget value=\"x\" onCustomEvent={(e) => console.log(e.detail.id)} />",
+  "typecheck_status": "passes"
+}
