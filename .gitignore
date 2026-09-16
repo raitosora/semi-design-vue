@@ -1,0 +1,12 @@
+/docs/
+/experiments/
+/.agents/
+/.codex/
+/.codegraph/
+node_modules/
+dist/
+artifacts/
+playwright-report/
+test-results/
+*.tgz
+.DS_Store
