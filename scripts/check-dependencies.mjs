@@ -16,11 +16,17 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const sourceFolders = new Set([
   "packages",
   "playground",
+  "website",
   "config",
   "scripts",
   "tests",
 ]);
 const ignored = new Set(["node_modules", "dist", "artifacts"]);
+const generatedWebsitePaths = new Set(
+  [".generated", ".artifacts", ".gate-results", ".vitepress/cache"].map(
+    (path) => join(root, "website", path),
+  ),
+);
 async function collect(directory, top = false) {
   const entries = await readdir(directory, { withFileTypes: true });
   const groups = await Promise.all(
@@ -29,6 +35,7 @@ async function collect(directory, top = false) {
       if (
         entry.isDirectory() &&
         !ignored.has(entry.name) &&
+        !generatedWebsitePaths.has(path) &&
         (!top || sourceFolders.has(entry.name))
       ) {
         return collect(path);

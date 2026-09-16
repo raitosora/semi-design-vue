@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "types": ["node", "vite/client"] },
+  "include": [
+    "examples/**/*.ts",
+    "examples/**/*.tsx",
+    ".vitepress/**/*.ts",
+    ".generated/**/*.ts",
+    "pure/**/*.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "*.ts"
+  ],
+  "exclude": [".vitepress/dist", ".vitepress/cache", ".artifacts"]
+}

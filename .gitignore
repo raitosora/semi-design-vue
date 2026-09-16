@@ -13,3 +13,9 @@ test-results/
 CONTRIBUTING.md
 CONTRIBUTE.md
 NOTICE.md
+
+/website/.generated/
+/website/.artifacts/
+/website/.gate-results/
+/website/.vitepress/cache/
+/website/.vitepress/dist/

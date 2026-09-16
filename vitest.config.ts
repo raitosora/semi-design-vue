@@ -15,6 +15,7 @@ export default defineConfig({
         "tests/fixtures/*.vapor.tsx",
         "scripts/dependency-policy.mjs",
         "scripts/module-loaders.mjs",
+        "scripts/documentation-surface.mjs",
       ],
       exclude: ["**/*.d.ts", "**/*.{test,spec}.{ts,tsx}"],
       reporter: ["text", "json", "json-summary", "html"],
