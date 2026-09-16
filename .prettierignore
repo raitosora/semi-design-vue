@@ -7,5 +7,6 @@ node_modules/
 artifacts/
 playwright-report/
 test-results/
+.vitest/
 pnpm-lock.yaml
 LICENSE
