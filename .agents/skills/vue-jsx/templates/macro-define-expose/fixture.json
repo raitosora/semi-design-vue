@@ -1,0 +1,7 @@
+{
+  "component": "macro-define-expose",
+  "macros_required": true,
+  "exposed_surface": ["increment()", "value (getter)"],
+  "parent_access": "counterRef.value?.increment()",
+  "synchronous": true
+}

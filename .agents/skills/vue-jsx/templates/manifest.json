@@ -1,0 +1,61 @@
+{
+  "version": "1.0.0",
+  "templates": [
+    {
+      "id": "basic-component",
+      "title": "Minimal function component",
+      "scene": "new-component",
+      "intent": "Trivial presentational Vue JSX component with no state",
+      "status": "ready",
+      "files": ["template.md", "widget-code.tsx", "fixture.json"]
+    },
+    {
+      "id": "typed-component",
+      "title": "Component with defineProps + emits",
+      "scene": "new-component",
+      "intent": "Vue JSX component with strongly-typed props and emits",
+      "status": "ready",
+      "files": ["template.md", "widget-code.tsx", "fixture.json"]
+    },
+    {
+      "id": "custom-element-type",
+      "title": "JSX augmentation for a custom element",
+      "scene": "typescript-augment",
+      "intent": "Add TypeScript types for a Custom Element via declare module 'vue-jsx'",
+      "status": "ready",
+      "files": ["template.md", "types.d.ts", "fixture.json"]
+    },
+    {
+      "id": "macro-define-model",
+      "title": "v-model via defineModel macro",
+      "scene": "new-component",
+      "intent": "Component using defineModel<T>()! for v-model",
+      "status": "ready",
+      "files": ["template.md", "widget-code.tsx", "fixture.json"]
+    },
+    {
+      "id": "macro-define-expose",
+      "title": "defineExpose macro with parent ref",
+      "scene": "new-component",
+      "intent": "Component exposing members via defineExpose, accessed by parent through ref",
+      "status": "ready",
+      "files": ["template.md", "widget-code.tsx", "fixture.json"]
+    },
+    {
+      "id": "pragma-mixed-codebase",
+      "title": "Mixed React+Vue per-file pragma",
+      "scene": "new-component",
+      "intent": ".tsx file using /** @jsxImportSource vue-jsx */ in a mixed codebase",
+      "status": "ready",
+      "files": ["template.md", "widget-code.tsx", "fixture.json"]
+    },
+    {
+      "id": "vapor-config",
+      "title": "Vapor Mode Vite + TS-Macro config",
+      "scene": "configure-project",
+      "intent": "vite.config.ts and ts-macro.config.ts configured for Vapor Mode",
+      "status": "ready",
+      "files": ["template.md", "vite.config.ts", "ts-macro.config.ts"]
+    }
+  ]
+}

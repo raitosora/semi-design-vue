@@ -1,0 +1,6 @@
+{
+  "component": "basic-component",
+  "rendered": "<span class=\"hello\">hello</span>",
+  "props": null,
+  "notes": "No props accepted. No state. Pure presentational."
+}

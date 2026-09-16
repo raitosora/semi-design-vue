@@ -1,0 +1,6 @@
+{
+  "component": "typed-component",
+  "props": { "size": "small", "initialCount": 0 },
+  "expected_initial_dom": "<button class=\"btn btn-small\">clicked 0 times</button>",
+  "after_one_click": "<button class=\"btn btn-small\">clicked 1 times</button>"
+}
