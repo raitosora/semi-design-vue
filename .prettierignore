@@ -1,0 +1,11 @@
+.agents/
+.github/
+docs/
+experiments/
+node_modules/
+**/dist/
+artifacts/
+playwright-report/
+test-results/
+pnpm-lock.yaml
+LICENSE

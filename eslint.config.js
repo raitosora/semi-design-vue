@@ -28,4 +28,35 @@ export default [
       "vue-jsx/define-style": [1, { tabWidth: 2 }],
     },
   }),
+  {
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex:
+                "^(?:lodash(?:-es|\\.[^/]+)?|@types/lodash(?:-es|\\.[^/]+)?)(?:/|$)",
+              message: "Use native APIs or reviewed es-toolkit utilities.",
+            },
+          ],
+        },
+      ],
+      "no-restricted-modules": [
+        "error",
+        {
+          patterns: [
+            "lodash",
+            "lodash/*",
+            "lodash-es",
+            "lodash-es/*",
+            "lodash.*",
+            "lodash.*/*",
+            "@types/lodash*",
+          ],
+        },
+      ],
+    },
+  },
 ];

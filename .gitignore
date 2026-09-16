@@ -9,3 +9,6 @@ playwright-report/
 test-results/
 *.tgz
 .DS_Store
+CONTRIBUTING.md
+CONTRIBUTE.md
+NOTICE.md

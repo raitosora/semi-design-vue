@@ -1,0 +1,15 @@
+{
+  "name": "semi-design-vue-playground",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "semi-ui-vue": "workspace:*",
+    "semi-icons-vue": "workspace:*",
+    "semi-icons-lab-vue": "workspace:*",
+    "semi-illustrations-vue": "workspace:*",
+    "semi-animation-vue": "workspace:*",
+    "vite-plugin-semi-theme": "workspace:*",
+    "vue": "3.6.0-rc.8"
+  }
+}
