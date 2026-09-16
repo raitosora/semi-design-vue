@@ -1,8 +1,10 @@
-import { access, readdir, mkdir, writeFile } from "node:fs/promises";
+import { access, readdir, mkdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { runDocumentationChecks } from "./documentation-surface.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+await rm(join(root, "artifacts/surfaces.json"), { force: true });
 async function exists(path) {
   try {
     await access(join(root, path));
@@ -22,18 +24,7 @@ for (const entry of packages) {
 }
 if (!(await exists("playground/src/main.tsx")))
   throw new Error("Missing executable playground.");
-const documentationPaths = ["docs/.vitepress", "docs/src", "docs/examples"];
-const present = (
-  await Promise.all(
-    documentationPaths.map(async (path) =>
-      (await exists(path)) ? path : null,
-    ),
-  )
-).filter(Boolean);
-if (present.length)
-  throw new Error(
-    `Documentation surface found (${present.join(", ")}); configure its real compiler, strict types, links and production build checks before enabling it.`,
-  );
+const documentation = await runDocumentationChecks(root);
 const report = {
   source: {
     status: "configured",
@@ -52,8 +43,8 @@ const report = {
     checks: ["strict types", "build", "Chromium interaction"],
   },
   documentation: {
-    status: "not-applicable",
-    reason: "No documentation site or executable documentation examples exist.",
+    ...documentation,
+    checks: ["pnpm check:docs"],
   },
   consumer: {
     status: "limited",

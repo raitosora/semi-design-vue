@@ -10,3 +10,9 @@ test-results/
 .vitest/
 pnpm-lock.yaml
 LICENSE
+
+website/.generated/
+website/.artifacts/
+website/.gate-results/
+website/.vitepress/cache/
+website/.vitepress/dist/

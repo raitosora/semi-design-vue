@@ -1,0 +1,47 @@
+/* Documentation shell styling; no public component theme contract. */
+:root {
+  --vp-c-brand-1: #4964d8;
+  --vp-c-brand-2: #5975eb;
+  --vp-c-brand-3: #4964d8;
+}
+.dark {
+  --vp-c-brand-1: #a4b2ff;
+  --vp-c-brand-2: #7e95ff;
+  --vp-c-brand-3: #596ed4;
+}
+.vapor-demo {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+  background: var(--vp-c-bg-soft);
+}
+.vapor-demo button {
+  border: 1px solid var(--vp-c-divider);
+  padding: 6px 12px;
+  margin: 8px 12px 8px 0;
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+}
+.vapor-demo button:focus-visible,
+.vapor-demo summary:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 3px;
+}
+.vapor-demo details {
+  margin-top: 12px;
+}
+.vapor-demo pre {
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 12px;
+  background: var(--vp-c-bg);
+}
+.vapor-demo summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.vapor-demo h3 {
+  margin-top: 0;
+}
