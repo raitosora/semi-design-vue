@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "paths": {
+      "semi-ui-vue": ["./packages/semi-ui-vue/src/index.ts"],
+      "semi-icons-vue": ["./packages/semi-icons-vue/src/index.ts"],
+      "semi-icons-lab-vue": ["./packages/semi-icons-lab-vue/src/index.ts"],
+      "semi-illustrations-vue": [
+        "./packages/semi-illustrations-vue/src/index.ts"
+      ],
+      "semi-animation-vue": ["./packages/semi-animation-vue/src/index.ts"],
+      "vite-plugin-semi-theme": [
+        "./packages/vite-plugin-semi-theme/src/index.ts"
+      ]
+    },
+    "allowImportingTsExtensions": true
+  }
+}

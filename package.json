@@ -28,6 +28,14 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsmc --noEmit -p tsconfig.json",
-    "check": "pnpm lint && pnpm typecheck"
-  }
+    "check": "pnpm lint && pnpm typecheck",
+    "dev": "vite --host 127.0.0.1",
+    "build": "pnpm build:packages && pnpm build:playground",
+    "build:packages": "pnpm --filter \"./packages/**\" -r build",
+    "build:playground": "vite build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:dependencies": "node scripts/check-dependencies.mjs"
+  },
+  "license": "MIT"
 }

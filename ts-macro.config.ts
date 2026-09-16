@@ -1,2 +1,4 @@
 import vueJsx from "vue-jsx/volar";
-export default { plugins: [vueJsx({ vapor: true, macros: true })] };
+import { jsxOptions } from "./config/vue-jsx.ts";
+
+export default { plugins: [vueJsx(jsxOptions)] };
