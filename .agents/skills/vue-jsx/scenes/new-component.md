@@ -47,6 +47,7 @@
 - [ ] No `await nextTick()` after `defineModel` mutations.
 - [ ] `defineModel<T>()!` only when required.
 - [ ] If macros used: `macros: true` in BOTH Vite and TS-Macro.
+- [ ] Call `defineModel` / `defineExpose` directly; import runtime helpers such as `ref` from `vue` and `useRef` from `vue-jsx`.
 
 ---
 
@@ -88,12 +89,12 @@ export default defineComponent<Props>((props) => {
 ### With `v-model` and macro
 
 ```tsx
-import { defineModel } from 'vue-jsx'
+import { defineComponent } from 'vue'
 
 export default defineComponent(() => {
   const value = defineModel<string>()!
   return () => (
-    <input value={value.value} onInput={(e) => (value.value = e.target.value)} />
+    <input value={value.value} onInput={(e) => (value.value = (e.target as HTMLInputElement).value)} />
   )
 })
 ```
@@ -101,7 +102,7 @@ export default defineComponent(() => {
 ### With `defineExpose`
 
 ```tsx
-import { defineExpose, ref } from 'vue-jsx'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent(() => {
   const counter = ref(0)

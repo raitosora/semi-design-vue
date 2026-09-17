@@ -2,6 +2,10 @@
 
 Macros are **compile-time** helpers. They look like runtime functions but are replaced during JSX compilation. They are not imported — they're transformed by the compiler.
 
+With `vue-jsx@3.3.0-rc.1`, `defineModel` and `defineExpose` are not named exports from `vue-jsx`. Call them directly with `macros: true` enabled in both the compiler and TS-Macro. Import runtime helpers separately: `ref` / `defineComponent` from `vue`, and `useRef` from `vue-jsx`.
+
+Official reference: [Vue JSX macros](https://vuejsx.dev/zh/features/macros.html).
+
 ---
 
 ## 1. Enabling Macros

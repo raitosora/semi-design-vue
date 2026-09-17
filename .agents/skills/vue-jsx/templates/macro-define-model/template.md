@@ -18,7 +18,7 @@
 ## Primitive
 
 ```tsx
-import { defineModel } from 'vue-jsx'
+import { defineComponent } from 'vue'
 
 export default defineComponent(() => {
   const value = defineModel<string>()!
@@ -34,6 +34,7 @@ export default defineComponent(() => {
 ## Acceptance
 
 - [ ] `macros: true` is set in `vite.config.ts` AND `ts-macro.config.ts`.
+- [ ] Call `defineModel` directly without importing it; it is a compiler macro.
 - [ ] `defineModel<T>()!` (or no `!` if optional).
 - [ ] No `await nextTick()` after assigning.
 - [ ] Consumer uses `v-model={...}` or wires up `update:modelValue` manually.

@@ -132,6 +132,8 @@ When using macros (`defineModel` / `defineExpose` / `defineStyle`):
 
 Mismatch breaks editor type-checking or compilation.
 
+Call `defineModel` and `defineExpose` directly inside components. These are compiler macros, not named exports from `vue-jsx`; do not import them. Runtime helpers still need imports: `ref` / `defineComponent` from `vue`, and `useRef` from `vue-jsx`. See [Macros](references/macros.md).
+
 ### ESLint Prefix
 
 - ✅ `@vue-jsx/eslint` with rule prefix `vue-jsx/`.

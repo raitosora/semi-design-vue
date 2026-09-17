@@ -150,6 +150,7 @@ When macros (`defineModel` / `defineExpose` / `defineStyle`) are used:
 - Vite plugin **MUST** receive `macros: true`.
 - TS-Macro plugin (`ts-macro.config.ts`) **MUST** mirror the **exact same** `macros` option.
 - The two configurations **MUST** stay consistent. A mismatch breaks editor type-checking or compilation.
+- `defineModel` and `defineExpose` **MUST** be called directly as compiler macros, without imports. `vue-jsx` does not export these names. Import runtime helpers (`ref`, `defineComponent`) from `vue`, and `useRef` from `vue-jsx`.
 
 ```ts
 // vite.config.ts
