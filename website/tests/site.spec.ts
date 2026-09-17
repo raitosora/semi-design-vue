@@ -350,3 +350,44 @@ for (const port of [4180, 4181]) {
     await expect(fixture).toHaveCount(0);
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: compiled Foundation examples update and release their popup`, async ({
+    checkedPage: page,
+  }) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/foundation.html`);
+    for (const file of [
+      "semi-foundation-2.103.0-MIT.txt",
+      "es-toolkit-1.39.10-MIT.txt",
+    ]) {
+      const license = await page.request.get(
+        `http://127.0.0.1:${port}/licenses/${file}`,
+      );
+      expect(license.ok()).toBe(true);
+      expect(await license.text()).toContain("Permission is hereby granted");
+    }
+    await page
+      .getByRole("textbox", { name: "Foundation input" })
+      .fill("docs foundation");
+    await expect(
+      page.getByRole("textbox", { name: "Foundation input" }),
+    ).toHaveValue("docs foundation");
+    await page
+      .getByRole("button", { name: "Foundation tooltip trigger" })
+      .hover();
+    await expect(page.getByRole("tooltip")).toBeVisible();
+    const demo = page.getByRole("region", { name: "独立 Vapor 示例" }).nth(1);
+    await demo.getByRole("button", { name: "卸载示例" }).click();
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+    await demo.getByRole("button", { name: "挂载示例" }).click();
+    await page
+      .getByRole("button", { name: "Foundation tooltip trigger" })
+      .hover();
+    await expect(page.getByRole("tooltip")).toBeVisible();
+    await page
+      .getByRole("link", { name: "兼容边界", exact: true })
+      .first()
+      .click();
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+  });
+}

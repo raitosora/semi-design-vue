@@ -11,6 +11,7 @@ import {
 
 import { resolveConfig } from "vite";
 import ts from "typescript";
+import { checkFoundationInputs } from "./foundation-inputs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const sourceFolders = new Set([
@@ -120,6 +121,7 @@ try {
 } finally {
   process.chdir(originalDirectory);
 }
+await checkFoundationInputs(root);
 const errors = [...diagnostics, ...aliasErrors, ...checkTree(tree)];
 if (errors.length) {
   console.error(errors.join("\n"));

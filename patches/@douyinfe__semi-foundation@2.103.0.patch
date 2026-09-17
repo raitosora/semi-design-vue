@@ -1,0 +1,370 @@
+diff --git a/base/foundation.ts b/base/foundation.ts
+index bf9054f9ca39457572e646f76fbe5c77504a964c..f56a7fc6699b0b06135ddc0a23b2df86e0d435e7 100644
+--- a/base/foundation.ts
++++ b/base/foundation.ts
+@@ -5,7 +5,7 @@
+  */
+  
+ import log from '../utils/log';
+-import { noop } from 'lodash';
++import { noop } from 'es-toolkit/compat';
+ 
+ export type noopFunction = (...args: any) => any;
+ export interface DefaultAdapter<P = Record<string, any>, S = Record<string, any>> {
+diff --git a/input/foundation.ts b/input/foundation.ts
+index 07d67d9e59e48b9cbce5c110f9ce74e6c85f5e9b..0aa6bed32fe27f49bb68c4bbf2586a4202035860 100644
+--- a/input/foundation.ts
++++ b/input/foundation.ts
+@@ -1,6 +1,6 @@
+ import BaseFoundation, { DefaultAdapter, noopFunction } from '../base/foundation';
+ import { strings } from './constants';
+-import { noop, set, isNumber, isString, isFunction } from 'lodash';
++import { noop, set, isNumber, isString, isFunction } from 'es-toolkit/compat';
+ 
+ import { ENTER_KEY } from './../utils/keyCode';
+ import truncateValue from './util/truncateValue';
+diff --git a/input/util/truncateValue.ts b/input/util/truncateValue.ts
+index 4da8b2a79e414763aa8770675cf8b78d39b37417..ee5146632502752520c80fa8eb3c03cb359750fc 100644
+--- a/input/util/truncateValue.ts
++++ b/input/util/truncateValue.ts
+@@ -1,4 +1,4 @@
+-import { isFunction } from 'lodash';
++import { isFunction } from 'es-toolkit/compat';
+ 
+ export default function truncateValue(options: {
+     value: string;
+diff --git a/lib/cjs/base/foundation.js b/lib/cjs/base/foundation.js
+index eed76df774dbaf7f7d41752316eeaf7031b044a7..ad03376e4fbc148bb9b6254b3229a7674ecfdb61 100644
+--- a/lib/cjs/base/foundation.js
++++ b/lib/cjs/base/foundation.js
+@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = void 0;
+-var _noop2 = _interopRequireDefault(require("lodash/noop"));
++var _compat = require("es-toolkit/compat");
+ var _log = _interopRequireDefault(require("../utils/log"));
+ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+ /**
+@@ -37,18 +37,18 @@ class BaseFoundation {
+   }
+   static get defaultAdapter() {
+     return {
+-      getProp: _noop2.default,
+-      getProps: _noop2.default,
+-      getState: _noop2.default,
+-      getStates: _noop2.default,
+-      setState: _noop2.default,
+-      getContext: _noop2.default,
+-      getContexts: _noop2.default,
+-      getCache: _noop2.default,
+-      setCache: _noop2.default,
+-      getCaches: _noop2.default,
+-      stopPropagation: _noop2.default,
+-      persistEvent: _noop2.default
++      getProp: _compat.noop,
++      getProps: _compat.noop,
++      getState: _compat.noop,
++      getStates: _compat.noop,
++      setState: _compat.noop,
++      getContext: _compat.noop,
++      getContexts: _compat.noop,
++      getCache: _compat.noop,
++      setCache: _compat.noop,
++      getCaches: _compat.noop,
++      stopPropagation: _compat.noop,
++      persistEvent: _compat.noop
+     };
+   }
+   constructor(adapter) {
+diff --git a/lib/cjs/input/foundation.js b/lib/cjs/input/foundation.js
+index 838b06c99d091fc6c61c7d3d0b1283ca609af716..1110270c224ae818dd0627665b063e71e182aba6 100644
+--- a/lib/cjs/input/foundation.js
++++ b/lib/cjs/input/foundation.js
+@@ -4,11 +4,7 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = void 0;
+-var _isFunction2 = _interopRequireDefault(require("lodash/isFunction"));
+-var _isString2 = _interopRequireDefault(require("lodash/isString"));
+-var _isNumber2 = _interopRequireDefault(require("lodash/isNumber"));
+-var _set2 = _interopRequireDefault(require("lodash/set"));
+-var _noop2 = _interopRequireDefault(require("lodash/noop"));
++var _compat = require("es-toolkit/compat");
+ var _foundation = _interopRequireDefault(require("../base/foundation"));
+ var _constants = require("./constants");
+ var _keyCode = require("./../utils/keyCode");
+@@ -17,8 +13,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
+ class InputFoundation extends _foundation.default {
+   static get inputDefaultAdapter() {
+     return {
+-      notifyChange: _noop2.default,
+-      setValue: _noop2.default
++      notifyChange: _compat.noop,
++      setValue: _compat.noop
+       // toggleAllowClear: noop,
+     };
+   }
+@@ -31,7 +27,7 @@ class InputFoundation extends _foundation.default {
+         minLength,
+         getValueLength
+       } = this._adapter.getProps();
+-      if (!(0, _isFunction2.default)(getValueLength)) {
++      if (!(0, _compat.isFunction)(getValueLength)) {
+         return value;
+       }
+       if (maxLength) {
+@@ -78,7 +74,7 @@ class InputFoundation extends _foundation.default {
+         maxLength,
+         minLength
+       } = this.getProps();
+-      if (!(0, _isFunction2.default)(getValueLength)) {
++      if (!(0, _compat.isFunction)(getValueLength)) {
+         return;
+       }
+       if (maxLength) {
+@@ -133,7 +129,7 @@ class InputFoundation extends _foundation.default {
+     const {
+       minLength: stateMinLength
+     } = this._adapter.getStates();
+-    if ((0, _isNumber2.default)(minLength) && minLength >= 0 && (0, _isFunction2.default)(getValueLength) && (0, _isString2.default)(value)) {
++    if ((0, _compat.isNumber)(minLength) && minLength >= 0 && (0, _compat.isFunction)(getValueLength) && (0, _compat.isString)(value)) {
+       const valueLength = getValueLength(value);
+       if (valueLength < minLength) {
+         const newMinLength = value.length + (minLength - valueLength);
+@@ -153,7 +149,7 @@ class InputFoundation extends _foundation.default {
+       maxLength,
+       getValueLength
+     } = this._adapter.getProps();
+-    if ((0, _isNumber2.default)(maxLength) && maxLength >= 0 && (0, _isFunction2.default)(getValueLength) && (0, _isString2.default)(value)) {
++    if ((0, _compat.isNumber)(maxLength) && maxLength >= 0 && (0, _compat.isFunction)(getValueLength) && (0, _compat.isString)(value)) {
+       const valueLength = getValueLength(value);
+       if (valueLength > maxLength) {
+         console.warn('[Semi Input] The input character is truncated because the input length exceeds the maximum length limit');
+@@ -198,7 +194,7 @@ class InputFoundation extends _foundation.default {
+     if (!eventObj || typeof eventObj !== 'object') {
+       eventObj = {};
+     }
+-    (0, _set2.default)(eventObj, _constants.strings.CLEARBTN_CLICKED_EVENT_FLAG, true); // this is useful for DateInput
++    (0, _compat.set)(eventObj, _constants.strings.CLEARBTN_CLICKED_EVENT_FLAG, true); // this is useful for DateInput
+     this._adapter.notifyChange(value, eventObj);
+     this._adapter.notifyClear(eventObj);
+     if (eventObj) {
+@@ -317,7 +313,7 @@ class InputFoundation extends _foundation.default {
+    * @param {Event} e
+    */
+   handlePreventMouseDown(e) {
+-    if (e && (0, _isFunction2.default)(e.preventDefault)) {
++    if (e && (0, _compat.isFunction)(e.preventDefault)) {
+       e.preventDefault();
+     }
+   }
+diff --git a/lib/cjs/input/util/truncateValue.js b/lib/cjs/input/util/truncateValue.js
+index 1099bf14d75d0739305094a1b141fa2add71b99b..ffea9db4dd6a2bd03857f2d89e81428c3dcf0054 100644
+--- a/lib/cjs/input/util/truncateValue.js
++++ b/lib/cjs/input/util/truncateValue.js
+@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = truncateValue;
+-var _isFunction2 = _interopRequireDefault(require("lodash/isFunction"));
++var _compat = require("es-toolkit/compat");
+ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+ function truncateValue(options) {
+   const {
+@@ -12,7 +12,7 @@ function truncateValue(options) {
+     maxLength,
+     getValueLength
+   } = options;
+-  if ((0, _isFunction2.default)(getValueLength)) {
++  if ((0, _compat.isFunction)(getValueLength)) {
+     let left = 0;
+     let right = value.length;
+     while (left < right) {
+diff --git a/lib/cjs/tooltip/foundation.js b/lib/cjs/tooltip/foundation.js
+index abbb95ae1d3c96b83125008e2059100f9a041a08..5af740443be8471e4b8d72129a1078e2f86d9c2f 100644
+--- a/lib/cjs/tooltip/foundation.js
++++ b/lib/cjs/tooltip/foundation.js
+@@ -4,8 +4,7 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = void 0;
+-var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
+-var _get2 = _interopRequireDefault(require("lodash/get"));
++var _compat = require("es-toolkit/compat");
+ var _foundation = _interopRequireDefault(require("../base/foundation"));
+ var _a11y = require("../utils/a11y");
+ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+@@ -141,9 +140,9 @@ class Tooltip extends _foundation.default {
+      */
+     this.calcPosition = function (triggerRect, wrapperRect, containerRect) {
+       let shouldUpdatePos = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+-      triggerRect = ((0, _isEmpty2.default)(triggerRect) ? _this._adapter.getTriggerBounding() : triggerRect) || Object.assign({}, defaultRect);
+-      containerRect = ((0, _isEmpty2.default)(containerRect) ? _this._adapter.getPopupContainerRect() : containerRect) || Object.assign({}, defaultRect);
+-      wrapperRect = ((0, _isEmpty2.default)(wrapperRect) ? _this._adapter.getWrapperBounding() : wrapperRect) || Object.assign({}, defaultRect);
++      triggerRect = ((0, _compat.isEmpty)(triggerRect) ? _this._adapter.getTriggerBounding() : triggerRect) || Object.assign({}, defaultRect);
++      containerRect = ((0, _compat.isEmpty)(containerRect) ? _this._adapter.getPopupContainerRect() : containerRect) || Object.assign({}, defaultRect);
++      wrapperRect = ((0, _compat.isEmpty)(wrapperRect) ? _this._adapter.getWrapperBounding() : wrapperRect) || Object.assign({}, defaultRect);
+       // console.log('containerRect: ', containerRect, 'triggerRect: ', triggerRect, 'wrapperRect: ', wrapperRect);
+       let style = _this.calcPosStyle({
+         triggerRect,
+@@ -464,9 +463,9 @@ class Tooltip extends _foundation.default {
+     const {
+       innerWidth
+     } = window;
+-    const triggerRect = ((0, _isEmpty2.default)(props.triggerRect) ? props.triggerRect : this._adapter.getTriggerBounding()) || Object.assign({}, defaultRect);
+-    const containerRect = ((0, _isEmpty2.default)(props.containerRect) ? props.containerRect : this._adapter.getPopupContainerRect()) || Object.assign({}, defaultRect);
+-    const wrapperRect = ((0, _isEmpty2.default)(props.wrapperRect) ? props.wrapperRect : this._adapter.getWrapperBounding()) || Object.assign({}, defaultRect);
++    const triggerRect = ((0, _compat.isEmpty)(props.triggerRect) ? props.triggerRect : this._adapter.getTriggerBounding()) || Object.assign({}, defaultRect);
++    const containerRect = ((0, _compat.isEmpty)(props.containerRect) ? props.containerRect : this._adapter.getPopupContainerRect()) || Object.assign({}, defaultRect);
++    const wrapperRect = ((0, _compat.isEmpty)(props.wrapperRect) ? props.wrapperRect : this._adapter.getWrapperBounding()) || Object.assign({}, defaultRect);
+     const position = props.position != null ? props.position : this.getProp('position');
+     const RAW_SPACING = spacing != null ? spacing : this.getProp('spacing');
+     const {
+@@ -483,9 +482,9 @@ class Tooltip extends _foundation.default {
+       SPACING = isTopOrBottom ? RAW_SPACING.y : RAW_SPACING.x;
+       ANO_SPACING = isTopOrBottom ? RAW_SPACING.x : RAW_SPACING.y;
+     }
+-    const horizontalArrowWidth = (0, _get2.default)(arrowBounding, 'width', 24);
+-    const verticalArrowHeight = (0, _get2.default)(arrowBounding, 'width', 24);
+-    const arrowOffsetY = (0, _get2.default)(arrowBounding, 'offsetY', 0);
++    const horizontalArrowWidth = (0, _compat.get)(arrowBounding, 'width', 24);
++    const verticalArrowHeight = (0, _compat.get)(arrowBounding, 'width', 24);
++    const arrowOffsetY = (0, _compat.get)(arrowBounding, 'offsetY', 0);
+     const positionOffsetX = 6;
+     const positionOffsetY = 6;
+     // You must use left/top when rendering, using right/bottom does not render the element position correctly
+diff --git a/lib/cjs/utils/a11y.js b/lib/cjs/utils/a11y.js
+index a13c9fddae90cfaa96379e9e50e56386f2e5840e..5bc7fffd692868704b7ff932048af2c346e00e74 100644
+--- a/lib/cjs/utils/a11y.js
++++ b/lib/cjs/utils/a11y.js
+@@ -13,7 +13,7 @@ exports.setFocusToItem = setFocusToItem;
+ exports.setFocusToLastItem = setFocusToLastItem;
+ exports.setFocusToNextMenuitem = setFocusToNextMenuitem;
+ exports.setFocusToPreviousMenuItem = setFocusToPreviousMenuItem;
+-var _get2 = _interopRequireDefault(require("lodash/get"));
++var _compat = require("es-toolkit/compat");
+ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+ function handlePrevent(event) {
+   event.stopPropagation();
+@@ -90,7 +90,7 @@ function getAncestorNodeByRole(curElement, role) {
+   if (!curElement) {
+     return null;
+   }
+-  while (curElement.parentElement && (0, _get2.default)(curElement.parentElement, 'attributes.role.value', '') !== role) {
++  while (curElement.parentElement && (0, _compat.get)(curElement.parentElement, 'attributes.role.value', '') !== role) {
+     curElement = curElement.parentElement;
+   }
+   return curElement.parentElement;
+diff --git a/lib/cjs/utils/log.js b/lib/cjs/utils/log.js
+index dad8a04718603c9139a796161b2098fb324dd028..0cf0724adfd5a6785cd035f9c5b8d7e74a31cfcd 100644
+--- a/lib/cjs/utils/log.js
++++ b/lib/cjs/utils/log.js
+@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = void 0;
+-var _get2 = _interopRequireDefault(require("lodash/get"));
++var _compat = require("es-toolkit/compat");
+ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+ const log = function (text) {
+-  if ((0, _get2.default)(process, 'env.NODE_ENV') === 'development') {
++  if ((0, _compat.get)(process, 'env.NODE_ENV') === 'development') {
+     for (var _len = arguments.length, rest = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+       rest[_key - 1] = arguments[_key];
+     }
+diff --git a/lib/es/base/foundation.js b/lib/es/base/foundation.js
+index cbacf6b099d5c458ecf8bee6a4942e1303292c12..620448958bca52acdfd316b06c52aef3bb03a05a 100644
+--- a/lib/es/base/foundation.js
++++ b/lib/es/base/foundation.js
+@@ -1,4 +1,4 @@
+-import _noop from "lodash/noop";
++import { noop as _noop } from "es-toolkit/compat";
+ /**
+  * The Semi Foundation / Adapter architecture split was inspired by Material Component For Web. （https://github.com/material-components/material-components-web）
+  * We re-implemented our own code based on the principle and added more functions we need according to actual needs.
+diff --git a/lib/es/input/foundation.js b/lib/es/input/foundation.js
+index 6fd03e1914076f36434acf1d6b04b0ccc0b8f3cb..c6207e10c227e3c34de255ff495017b7c1592577 100644
+--- a/lib/es/input/foundation.js
++++ b/lib/es/input/foundation.js
+@@ -1,8 +1,4 @@
+-import _isFunction from "lodash/isFunction";
+-import _isString from "lodash/isString";
+-import _isNumber from "lodash/isNumber";
+-import _set from "lodash/set";
+-import _noop from "lodash/noop";
++import { isFunction as _isFunction, isNumber as _isNumber, isString as _isString, noop as _noop, set as _set } from "es-toolkit/compat";
+ import BaseFoundation from '../base/foundation';
+ import { strings } from './constants';
+ import { ENTER_KEY } from './../utils/keyCode';
+diff --git a/lib/es/input/util/truncateValue.js b/lib/es/input/util/truncateValue.js
+index 925d5dc0ea0fc67b080a07b6e90513717871692f..5f2b287f855ddcdf0b202c892b28f39e4a209440 100644
+--- a/lib/es/input/util/truncateValue.js
++++ b/lib/es/input/util/truncateValue.js
+@@ -1,4 +1,4 @@
+-import _isFunction from "lodash/isFunction";
++import { isFunction as _isFunction } from "es-toolkit/compat";
+ export default function truncateValue(options) {
+   const {
+     value,
+diff --git a/lib/es/tooltip/foundation.js b/lib/es/tooltip/foundation.js
+index 92aadfe54ab13a54cfb53338565031aaeb374fd1..7b01a72aab0902b9cfdcbb46ea6e9fd58316ee66 100644
+--- a/lib/es/tooltip/foundation.js
++++ b/lib/es/tooltip/foundation.js
+@@ -1,5 +1,4 @@
+-import _isEmpty from "lodash/isEmpty";
+-import _get from "lodash/get";
++import { get as _get, isEmpty as _isEmpty } from "es-toolkit/compat";
+ import BaseFoundation from '../base/foundation';
+ import { handlePrevent } from '../utils/a11y';
+ const REGS = {
+diff --git a/lib/es/utils/a11y.js b/lib/es/utils/a11y.js
+index 3699a8b06014efbaa6634301d10e541cc098d1c4..bb0cf46f5fee30989550c0583aba744acd849b19 100644
+--- a/lib/es/utils/a11y.js
++++ b/lib/es/utils/a11y.js
+@@ -1,4 +1,4 @@
+-import _get from "lodash/get";
++import { get as _get } from "es-toolkit/compat";
+ export function handlePrevent(event) {
+   event.stopPropagation();
+   event.preventDefault();
+diff --git a/lib/es/utils/log.js b/lib/es/utils/log.js
+index c8ddf6a32b60ea9642f79c458b8bc01acfe77210..fed0a47a3dd65e946c4735e4be3f70fae2961722 100644
+--- a/lib/es/utils/log.js
++++ b/lib/es/utils/log.js
+@@ -1,4 +1,4 @@
+-import _get from "lodash/get";
++import { get as _get } from "es-toolkit/compat";
+ const log = function (text) {
+   if (_get(process, 'env.NODE_ENV') === 'development') {
+     for (var _len = arguments.length, rest = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+diff --git a/tooltip/foundation.ts b/tooltip/foundation.ts
+index 28578cbd04f3dfa2572ff965a37ad3d006013c0b..2fb208dd1a0a3f82ceaa5d88174461cdb2110fe3 100644
+--- a/tooltip/foundation.ts
++++ b/tooltip/foundation.ts
+@@ -1,4 +1,4 @@
+-import { get, isEmpty } from 'lodash';
++import { get, isEmpty } from 'es-toolkit/compat';
+ import { DOMRectLikeType } from '../utils/dom';
+ import BaseFoundation, { DefaultAdapter } from '../base/foundation';
+ import { ArrayElement } from '../utils/type';
+diff --git a/utils/a11y.ts b/utils/a11y.ts
+index 5b6081ee1bcd18ab7773d0c41c55557b22b4f3af..84a890445a9792bb2009518e19d53944bc22cd4d 100644
+--- a/utils/a11y.ts
++++ b/utils/a11y.ts
+@@ -1,4 +1,4 @@
+-import { get } from "lodash";
++import { get } from 'es-toolkit/compat';
+ 
+ export function handlePrevent(event: any) {
+     event.stopPropagation();
+diff --git a/utils/log.ts b/utils/log.ts
+index 0e341eed8abeddd1218db8af2a6c676d910b4aab..b339c92b48726d70e4759a22435eb6bb4381e762 100644
+--- a/utils/log.ts
++++ b/utils/log.ts
+@@ -1,4 +1,4 @@
+-import { get } from 'lodash';
++import { get } from 'es-toolkit/compat';
+ 
+ const log = (text: any, ...rest: any[]) => {
+     if (get(process, 'env.NODE_ENV') === 'development') {

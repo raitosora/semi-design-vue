@@ -3,8 +3,16 @@ packages:
   - playground
 
 linkWorkspacePackages: false
-strictPeerDependencies: true
 
 overrides:
-  vue: 3.6.0-rc.8
   "@vue/shared": 3.6.0-rc.8
+  vue: 3.6.0-rc.8
+  "@douyinfe/semi-foundation@2.103.0>lodash": "-"
+
+packageExtensions:
+  "@douyinfe/semi-foundation@2.103.0":
+    dependencies:
+      es-toolkit: 1.39.10
+patchedDependencies:
+  "@douyinfe/semi-foundation@2.103.0": patches/@douyinfe__semi-foundation@2.103.0.patch
+strictPeerDependencies: true

@@ -8,7 +8,6 @@
  * Synchronous reads: do NOT `await nextTick()` after assigning value.value.
  */
 import { defineComponent } from 'vue'
-import { defineModel } from 'vue-jsx'
 
 export default defineComponent(() => {
   // Required string model — `!` marks required

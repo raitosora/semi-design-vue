@@ -17,7 +17,8 @@
 ## Primitive
 
 ```tsx
-import { defineExpose, ref, useRef } from 'vue-jsx'
+import { defineComponent, ref } from 'vue'
+import { useRef } from 'vue-jsx'
 
 const Counter = defineComponent(() => {
   const n = ref(0)
@@ -38,6 +39,8 @@ export default defineComponent(() => {
 
 ## Acceptance
 
+- [ ] `macros: true` is set in BOTH Vite and TS-Macro.
+- [ ] Call `defineExpose` directly without importing it; it is a compiler macro.
 - [ ] `defineExpose({ ... })` declares the public surface.
 - [ ] Parent reads via `childRef.value?.xxx`.
 - [ ] `useRef` is preferred over `ref()` from `vue` for typing.

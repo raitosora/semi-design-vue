@@ -11,3 +11,10 @@ export type {
   FieldControlRegistration,
   FieldMetadata,
 } from "./contracts/field.js";
+export { useFoundation } from "./composables/use-foundation.js";
+export type {
+  FoundationAdapter,
+  FoundationLifecycle,
+  FoundationOptions,
+} from "./composables/use-foundation.js";
+export type { FoundationScope } from "./composables/foundation-scope.js";

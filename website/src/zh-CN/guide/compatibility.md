@@ -18,3 +18,5 @@
 [返回运行示例](./runtime.md)
 
 [API 与类型约定](./api-contracts.md)提供已验证协议夹具、props 存在性方案及 slot 解构/JSX ref 的具体限制，不代表已交付公共组件。
+
+[Foundation 桥接](./foundation.md)验证固定上游输入与浮层状态机的有限路径。补丁只覆盖实际依赖闭包，不表示全套 Foundation 已兼容；资源清理只覆盖状态机自身的 destroy 与显式登记资源。

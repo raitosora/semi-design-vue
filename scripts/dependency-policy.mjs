@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { foundationSpecifierError } from "./foundation-inputs.mjs";
 import { moduleLoaders } from "./module-loaders.mjs";
 
 const forbidden =
@@ -18,7 +19,11 @@ export function checkManifest(manifest) {
         typeof specifier === "string" && specifier.startsWith("npm:")
           ? specifier.slice(4).replace(/(?<!^)@[^/]*$/, "")
           : "";
-      return isForbidden(name) || isForbidden(alias)
+      return (name === "@douyinfe/semi-foundation" &&
+        field !== "devDependencies") ||
+        isForbidden(name) ||
+        isForbidden(alias) ||
+        (alias && foundationSpecifierError(alias))
         ? [`${field}: ${name} (${specifier})`]
         : [];
     }),
@@ -40,6 +45,7 @@ export function checkManifest(manifest) {
 const isForbiddenTarget = (target) =>
   typeof target === "string" &&
   (isForbidden(target) ||
+    foundationSpecifierError(target) ||
     target.replaceAll("\\", "/").split("node_modules/").some(isForbidden));
 
 export function checkAliases(config) {
@@ -55,7 +61,7 @@ export function checkAliases(config) {
     .map((target) => `Forbidden alias target: ${target}`);
 }
 
-export function checkSource(source, file) {
+export function checkSource(source, file, { foundationBundled = false } = {}) {
   const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
   const errors = [];
   const isLoader = moduleLoaders(ast);
@@ -88,7 +94,11 @@ export function checkSource(source, file) {
     if (specifier) {
       if (!literal(specifier))
         report(specifier, "Module references must use static string literals.");
-      else if (isForbiddenTarget(specifier.text))
+      else if (
+        isForbiddenTarget(specifier.text) ||
+        (foundationBundled &&
+          specifier.text.includes("@douyinfe/semi-foundation"))
+      )
         report(specifier, specifier.text);
     }
     ts.forEachChild(node, visit);

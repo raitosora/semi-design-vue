@@ -6,7 +6,7 @@
  * - ts-macro.config.ts: matching `vueJsx({ macros: true })`
  */
 import { defineComponent, ref } from 'vue'
-import { defineExpose, useRef } from 'vue-jsx'
+import { useRef } from 'vue-jsx'
 
 const Counter = defineComponent(() => {
   const count = ref(0)

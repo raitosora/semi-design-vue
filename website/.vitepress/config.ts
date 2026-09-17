@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitepress";
 export default defineConfig({
   lang: "zh-CN",
@@ -7,6 +8,7 @@ export default defineConfig({
   cleanUrls: false,
   appearance: true,
   vite: {
+    publicDir: fileURLToPath(new URL("../.generated/public", import.meta.url)),
     resolve: { dedupe: ["vue", "@vue/shared", "@vue-jsx/runtime"] },
     server: { strictPort: true },
   },
@@ -22,6 +24,7 @@ export default defineConfig({
           { text: "项目介绍", link: "/zh-CN/guide/start" },
           { text: "真实 Vapor 示例", link: "/zh-CN/guide/runtime" },
           { text: "API 与类型约定", link: "/zh-CN/guide/api-contracts" },
+          { text: "Foundation 桥接", link: "/zh-CN/guide/foundation" },
           { text: "兼容边界", link: "/zh-CN/guide/compatibility" },
           { text: "文档编写模板", link: "/zh-CN/guide/authoring" },
         ],
