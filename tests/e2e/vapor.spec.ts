@@ -92,3 +92,56 @@ for (const scenario of [
     });
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: independent compiled API contracts without a VDOM renderer`, async ({
+    monitoredPage: page,
+  }) => {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(
+      `http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?contracts`,
+    );
+    const fixture = page.locator("[data-contract-demo]");
+    await fixture.getByRole("textbox").first().fill("local");
+    await fixture
+      .getByRole("button", { name: "显式 undefined", exact: true })
+      .click();
+    await expect(fixture.locator("[data-protocol-state]").first()).toHaveText(
+      "受控:undefined",
+    );
+    await fixture
+      .getByRole("button", { name: "移除 value", exact: true })
+      .click();
+    await expect(fixture.locator("[data-protocol-state]").first()).toHaveText(
+      "非受控:local",
+    );
+    await fixture.getByRole("textbox").nth(1).fill("model");
+    await expect(fixture.locator("[data-model-value]")).toHaveText("model");
+    await page.getByRole("button", { name: "2:2", exact: true }).click();
+    await expect(page.getByText("选择：2", { exact: true })).toBeVisible();
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("#app")).toBeEmpty();
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"]) {
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+        name,
+      ).toBe(true);
+    }
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}

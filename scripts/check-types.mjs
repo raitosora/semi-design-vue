@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const required = [
+  "tests/consumer/tsconfig.source.json",
+  "tests/consumer/consumer.ts",
   "tests/types/tsconfig.source.json",
   "tests/types/tsconfig.macro-negative.json",
   "tests/types/tsconfig.declaration.json",
@@ -28,6 +30,7 @@ function runTypecheck(command, config) {
 const generated = resolve(root, "artifacts/types");
 rmSync(generated, { recursive: true, force: true });
 try {
+  runTypecheck("tsmc", "tests/consumer/tsconfig.source.json");
   runTypecheck("tsmc", "tests/types/tsconfig.source.json");
   runTypecheck("tsmc", "tests/types/tsconfig.macro-negative.json");
   runTypecheck("tsmc", "tests/types/tsconfig.declaration.json");
