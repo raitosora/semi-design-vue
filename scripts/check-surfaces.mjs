@@ -53,7 +53,7 @@ const report = {
       "plain TypeScript declaration consumption",
     ],
     limitation:
-      "Current packages export version only; tarball installation, public components, production dependency closure and consumer bundling are not established.",
+      "Manifest and built ESM/declaration consumption is verified; tarball installation, public components, production dependency closure and consumer bundling are not established.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

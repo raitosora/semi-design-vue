@@ -53,9 +53,13 @@ export function moduleLoaders(ast) {
     ts.isPropertyAccessExpression(node) &&
     node.name.text === property &&
     namespace(node.expression);
-  const factory = (node) =>
-    (ts.isIdentifier(node) && factories.has(symbol(node))) ||
-    member(node, "createRequire");
+  const factory = (expression) => {
+    const node = unwrap(expression);
+    return (
+      (ts.isIdentifier(node) && factories.has(symbol(node))) ||
+      member(node, "createRequire")
+    );
+  };
   const loader = (expression) => {
     const node = unwrap(expression);
     return (

@@ -143,9 +143,10 @@ describe("source module reference policy", () => {
         import { createRequire as cr } from "module";
         const request = (cr)(import.meta.url);
         (request)("lodash");
+        request("@douyinfe/semi-foundation/lib/es/select/foundation");
         function local(require) { require("lodash"); }
       `),
-    ).toEqual([]);
+    ).toHaveLength(2);
   });
 
   it("recognizes destructured loader and factory aliases from a module namespace", () => {
@@ -258,4 +259,55 @@ describe("module loader recognition", () => {
       `),
     ).toEqual([false, false, true, true, true, true, true, false]);
   });
+});
+
+it("Foundation input policy rejects unpatched imports and resolution aliases", () => {
+  const entry = "@douyinfe/semi-foundation/lib/es/select/foundation";
+  expect(
+    checkSource(`import Foundation from '${entry}';`, "fixture.ts"),
+  ).not.toEqual([]);
+  expect(
+    checkSource(
+      "import Foundation from '@douyinfe/semi-foundation/lib/es/input/foundation';",
+      "fixture.ts",
+    ),
+  ).toEqual([]);
+  expect(checkAliases({ resolve: { alias: { source: entry } } })).not.toEqual(
+    [],
+  );
+  expect(
+    checkAliases({ compilerOptions: { paths: { input: [entry] } } }),
+  ).not.toEqual([]);
+  expect(
+    checkManifest({
+      dependencies: { fixture: "npm:@douyinfe/semi-foundation@2.103.0" },
+    }),
+  ).not.toEqual([]);
+});
+
+it("Foundation is allowed only as a build dependency, never a consumer runtime dependency", () => {
+  for (const field of [
+    "dependencies",
+    "optionalDependencies",
+    "peerDependencies",
+  ])
+    expect(
+      checkManifest({ [field]: { "@douyinfe/semi-foundation": "2.103.0" } }),
+    ).not.toEqual([]);
+  expect(
+    checkManifest({
+      devDependencies: { "@douyinfe/semi-foundation": "2.103.0" },
+    }),
+  ).toEqual([]);
+});
+
+it("built consumers cannot hide upstream Foundation behind loaders or relative paths", () => {
+  for (const code of [
+    'const r = require; r("@douyinfe/semi-foundation/lib/es/input/foundation");',
+    'import "../../node_modules/@douyinfe/semi-foundation/lib/es/input/foundation";',
+    'import Input from "@douyinfe/semi-foundation/lib/es/input/foundation";',
+  ])
+    expect(
+      checkSource(code, "dist.js", { foundationBundled: true }),
+    ).toHaveLength(1);
 });

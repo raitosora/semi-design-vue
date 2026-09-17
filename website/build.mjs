@@ -1,11 +1,23 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { access, glob, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  access,
+  copyFile,
+  glob,
+  mkdir,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { dirname, resolve, relative } from "node:path";
 import { build, createServer } from "vite";
 import ts from "typescript";
 import vueJsx from "vue-jsx/vite";
 import { sourceAliases } from "../config/aliases.ts";
+import {
+  checkFoundationInputs,
+  checkFoundationBundle,
+} from "../scripts/foundation-inputs.mjs";
 import { jsxOptions } from "../config/vue-jsx.ts";
 
 assert.equal(typeof window, "undefined");
@@ -49,12 +61,22 @@ async function verifyMaps(pattern) {
     }
   }
 }
+async function copyFoundationLicenses(directory) {
+  await mkdir(directory, { recursive: true });
+  await Promise.all(
+    ["semi-foundation-2.103.0-MIT.txt", "es-toolkit-1.39.10-MIT.txt"].map(
+      (file) =>
+        copyFile(`third-party-licenses/${file}`, `${directory}/${file}`),
+    ),
+  );
+}
 execFileSync("pnpm", ["--filter", "semi-ui-vue", "build"], {
   stdio: "inherit",
 });
 const generated = resolve("website/.generated");
 await rm(generated, { recursive: true, force: true });
 await mkdir(generated, { recursive: true });
+await copyFoundationLicenses(`${generated}/public/licenses`);
 const files = (await Array.fromAsync(glob("website/examples/**/*.tsx"))).sort();
 assert.ok(files.length, "No executable documentation examples");
 const ids = files.map((file) =>
@@ -86,7 +108,7 @@ try {
 } finally {
   await server.close();
 }
-await build({
+const exampleBundle = await build({
   configFile: false,
   plugins: [vueJsx(jsxOptions)],
   resolve: { alias: sourceAliases },
@@ -104,6 +126,20 @@ await build({
       external: ["vue", "vue-jsx", "vue-jsx/vapor", "@vue-jsx/runtime"],
     },
   },
+});
+const exampleOutput = Array.isArray(exampleBundle)
+  ? exampleBundle.flatMap((result) => result.output)
+  : exampleBundle.output;
+assert.ok(
+  exampleOutput?.length,
+  "Documentation example build emitted no output.",
+);
+const exampleChunks = exampleOutput.filter((item) => item.type === "chunk");
+const foundationInputs = await checkFoundationInputs(process.cwd());
+checkFoundationBundle({
+  chunks: exampleChunks,
+  label: "documentation examples",
+  allowedSources: foundationInputs.esmFiles,
 });
 await preserveVirtualSources();
 await verifyMaps("website/.generated/examples/**/*.js.map");
@@ -166,6 +202,7 @@ execFileSync(
 execFileSync("pnpm", ["exec", "vitepress", "build", "website"], {
   stdio: "inherit",
 });
+await copyFoundationLicenses("website/.vitepress/dist/licenses");
 const output = await build({
   configFile: false,
   root: resolve("website/pure"),
@@ -191,8 +228,11 @@ const output = await build({
   },
 });
 await verifyMaps("website/.vitepress/dist/pure/**/*.js.map");
-assert.ok("output" in output);
-const chunks = output.output.filter((item) => item.type === "chunk");
+const pureOutput = Array.isArray(output)
+  ? output.flatMap((result) => result.output)
+  : output.output;
+assert.ok(pureOutput?.length, "Pure Vapor build emitted no output.");
+const chunks = pureOutput.filter((item) => item.type === "chunk");
 const code = chunks.map((chunk) => chunk.code).join("\n");
 assert.match(code, /createVaporApp/);
 assert.doesNotMatch(

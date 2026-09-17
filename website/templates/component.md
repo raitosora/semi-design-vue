@@ -24,3 +24,5 @@
 ## 验证与限制
 
 链接实际交互测试；登记类型、浏览器、SSR/ClientOnly 与视觉验证范围。源码必须来自实际执行的文件。
+
+连接 Foundation 时遵循 [Foundation 桥接](../src/zh-CN/guide/foundation.md)：列出 props watch 驱动的具体更新、同步状态与 DOM 回调边界、资源归属、异步过期策略，以及所需上游入口的补丁/依赖闭包验证。

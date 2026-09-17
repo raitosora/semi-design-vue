@@ -145,3 +145,62 @@ for (const mode of ["dev", "production"] as const) {
     ).toBe(false);
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: real Foundation inputs run through native Vapor and dispose`, async ({
+    monitoredPage: page,
+  }, info) => {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(
+      `http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?foundation`,
+    );
+    await page
+      .getByRole("textbox", { name: "Foundation input" })
+      .fill("foundation value");
+    await expect(
+      page.getByRole("textbox", { name: "Foundation input" }),
+    ).toHaveValue("foundation value");
+    await page
+      .getByRole("button", { name: "Foundation tooltip trigger" })
+      .hover();
+    const popup = page.getByRole("tooltip");
+    await expect(popup).toBeVisible();
+    const trigger = await page
+      .getByRole("button", { name: "Foundation tooltip trigger" })
+      .boundingBox();
+    const rect = await popup.boundingBox();
+    expect(rect!.y + rect!.height).toBeLessThanOrEqual(trigger!.y);
+    await info.attach(`foundation-${mode}`, {
+      body: await page.screenshot(),
+      contentType: "image/png",
+    });
+    await page.mouse.move(0, 0);
+    await expect(popup).toHaveCount(0);
+    await page
+      .getByRole("button", { name: "Foundation tooltip trigger" })
+      .hover();
+    await expect(popup).toBeVisible();
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("#app")).toBeEmpty();
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"])
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+      ).toBe(true);
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}

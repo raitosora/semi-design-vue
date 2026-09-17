@@ -15,7 +15,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
-import { isForbidden } from "./dependency-policy.mjs";
+import { isForbidden, checkSource } from "./dependency-policy.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 if (!existsSync(resolve(root, "tests/consumer/consumer.ts")))
@@ -53,7 +53,8 @@ function checkDeclarations(name, dist) {
       if (
         /(?:^|[/\\])src[/\\]/.test(fileName) ||
         /^(?:@types\/)?react(?:-dom)?(?:[/\\]|$)/.test(fileName) ||
-        isForbidden(fileName)
+        isForbidden(fileName) ||
+        fileName.includes("@douyinfe/semi-foundation")
       )
         throw new Error(
           `Leaked declaration reference in ${name}/${declaration.slice(dist.length + 1)}: ${fileName}`,
@@ -68,7 +69,15 @@ function copyDist(source, destination) {
     const from = join(source, entry.name);
     const to = join(destination, entry.name);
     if (entry.isDirectory()) copyDist(from, to);
-    else if (entry.isFile()) copyFileSync(from, to);
+    else if (entry.isFile()) {
+      if (/\.[cm]?js$/.test(entry.name)) {
+        const errors = checkSource(readFileSync(from, "utf8"), from, {
+          foundationBundled: true,
+        });
+        if (errors.length) throw new Error(errors.join("\n"));
+      }
+      copyFileSync(from, to);
+    }
   }
 }
 

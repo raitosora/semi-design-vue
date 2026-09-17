@@ -83,3 +83,56 @@ const badRead: string = state.value.value;
 const widenedState: ReturnType<typeof useControllableValue<number | string>> =
   state;
 void [badRead, widenedState];
+
+// Foundation bridge declarations are consumed without upstream Foundation types.
+import {
+  useFoundation,
+  type FoundationAdapter,
+  type FoundationScope,
+} from "semi-ui-vue";
+function foundationTypes(
+  scope: FoundationScope,
+  adapter: FoundationAdapter<{ value?: number }, { count: number }>,
+) {
+  const promise = Promise.resolve(false);
+  const result: Promise<boolean> | undefined = scope.decide(() => promise);
+  const bridge = useFoundation({
+    props: () => ({ label: "label" }),
+    initialState: { count: 0 },
+    create: (base, resources) => ({
+      init() {
+        base.setState({ count: 1 });
+        resources.own(() => {});
+      },
+      destroy() {},
+      request(value: number) {
+        base.setState({ count: value });
+      },
+    }),
+    watchProps(next, previous, instance) {
+      const label: string = previous.label + next.label;
+      instance.request(label.length);
+    },
+    onError(error) {
+      const value: unknown = error;
+      void value;
+    },
+  });
+  const count: number = bridge.state.value.count;
+  bridge.foundation.request(count);
+  // @ts-expect-error State is a readonly snapshot.
+  bridge.state.value.count = 2;
+  // @ts-expect-error State patches retain their field types.
+  adapter.setState({ count: "wrong" });
+  // @ts-expect-error The adapter must not be widened to accept incompatible state.
+  const wider: FoundationAdapter<
+    { value?: number },
+    { count: number | string }
+  > = adapter;
+  // @ts-expect-error Disposal must run through the bridge to invoke Foundation.destroy.
+  scope.dispose();
+  // @ts-expect-error Task commits contain effects, not arbitrary data.
+  scope.task().commit(1);
+  void [result, wider];
+}
+void foundationTypes;
