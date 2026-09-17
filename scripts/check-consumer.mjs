@@ -4,8 +4,11 @@ import {
   copyFileSync,
   mkdtempSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -27,21 +30,21 @@ const packages = [
   "vite-plugin-semi-theme",
 ];
 const work = mkdtempSync(join(tmpdir(), "semi-dist-consumer-"));
-try {
-  const modules = join(work, "node_modules");
-  mkdirSync(modules);
-  for (const name of packages) {
-    const packagePath = join(root, "packages", name);
-    const stagedPackage = join(modules, name);
-    for (const file of ["dist/index.d.ts", "dist/index.js"]) {
-      if (!existsSync(join(packagePath, file)))
-        throw new Error(`Missing built artifact: ${name}/${file}`);
-    }
-    const declaration = readFileSync(
-      join(packagePath, "dist/index.d.ts"),
-      "utf8",
-    );
-    const references = ts.preProcessFile(declaration);
+
+function declarationFiles(directory) {
+  const result = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) result.push(...declarationFiles(path));
+    else if (entry.isFile() && /\.d\.(?:ts|mts|cts)$/.test(entry.name))
+      result.push(path);
+  }
+  return result;
+}
+
+function checkDeclarations(name, dist) {
+  for (const declaration of declarationFiles(dist)) {
+    const references = ts.preProcessFile(readFileSync(declaration, "utf8"));
     for (const { fileName } of [
       ...references.importedFiles,
       ...references.referencedFiles,
@@ -49,15 +52,49 @@ try {
     ]) {
       if (
         /(?:^|[/\\])src[/\\]/.test(fileName) ||
-        /^(?:@types\/)?react(?:-dom)?(?:\/|$)/.test(fileName) ||
+        /^(?:@types\/)?react(?:-dom)?(?:[/\\]|$)/.test(fileName) ||
         isForbidden(fileName)
       )
-        throw new Error(`Leaked declaration reference in ${name}: ${fileName}`);
+        throw new Error(
+          `Leaked declaration reference in ${name}/${declaration.slice(dist.length + 1)}: ${fileName}`,
+        );
     }
-    mkdirSync(join(stagedPackage, "dist"), { recursive: true });
-    for (const file of ["package.json", "dist/index.d.ts", "dist/index.js"])
-      copyFileSync(join(packagePath, file), join(stagedPackage, file));
   }
+}
+
+function copyDist(source, destination) {
+  mkdirSync(destination, { recursive: true });
+  for (const entry of readdirSync(source, { withFileTypes: true })) {
+    const from = join(source, entry.name);
+    const to = join(destination, entry.name);
+    if (entry.isDirectory()) copyDist(from, to);
+    else if (entry.isFile()) copyFileSync(from, to);
+  }
+}
+
+try {
+  const modules = join(work, "node_modules");
+  mkdirSync(modules);
+  for (const name of packages) {
+    const packagePath = join(root, "packages", name);
+    const stagedPackage = join(modules, name);
+    const dist = join(packagePath, "dist");
+    if (!existsSync(dist))
+      throw new Error(`Missing built artifact: ${name}/dist`);
+    for (const file of ["index.d.ts", "index.js"])
+      if (!existsSync(join(dist, file)))
+        throw new Error(`Missing built artifact: ${name}/dist/${file}`);
+    checkDeclarations(name, dist);
+    mkdirSync(join(stagedPackage, "dist"), { recursive: true });
+    copyDist(dist, join(stagedPackage, "dist"));
+    copyFileSync(
+      join(packagePath, "package.json"),
+      join(stagedPackage, "package.json"),
+    );
+  }
+  const vue = resolve(root, "node_modules/vue");
+  if (!existsSync(vue)) throw new Error("Missing locked peer dependency: vue");
+  symlinkSync(realpathSync(vue), join(modules, "vue"), "junction");
   writeFileSync(
     join(work, "consumer.ts"),
     readFileSync(resolve(root, "tests/consumer/consumer.ts"), "utf8"),
@@ -82,12 +119,7 @@ try {
   );
   writeFileSync(
     join(work, "runtime.mjs"),
-    packages
-      .map(
-        (name, index) =>
-          `import { version as version${index} } from ${JSON.stringify(name)}; if (version${index} !== "0.0.0") throw new Error(${JSON.stringify(name)} + " exported an unexpected version");`,
-      )
-      .join("\n"),
+    readFileSync(resolve(root, "tests/consumer/runtime.mjs"), "utf8"),
   );
   execFileSync("pnpm", ["exec", "tsc", "-p", join(work, "tsconfig.json")], {
     cwd: root,
@@ -98,7 +130,7 @@ try {
     stdio: "inherit",
   });
   console.log(
-    "Six built packages passed plain tsc and ESM runtime import checks; no public API beyond version is asserted yet.",
+    "Dist consumer passed recursive declaration, isolated plain tsc, and ESM runtime checks.",
   );
 } finally {
   rmSync(work, { recursive: true, force: true });

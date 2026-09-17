@@ -21,6 +21,7 @@ export default defineConfig({
         items: [
           { text: "项目介绍", link: "/zh-CN/guide/start" },
           { text: "真实 Vapor 示例", link: "/zh-CN/guide/runtime" },
+          { text: "API 与类型约定", link: "/zh-CN/guide/api-contracts" },
           { text: "兼容边界", link: "/zh-CN/guide/compatibility" },
           { text: "文档编写模板", link: "/zh-CN/guide/authoring" },
         ],

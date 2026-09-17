@@ -5,7 +5,10 @@
     "emitDeclarationOnly": true,
     "declaration": true,
     "rootDir": "examples",
-    "outDir": ".generated/examples"
+    "outDir": ".generated/examples",
+    "paths": {
+      "semi-ui-vue": ["../packages/semi-ui-vue/dist/index.d.ts"]
+    }
   },
   "include": ["examples/**/*.tsx"],
   "exclude": []

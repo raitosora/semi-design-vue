@@ -5,6 +5,7 @@ import { dirname, resolve, relative } from "node:path";
 import { build, createServer } from "vite";
 import ts from "typescript";
 import vueJsx from "vue-jsx/vite";
+import { sourceAliases } from "../config/aliases.ts";
 import { jsxOptions } from "../config/vue-jsx.ts";
 
 assert.equal(typeof window, "undefined");
@@ -48,6 +49,9 @@ async function verifyMaps(pattern) {
     }
   }
 }
+execFileSync("pnpm", ["--filter", "semi-ui-vue", "build"], {
+  stdio: "inherit",
+});
 const generated = resolve("website/.generated");
 await rm(generated, { recursive: true, force: true });
 await mkdir(generated, { recursive: true });
@@ -59,6 +63,7 @@ const ids = files.map((file) =>
 const server = await createServer({
   configFile: false,
   plugins: [vueJsx(jsxOptions)],
+  resolve: { alias: sourceAliases },
   optimizeDeps: { noDiscovery: true, include: [] },
   server: { middlewareMode: true, hmr: false, ws: false },
   appType: "custom",
@@ -84,6 +89,7 @@ try {
 await build({
   configFile: false,
   plugins: [vueJsx(jsxOptions)],
+  resolve: { alias: sourceAliases },
   build: {
     outDir: generated + "/examples",
     emptyOutDir: true,
@@ -104,6 +110,39 @@ await verifyMaps("website/.generated/examples/**/*.js.map");
 execFileSync("pnpm", ["exec", "tsmc", "-p", "website/tsconfig.examples.json"], {
   stdio: "inherit",
 });
+// Reuse the same positive/negative TSX contracts against emitted declarations.
+for (const kind of ["positive", "negative"]) {
+  const source = await readFile(`website/tests/contracts-${kind}.tsx`, "utf8");
+  await writeFile(
+    `${generated}/contracts-${kind}.tsx`,
+    source.replaceAll("../examples/", "./examples/"),
+  );
+}
+await writeFile(
+  `${generated}/tsconfig.contracts.json`,
+  JSON.stringify(
+    {
+      extends: "../tsconfig.json",
+      compilerOptions: {
+        noEmit: true,
+        skipLibCheck: false,
+        paths: {
+          "semi-ui-vue": ["../../packages/semi-ui-vue/dist/index.d.ts"],
+        },
+      },
+      files: ["contracts-positive.tsx", "contracts-negative.tsx"],
+      include: [],
+      exclude: [],
+    },
+    null,
+    2,
+  ),
+);
+execFileSync(
+  "pnpm",
+  ["exec", "tsc", "-p", `${generated}/tsconfig.contracts.json`],
+  { stdio: "inherit" },
+);
 const registry = await Promise.all(
   ids.map(
     async (id, i) =>

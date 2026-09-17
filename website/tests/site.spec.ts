@@ -311,3 +311,42 @@ test("shell hydration reuses prerendered nodes while demos mount only on client"
     release();
   }
 });
+
+for (const port of [4180, 4181]) {
+  test(`${port}: API contracts use compiled presence, slots, named model and generics`, async ({
+    checkedPage: page,
+  }) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/api-contracts.html`);
+    const fixture = page.locator("[data-contract-demo]");
+    const state = fixture.locator("[data-protocol-state]").first();
+    await expect(state).toHaveText("非受控:初始值");
+    await fixture.getByRole("textbox").first().fill("本地值");
+    await expect(state).toHaveText("非受控:本地值");
+    for (const [name, value] of [
+      ["显式 undefined", "undefined"],
+      ["传入 false", "false"],
+      ["传入 0", "0"],
+      ["传入空字符串", ""],
+    ]) {
+      await fixture.getByRole("button", { name, exact: true }).click();
+      await expect(state).toHaveText(`受控:${value}`);
+      await expect(
+        fixture.getByText("由父级决定", { exact: true }),
+      ).toBeVisible();
+    }
+    await fixture.getByRole("button", { name: "移除 value" }).click();
+    await expect(state).toHaveText("非受控:本地值");
+    await expect(
+      fixture.getByText("由本地保存", { exact: true }),
+    ).toBeVisible();
+    await fixture.getByRole("textbox").nth(1).fill("父级新值");
+    await expect(fixture.locator("[data-model-value]")).toHaveText("父级新值");
+    await page.getByRole("button", { name: "2:2", exact: true }).click();
+    await expect(page.getByText("选择：2", { exact: true })).toBeVisible();
+    await page
+      .getByRole("button", { name: "卸载示例", exact: true })
+      .first()
+      .click();
+    await expect(fixture).toHaveCount(0);
+  });
+}
