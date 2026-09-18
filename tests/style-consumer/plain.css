@@ -1,0 +1,8 @@
+@import "semi-ui-vue/styles/base";
+@import "semi-ui-vue/styles/components/input";
+
+.primary-swatch {
+  background: var(--semi-color-primary);
+  height: 16px;
+  width: 16px;
+}

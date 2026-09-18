@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@douyinfe/semi-foundation": "2.103.0",
+    "@douyinfe/semi-theme-default": "2.103.0",
     "@playwright/test": "1.63.0",
     "@ts-macro/tsc": "0.3.7",
     "@types/node": "24.12.0",
@@ -23,6 +24,7 @@
     "eslint": "9.39.4",
     "monocart-coverage-reports": "2.12.6",
     "prettier": "3.8.3",
+    "sass": "1.97.3",
     "typescript": "5.9.3",
     "vite": "8.3.0",
     "vitepress": "2.0.0-alpha.20",
@@ -46,13 +48,15 @@
     "test:e2e": "playwright test",
     "build:test-harness": "vite build --config vite.test.config.ts",
     "check:types": "node scripts/check-types.mjs",
-    "check:consumer": "node scripts/check-consumer.mjs",
+    "check:consumer": "node scripts/check-consumer.mjs && pnpm check:style-consumer",
     "check:surfaces": "node scripts/check-surfaces.mjs",
     "verify": "pnpm check && pnpm format:check && pnpm check:dependencies && pnpm check:types && pnpm check:surfaces && pnpm test:coverage && pnpm build && pnpm check:consumer && pnpm build:test-harness && pnpm test:e2e",
     "check:docs": "node scripts/check-docs.mjs",
     "docs:dev": "pnpm docs:build && pnpm exec vitepress dev website",
     "docs:build": "node website/build.mjs",
-    "docs:preview": "pnpm exec vitepress preview website"
+    "docs:preview": "pnpm exec vitepress preview website",
+    "check:style-consumer": "node scripts/check-style-consumer.mjs",
+    "build:styles": "node scripts/build-styles.mjs"
   },
   "license": "MIT"
 }

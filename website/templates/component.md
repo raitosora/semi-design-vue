@@ -6,6 +6,8 @@
 
 写清使用场景、已验证的包入口和样式入口。
 
+样式沿用[安装与样式](../src/zh-CN/guide/styles.md)的固定来源和按需入口；新增模块需登记其完整 SCSS 闭包，并验证默认/定制前缀、CSS tokens、明暗、RTL 与独立消费者。仅存在样式不能作为组件实现完成的证据。
+
 ## 基础示例
 
 在 website/examples/<module>/ 新增真实 TSX 默认导出，使用 ClientOnly + VaporDemo 的 example 属性引用路径。

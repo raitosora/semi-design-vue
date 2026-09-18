@@ -101,9 +101,12 @@ try {
       join(stagedPackage, "package.json"),
     );
   }
-  const vue = resolve(root, "node_modules/vue");
-  if (!existsSync(vue)) throw new Error("Missing locked peer dependency: vue");
-  symlinkSync(realpathSync(vue), join(modules, "vue"), "junction");
+  for (const name of ["vue", "vite", "@types/node"]) {
+    const peer = resolve(root, "node_modules", name);
+    if (!existsSync(peer)) throw new Error(`Missing locked peer: ${name}`);
+    mkdirSync(resolve(modules, name, ".."), { recursive: true });
+    symlinkSync(realpathSync(peer), join(modules, name), "junction");
+  }
   writeFileSync(
     join(work, "consumer.ts"),
     readFileSync(resolve(root, "tests/consumer/consumer.ts"), "utf8"),

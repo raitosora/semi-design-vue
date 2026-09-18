@@ -51,9 +51,10 @@ const report = {
     checks: [
       "built ESM entry import",
       "plain TypeScript declaration consumption",
+      "isolated CSS/SCSS theme consumer build and Chromium checks",
     ],
     limitation:
-      "Manifest and built ESM/declaration consumption is verified; tarball installation, public components, production dependency closure and consumer bundling are not established.",
+      "Manifest and built ESM/declaration consumption plus registered style/theme consumer builds are verified; tarball installation, public components and full runtime consumer bundling remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

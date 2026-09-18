@@ -1,0 +1,1 @@
+import "./input-only.scss";

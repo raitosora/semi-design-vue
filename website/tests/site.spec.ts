@@ -391,3 +391,59 @@ for (const port of [4180, 4181]) {
     await expect(page.getByRole("tooltip")).toHaveCount(0);
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: theme tokens, dark, RTL and local customization`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/theme.html`);
+    const demo = page.locator("[data-theme-demo]");
+    await expect(demo).toBeVisible();
+    await expect(demo).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    if (port === 4181)
+      await demo.screenshot({ path: info.outputPath("theme-light.png") });
+    await demo.getByRole("button", { name: "切换深色" }).click();
+    await expect(demo).not.toHaveCSS("background-color", "rgb(255, 255, 255)");
+    if (port === 4181)
+      await demo.screenshot({ path: info.outputPath("theme-dark.png") });
+    await demo.getByRole("button", { name: "切换 RTL" }).click();
+    await expect(demo.getByRole("textbox")).toHaveCSS("direction", "rtl");
+    const prefix = await demo.locator(".semi-input-prefix").boundingBox();
+    const input = await demo.getByRole("textbox").boundingBox();
+    expect(prefix!.x).toBeGreaterThan(input!.x);
+    if (port === 4181)
+      await demo.screenshot({ path: info.outputPath("theme-rtl.png") });
+    await demo.getByRole("button", { name: "启用紫色主题" }).click();
+    await expect(demo.locator(".theme-demo-primary")).toHaveCSS(
+      "background-color",
+      "rgb(124, 58, 237)",
+    );
+    await demo.getByRole("textbox").fill("动态主题输入");
+    await expect(demo.locator(".theme-demo-value")).toHaveText("动态主题输入");
+    await page.setViewportSize({ width: 375, height: 812 });
+    // The desktop sidebar slides away after a responsive breakpoint change.
+    await expect
+      .poll(async () => {
+        const sidebar = await page.locator(".VPSidebar").boundingBox();
+        return sidebar ? sidebar.x + sidebar.width : 0;
+      })
+      .toBeLessThanOrEqual(0);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    if (port === 4181)
+      await demo.screenshot({
+        path: info.outputPath("theme-custom-narrow.png"),
+      });
+    await page.getByRole("button", { name: "卸载示例", exact: true }).click();
+    await expect(demo).toHaveCount(0);
+    await page.getByRole("button", { name: "挂载示例", exact: true }).click();
+    await expect(demo).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.locator("body")).not.toHaveAttribute(
+      "theme-mode",
+      "dark",
+    );
+  });
+}

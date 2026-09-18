@@ -4,7 +4,6 @@ import { version as iconsVersion } from "semi-icons-vue";
 import { version as iconsLabVersion } from "semi-icons-lab-vue";
 import { version as illustrationsVersion } from "semi-illustrations-vue";
 import { version as animationVersion } from "semi-animation-vue";
-import { version as themeVersion } from "vite-plugin-semi-theme";
 
 const app = createVaporApp(
   defineVaporComponent(() => {
@@ -16,7 +15,7 @@ const app = createVaporApp(
         <p id="versions">
           UI {uiVersion} · Icons {iconsVersion} · Icons Lab {iconsLabVersion} ·
           Illustrations {illustrationsVersion} · Animation {animationVersion} ·
-          Theme {themeVersion}
+          主题插件在 Vite 构建端运行
         </p>
         <button
           onClick={() => {

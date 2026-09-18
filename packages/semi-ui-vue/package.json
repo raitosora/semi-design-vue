@@ -8,18 +8,57 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./styles": {
+      "sass": "./dist/styles/index.scss",
+      "default": "./dist/styles/index.css"
+    },
+    "./styles/base": {
+      "sass": "./dist/styles/base.scss",
+      "default": "./dist/styles/base.css"
+    },
+    "./styles/components/input": {
+      "sass": "./dist/styles/components/input.scss",
+      "default": "./dist/styles/components/input.css"
+    },
+    "./styles/components/tooltip": {
+      "sass": "./dist/styles/components/tooltip.scss",
+      "default": "./dist/styles/components/tooltip.css"
+    },
+    "./styles/theme/tokens": {
+      "sass": "./dist/styles/theme/tokens.scss",
+      "default": "./dist/styles/theme/tokens.css"
+    },
+    "./styles/theme/mixins": {
+      "sass": "./dist/styles/theme/mixins.scss",
+      "default": "./dist/styles/theme/mixins.css"
+    },
+    "./styles.css": "./dist/styles/index.css",
+    "./styles.scss": "./dist/styles/index.scss",
+    "./styles/index.css": "./dist/styles/index.css",
+    "./styles/index.scss": "./dist/styles/index.scss",
+    "./styles/base.css": "./dist/styles/base.css",
+    "./styles/base.scss": "./dist/styles/base.scss",
+    "./styles/components/input.css": "./dist/styles/components/input.css",
+    "./styles/components/input.scss": "./dist/styles/components/input.scss",
+    "./styles/components/tooltip.css": "./dist/styles/components/tooltip.css",
+    "./styles/components/tooltip.scss": "./dist/styles/components/tooltip.scss",
+    "./styles/theme/tokens.css": "./dist/styles/theme/tokens.css",
+    "./styles/theme/tokens.scss": "./dist/styles/theme/tokens.scss",
+    "./styles/theme/mixins.css": "./dist/styles/theme/mixins.css",
+    "./styles/theme/mixins.scss": "./dist/styles/theme/mixins.scss"
   },
   "files": [
     "dist",
     "LICENSE"
   ],
+  "style": "./dist/styles/index.css",
   "sideEffects": [
     "**/*.css",
     "**/*.scss"
   ],
   "scripts": {
-    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json",
+    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-styles.mjs",
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
