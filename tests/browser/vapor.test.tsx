@@ -10,11 +10,10 @@ import { version as icons } from "semi-icons-vue";
 import { version as lab } from "semi-icons-lab-vue";
 import { version as illustrations } from "semi-illustrations-vue";
 import { version as animation } from "semi-animation-vue";
-import { version as theme } from "vite-plugin-semi-theme";
 
-test("consumes every current package source entry", () => {
-  expect([ui, icons, lab, illustrations, animation, theme]).toEqual(
-    Array(6).fill("0.0.0"),
+test("consumes browser runtime package source entries", () => {
+  expect([ui, icons, lab, illustrations, animation]).toEqual(
+    Array(5).fill("0.0.0"),
   );
 });
 

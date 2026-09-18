@@ -64,9 +64,12 @@ async function verifyMaps(pattern) {
 async function copyFoundationLicenses(directory) {
   await mkdir(directory, { recursive: true });
   await Promise.all(
-    ["semi-foundation-2.103.0-MIT.txt", "es-toolkit-1.39.10-MIT.txt"].map(
-      (file) =>
-        copyFile(`third-party-licenses/${file}`, `${directory}/${file}`),
+    [
+      "semi-foundation-2.103.0-MIT.txt",
+      "semi-theme-default-2.103.0-MIT.txt",
+      "es-toolkit-1.39.10-MIT.txt",
+    ].map((file) =>
+      copyFile(`third-party-licenses/${file}`, `${directory}/${file}`),
     ),
   );
 }

@@ -47,14 +47,14 @@ for (const mode of ["dev", "production"] as const) {
   });
 }
 
-test("production playground consumes six package entries and handles clicks", async ({
+test("production playground consumes runtime package entries and handles clicks", async ({
   monitoredPage: page,
 }) => {
   await page.goto("http://127.0.0.1:4177");
   await expect(
     page.getByRole("heading", { name: "Semi Design Vue" }),
   ).toBeVisible();
-  await expect(page.locator("#versions")).toContainText("Theme 0.0.0");
+  await expect(page.locator("#versions")).toContainText("Animation 0.0.0");
   await page.getByRole("button", { name: "计数：0" }).click();
   await expect(page.getByRole("button", { name: "计数：1" })).toBeVisible();
 });

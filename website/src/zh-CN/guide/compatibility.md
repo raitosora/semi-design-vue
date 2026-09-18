@@ -15,6 +15,8 @@
 - 生成声明与现有协议/版本入口消费检查，不等于 tarball 安装或完整生产消费者验证。
 - 截图为人工布局证据，没有跨平台像素回归基线。
 
+样式与主题的独立消费者另验证 manifest + dist 的默认 CSS、按需 SCSS、明暗/RTL、前缀与主题插件；不依赖 Foundation 运行时包或仓库 patch/override。只覆盖登记的基础、Input / Tooltip 样式，不意味着这些公共组件可用，也不扩展为完整 tarball 发布验收。
+
 [返回运行示例](./runtime.md)
 
 [API 与类型约定](./api-contracts.md)提供已验证协议夹具、props 存在性方案及 slot 解构/JSX ref 的具体限制，不代表已交付公共组件。

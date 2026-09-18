@@ -3,6 +3,8 @@ import type { Theme } from "vitepress";
 import Demo from "./Demo.ts";
 import Interop from "./Interop.ts";
 import "./style.css";
+import "../../../packages/semi-ui-vue/dist/styles/index.css";
+import "../../examples/theme/demo.css";
 export default {
   extends: DefaultTheme,
   async enhanceApp({ app }) {

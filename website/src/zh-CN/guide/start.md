@@ -4,6 +4,8 @@ Semi Design Vue 是面向 Vue 的 Semi Design 实现，Vapor 是采用的编译�
 
 当前正在建设基础设施，尚无可安装使用的公共组件版本。包保持 private，未来发布统一使用 `@raitosora` scope；现在不提供 npm 安装命令。
 
+本地构建包的 CSS / SCSS 入口见[安装与样式](./styles.md)，明暗、RTL 和自定义主题见[定制主题](./theme.md)。
+
 ## 从真实示例开始
 
 [打开真实 Vapor 示例](./runtime.md)，体验独立状态、挂载与卸载，再对照可复制的 TSX 源码。
