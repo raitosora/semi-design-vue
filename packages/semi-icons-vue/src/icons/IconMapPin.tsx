@@ -1,0 +1,37 @@
+import {
+  definedSvgAttrs,
+  defineVaporComponent,
+  svgDimension,
+  useAttrs,
+  useSvgIdPrefix,
+} from "../runtime.js";
+import type { SvgResourceProps } from "../runtime.js";
+
+export const IconMapPin =
+  /* @__PURE__ */ defineVaporComponent<SvgResourceProps>(
+    (props) => {
+      const attrs = useAttrs();
+      const prefix = useSvgIdPrefix();
+      return (
+        <svg
+          color={props.color}
+          fill={`none`}
+          viewBox={`0 0 24 24`}
+          xmlns={`http://www.w3.org/2000/svg`}
+          {...definedSvgAttrs(attrs)}
+          height={svgDimension(props.height, props.size, "16px")}
+          width={svgDimension(props.width, props.size, "16px")}
+        >
+          <path
+            clip-rule={`evenodd`}
+            d={`M12 23C14 23 21 15.4183 21 10C21 4.58172 17.4183 1 12 1C6.58172 1 3 4.58172 3 10C3 15.4183 10 23 12 23ZM12 14C14.2091 14 16 12.2091 16 10C16 7.79086 14.2091 6 12 6C9.79086 6 8 7.79086 8 10C8 12.2091 9.79086 14 12 14Z`}
+            fill={`currentColor`}
+            fill-rule={`evenodd`}
+          />
+        </svg>
+      );
+    },
+    { props: ["size", "color", "width", "height"], inheritAttrs: false },
+  );
+
+export default IconMapPin;

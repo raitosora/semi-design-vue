@@ -46,7 +46,15 @@
     "./styles/theme/tokens.css": "./dist/styles/theme/tokens.css",
     "./styles/theme/tokens.scss": "./dist/styles/theme/tokens.scss",
     "./styles/theme/mixins.css": "./dist/styles/theme/mixins.css",
-    "./styles/theme/mixins.scss": "./dist/styles/theme/mixins.scss"
+    "./styles/theme/mixins.scss": "./dist/styles/theme/mixins.scss",
+    "./locale/source/*": {
+      "types": "./dist/locale/source/*.d.ts",
+      "import": "./dist/locale/source/*.js"
+    },
+    "./locale/interface": {
+      "types": "./dist/locale/interface.d.ts",
+      "import": "./dist/locale/interface.js"
+    }
   },
   "files": [
     "dist",
@@ -58,10 +66,13 @@
     "**/*.scss"
   ],
   "scripts": {
-    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-styles.mjs",
+    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-styles.mjs && node ../../scripts/build-locale.mjs",
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
     "vue": "3.6.0-rc.8"
+  },
+  "dependencies": {
+    "date-fns": "2.30.0"
   }
 }

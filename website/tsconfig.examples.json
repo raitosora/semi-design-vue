@@ -7,7 +7,15 @@
     "rootDir": "examples",
     "outDir": ".generated/examples",
     "paths": {
-      "semi-ui-vue": ["../packages/semi-ui-vue/dist/index.d.ts"]
+      "semi-ui-vue": ["../packages/semi-ui-vue/dist/index.d.ts"],
+      "semi-icons-vue": ["../packages/semi-icons-vue/dist/index.d.ts"],
+      "semi-icons-lab-vue": ["../packages/semi-icons-lab-vue/dist/index.d.ts"],
+      "semi-illustrations-vue": [
+        "../packages/semi-illustrations-vue/dist/index.d.ts"
+      ],
+      "semi-ui-vue/locale/source/*": [
+        "../packages/semi-ui-vue/dist/locale/source/*.d.ts"
+      ]
     }
   },
   "include": ["examples/**/*.tsx"],

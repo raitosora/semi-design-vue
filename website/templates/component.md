@@ -28,3 +28,5 @@
 链接实际交互测试；登记类型、浏览器、SSR/ClientOnly 与视觉验证范围。源码必须来自实际执行的文件。
 
 连接 Foundation 时遵循 [Foundation 桥接](../src/zh-CN/guide/foundation.md)：列出 props watch 驱动的具体更新、同步状态与 DOM 回调边界、资源归属、异步过期策略，以及所需上游入口的补丁/依赖闭包验证。
+
+资源使用遵循[图标、插画与语言数据](../src/zh-CN/guide/resources.md)：从生成资源的公开入口导入，保留动态 size/color 与 SVG 引用隔离；资源名与数量以[资源索引](../src/zh-CN/guide/resource-index.md)为准。语言数据选择与 Provider 行为分开描述，不把静态字典展示当作全局国际化实现。

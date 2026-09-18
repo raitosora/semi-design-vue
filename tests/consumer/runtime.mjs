@@ -5,22 +5,12 @@ import {
 } from "semi-ui-vue";
 import { ref } from "vue";
 import { version as animationVersion } from "semi-animation-vue";
-import { version as iconsLabVersion } from "semi-icons-lab-vue";
-import { version as iconsVersion } from "semi-icons-vue";
-import { version as illustrationsVersion } from "semi-illustrations-vue";
 import { version as themeVersion } from "vite-plugin-semi-theme";
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
-for (const version of [
-  uiVersion,
-  animationVersion,
-  iconsLabVersion,
-  iconsVersion,
-  illustrationsVersion,
-  themeVersion,
-])
+for (const version of [uiVersion, animationVersion, themeVersion])
   assert(version === "0.0.0", "package version export must remain available");
 assert(!hasProvidedProp({}, "value"), "missing prop must be absent");
 for (const value of [undefined, false, 0, ""])

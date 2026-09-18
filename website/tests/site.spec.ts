@@ -447,3 +447,54 @@ for (const port of [4180, 4181]) {
     );
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: generated resources and locale data`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/resources.html`);
+    const demo = page.locator("[data-resource-demo]");
+    await expect(demo).toBeVisible();
+    const icon = demo.locator("[data-resource-home]");
+    await expect(icon).toHaveAttribute("width", "16");
+    await expect(icon).toHaveCSS("color", "rgb(17, 105, 170)");
+    await demo.getByRole("button", { name: "放大并改色" }).click();
+    await expect(icon).toHaveAttribute("width", "32");
+    await expect(icon).toHaveCSS("color", "rgb(124, 58, 237)");
+    await expect(demo.locator("[data-resource-locale]")).toContainText("确定");
+    await demo.getByRole("button", { name: "切换语言数据" }).click();
+    await expect(demo.locator("[data-resource-locale]")).toContainText(
+      "Confirm",
+    );
+    await expect(demo.locator("svg")).toHaveCount(4);
+    const references = await demo.evaluate((root) => {
+      const svgs = [...root.querySelectorAll("svg")];
+      const ids = svgs.flatMap((svg) =>
+        [...svg.querySelectorAll("[id]")].map((node) => node.id),
+      );
+      const refs = svgs.flatMap((svg) =>
+        [...svg.querySelectorAll("*")].flatMap((node) =>
+          [...node.attributes].flatMap((attr) =>
+            [...attr.value.matchAll(/url\(#([^)]+)\)/g)].map((match) => ({
+              id: match[1],
+              local: !!svg.querySelector(`[id="${match[1]}"]`),
+            })),
+          ),
+        ),
+      );
+      return { unique: new Set(ids).size === ids.length, refs };
+    });
+    expect(references.unique).toBe(true);
+    expect(references.refs.length).toBeGreaterThan(0);
+    expect(references.refs.every((ref) => ref.local)).toBe(true);
+    if (port === 4181)
+      await demo.screenshot({ path: info.outputPath("resources.png") });
+    await page.getByRole("button", { name: "卸载示例", exact: true }).click();
+    await expect(demo).toHaveCount(0);
+    await page.getByRole("button", { name: "挂载示例", exact: true }).click();
+    await expect(demo.locator("[data-resource-home]")).toHaveAttribute(
+      "width",
+      "16",
+    );
+  });
+}

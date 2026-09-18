@@ -27,6 +27,8 @@ export default defineConfig({
           { text: "Foundation 桥接", link: "/zh-CN/guide/foundation" },
           { text: "安装与样式", link: "/zh-CN/guide/styles" },
           { text: "定制主题", link: "/zh-CN/guide/theme" },
+          { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
+          { text: "资源索引", link: "/zh-CN/guide/resource-index" },
           { text: "兼容边界", link: "/zh-CN/guide/compatibility" },
           { text: "文档编写模板", link: "/zh-CN/guide/authoring" },
         ],

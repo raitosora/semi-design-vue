@@ -19,6 +19,9 @@
       "semi-animation-vue": ["./packages/semi-animation-vue/src/index.ts"],
       "vite-plugin-semi-theme": [
         "./packages/vite-plugin-semi-theme/src/index.ts"
+      ],
+      "semi-ui-vue/locale/source/*": [
+        "./packages/semi-ui-vue/src/locale/source/*.ts"
       ]
     },
     "allowImportingTsExtensions": true
