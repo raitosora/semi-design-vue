@@ -1,0 +1,35 @@
+import {
+  definedSvgAttrs,
+  defineVaporComponent,
+  svgDimension,
+  useAttrs,
+  useSvgIdPrefix,
+} from "../runtime.js";
+import type { SvgResourceProps } from "../runtime.js";
+
+export const IconDownCircle =
+  /* @__PURE__ */ defineVaporComponent<SvgResourceProps>(
+    (props) => {
+      const attrs = useAttrs();
+      const prefix = useSvgIdPrefix();
+      return (
+        <svg
+          color={props.color}
+          fill={`none`}
+          viewBox={`0 0 24 24`}
+          xmlns={`http://www.w3.org/2000/svg`}
+          {...definedSvgAttrs(attrs)}
+          height={svgDimension(props.height, props.size, "16px")}
+          width={svgDimension(props.width, props.size, "16px")}
+        >
+          <path
+            d={`M1 12C0.999999 5.92487 5.92487 1 12 1C18.0751 0.999999 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM7.29297 9.90332C6.90244 10.2938 6.90244 10.9278 7.29297 11.3184L11.1816 15.207C11.5722 15.5976 12.2062 15.5976 12.5967 15.207L16.4854 11.3184C16.8759 10.9278 16.8759 10.2938 16.4854 9.90332C16.0949 9.51312 15.4618 9.51322 15.0713 9.90332L11.8887 13.0859L8.70703 9.90332C8.31658 9.51317 7.68342 9.51317 7.29297 9.90332Z`}
+            fill={`currentColor`}
+          />
+        </svg>
+      );
+    },
+    { props: ["size", "color", "width", "height"], inheritAttrs: false },
+  );
+
+export default IconDownCircle;

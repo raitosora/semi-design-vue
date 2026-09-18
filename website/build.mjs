@@ -68,12 +68,15 @@ async function copyFoundationLicenses(directory) {
       "semi-foundation-2.103.0-MIT.txt",
       "semi-theme-default-2.103.0-MIT.txt",
       "es-toolkit-1.39.10-MIT.txt",
+      "semi-design-2.103.0-MIT.txt",
+      "semi-ui-locale-2.103.0-MIT.txt",
+      "date-fns-2.30.0-MIT.txt",
     ].map((file) =>
       copyFile(`third-party-licenses/${file}`, `${directory}/${file}`),
     ),
   );
 }
-execFileSync("pnpm", ["--filter", "semi-ui-vue", "build"], {
+execFileSync("pnpm", ["build:packages"], {
   stdio: "inherit",
 });
 const generated = resolve("website/.generated");

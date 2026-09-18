@@ -30,7 +30,8 @@
     "vitepress": "2.0.0-alpha.20",
     "vitest": "5.0.1",
     "vue": "3.6.0-rc.8",
-    "vue-jsx": "3.3.0-rc.1"
+    "vue-jsx": "3.3.0-rc.1",
+    "date-fns": "2.30.0"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -48,7 +49,7 @@
     "test:e2e": "playwright test",
     "build:test-harness": "vite build --config vite.test.config.ts",
     "check:types": "node scripts/check-types.mjs",
-    "check:consumer": "node scripts/check-consumer.mjs && pnpm check:style-consumer",
+    "check:consumer": "node scripts/check-consumer.mjs && pnpm check:style-consumer && pnpm check:resource-consumer",
     "check:surfaces": "node scripts/check-surfaces.mjs",
     "verify": "pnpm check && pnpm format:check && pnpm check:dependencies && pnpm check:types && pnpm check:surfaces && pnpm test:coverage && pnpm build && pnpm check:consumer && pnpm build:test-harness && pnpm test:e2e",
     "check:docs": "node scripts/check-docs.mjs",
@@ -56,7 +57,10 @@
     "docs:build": "node website/build.mjs",
     "docs:preview": "pnpm exec vitepress preview website",
     "check:style-consumer": "node scripts/check-style-consumer.mjs",
-    "build:styles": "node scripts/build-styles.mjs"
+    "build:styles": "node scripts/build-styles.mjs",
+    "check:resource-consumer": "node scripts/check-resource-consumer.mjs",
+    "generate:resources": "node scripts/generate-resources.mjs && node scripts/locale-inputs.mjs && node scripts/resource-index.mjs",
+    "check:resource-index": "node scripts/resource-index.mjs --check"
   },
   "license": "MIT"
 }

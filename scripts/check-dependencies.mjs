@@ -13,6 +13,9 @@ import { resolveConfig } from "vite";
 import ts from "typescript";
 import { checkFoundationInputs } from "./foundation-inputs.mjs";
 import { checkStyleInputs } from "./style-inputs.mjs";
+import { checkGeneratedResources } from "./generate-resources.mjs";
+import { checkResourceInputs } from "./resource-inputs.mjs";
+import { checkLocaleInputs, checkGeneratedLocale } from "./locale-inputs.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const sourceFolders = new Set([
@@ -124,6 +127,15 @@ try {
 }
 await checkFoundationInputs(root);
 await checkStyleInputs(root);
+await checkResourceInputs(root);
+await checkGeneratedResources(root);
+await checkLocaleInputs(root);
+await checkGeneratedLocale(root);
+execFileSync(
+  process.execPath,
+  [join(root, "scripts/resource-index.mjs"), "--check"],
+  { cwd: root, stdio: "inherit" },
+);
 const errors = [...diagnostics, ...aliasErrors, ...checkTree(tree)];
 if (errors.length) {
   console.error(errors.join("\n"));

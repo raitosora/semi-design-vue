@@ -52,9 +52,10 @@ const report = {
       "built ESM entry import",
       "plain TypeScript declaration consumption",
       "isolated CSS/SCSS theme consumer build and Chromium checks",
+      "isolated SVG/locale consumer types, tree shaking, provenance and Chromium checks",
     ],
     limitation:
-      "Manifest and built ESM/declaration consumption plus registered style/theme consumer builds are verified; tarball installation, public components and full runtime consumer bundling remain unestablished.",
+      "Manifest and built ESM/declaration consumption, style/theme builds and SVG/locale runtime consumers are verified; tarball installation, public components and full publication acceptance remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

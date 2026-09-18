@@ -1,0 +1,36 @@
+import {
+  definedSvgAttrs,
+  defineVaporComponent,
+  svgDimension,
+  useAttrs,
+  useSvgIdPrefix,
+} from "../runtime.js";
+import type { SvgResourceProps } from "../runtime.js";
+
+export const IconText = /* @__PURE__ */ defineVaporComponent<SvgResourceProps>(
+  (props) => {
+    const attrs = useAttrs();
+    const prefix = useSvgIdPrefix();
+    return (
+      <svg
+        color={props.color}
+        fill={`none`}
+        viewBox={`0 0 24 24`}
+        xmlns={`http://www.w3.org/2000/svg`}
+        {...definedSvgAttrs(attrs)}
+        height={svgDimension(props.height, props.size, "16px")}
+        width={svgDimension(props.width, props.size, "16px")}
+      >
+        <path
+          clip-rule={`evenodd`}
+          d={`M3 4.5C3 3.67157 3.67157 3 4.5 3H19.5C20.3284 3 21 3.67157 21 4.5V7.5C21 8.32843 20.3284 9 19.5 9C18.6716 9 18 8.32843 18 7.5V6H13.5V19H15.5C16.3284 19 17 19.6716 17 20.5C17 21.3284 16.3284 22 15.5 22H8.5C7.67157 22 7 21.3284 7 20.5C7 19.6716 7.67157 19 8.5 19H10.5V6H6V7.5C6 8.32843 5.32843 9 4.5 9C3.67157 9 3 8.32843 3 7.5V4.5Z`}
+          fill={`currentColor`}
+          fill-rule={`evenodd`}
+        />
+      </svg>
+    );
+  },
+  { props: ["size", "color", "width", "height"], inheritAttrs: false },
+);
+
+export default IconText;

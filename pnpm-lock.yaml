@@ -56,6 +56,9 @@ importers:
       '@vue/shared':
         specifier: 3.6.0-rc.8
         version: 3.6.0-rc.8
+      date-fns:
+        specifier: 2.30.0
+        version: 2.30.0
       eslint:
         specifier: 9.39.4
         version: 9.39.4(jiti@2.7.0)
@@ -95,7 +98,11 @@ importers:
 
   packages/semi-illustrations-vue: {}
 
-  packages/semi-ui-vue: {}
+  packages/semi-ui-vue:
+    dependencies:
+      date-fns:
+        specifier: 2.30.0
+        version: 2.30.0
 
   packages/vite-plugin-semi-theme: {}
 

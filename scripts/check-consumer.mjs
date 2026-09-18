@@ -101,7 +101,7 @@ try {
       join(stagedPackage, "package.json"),
     );
   }
-  for (const name of ["vue", "vite", "@types/node"]) {
+  for (const name of ["vue", "vite", "@types/node", "date-fns"]) {
     const peer = resolve(root, "node_modules", name);
     if (!existsSync(peer)) throw new Error(`Missing locked peer: ${name}`);
     mkdirSync(resolve(modules, name, ".."), { recursive: true });

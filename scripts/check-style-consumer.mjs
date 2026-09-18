@@ -86,7 +86,8 @@ function checkRuntimeClosure(entry) {
     }
     if (seen.has(manifestPath)) return;
     seen.add(manifestPath);
-    const errors = checkManifest(manifest);
+    const { devDependencies: _developmentOnly, ...runtimeManifest } = manifest;
+    const errors = checkManifest(runtimeManifest);
     assert(!errors.length, `${name} runtime manifest: ${errors.join(", ")}`);
     for (const field of [
       "dependencies",
@@ -359,7 +360,7 @@ async function withPreview(outDir, check) {
 try {
   mkdirSync(join(consumer, "node_modules"), { recursive: true });
   for (const name of packages) copyDistPackage(name);
-  for (const name of ["vite", "sass", "vue", "typescript"])
+  for (const name of ["date-fns", "vite", "sass", "vue", "typescript"])
     linkLockedDependency(name);
   for (const name of [
     "consumer.ts",

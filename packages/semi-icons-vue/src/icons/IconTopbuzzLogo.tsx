@@ -1,0 +1,35 @@
+import {
+  definedSvgAttrs,
+  defineVaporComponent,
+  svgDimension,
+  useAttrs,
+  useSvgIdPrefix,
+} from "../runtime.js";
+import type { SvgResourceProps } from "../runtime.js";
+
+export const IconTopbuzzLogo =
+  /* @__PURE__ */ defineVaporComponent<SvgResourceProps>(
+    (props) => {
+      const attrs = useAttrs();
+      const prefix = useSvgIdPrefix();
+      return (
+        <svg
+          color={props.color}
+          fill={`none`}
+          viewBox={`0 0 24 24`}
+          xmlns={`http://www.w3.org/2000/svg`}
+          {...definedSvgAttrs(attrs)}
+          height={svgDimension(props.height, props.size, "16px")}
+          width={svgDimension(props.width, props.size, "16px")}
+        >
+          <path
+            d={`M21.4938 6.09759C21.5259 5.94361 21.4297 5.79225 21.279 5.75952L3.99704 2.00629C3.84634 1.97356 3.6982 2.07185 3.66617 2.22583L2.50615 7.80191C2.47412 7.95589 2.57032 8.10725 2.72103 8.13998L8.08752 9.30546C8.23822 9.33819 8.33442 9.48954 8.30239 9.64352L6.05002 20.4704C6.01799 20.6244 6.11419 20.7758 6.2649 20.8085L11.7223 21.9937C11.8731 22.0264 12.0212 21.9282 12.0532 21.7742L14.3056 10.9473C14.3376 10.7933 14.4858 10.695 14.6365 10.7277L20.003 11.8932C20.1537 11.9259 20.3018 11.8277 20.3338 11.6737L21.4938 6.09759Z`}
+            fill={`currentColor`}
+          />
+        </svg>
+      );
+    },
+    { props: ["size", "color", "width", "height"], inheritAttrs: false },
+  );
+
+export default IconTopbuzzLogo;
