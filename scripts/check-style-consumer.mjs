@@ -18,6 +18,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
 import { checkManifest, checkSource } from "./dependency-policy.mjs";
+import { waitForPreview } from "./preview-ready.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/style-consumer");
@@ -346,22 +347,7 @@ async function withPreview(outDir, check) {
     { cwd: consumer, stdio: "pipe" },
   );
   try {
-    await new Promise((resolveReady, reject) => {
-      const timer = setTimeout(
-        () => reject(new Error(`Timed out waiting for ${outDir} preview`)),
-        15_000,
-      );
-      preview.stdout.on("data", (chunk) => {
-        if (chunk.toString().includes(`:${port}`)) {
-          clearTimeout(timer);
-          resolveReady();
-        }
-      });
-      preview.once("error", reject);
-      preview.once("exit", (code) =>
-        reject(new Error(`${outDir} preview exited: ${code}`)),
-      );
-    });
+    await waitForPreview(preview, `http://127.0.0.1:${port}/`);
     await check(
       `http://127.0.0.1:${port}/${outDir === "plain-dist" ? "plain.html" : ""}`,
     );

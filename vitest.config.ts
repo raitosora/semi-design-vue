@@ -16,6 +16,7 @@ export default defineConfig({
         "scripts/dependency-policy.mjs",
         "scripts/module-loaders.mjs",
         "scripts/documentation-surface.mjs",
+        "scripts/preview-ready.mjs",
       ],
       exclude: ["**/*.d.ts", "**/*.{test,spec}.{ts,tsx}"],
       reporter: ["text", "json", "json-summary", "html"],
