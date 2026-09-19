@@ -1,3 +1,4 @@
+import { checkContextConsumer } from "./context.js";
 import { createVaporApp, defineVaporComponent, ref } from "vue";
 import IconAIFileLevel3, {
   IconAIFileLevel3 as NamedIconAIFileLevel3,
@@ -22,6 +23,7 @@ import type { Locale } from "semi-ui-vue/locale/interface";
 declare global {
   interface Window {
     resourceConsumer: {
+      checkContext(): Promise<string>;
       en_US: Locale;
       zh_CN: Locale;
       setHomeColor(color: string): void;
@@ -115,6 +117,7 @@ first.host.remove();
 const remounted = mount("remounted");
 
 window.resourceConsumer = {
+  checkContext: checkContextConsumer,
   en_US,
   zh_CN,
   setHomeColor(color) {

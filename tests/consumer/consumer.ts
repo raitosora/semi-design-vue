@@ -136,3 +136,116 @@ function foundationTypes(
   void [result, wider];
 }
 void foundationTypes;
+
+import {
+  createSemiGlobal,
+  createDefaultPropsResolver,
+  createSemiContext,
+  createStaticContext,
+  getFoundationContexts,
+  semiGlobal,
+  semiContextKey,
+  type SemiContextInput,
+  type SemiContextSource,
+} from "semi-ui-vue";
+import type { InjectionKey } from "vue";
+
+type ContextConsumerProps = {
+  enabled?: boolean;
+  count?: number;
+  label?: string;
+};
+const localGlobal = createSemiGlobal<{ Consumer: ContextConsumerProps }>();
+localGlobal.configure({
+  overrideDefaultProps: { Consumer: { enabled: false, count: 0, label: "" } },
+});
+const defaultsResolver = createDefaultPropsResolver(localGlobal, "Consumer", {
+  count: 1,
+});
+const resolvedDefaults = defaultsResolver.resolve({ label: undefined });
+const numericDefault: number | undefined = resolvedDefaults.count;
+const contextInput: SemiContextInput = {
+  direction: "rtl",
+  date: { timeZone: 0 },
+  container: () => undefined,
+};
+const contextSource = createSemiContext(() => contextInput);
+const contextKey: InjectionKey<SemiContextSource> = semiContextKey;
+const staticContext = createStaticContext(contextSource);
+const sourceDirection: "ltr" | "rtl" | undefined =
+  staticContext.get()?.direction;
+const foundationContext = getFoundationContexts(contextSource);
+staticContext.dispose();
+void [
+  numericDefault,
+  contextKey,
+  sourceDirection,
+  foundationContext,
+  semiGlobal.config,
+];
+
+// @ts-expect-error Registry component names remain precise.
+createDefaultPropsResolver(localGlobal, "Missing", {});
+// @ts-expect-error Builtin defaults retain the selected component's prop types.
+createDefaultPropsResolver(localGlobal, "Consumer", { count: "wrong" });
+// @ts-expect-error Caller props retain the selected component's prop types.
+defaultsResolver.resolve({ count: "wrong" });
+// @ts-expect-error Default results are readonly.
+resolvedDefaults.count = 3;
+// @ts-expect-error Global configuration cannot be assigned directly.
+localGlobal.config = {};
+// @ts-expect-error Context direction is an explicit union.
+const badContext: SemiContextInput = { direction: "vertical" };
+// @ts-expect-error Context refs are consumer readonly.
+contextSource.value = contextSource.value;
+// @ts-expect-error Context snapshots are consumer readonly.
+contextSource.value.direction = "rtl";
+// @ts-expect-error A static handle does not create imperative hosts.
+staticContext.update({});
+// @ts-expect-error React render roots have no Vue default configuration mapping.
+localGlobal.configure({ createRoot: () => ({}) });
+localGlobal.configure({
+  // @ts-expect-error A wrong global prop is rejected.
+  overrideDefaultProps: { Consumer: { enabled: "yes" } },
+});
+function immutableDefaults() {
+  // @ts-expect-error Configured component defaults are readonly snapshots.
+  localGlobal.config.overrideDefaultProps!.Consumer!.count = 2;
+}
+void [badContext, immutableDefaults];
+
+declare module "semi-ui-vue" {
+  interface SemiComponentProps {
+    ContextTypeProbe: { enabled?: boolean };
+  }
+}
+const registeredContext: SemiContextInput = {
+  config: { overrideDefaultProps: { ContextTypeProbe: { enabled: false } } },
+};
+const badRegisteredContext: SemiContextInput = {
+  // @ts-expect-error Declared registry augmentation also types injected config.
+  config: { overrideDefaultProps: { ContextTypeProbe: { enabled: "wrong" } } },
+};
+void [registeredContext, badRegisteredContext];
+
+const clearedContext: SemiContextInput = {
+  locale: undefined,
+  config: undefined,
+  direction: undefined,
+  date: undefined,
+  container: undefined,
+};
+const clearedDate: SemiContextInput = { date: { timeZone: undefined } };
+localGlobal.configure({
+  overrideDefaultProps: { Consumer: { enabled: undefined } },
+});
+localGlobal.configure({ overrideDefaultProps: { Consumer: undefined } });
+localGlobal.configure({ overrideDefaultProps: undefined });
+const requiredDefaults = createSemiGlobal<{ Required: { count: number } }>();
+requiredDefaults.configure({
+  overrideDefaultProps: { Required: { count: undefined } },
+});
+createDefaultPropsResolver(requiredDefaults, "Required", {
+  count: undefined,
+}).resolve({ count: undefined });
+void [clearedContext, clearedDate];

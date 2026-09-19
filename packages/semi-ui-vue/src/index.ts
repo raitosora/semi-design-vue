@@ -18,3 +18,28 @@ export type {
   FoundationOptions,
 } from "./composables/use-foundation.js";
 export type { FoundationScope } from "./composables/foundation-scope.js";
+export {
+  createSemiGlobal,
+  createDefaultPropsResolver,
+  createSemiContext,
+  createStaticContext,
+  getFoundationContexts,
+  provideSemiContext,
+  semiContextKey,
+  semiGlobal,
+  useSemiContext,
+} from "./context/index.js";
+export type {
+  ContainerResolver,
+  DateSettings,
+  Direction,
+  DefaultProps,
+  SemiComponentProps,
+  SemiContext,
+  SemiContextInput,
+  SemiContextSource,
+  SemiGlobal,
+  SemiGlobalConfig,
+  StaticContext,
+} from "./context/types.js";
+export type { DefaultPropsResolver } from "./context/global-defaults.js";

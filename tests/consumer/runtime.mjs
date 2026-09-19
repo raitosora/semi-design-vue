@@ -40,3 +40,67 @@ assert(
 external.value = 5;
 assert(controlled.value.value === 5, "controlled state follows caller value");
 console.log("Runtime protocol checks passed.");
+
+// Context import and pure default resolution must work with no browser globals.
+import {
+  createSemiContext,
+  createSemiGlobal,
+  createDefaultPropsResolver,
+  createStaticContext,
+} from "semi-ui-vue";
+assert(
+  typeof window === "undefined",
+  "Node context check must not assume a DOM",
+);
+let containerCalls = 0;
+const direction = ref("rtl");
+const source = createSemiContext(() => ({
+  direction: direction.value,
+  date: { timeZone: 0 },
+  container: () => {
+    containerCalls += 1;
+    return undefined;
+  },
+}));
+const staticSource = createStaticContext(source);
+assert(
+  staticSource.get().direction === "rtl",
+  "static explicit source missing",
+);
+direction.value = "ltr";
+assert(
+  staticSource.get().direction === "ltr",
+  "static source must read current context",
+);
+assert(
+  containerCalls === 0,
+  "creating or reading context eagerly called container",
+);
+staticSource.dispose();
+assert(
+  staticSource.get() === undefined,
+  "disposed static source remained active",
+);
+const defaults = createSemiGlobal();
+defaults.configure({
+  overrideDefaultProps: { Probe: { enabled: false, count: 0, label: "" } },
+});
+const captured = createDefaultPropsResolver(defaults, "Probe", {
+  enabled: true,
+});
+defaults.configure({});
+assert(
+  captured.resolve({}).enabled === false,
+  "global changes must not rewrite an existing instance",
+);
+assert(
+  captured.resolve({ label: undefined }).label === undefined,
+  "undefined must win over defaults",
+);
+assert(
+  captured.resolve({}).label === "",
+  "removing caller override must restore captured default",
+);
+console.log(
+  "Context and default initialization checks passed without browser globals.",
+);

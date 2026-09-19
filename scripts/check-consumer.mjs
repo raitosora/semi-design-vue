@@ -137,6 +137,23 @@ try {
     cwd: root,
     stdio: "inherit",
   });
+  // Keep full declaration validation above. This additional pass checks exact
+  // optional call sites; the pinned Vue declarations do not themselves support it.
+  execFileSync(
+    "pnpm",
+    [
+      "exec",
+      "tsc",
+      "-p",
+      join(work, "tsconfig.json"),
+      "--exactOptionalPropertyTypes",
+      "--skipLibCheck",
+    ],
+    {
+      cwd: root,
+      stdio: "inherit",
+    },
+  );
   execFileSync(process.execPath, [join(work, "runtime.mjs")], {
     cwd: work,
     stdio: "inherit",

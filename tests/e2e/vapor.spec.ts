@@ -204,3 +204,45 @@ for (const mode of ["dev", "production"] as const) {
     ).toBe(false);
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: context updates use native Vapor and unmount cleanly`, async ({
+    monitoredPage: page,
+  }) => {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(
+      `http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?context`,
+    );
+    const demo = page.locator("[data-context-demo]");
+    await demo.getByRole("button", { name: "切换语言与时区" }).click();
+    await expect(demo.locator("[data-context-inner]")).toHaveText(
+      "en-US|rtl|0",
+    );
+    await demo.getByRole("button", { name: "移除内层覆盖" }).click();
+    await expect(demo.locator("[data-context-inner]")).toHaveText(
+      "en-US|ltr|0",
+    );
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("#app")).toBeEmpty();
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"])
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+      ).toBe(true);
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}
