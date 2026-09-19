@@ -2,11 +2,13 @@ import { afterAll, beforeAll, expect, test } from "vitest";
 import { build, createServer, type ViteDevServer } from "vite";
 import vueJsx from "vue-jsx/vite";
 import { jsxOptions } from "../../config/vue-jsx.ts";
+import { sourceAliases } from "../../config/aliases.ts";
 let server: ViteDevServer;
 beforeAll(async () => {
   server = await createServer({
     configFile: false,
     plugins: [vueJsx(jsxOptions)],
+    resolve: { alias: sourceAliases },
     optimizeDeps: { noDiscovery: true, include: [] },
     server: { middlewareMode: true, hmr: false },
     appType: "custom",
@@ -64,4 +66,15 @@ test("production fixture bundle contains Vapor DOM code without the VDOM rendere
       ),
     ),
   ).toBe(true);
+});
+
+test("compiles the context example to reactive Vapor DOM operations", async () => {
+  const result = await server.transformRequest(
+    "/website/examples/context/Context.vapor.tsx",
+  );
+  expect(result?.code).toMatch(/template\(/);
+  expect(result?.code).toMatch(/(?:renderEffect|setText)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
 });

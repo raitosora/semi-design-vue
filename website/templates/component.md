@@ -30,3 +30,5 @@
 连接 Foundation 时遵循 [Foundation 桥接](../src/zh-CN/guide/foundation.md)：列出 props watch 驱动的具体更新、同步状态与 DOM 回调边界、资源归属、异步过期策略，以及所需上游入口的补丁/依赖闭包验证。
 
 资源使用遵循[图标、插画与语言数据](../src/zh-CN/guide/resources.md)：从生成资源的公开入口导入，保留动态 size/color 与 SVG 引用隔离；资源名与数量以[资源索引](../src/zh-CN/guide/resource-index.md)为准。语言数据选择与 Provider 行为分开描述，不把静态字典展示当作全局国际化实现。
+
+上下文接入遵循[上下文与默认配置](../src/zh-CN/guide/context.md)：登记动态继承/显式清空/恢复行为、组件默认值的初始化时机与静态调用句柄的释放责任，不隐式读取其他应用配置。

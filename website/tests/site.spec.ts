@@ -498,3 +498,46 @@ for (const port of [4180, 4181]) {
     );
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: context inheritance, explicit clears and app isolation`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/context.html`);
+    const demos = page.locator("[data-context-demo]");
+    await expect(demos).toHaveCount(2);
+    const first = demos.first();
+    await expect(first.locator("[data-context-inner]")).toHaveText(
+      "zh-CN|rtl|8",
+    );
+    await first.getByRole("button", { name: "切换语言与时区" }).click();
+    await expect(first.locator("[data-context-inner]")).toHaveText(
+      "en-US|rtl|0",
+    );
+    await expect(demos.nth(1).locator("[data-context-inner]")).toHaveText(
+      "zh-CN|rtl|8",
+    );
+    await first.getByRole("button", { name: "移除内层覆盖" }).click();
+    await expect(first.locator("[data-context-inner]")).toHaveText(
+      "en-US|ltr|0",
+    );
+    await first.getByRole("button", { name: "显式清空方向" }).click();
+    await expect(first.locator("[data-context-inner]")).toHaveText(
+      "en-US|undefined|0",
+    );
+    await first.getByRole("button", { name: "恢复内层 RTL" }).click();
+    await first.getByRole("button", { name: "读取静态上下文" }).click();
+    await expect(first.locator("[data-context-static]")).toHaveText(
+      "en-US|ltr|0",
+    );
+    if (port === 4181)
+      await first.screenshot({ path: info.outputPath("context.png") });
+    const demo = page.getByRole("region", { name: "独立 Vapor 示例" }).first();
+    await demo.getByRole("button", { name: "卸载示例" }).click();
+    await expect(demos).toHaveCount(1);
+    await demo.getByRole("button", { name: "挂载示例" }).click();
+    await expect(demos.first().locator("[data-context-inner]")).toHaveText(
+      "zh-CN|rtl|8",
+    );
+  });
+}

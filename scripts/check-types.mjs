@@ -31,6 +31,20 @@ const generated = resolve(root, "artifacts/types");
 rmSync(generated, { recursive: true, force: true });
 try {
   runTypecheck("tsmc", "tests/consumer/tsconfig.source.json");
+  // Additional call-site check, separate from the full declaration check above:
+  // Vue rc.8's own declarations are not exact-optional compatible.
+  execFileSync(
+    "pnpm",
+    [
+      "exec",
+      "tsmc",
+      "-p",
+      "tests/consumer/tsconfig.source.json",
+      "--exactOptionalPropertyTypes",
+      "--skipLibCheck",
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
   runTypecheck("tsmc", "tests/types/tsconfig.source.json");
   runTypecheck("tsmc", "tests/types/tsconfig.macro-negative.json");
   runTypecheck("tsmc", "tests/types/tsconfig.declaration.json");
