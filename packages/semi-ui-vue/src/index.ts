@@ -43,3 +43,27 @@ export type {
   StaticContext,
 } from "./context/types.js";
 export type { DefaultPropsResolver } from "./context/global-defaults.js";
+export { createDomRef, getScrollParents } from "./dom/elements.js";
+export { focusElement, createRovingTabindex } from "./dom/focus.js";
+export { getNavigationKey } from "./dom/keyboard.js";
+export {
+  createAriaIdScope,
+  provideAriaIdScope,
+  useAriaId,
+} from "./dom/aria.js";
+export {
+  observeResize,
+  observeOutsidePointer,
+  observeMediaQuery,
+} from "./dom/resources.js";
+export { createDomScheduler } from "./dom/scheduling.js";
+export type { DomRef } from "./dom/elements.js";
+export type { RovingTabindex, RovingTabindexOptions } from "./dom/focus.js";
+export type {
+  RovingOrientation,
+  TextDirection,
+  NavigationKey,
+} from "./dom/keyboard.js";
+export { ariaIdScopeKey } from "./dom/aria.js";
+export type { AriaIdScope } from "./dom/aria.js";
+export type { DomScheduler } from "./dom/scheduling.js";

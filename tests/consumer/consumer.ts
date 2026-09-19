@@ -249,3 +249,95 @@ createDefaultPropsResolver(requiredDefaults, "Required", {
   count: undefined,
 }).resolve({ count: undefined });
 void [clearedContext, clearedDate];
+
+import {
+  createDomRef,
+  type DomRef,
+  createAriaIdScope,
+  createDomScheduler,
+  createRovingTabindex,
+  focusElement,
+  getNavigationKey,
+  getScrollParents,
+  observeResize,
+  observeOutsidePointer,
+  observeMediaQuery,
+} from "semi-ui-vue";
+function domTypes(element: HTMLButtonElement, event: KeyboardEvent) {
+  const dom = createDomRef<HTMLButtonElement>();
+  dom.set(element);
+  // @ts-expect-error DOM ref setters cannot be widened to accept unrelated Elements.
+  const widenedDomRef: DomRef<Element> = dom;
+  void widenedDomRef;
+  const current: HTMLButtonElement | null = dom.element.value;
+  const roving = createRovingTabindex(() => (current ? [current] : []), {
+    direction: () => "rtl",
+    orientation: () => "horizontal",
+    loop: () => false,
+  });
+  roving.onKeydown(event);
+  roving.refresh();
+  const focused: boolean = focusElement(current, { preventScroll: true });
+  const parents: readonly (Element | Window)[] = getScrollParents(current);
+  const key = getNavigationKey(event, "horizontal", "rtl");
+  const id: string = createAriaIdScope("consumer").next("label");
+  const scheduler = createDomScheduler(
+    () => element.ownerDocument.defaultView ?? undefined,
+  );
+  const cancel = scheduler.frame((time: number) => {
+    void time;
+  });
+  const debounced = scheduler.debounce((value: number) => {
+    void value;
+  }, 10);
+  debounced.schedule(1);
+  debounced.cancel();
+  debounced.flush();
+  const resize = observeResize(
+    () => [element],
+    (entries) => {
+      const width: number | undefined = entries[0]?.contentRect.width;
+      void width;
+    },
+  );
+  const outside = observeOutsidePointer(
+    () => [element],
+    (pointer: PointerEvent) => {
+      void pointer;
+    },
+    () => true,
+  );
+  const media = observeMediaQuery(
+    () => "(min-width: 1px)",
+    (matches: boolean) => {
+      void matches;
+    },
+    () => undefined,
+  );
+  // @ts-expect-error Explicit element setter rejects component instances.
+  dom.set({ $el: element });
+  // @ts-expect-error Element type remains precise.
+  dom.set(document.createElement("div"));
+  // @ts-expect-error Observed DOM refs cannot be assigned by consumers.
+  dom.element.value = null;
+  // @ts-expect-error Scheduler preserves callback arguments.
+  debounced.schedule("wrong");
+  observeResize(
+    // @ts-expect-error Resize target getters return actual Elements.
+    () => ["not an element"],
+    () => {},
+  );
+  // @ts-expect-error Direction is an explicit union.
+  createRovingTabindex(() => [], { direction: () => "up" });
+  // @ts-expect-error Explicit application prefix is required.
+  createAriaIdScope();
+  resize();
+  outside();
+  media();
+  cancel();
+  roving.dispose();
+  scheduler.dispose();
+  dom.dispose();
+  void [focused, parents, key, id];
+}
+void domTypes;
