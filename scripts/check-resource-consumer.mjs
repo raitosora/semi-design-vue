@@ -392,6 +392,15 @@ async function browserCheck(url) {
       !messages.length,
       `Context consumer browser errors: ${messages.join("; ")}`,
     );
+    assert(
+      (await page.evaluate(() => window.resourceConsumer.checkDom())) ===
+        "dom consumer passed",
+      "Built-package DOM utility validation failed",
+    );
+    assert(
+      !messages.length,
+      `DOM consumer browser errors: ${messages.join("; ")}`,
+    );
     await page.screenshot({
       path: join(
         root,
@@ -425,6 +434,7 @@ async function run() {
     "graph-plugin.ts",
     "index.html",
     "main.tsx",
+    "dom.tsx",
     "context.tsx",
     "vite.config.ts",
   ])

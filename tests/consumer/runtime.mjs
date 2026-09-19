@@ -104,3 +104,56 @@ assert(
 console.log(
   "Context and default initialization checks passed without browser globals.",
 );
+
+import {
+  createDomRef,
+  createAriaIdScope,
+  createDomScheduler,
+  getScrollParents,
+  focusElement,
+  observeResize,
+  observeOutsidePointer,
+  observeMediaQuery,
+} from "semi-ui-vue";
+import { nextTick } from "vue";
+assert(
+  typeof document === "undefined",
+  "DOM import test must run without a document",
+);
+const dom = createDomRef();
+assert(dom.element.value === null, "DOM ref eagerly resolves a node");
+assert(
+  getScrollParents(null).length === 0,
+  "Null scroll target must remain empty",
+);
+assert(!focusElement(null), "Null focus target must fail safely");
+const ids = createAriaIdScope("node-consumer");
+assert(ids.next("label") !== ids.next("label"), "ARIA scope reused an ID");
+const scheduler = createDomScheduler(() => undefined);
+let domCallbacks = 0;
+scheduler.frame(() => domCallbacks++);
+const debounce = scheduler.debounce(() => domCallbacks++, 10);
+debounce.schedule();
+const stopResize = observeResize(
+  () => [],
+  () => domCallbacks++,
+);
+const stopOutside = observeOutsidePointer(
+  () => [],
+  () => domCallbacks++,
+);
+const stopMedia = observeMediaQuery(
+  () => "all",
+  () => domCallbacks++,
+  () => undefined,
+);
+await nextTick();
+stopResize();
+stopOutside();
+stopMedia();
+scheduler.dispose();
+dom.dispose();
+assert(domCallbacks === 0, "Browser-free DOM operations scheduled work");
+console.log(
+  "DOM imports and explicit empty-target operations passed without browser globals; this is not component SSR/hydration.",
+);

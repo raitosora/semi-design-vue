@@ -541,3 +541,69 @@ for (const port of [4180, 4181]) {
     );
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: DOM tools preserve labels, keyboard movement, media and independent disposal`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/dom.html`);
+    const demos = page.locator("[data-dom-demo]");
+    await expect(demos).toHaveCount(2);
+    const first = demos.first();
+    await expect(first.locator("[data-dom-size]")).toHaveText("180 × 48");
+    await expect(first.locator("[data-dom-motion]")).toHaveText("是");
+    const outsideBeforeDisabled = await first
+      .locator("[data-dom-outside]")
+      .textContent();
+    const disabledBox = await first
+      .getByRole("button", { name: "禁用项", exact: true })
+      .boundingBox();
+    expect(disabledBox).not.toBeNull();
+    await page.mouse.click(
+      disabledBox!.x + disabledBox!.width / 2,
+      disabledBox!.y + disabledBox!.height / 2,
+    );
+    await expect(first.locator("[data-dom-outside]")).toHaveText(
+      outsideBeforeDisabled!,
+    );
+    const ids = await demos
+      .locator("input")
+      .evaluateAll((nodes) => nodes.map((node) => node.id));
+    expect(new Set(ids).size).toBe(2);
+    await first.getByRole("button", { name: "第一项", exact: true }).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(
+      first.getByRole("button", { name: "最后一项", exact: true }),
+    ).toBeFocused();
+    await first.getByRole("button", { name: "切换 RTL", exact: true }).click();
+    await first.getByRole("button", { name: "第一项", exact: true }).focus();
+    await page.keyboard.press("ArrowLeft");
+    await expect(
+      first.getByRole("button", { name: "最后一项", exact: true }),
+    ).toBeFocused();
+    await first.getByRole("button", { name: "增加宽度" }).click();
+    await expect(first.locator("[data-dom-size]")).toHaveText("220 × 48");
+    await expect(demos.last().locator("[data-dom-size]")).toHaveText(
+      "180 × 48",
+    );
+    await first.getByRole("button", { name: "暂停点外监听" }).click();
+    const count = await first.locator("[data-dom-outside]").textContent();
+    await page.getByRole("heading", { level: 1 }).click();
+    await expect(first.locator("[data-dom-outside]")).toHaveText(count!);
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(first.locator("[data-dom-motion]")).toHaveText("否");
+    await page.screenshot({
+      path: info.outputPath("dom-tools.png"),
+      fullPage: true,
+    });
+    const region = page
+      .getByRole("region", { name: "独立 Vapor 示例" })
+      .first();
+    await region.getByRole("button", { name: "卸载示例" }).click();
+    await expect(region.locator("[data-vapor-host]")).toBeEmpty();
+    await region.getByRole("button", { name: "挂载示例" }).click();
+    await expect(region.locator("[data-dom-size]")).toHaveText("180 × 48");
+    await expect(region.locator("[data-dom-scheduled]")).toHaveText("0");
+  });
+}

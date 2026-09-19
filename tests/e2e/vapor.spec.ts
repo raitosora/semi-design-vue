@@ -246,3 +246,60 @@ for (const mode of ["dev", "production"] as const) {
     ).toBe(false);
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: DOM measurements and keyboard tools run in native Vapor`, async ({
+    monitoredPage: page,
+  }, info) => {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(`http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?dom`);
+    const demo = page.locator("[data-dom-demo]");
+    await expect(demo.locator("[data-dom-size]")).toHaveText("180 × 48");
+    await expect(demo.locator("[data-dom-motion]")).toHaveText("是");
+    const first = demo.getByRole("button", { name: "第一项", exact: true });
+    const last = demo.getByRole("button", { name: "最后一项", exact: true });
+    await first.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(last).toBeFocused();
+    await page.keyboard.press("Home");
+    await expect(first).toBeFocused();
+    await demo.getByRole("button", { name: "增加宽度" }).click();
+    await expect(demo.locator("[data-dom-size]")).toHaveText("220 × 48");
+    await demo.getByRole("button", { name: "下一帧读取滚动容器" }).click();
+    await expect
+      .poll(async () =>
+        Number(await demo.locator("[data-dom-scroll]").textContent()),
+      )
+      .toBeGreaterThanOrEqual(2);
+    await demo.getByRole("button", { name: "防抖计数", exact: true }).click();
+    await expect(demo.locator("[data-dom-scheduled]")).toHaveText("1");
+    await info.attach(`dom-${mode}`, {
+      body: await page.screenshot(),
+      contentType: "image/png",
+    });
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("#app")).toBeEmpty();
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"])
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+        name,
+      ).toBe(true);
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}
