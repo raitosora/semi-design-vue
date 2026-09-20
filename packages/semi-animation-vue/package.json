@@ -8,6 +8,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./lifecycle": {
+      "types": "./dist/lifecycle/index.d.ts",
+      "import": "./dist/lifecycle/index.js"
     }
   },
   "files": [
@@ -23,6 +27,6 @@
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
-    "vue": "3.6.0-rc.8"
+    "vue": "3.6.0-rc.9"
   }
 }

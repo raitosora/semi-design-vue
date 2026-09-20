@@ -653,3 +653,42 @@ for (const port of [4180, 4181]) {
     await expect(region.locator("[data-vapor-host]")).toBeEmpty();
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: animation presence, reduced motion, size and independent disposal`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/animation.html`);
+    const examples = page.getByRole("region", { name: "独立 Vapor 示例" });
+    const first = examples.first();
+    const second = examples.nth(1);
+    await expect(first.getByLabel("动画状态")).toContainText("entered");
+    await first.getByRole("button", { name: "切换可见性" }).click();
+    await expect(first.getByLabel("动画状态")).toContainText("leaving");
+    await expect(first.locator("[data-motion-panel]")).toHaveCount(1);
+    await expect(first.locator("[data-motion-panel]")).toHaveCount(0);
+    await expect(second.locator("[data-motion-panel]")).toHaveCount(1);
+    await first.getByRole("button", { name: "改变内容尺寸" }).click();
+    await expect(first.locator(".semi-motion-size")).toHaveCSS(
+      "height",
+      "140px",
+    );
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await first.getByRole("button", { name: "切换可见性" }).click();
+    await expect(first.getByLabel("动画状态")).toContainText("entered");
+    await first.getByRole("button", { name: "打开动画浮层" }).click();
+    await expect(page.getByRole("dialog", { name: "动画浮层" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog", { name: "动画浮层" })).toHaveCount(0);
+    await first.getByText("查看 TSX 源码", { exact: true }).click();
+    await expect(first.locator("pre")).toContainText("usePresence");
+    await page.screenshot({
+      path: info.outputPath("animation.png"),
+      fullPage: true,
+    });
+    await first.getByRole("button", { name: "卸载示例" }).click();
+    await expect(first.locator("[data-vapor-host]")).toBeEmpty();
+    await expect(second.getByLabel("动画状态")).toContainText("entered");
+  });
+}

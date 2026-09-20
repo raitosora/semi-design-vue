@@ -1,0 +1,70 @@
+# 动画与可见性
+
+`semi-animation-vue` 提供基于显式 DOM 引用的动画生命周期。适用于原生 Vapor JSX；不读取、保存或克隆 slot 输出。
+
+```tsx
+import {
+  usePresence,
+  useSizeTransition,
+  waitForMotion,
+} from "semi-animation-vue";
+```
+
+## 可运行示例
+
+输入内容后快速关闭再打开，退出尚未完成时会保留同一个输入节点。尺寸示例观察独立内层内容盒；浮层示例在退出完成后销毁 host。
+
+<ClientOnly><VaporDemo example="animation/Animation.vapor" /></ClientOnly>
+<ClientOnly><VaporDemo example="animation/Animation.vapor" /></ClientOnly>
+
+## 可见性与 DOM 保留
+
+```tsx
+const element = shallowRef<HTMLElement | null>(null);
+const visible = ref(true);
+const presence = usePresence({
+  visible: () => visible.value,
+  element: () => element.value,
+  enterClass: "my-enter",
+  leaveClass: "my-leave",
+});
+// 在 defineVaporComponent setup 中直接返回 JSX。
+return (
+  <div v-if={presence.present.value} ref={element}>
+    内容
+  </div>
+);
+```
+
+`ref`、`shallowRef`、`defineVaporComponent` 从 `vue` 导入。CSS 类和关键帧由使用者提供；包没有隐式样式导入。
+
+| usePresence 选项        | 类型 / 默认              | 说明                                                                  |
+| ----------------------- | ------------------------ | --------------------------------------------------------------------- |
+| visible / element       | 必需 getter              | 请求的可见性与原生元素；不使用 `$el`                                  |
+| enterClass / leaveClass | 可选字符串               | 临时添加空白分隔类，结束时仅移除本次新增的类                          |
+| keepMounted             | boolean / false          | hidden 时继续保留 DOM，调用方必须绑定 hidden 或其他隐藏机制           |
+| motion                  | getter / true            | false 走无动画分支                                                    |
+| reducedMotion           | 可选 getter              | 默认跟随元素所属窗口的 prefers-reduced-motion；提供 getter 时显式覆盖 |
+| timeout                 | number / 10000           | 含 CSS delay 的最长等待毫秒；有限且非负                               |
+| onEntered / onExited    | (reason) => void         | 资源释放后通知；onExited 在 Vue 移除 DOM 前运行，可在此 destroy host  |
+| onCancel                | (enter 或 leave) => void | 快速反转、目标替换或显式取消当前动画的通知                            |
+
+返回只读 `phase`、`present` 及 `finish()`、`cancel()`、`dispose()`。phase 为 hidden / entering / entered / leaving / disposed。`finish` 立即提交当前方向；`cancel` 通知取消后提交当前请求的终态，退出仍会触发 onExited。反转导致的取消不会调用旧方向的完成通知。`dispose` 释放资源且不通知完成；外部创建的实例应手动释放，setup/effectScope 内自动释放。
+
+关闭时先进入 leaving，DOM、焦点范围、叠层与滚动锁仍有效；退出完成后才变为 hidden。`v-if` 必须绑定 present。若绑定 visible，节点会提前删除，无法播放退出。`keepMounted` 不自动修改 aria-hidden、inert 或焦点；已隐藏的内容应由接入者正确处理。
+
+## CSS 完成与尺寸变化
+
+`waitForMotion(element, options, done)` 观察已有 CSS 动画/过渡，不修改样式。options 支持 kind（animation / transition / both）、property（过滤过渡属性）和 timeout（最大 2147483647ms）。返回 cancel（静默终止）/finish（通知一次）。reason 为 end / cancel / timeout / none / finish。子元素冒泡与伪元素事件不会完成父元素动画；零时长、缺失结束事件、无限循环都有有界收尾。`transition: all` 建议显式指定 property；未指定时以最长时长兜底。
+
+`useSizeTransition({ element, content, axis?, duration?, reducedMotion? })` 返回只读 running、finish、dispose。axis 默认 height，duration getter 默认 200ms，负数按零处理，非有限值或超过 2147483583ms 会被拒绝。content 是独立内层测量盒，避免观察受约束外层造成反馈循环；宽度过渡要求内层宽度不随外层压缩；目标尺寸使用内层 border box，内层外边距和额外兄弟节点不计入测量，应由这个独立盒包住所有内容。完成及卸载恢复调用方原有 inline 样式。不要让其他逻辑同时写入被动画接管的尺寸/overflow/transition 属性。
+
+## 浮层与上下文
+
+示例复用 [host 的显式 context](./overlay.md)，设置 `deferClose: true` 后关闭通知只更新 visible；onExited 才调用 destroy。退出期间仍参与顶层仲裁与焦点约束，滚动锁在最终销毁时释放。强制 host.destroy / app.unmount 会直接取消动画并清理。host 仍限创建 realm document 内迁移；动画并不解除 renderer 的 document 边界。
+
+## 验证范围
+
+真实 Vapor 编译、严格源码/声明类型、浏览器 CSS 动画、尺寸观察、反转/取消/卸载与独立产物消费者共同验证这些工具。当前不提供 React Animation/Transition 的兼容包装，也不导出官方数值 spring 引擎的 API。没有 Tooltip、Modal 等公共组件。
+
+静态导入安全及文档 ClientOnly 不代表组件 SSR / 水合支持。沿用锁定 Vue RC9 的 JSX ref、动态 slot 属性读取和额外 exact 调用点检查边界，见[兼容说明](./compatibility.md)。截图仅证明展示状态，不代表完整像素一致性或全部浏览器验收。

@@ -5,8 +5,8 @@ packages:
 linkWorkspacePackages: false
 
 overrides:
-  "@vue/shared": 3.6.0-rc.8
-  vue: 3.6.0-rc.8
+  "@vue/shared": 3.6.0-rc.9
+  vue: 3.6.0-rc.9
   "@douyinfe/semi-foundation@2.103.0>lodash": "-"
 
 packageExtensions:

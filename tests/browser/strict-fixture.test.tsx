@@ -4,6 +4,7 @@ import { defineVaporComponent, ref } from "vue";
 import {
   StrictFixture,
   type StrictFixtureExposed,
+  type StrictFixtureSlots,
 } from "../types/StrictFixture";
 import { mountVapor } from "../support/mount-vapor";
 
@@ -16,6 +17,10 @@ test("runs the strict typed fixture as a real Vapor component", async () => {
   const updated = vi.fn((value: string) => {
     model.value = value;
   });
+  const slots: StrictFixtureSlots = {
+    default: ({ count, label }) => <span>{`${label}:${count}`}</span>,
+    footer: () => <small>fixture-footer</small>,
+  };
   const root = defineVaporComponent(() => (
     <StrictFixture
       count={2}
@@ -24,12 +29,7 @@ test("runs the strict typed fixture as a real Vapor component", async () => {
       onChange={changed}
       onUpdate:modelValue={updated}
       ref={api}
-      v-slots={{
-        default: ({ count, label }: { count: number; label: string }) => (
-          <span>{`${label}:${count}`}</span>
-        ),
-        footer: () => <small>fixture-footer</small>,
-      }}
+      v-slots={slots}
     />
   ));
   const mounted = mountVapor(root);

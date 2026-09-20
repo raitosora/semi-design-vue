@@ -5,6 +5,7 @@ import Interop from "./Interop.ts";
 import "./style.css";
 import "../../../packages/semi-ui-vue/dist/styles/index.css";
 import "../../examples/theme/demo.css";
+import "../../examples/animation/motion.css";
 export default {
   extends: DefaultTheme,
   async enhanceApp({ app }) {

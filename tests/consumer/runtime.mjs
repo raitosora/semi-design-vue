@@ -5,6 +5,11 @@ import {
 } from "semi-ui-vue";
 import { ref } from "vue";
 import { version as animationVersion } from "semi-animation-vue";
+import { usePresence, waitForMotion } from "semi-animation-vue";
+import {
+  createDomScheduler as createAnimationDomScheduler,
+  createFoundationScope,
+} from "semi-animation-vue/lifecycle";
 import { version as themeVersion } from "vite-plugin-semi-theme";
 
 const assert = (condition, message) => {
@@ -13,6 +18,26 @@ const assert = (condition, message) => {
 for (const version of [uiVersion, animationVersion, themeVersion])
   assert(version === "0.0.0", "package version export must remain available");
 assert(!hasProvidedProp({}, "value"), "missing prop must be absent");
+assert(
+  typeof usePresence === "function" && typeof waitForMotion === "function",
+  "Animation public entry did not retain its static ESM exports",
+);
+let cleanupCalls = 0;
+const animationScope = createFoundationScope();
+animationScope.own(() => cleanupCalls++);
+animationScope.dispose();
+animationScope.dispose();
+assert(
+  cleanupCalls === 1,
+  "Animation lifecycle scope cleanup was not idempotent",
+);
+const animationScheduler = createAnimationDomScheduler(() => undefined);
+animationScheduler.frame(() => cleanupCalls++);
+animationScheduler.dispose();
+assert(cleanupCalls === 1, "Empty animation scheduler performed browser work");
+console.log(
+  "Animation static imports and empty lifecycle disposal passed without browser globals; this is not component SSR/hydration.",
+);
 for (const value of [undefined, false, 0, ""])
   assert(hasProvidedProp({ value }, "value"), "explicit prop must be present");
 const uncontrolled = useControllableValue({

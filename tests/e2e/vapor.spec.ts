@@ -377,3 +377,80 @@ for (const mode of ["dev", "production"] as const) {
     ).toBe(false);
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: animations retain DOM, animate sizes and release overlay leases`, async ({
+    monitoredPage: page,
+  }, info) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(
+      `http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?animation`,
+    );
+    const status = page.getByLabel("动画状态");
+    await expect(status).toContainText("entered");
+    await page.getByLabel("动画输入").fill("retained");
+    // Native synchronous clicks deliberately reverse within one CSS duration.
+    await page
+      .getByRole("button", { name: "切换可见性" })
+      .evaluate(async (node) => {
+        (node as HTMLButtonElement).click();
+        await new Promise<void>((resolve) =>
+          requestAnimationFrame(() => resolve()),
+        );
+        (node as HTMLButtonElement).click();
+      });
+    await expect(page.getByLabel("动画输入")).toHaveValue("retained");
+    await expect(status).toContainText("entered");
+    await page.getByRole("button", { name: "切换可见性" }).click();
+    await expect(status).toContainText("leaving");
+    await expect(page.locator("[data-motion-panel]")).toHaveCount(1);
+    await expect(status).toContainText("hidden");
+    await expect(page.locator("[data-motion-panel]")).toHaveCount(0);
+    await page.getByRole("button", { name: "改变内容尺寸" }).click();
+    const size = page.locator(".semi-motion-size");
+    await expect(size).toHaveCSS("height", "140px");
+    const trigger = page.getByRole("button", { name: "打开动画浮层" });
+    await trigger.click();
+    const dialog = page.getByRole("dialog", { name: "动画浮层" });
+    await expect(dialog).toHaveAttribute("data-motion-overlay", "entered");
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveAttribute("data-motion-overlay", "leaving");
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+    await expect(dialog).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.getByRole("button", { name: "切换可见性" }).click();
+    await expect(status).toContainText("entered");
+    await info.attach(`animation-${mode}`, {
+      body: await page.screenshot(),
+      contentType: "image/png",
+    });
+    await trigger.click();
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("[data-semi-overlay]")).toHaveCount(0);
+    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"])
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+        name,
+      ).toBe(true);
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}

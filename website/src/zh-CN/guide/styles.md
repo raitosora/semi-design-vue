@@ -1,6 +1,6 @@
 # 安装与样式
 
-Semi Design Vue 尚未发布可安装版本，当前包均为 private。未来发布统一使用 `@raitosora` scope；以下无 scope 名称对应当前本地构建包。组件运行路径固定为 Vue 3.6.0-rc.8 / vue-jsx 3.3.0-rc.1，Vapor 是编译模式。
+Semi Design Vue 尚未发布可安装版本，当前包均为 private。未来发布统一使用 `@raitosora` scope；以下无 scope 名称对应当前本地构建包。组件运行路径固定为 Vue 3.6.0-rc.9 / vue-jsx 3.3.0-rc.2，Vapor 是编译模式。
 
 ## 本地构建与消费
 

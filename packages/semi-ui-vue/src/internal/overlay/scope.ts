@@ -158,6 +158,19 @@ export function createOverlayScope(): OverlayScope {
       },
     };
     const close = (reason: OverlayCloseReason, event: Event) => {
+      if (options.value.deferClose && options.value.onClose) {
+        try {
+          options.value.onClose(reason, event);
+        } catch (error) {
+          runAll([
+            handle.destroy,
+            () => {
+              throw error;
+            },
+          ]);
+        }
+        return;
+      }
       runAll([() => options.value.onClose?.(reason, event), handle.destroy]);
     };
     handles.set(handle, initial.parent);

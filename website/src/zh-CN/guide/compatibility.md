@@ -4,7 +4,7 @@
 
 文档 shell 为 VitePress 普通 Vue SSR/客户端水合；真实 TSX 示例预编译为 Vapor，在 ClientOnly 中动态导入并使用独立 `createVaporApp` 挂载。示例不复用服务端 DOM，不把客户端挂载称为示例水合。
 
-另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.8、vue-jsx 3.3.0-rc.1、Vite 8.3.0、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。
+另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.9、vue-jsx 3.3.0-rc.2、Vite 8.3.0、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。
 
 ## 尚未验证的能力
 

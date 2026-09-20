@@ -10,6 +10,6 @@
     "semi-illustrations-vue": "workspace:*",
     "semi-animation-vue": "workspace:*",
     "vite-plugin-semi-theme": "workspace:*",
-    "vue": "3.6.0-rc.8"
+    "vue": "3.6.0-rc.9"
   }
 }
