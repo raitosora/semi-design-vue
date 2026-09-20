@@ -38,6 +38,7 @@ export default defineConfig({
           { text: "定制主题", link: "/zh-CN/guide/theme" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },
+          { text: "上游对齐与完成度", link: "/zh-CN/guide/upstream-matrix" },
           { text: "兼容边界", link: "/zh-CN/guide/compatibility" },
           { text: "文档编写模板", link: "/zh-CN/guide/authoring" },
         ],
