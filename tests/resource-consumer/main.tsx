@@ -1,5 +1,6 @@
 import { checkContextConsumer } from "./context.js";
 import { checkDomConsumer } from "./dom.js";
+import { checkOverlayConsumer } from "./overlay.js";
 import { createVaporApp, defineVaporComponent, ref } from "vue";
 import IconAIFileLevel3, {
   IconAIFileLevel3 as NamedIconAIFileLevel3,
@@ -26,6 +27,7 @@ declare global {
     resourceConsumer: {
       checkContext(): Promise<string>;
       checkDom(): Promise<string>;
+      checkOverlay(): Promise<string>;
       en_US: Locale;
       zh_CN: Locale;
       setHomeColor(color: string): void;
@@ -121,6 +123,7 @@ const remounted = mount("remounted");
 window.resourceConsumer = {
   checkContext: checkContextConsumer,
   checkDom: checkDomConsumer,
+  checkOverlay: checkOverlayConsumer,
   en_US,
   zh_CN,
   setHomeColor(color) {

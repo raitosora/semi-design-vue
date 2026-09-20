@@ -4,6 +4,7 @@ import {
   inject,
   onScopeDispose,
   provide,
+  shallowRef,
 } from "vue";
 import DefaultLocale from "../locale/source/zh_CN.js";
 import type {
@@ -101,13 +102,13 @@ export function getFoundationContexts(
  * its owner unmounts. It creates no host, portal, or component instance.
  */
 export function createStaticContext(source?: SemiContextSource): StaticContext {
-  let active = source;
+  const active = shallowRef({ source });
   const context = Object.freeze({
     get() {
-      return active?.value;
+      return active.value.source?.value;
     },
     dispose() {
-      active = undefined;
+      active.value = { source: undefined };
     },
   });
   if (getCurrentScope()) onScopeDispose(context.dispose);

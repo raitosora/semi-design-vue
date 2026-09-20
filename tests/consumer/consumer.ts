@@ -341,3 +341,87 @@ function domTypes(element: HTMLButtonElement, event: KeyboardEvent) {
   void [focused, parents, key, id];
 }
 void domTypes;
+
+import {
+  createOverlayHost,
+  createOverlayScope,
+  type OverlayHost,
+  type OverlayHostState,
+  type OverlayOptions,
+} from "semi-ui-vue";
+
+type OverlayConsumerProps = { label: string; detail?: string | undefined };
+function overlayTypes(element: HTMLElement) {
+  const cleared: OverlayOptions = {
+    container: undefined,
+    target: undefined,
+    roots: undefined,
+    parent: undefined,
+    closeOnOutside: undefined,
+    closeOnEscape: undefined,
+    trapFocus: undefined,
+    restoreFocus: undefined,
+    lockScroll: undefined,
+    onClose: undefined,
+    onDestroy: undefined,
+  };
+  const scope = createOverlayScope();
+  const layer = scope.open({
+    container: () => element,
+    target: () => element,
+    roots: () => [element],
+    onClose(reason, event) {
+      const close: "outside" | "escape" = reason;
+      const native: Event = event;
+      void [close, native];
+    },
+  });
+  layer.update(cleared);
+  const child = scope.open({ parent: layer });
+  const host = createOverlayHost<OverlayConsumerProps>({
+    context: undefined,
+    overlay: undefined,
+    mount(node, state: OverlayHostState<OverlayConsumerProps>) {
+      const native: HTMLElement = node;
+      const label: string = state.props.value.label;
+      const direction: "ltr" | "rtl" | undefined =
+        state.context.value?.direction;
+      // @ts-expect-error Host render state is a readonly ref.
+      state.props.value = { label: "changed" };
+      // @ts-expect-error Host prop snapshots are readonly.
+      state.props.value.label = "changed";
+      // @ts-expect-error Context refs are consumer readonly.
+      state.context.value = undefined;
+      void [native, label, direction];
+      return () => {};
+    },
+  });
+  const handle = host.open({ label: "initial" });
+  handle.update({ label: "updated", detail: undefined }, cleared);
+  const native: HTMLElement = handle.element;
+  const destroyed: boolean = handle.destroyed;
+  // @ts-expect-error Opening preserves required generic props.
+  host.open({});
+  // @ts-expect-error Updates preserve prop field types.
+  handle.update({ label: 1 });
+  // @ts-expect-error Handles cannot widen P to accept incompatible updates.
+  const widenedHost: OverlayHost<{ label: string | number }> = host;
+  // @ts-expect-error Overlay target getters accept native DOM elements only.
+  layer.update({ target: () => ({ $el: element }) });
+  // @ts-expect-error Native roots cannot be inferred from Vue component instances.
+  layer.update({ roots: () => [{ $el: element }] });
+  // @ts-expect-error Overlay container is a getter, not an eagerly retained element.
+  layer.update({ container: element });
+  // @ts-expect-error Close controls are boolean.
+  layer.update({ closeOnEscape: "yes" });
+  // @ts-expect-error A host renderer must return explicit cleanup.
+  createOverlayHost({ mount: () => undefined });
+  child.destroy();
+  handle.destroy();
+  host.destroyAll();
+  host.dispose();
+  scope.destroyAll();
+  scope.dispose();
+  void [native, destroyed, widenedHost];
+}
+void overlayTypes;

@@ -27,6 +27,7 @@ export default defineConfig({
           { text: "Foundation 桥接", link: "/zh-CN/guide/foundation" },
           { text: "上下文与默认配置", link: "/zh-CN/guide/context" },
           { text: "DOM 与键盘交互", link: "/zh-CN/guide/dom" },
+          { text: "浮层容器与触发器", link: "/zh-CN/guide/overlay" },
           { text: "安装与样式", link: "/zh-CN/guide/styles" },
           { text: "定制主题", link: "/zh-CN/guide/theme" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },

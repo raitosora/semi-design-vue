@@ -303,3 +303,77 @@ for (const mode of ["dev", "production"] as const) {
     ).toBe(false);
   });
 }
+
+for (const mode of ["dev", "production"] as const) {
+  test(`${mode}: overlay host preserves state, traps focus and releases portals`, async ({
+    monitoredPage: page,
+  }, info) => {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(
+      `http://127.0.0.1:${mode === "dev" ? 4175 : 4176}/?overlay`,
+    );
+    const trigger = page.getByRole("button", { name: "打开浮层", exact: true });
+    await trigger.click();
+    const dialog = page.getByRole("dialog", { name: "示例浮层" });
+    const count = dialog.getByRole("button", { name: "内部计数 0" });
+    await expect(count).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(
+      dialog.getByRole("button", { name: "关闭浮层" }),
+    ).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(count).toBeFocused();
+    await count.click();
+    await dialog.getByRole("button", { name: "更新内容" }).click();
+    await expect(dialog.locator("[data-overlay-label]")).toHaveText(
+      "更新 2 · ltr",
+    );
+    await dialog.getByRole("button", { name: "切换容器" }).click();
+    await expect(page.locator("body > [data-semi-overlay]")).toHaveCount(1);
+    await expect(
+      dialog.getByRole("button", { name: "内部计数 1" }),
+    ).toBeVisible();
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+    await dialog.getByRole("button", { name: "切换方向" }).click();
+    await expect(dialog.locator("[data-overlay-label]")).toHaveText(
+      "更新 2 · rtl",
+    );
+    await info.attach(`overlay-${mode}`, {
+      body: await page.screenshot(),
+      contentType: "image/png",
+    });
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+    await page.getByRole("button", { name: "切换禁用" }).click();
+    await expect(trigger).toBeDisabled();
+    await page.getByRole("button", { name: "切换禁用" }).click();
+    await page.getByRole("button", { name: "第二触发器" }).click();
+    await expect(dialog).toBeVisible();
+    await page.evaluate(() => window.unmountFixture());
+    await expect(page.locator("[data-semi-overlay]")).toHaveCount(0);
+    await expect(page.locator("#app")).toBeEmpty();
+    const functions = (await page.coverage.stopJSCoverage()).flatMap(
+      (entry) => entry.functions,
+    );
+    for (const name of ["createVaporApp", "template"])
+      expect(
+        functions.some(
+          (fn) =>
+            fn.functionName === name &&
+            fn.ranges.some((range) => range.count > 0),
+        ),
+        name,
+      ).toBe(true);
+    expect(
+      functions
+        .filter((fn) =>
+          /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode)$/.test(
+            fn.functionName,
+          ),
+        )
+        .some((fn) => fn.ranges.some((range) => range.count > 0)),
+    ).toBe(false);
+  });
+}

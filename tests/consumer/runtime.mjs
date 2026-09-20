@@ -157,3 +157,32 @@ assert(domCallbacks === 0, "Browser-free DOM operations scheduled work");
 console.log(
   "DOM imports and explicit empty-target operations passed without browser globals; this is not component SSR/hydration.",
 );
+
+import { createOverlayHost, createOverlayScope } from "semi-ui-vue";
+let overlayMounts = 0;
+let overlayContainerCalls = 0;
+const emptyOverlayScope = createOverlayScope();
+const emptyOverlayHost = createOverlayHost({
+  overlay: {
+    container: () => {
+      overlayContainerCalls++;
+      return undefined;
+    },
+  },
+  mount() {
+    overlayMounts++;
+    return () => {};
+  },
+});
+emptyOverlayScope.destroyAll();
+emptyOverlayScope.dispose();
+emptyOverlayHost.destroyAll();
+emptyOverlayHost.dispose();
+emptyOverlayHost.dispose();
+assert(
+  overlayMounts === 0 && overlayContainerCalls === 0,
+  "Creating or disposing empty overlay hosts performed DOM work",
+);
+console.log(
+  "Overlay imports and empty host disposal passed without browser globals; no component SSR/hydration or DOM mounting is asserted.",
+);
