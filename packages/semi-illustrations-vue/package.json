@@ -23,7 +23,7 @@
     "**/*.scss"
   ],
   "scripts": {
-    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-svg-resources.mjs",
+    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-svg-resources.mjs && node ../../scripts/finalize-package.mjs",
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {

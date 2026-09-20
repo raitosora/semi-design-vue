@@ -13,7 +13,9 @@ const externalPackages = Object.keys({
 });
 const resourceEntries = globSync([
   "src/icons/*.tsx",
+  "src/icons/index.ts",
   "src/illustrations/*.tsx",
+  "src/illustrations/index.ts",
   "src/locale/**/*.ts",
   "src/lifecycle/index.ts",
 ]).filter((file) => !file.endsWith(".d.ts"));
@@ -23,9 +25,50 @@ const entries = Object.fromEntries(
     resolve(file),
   ]),
 );
+const packageDirectory = resolve(".");
+
+function moduleIdentity(id: string): string {
+  const normalized = id.replaceAll("\\", "/").replaceAll("\0", "");
+  if (normalized.startsWith(`${packageDirectory}/src/`))
+    return relative(packageDirectory, normalized);
+  if (/^\/?vue-jsx\/(?:props|vapor)$/.test(normalized))
+    return `compiler:${normalized.replace(/^\//, "")}`;
+  const marker = "/node_modules/";
+  const offset = normalized.lastIndexOf(marker);
+  if (offset >= 0) return `npm:${normalized.slice(offset + marker.length)}`;
+  throw new Error(`Unexpected package build input: ${normalized}`);
+}
 
 export default defineConfig({
-  plugins: [vueJsx(jsxOptions)],
+  plugins: [
+    vueJsx(jsxOptions),
+    {
+      name: "package-build-evidence",
+      generateBundle(_options, bundle) {
+        const chunks = Object.values(bundle).filter(
+          (entry) => entry.type === "chunk",
+        );
+        this.emitFile({
+          type: "asset",
+          fileName: "build-meta.json",
+          source: JSON.stringify(
+            {
+              package: manifest.name,
+              format: "es",
+              chunks: chunks.map((chunk) => ({
+                file: chunk.fileName,
+                modules: Object.keys(chunk.modules).map(moduleIdentity).sort(),
+                imports: chunk.imports,
+                dynamicImports: chunk.dynamicImports,
+              })),
+            },
+            null,
+            2,
+          ),
+        });
+      },
+    },
+  ],
   build: {
     target: nodePackage ? "node24" : "es2022",
     sourcemap: true,

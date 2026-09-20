@@ -1,20 +1,17 @@
 import { execFileSync } from "node:child_process";
 import {
   existsSync,
-  copyFileSync,
   mkdtempSync,
-  mkdirSync,
   readdirSync,
   readFileSync,
-  realpathSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
+import { installPackedConsumer } from "./packed-consumer.mjs";
 import { isForbidden, checkSource } from "./dependency-policy.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -63,50 +60,89 @@ function checkDeclarations(name, dist) {
   }
 }
 
-function copyDist(source, destination) {
-  mkdirSync(destination, { recursive: true });
-  for (const entry of readdirSync(source, { withFileTypes: true })) {
-    const from = join(source, entry.name);
-    const to = join(destination, entry.name);
-    if (entry.isDirectory()) copyDist(from, to);
-    else if (entry.isFile()) {
-      if (/\.[cm]?js$/.test(entry.name)) {
-        const errors = checkSource(readFileSync(from, "utf8"), from, {
-          foundationBundled: true,
-        });
-        if (errors.length) throw new Error(errors.join("\n"));
-      }
-      copyFileSync(from, to);
-    }
-  }
+function runtimeFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory()
+      ? runtimeFiles(path)
+      : /\.[cm]?js$/.test(path)
+        ? [path]
+        : [];
+  });
 }
 
 try {
-  const modules = join(work, "node_modules");
-  mkdirSync(modules);
+  const { env, evidenceDirectory } = await installPackedConsumer({
+    root,
+    directory: work,
+    packages,
+    dependencies: { vue: "3.6.0-rc.9" },
+    devDependencies: {
+      typescript: "5.9.3",
+      vite: "8.3.0",
+      "@types/node": "24.12.0",
+    },
+    label: "declarations",
+  });
   for (const name of packages) {
-    const packagePath = join(root, "packages", name);
-    const stagedPackage = join(modules, name);
-    const dist = join(packagePath, "dist");
-    if (!existsSync(dist))
-      throw new Error(`Missing built artifact: ${name}/dist`);
+    const dist = join(work, "node_modules", name, "dist");
     for (const file of ["index.d.ts", "index.js"])
       if (!existsSync(join(dist, file)))
-        throw new Error(`Missing built artifact: ${name}/dist/${file}`);
+        throw new Error(`Missing packed artifact: ${name}/dist/${file}`);
     checkDeclarations(name, dist);
-    mkdirSync(join(stagedPackage, "dist"), { recursive: true });
-    copyDist(dist, join(stagedPackage, "dist"));
-    copyFileSync(
-      join(packagePath, "package.json"),
-      join(stagedPackage, "package.json"),
+    for (const file of runtimeFiles(dist)) {
+      const errors = checkSource(readFileSync(file, "utf8"), file, {
+        foundationBundled: true,
+      });
+      if (errors.length) throw new Error(errors.join("\n"));
+    }
+  }
+  const typedEntries = [];
+  const runtimeEntries = [];
+  for (const name of packages) {
+    const packageRoot = join(work, "node_modules", name);
+    const manifest = JSON.parse(
+      readFileSync(join(packageRoot, "package.json"), "utf8"),
     );
+    for (const [subpath, conditions] of Object.entries(manifest.exports)) {
+      const types = typeof conditions === "object" && conditions.types;
+      let specifier = subpath === "." ? name : `${name}/${subpath.slice(2)}`;
+      if (subpath.includes("*")) {
+        if (!types)
+          throw new Error(`Wildcard has no declaration target: ${specifier}`);
+        const [prefix, suffix] = types.split("*");
+        const candidates = declarationFiles(packageRoot)
+          .map((file) => file.slice(packageRoot.length + 1))
+          .filter(
+            (file) =>
+              file.startsWith(prefix.replace(/^\.\//, "")) &&
+              file.endsWith(suffix),
+          );
+        if (!candidates.length)
+          throw new Error(`No packed declaration matches ${specifier}`);
+        const match = candidates[0].slice(
+          prefix.replace(/^\.\//, "").length,
+          -suffix.length,
+        );
+        specifier = specifier.replace("*", match);
+      }
+      if (types) typedEntries.push(specifier);
+      runtimeEntries.push(specifier);
+    }
   }
-  for (const name of ["vue", "vite", "@types/node", "date-fns"]) {
-    const peer = resolve(root, "node_modules", name);
-    if (!existsSync(peer)) throw new Error(`Missing locked peer: ${name}`);
-    mkdirSync(resolve(modules, name, ".."), { recursive: true });
-    symlinkSync(realpathSync(peer), join(modules, name), "junction");
-  }
+  writeFileSync(
+    join(work, "exports.ts"),
+    typedEntries
+      .map(
+        (entry, index) =>
+          `import type * as Entry${index} from ${JSON.stringify(entry)};\ntype Export${index} = typeof Entry${index};`,
+      )
+      .join("\n"),
+  );
+  writeFileSync(
+    join(work, "resolve-exports.mjs"),
+    `import { existsSync } from "node:fs";\nimport { fileURLToPath } from "node:url";\nfor (const entry of ${JSON.stringify(runtimeEntries)}) {\n  const target = import.meta.resolve(entry);\n  if (!existsSync(fileURLToPath(target))) throw new Error("Missing installed export: " + entry);\n}\nconsole.log("Resolved ${runtimeEntries.length} installed export patterns and literal entries.");`,
+  );
   writeFileSync(
     join(work, "consumer.ts"),
     readFileSync(resolve(root, "tests/consumer/consumer.ts"), "utf8"),
@@ -123,7 +159,7 @@ try {
           skipLibCheck: false,
           noEmit: true,
         },
-        files: ["consumer.ts"],
+        files: ["consumer.ts", "exports.ts"],
       },
       null,
       2,
@@ -133,33 +169,56 @@ try {
     join(work, "runtime.mjs"),
     readFileSync(resolve(root, "tests/consumer/runtime.mjs"), "utf8"),
   );
-  execFileSync("pnpm", ["exec", "tsc", "-p", join(work, "tsconfig.json")], {
-    cwd: root,
+  const tsc = join(work, "node_modules/typescript/bin/tsc");
+  execFileSync(process.execPath, [tsc, "-p", "tsconfig.json"], {
+    cwd: work,
+    env,
     stdio: "inherit",
   });
-  // Keep full declaration validation above. This additional pass checks exact
-  // optional call sites; the pinned Vue declarations do not themselves support it.
+  // Extra call-site-only check; the full declaration check above keeps skipLibCheck=false.
   execFileSync(
-    "pnpm",
+    process.execPath,
     [
-      "exec",
-      "tsc",
+      tsc,
       "-p",
-      join(work, "tsconfig.json"),
+      "tsconfig.json",
       "--exactOptionalPropertyTypes",
       "--skipLibCheck",
     ],
     {
-      cwd: root,
+      cwd: work,
+      env,
       stdio: "inherit",
     },
   );
   execFileSync(process.execPath, [join(work, "runtime.mjs")], {
     cwd: work,
+    env,
     stdio: "inherit",
   });
+  execFileSync(process.execPath, [join(work, "resolve-exports.mjs")], {
+    cwd: work,
+    env,
+    stdio: "inherit",
+  });
+  writeFileSync(
+    join(evidenceDirectory, "declarations.json"),
+    JSON.stringify(
+      {
+        strict: true,
+        skipLibCheck: false,
+        exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
+        typedEntries,
+        resolvedEntries: runtimeEntries,
+        runtime:
+          "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",
+      },
+      null,
+      2,
+    ),
+  );
   console.log(
-    "Dist consumer passed recursive declaration, isolated plain tsc, and ESM runtime checks.",
+    "Tarball consumer passed recursive declaration, isolated plain tsc, and ESM runtime checks.",
   );
 } finally {
   rmSync(work, { recursive: true, force: true });

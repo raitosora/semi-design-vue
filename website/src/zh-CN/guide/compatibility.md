@@ -12,13 +12,15 @@
 - 先前 SSR 探针存在点击后静态文本丢失的水合问题，本页没有以 ClientOnly 掩盖为已修复。
 - 只在指定 Chromium 验证；Firefox、WebKit、真实移动设备不在当前验收范围。
 - JSX ref 形状检查仍有工具链限制，不能推断公共组件 ref 协议已解决。
-- 生成声明与现有协议/版本入口消费检查，不等于 tarball 安装或完整生产消费者验证。
+- 当前六包通过本地 tarball 的独立安装与生产消费者检查；这不等于完整公共组件或 npm 发布验收。
 - 截图为人工布局证据，没有跨平台像素回归基线。
 
-样式与主题的独立消费者另验证 manifest + dist 的默认 CSS、按需 SCSS、明暗/RTL、前缀与主题插件；不依赖 Foundation 运行时包或仓库 patch/override。只覆盖登记的基础、Input / Tooltip 样式，不意味着这些公共组件可用，也不扩展为完整 tarball 发布验收。
+样式与主题的独立 tarball 消费者验证默认 CSS、按需 SCSS、明暗/RTL、前缀与主题插件；不依赖 Foundation 运行时包或仓库 patch/override。只覆盖登记的基础、Input / Tooltip 样式，不意味着这些公共组件可用，不扩展为全部组件样式或公开发布承诺。
 
 [返回运行示例](./runtime.md)
 
 [API 与类型约定](./api-contracts.md)提供已验证协议夹具、props 存在性方案及 slot 解构/JSX ref 的具体限制，不代表已交付公共组件。
 
 [Foundation 桥接](./foundation.md)验证固定上游输入与浮层状态机的有限路径。补丁只覆盖实际依赖闭包，不表示全套 Foundation 已兼容；资源清理只覆盖状态机自身的 destroy 与显式登记资源。
+
+[本地产物与消费方式](./packages.md)列出实际 ESM / 声明 / 样式入口、依赖和独立安装范围。没有 CJS 入口；Node 静态导入安全不代表组件 SSR / 水合支持。

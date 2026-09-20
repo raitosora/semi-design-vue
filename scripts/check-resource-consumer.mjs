@@ -1,7 +1,6 @@
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
-  cpSync,
   existsSync,
   mkdtempSync,
   mkdirSync,
@@ -9,7 +8,6 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { createServer } from "node:net";
@@ -17,14 +15,18 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeepStrictEqual } from "node:util";
+import ts from "typescript";
+import { prepareResourceApplication } from "../tests/resource-consumer/precompile.mjs";
 import { chromium } from "@playwright/test";
 import { checkManifest, checkSource } from "./dependency-policy.mjs";
-import { waitForPreview } from "./preview-ready.mjs";
+import { installPackedConsumer } from "./packed-consumer.mjs";
+import { waitForPreview, stopPreview } from "./preview-ready.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/resource-consumer");
 const work = mkdtempSync(join(tmpdir(), "semi-resource-consumer-"));
 const consumer = join(work, "consumer");
+let consumerEnv;
 const packages = [
   "semi-animation-vue",
   "semi-ui-vue",
@@ -42,32 +44,6 @@ function files(directory) {
     const path = join(directory, entry.name);
     return entry.isDirectory() ? files(path) : [path];
   });
-}
-
-function stagePackage(name) {
-  const source = join(root, "packages", name);
-  const dist = join(source, "dist");
-  assert(existsSync(dist), `Missing built artifact: ${name}/dist`);
-  const manifest = JSON.parse(
-    readFileSync(join(source, "package.json"), "utf8"),
-  );
-  const manifestErrors = checkManifest(manifest);
-  assert(
-    !manifestErrors.length,
-    `${name} manifest: ${manifestErrors.join(", ")}`,
-  );
-  const target = join(consumer, "node_modules", name);
-  mkdirSync(target, { recursive: true });
-  copyFileSync(join(source, "package.json"), join(target, "package.json"));
-  cpSync(dist, join(target, "dist"), { recursive: true });
-}
-
-function linkLockedDependency(name) {
-  const source = join(root, "node_modules", name);
-  assert(existsSync(source), `Missing locked consumer dependency: ${name}`);
-  const target = join(consumer, "node_modules", name);
-  mkdirSync(dirname(target), { recursive: true });
-  symlinkSync(realpathSync(source), target, "junction");
 }
 
 function manifestFor(name, from = consumer) {
@@ -107,10 +83,59 @@ function checkRuntimeClosure(entry) {
 }
 
 function checkDistSources() {
+  const vaporImports = [];
+
   for (const name of packages) {
     const dist = join(consumer, "node_modules", name, "dist");
     for (const path of files(dist).filter((file) => /\.[cm]?js$/.test(file))) {
       const source = readFileSync(path, "utf8");
+      const ast = ts.createSourceFile(
+        path,
+        source,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.JS,
+      );
+      const namespaces = new Set();
+      const vdomHelpers =
+        /^(?:h|createVNode|createElementVNode|createBlock|createElementBlock|cloneVNode|createRenderer|vaporInteropPlugin)$/;
+      for (const statement of ast.statements) {
+        if (
+          !ts.isImportDeclaration(statement) ||
+          !ts.isStringLiteral(statement.moduleSpecifier)
+        )
+          continue;
+        if (statement.moduleSpecifier.text !== "vue") continue;
+        const bindings = statement.importClause?.namedBindings;
+        if (bindings && ts.isNamespaceImport(bindings))
+          namespaces.add(bindings.name.text);
+        if (!bindings || !ts.isNamedImports(bindings)) continue;
+        for (const binding of bindings.elements) {
+          const imported = (binding.propertyName ?? binding.name).text;
+          assert(
+            !vdomHelpers.test(imported),
+            `Packed Vapor resource imported a VDOM helper: ${path}: ${imported}`,
+          );
+          if (/^(?:template|renderEffect|defineVaporComponent)$/.test(imported))
+            vaporImports.push({
+              path: path.slice(consumer.length + 1),
+              imported,
+            });
+        }
+      }
+      function visit(node) {
+        if (
+          ts.isPropertyAccessExpression(node) &&
+          ts.isIdentifier(node.expression) &&
+          namespaces.has(node.expression.text)
+        )
+          assert(
+            !vdomHelpers.test(node.name.text),
+            `Packed Vapor resource references namespace VDOM helper: ${path}: ${node.name.text}`,
+          );
+        ts.forEachChild(node, visit);
+      }
+      visit(ast);
       const errors = checkSource(source, path, { foundationBundled: true });
       assert(!errors.length, errors.join("\n"));
       assert(
@@ -121,6 +146,13 @@ function checkDistSources() {
       );
     }
   }
+  assert(vaporImports.length > 0, "No AST evidence of packed Vapor helpers");
+  const evidence = join(root, ".vitest/attachments/resource-consumer");
+  mkdirSync(evidence, { recursive: true });
+  writeFileSync(
+    join(evidence, "packed-vapor-imports.json"),
+    JSON.stringify(vaporImports, null, 2),
+  );
 }
 
 function checkLicense(path, expected) {
@@ -204,9 +236,10 @@ function checkProvenance() {
   );
 }
 
-function checkGraph() {
+function checkGraph(mode = "vapor") {
+  const outDir = mode === "vapor" ? "dist" : "interop-dist";
   const graph = JSON.parse(
-    readFileSync(join(consumer, "dist/resource-graph.json"), "utf8"),
+    readFileSync(join(consumer, outDir, "resource-graph.json"), "utf8"),
   );
   assert(
     Array.isArray(graph.modules) && graph.modules.length > 0,
@@ -219,15 +252,17 @@ function checkGraph() {
     ),
     "Resource bundle graph leaked React, lodash, or Foundation runtime modules",
   );
-  for (const expected of [
-    "IconAIFileLevel3",
-    "IconForm",
-    "IllustrationNoContent",
-    "en_US",
-    "zh_CN",
-    "semi-ui-vue/dist/index.js",
-    "virtual-pointer.tsx",
-  ])
+  for (const expected of mode === "vapor"
+    ? [
+        "IconAIFileLevel3",
+        "IconForm",
+        "IllustrationNoContent",
+        "en_US",
+        "zh_CN",
+        "semi-ui-vue/dist/index.js",
+        "prepared-app.js",
+      ]
+    : ["IconHome", "IconForm", "IllustrationNoContent", "interop-main.ts"])
     assert(
       modules.includes(expected),
       `Resource graph omitted selected module: ${expected}`,
@@ -245,11 +280,39 @@ function checkGraph() {
     ),
   ].sort();
   assert(
-    isDeepStrictEqual(dateLocales, ["en-US", "zh-CN"]),
+    isDeepStrictEqual(dateLocales, mode === "vapor" ? ["en-US", "zh-CN"] : []),
     `Resource bundle retained unexpected date-fns locales: ${dateLocales.join(", ")}`,
   );
-  const output = files(join(consumer, "dist"))
-    .filter((path) => /\.[cm]?js$/.test(path))
+  assert(
+    Array.isArray(graph.compilationInputs) &&
+      graph.compilationInputs.length > 0,
+    "Missing actual compilation inputs",
+  );
+  const libraryInputs = graph.compilationInputs.filter((id) =>
+    /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
+  );
+  assert(libraryInputs.length > 0, "No packed library compilation inputs");
+  assert(
+    libraryInputs.every(
+      (id) => /[/\\]dist[/\\]/.test(id) && !/\.[jt]sx(?:$|\?)/.test(id),
+    ),
+    "Consumer compiled library source JSX rather than dist JavaScript",
+  );
+  if (mode === "interop")
+    assert(
+      !graph.compilationInputs.some((id) => /\.[jt]sx(?:$|\?)/.test(id)),
+      "Interop consumer unexpectedly compiled JSX",
+    );
+  const bundleFiles = files(join(consumer, outDir)).filter((path) =>
+    /\.[cm]?js$/.test(path),
+  );
+  for (const path of bundleFiles) {
+    const errors = checkSource(readFileSync(path, "utf8"), path, {
+      foundationBundled: true,
+    });
+    assert(!errors.length, errors.join("\n"));
+  }
+  const output = bundleFiles
     .map((path) => readFileSync(path, "utf8"))
     .join("\n");
   assert(
@@ -259,8 +322,8 @@ function checkGraph() {
   const evidence = join(root, ".vitest/attachments/resource-consumer");
   mkdirSync(evidence, { recursive: true });
   copyFileSync(
-    join(consumer, "dist/resource-graph.json"),
-    join(evidence, "resource-graph.json"),
+    join(consumer, outDir, "resource-graph.json"),
+    join(evidence, `${mode}-resource-graph.json`),
   );
 }
 
@@ -292,6 +355,7 @@ async function browserCheck(url) {
       messages.push(`${message.type()}: ${message.text()}`),
     );
     page.on("pageerror", (error) => messages.push(error.message));
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(url, { waitUntil: "networkidle" });
     const apps = page.locator(".resource-app");
     assert(
@@ -465,33 +529,153 @@ async function browserCheck(url) {
       (await apps.count()) === 0,
       "Resource apps remained after explicit unmount",
     );
+    await checkExecution(page, "vapor");
   } finally {
     await browser.close();
   }
 }
 
+async function checkExecution(page, mode) {
+  const coverage = await page.coverage.stopJSCoverage();
+  const functions = coverage.flatMap((entry) => entry.functions);
+  const executed = (expression) =>
+    functions.some(
+      (fn) => expression.test(fn.functionName) && fn.ranges[0]?.count > 0,
+    );
+  assert(
+    executed(/^template(?:\$\d+)?$/),
+    `${mode}: no executed Vapor template`,
+  );
+  if (mode === "vapor") {
+    assert(
+      executed(/^createVaporApp(?:\$\d+)?$/),
+      "Pure consumer did not execute createVaporApp",
+    );
+    assert(
+      !executed(
+        /^(?:baseCreateRenderer|createRenderer|vaporInteropPlugin|_?createVNode|createBaseVNode|createElementVNode|createElementBlock|createBlock|cloneVNode)(?:\$\d+)?$/,
+      ),
+      "Pure consumer executed a VDOM path",
+    );
+  } else {
+    assert(
+      executed(/^vaporInteropPlugin(?:\$\d+)?$/),
+      "Interop plugin did not execute",
+    );
+    assert(
+      executed(/^(?:baseCreateRenderer|createRenderer)(?:\$\d+)?$/),
+      "Interop consumer did not execute its VDOM renderer",
+    );
+  }
+  writeFileSync(
+    join(root, `.vitest/attachments/resource-consumer/${mode}-execution.json`),
+    JSON.stringify(
+      {
+        mode,
+        functions: functions.map((fn) => ({
+          name: fn.functionName,
+          calls: fn.ranges[0]?.count ?? 0,
+        })),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+async function interopBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (["warning", "error"].includes(message.type()))
+        errors.push(message.text());
+    });
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.locator(".interop-resources svg").count()) === 3,
+      "Interop did not mount all precompiled resource families",
+    );
+    const home = page.locator('[aria-label="Interop home"] path');
+    assert(
+      (await home.evaluate((node) => getComputedStyle(node).fill)) ===
+        "rgb(12, 90, 190)",
+      "Interop initial resource color failed",
+    );
+    await page.evaluate(() => window.interopConsumer.update());
+    assert(
+      (await home.evaluate((node) => getComputedStyle(node).fill)) ===
+        "rgb(17, 128, 74)",
+      "Interop reactive resource update failed",
+    );
+    await page.evaluate(() => window.interopConsumer.unmount());
+    assert(
+      (await page.locator(".interop-resources").count()) === 0,
+      "Interop resource unmount failed",
+    );
+    assert(!errors.length, `Interop browser errors: ${errors.join("; ")}`);
+    await checkExecution(page, "interop");
+  } finally {
+    await browser.close();
+  }
+}
+
+async function withPreview(outDir, check) {
+  const port = await unusedPort();
+  const preview = spawn(
+    process.execPath,
+    [
+      join(consumer, "node_modules/vite/bin/vite.js"),
+      "preview",
+      "--configLoader",
+      "runner",
+      "--outDir",
+      outDir,
+      "--host",
+      "127.0.0.1",
+      "--port",
+      String(port),
+      "--strictPort",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "pipe" },
+  );
+  try {
+    await waitForPreview(preview, `http://127.0.0.1:${port}/`);
+    await check(`http://127.0.0.1:${port}/`);
+  } finally {
+    await stopPreview(preview);
+  }
+}
+
 async function run() {
-  mkdirSync(join(consumer, "node_modules"), { recursive: true });
-  for (const name of packages) stagePackage(name);
-  for (const name of [
-    "@vue-jsx/runtime",
-    "date-fns",
-    "typescript",
-    "vite",
-    "vue",
-    "vue-jsx",
-  ])
-    linkLockedDependency(name);
+  mkdirSync(consumer, { recursive: true });
+  prepareResourceApplication(root, work, consumer);
+  const installation = await installPackedConsumer({
+    root,
+    directory: consumer,
+    packages,
+    dependencies: { vue: "3.6.0-rc.9" },
+    devDependencies: {
+      typescript: "5.9.3",
+      vite: "8.3.0",
+      "@types/node": "24.12.0",
+    },
+    label: "resources",
+  });
+  consumerEnv = installation.env;
   for (const name of [
     "graph-plugin.ts",
     "index.html",
-    "main.tsx",
-    "dom.tsx",
-    "context.tsx",
-    "overlay.tsx",
-    "animation.tsx",
-    "virtual-pointer.tsx",
+    "consumer.ts",
     "vite.config.ts",
+    "interop-main.ts",
+    "interop.html",
+    "vite.interop.config.ts",
   ])
     copyFileSync(join(fixture, name), join(consumer, name));
   writeFileSync(
@@ -499,14 +683,13 @@ async function run() {
     JSON.stringify(
       {
         compilerOptions: {
-          jsx: "preserve",
-          jsxImportSource: "vue-jsx",
           module: "NodeNext",
           moduleResolution: "NodeNext",
           noEmit: true,
           strict: true,
+          skipLibCheck: false,
         },
-        files: ["main.tsx"],
+        files: ["consumer.ts", "interop-main.ts"],
       },
       null,
       2,
@@ -517,48 +700,71 @@ async function run() {
   checkProvenance();
   execFileSync(
     process.execPath,
-    [join(root, "node_modules/typescript/bin/tsc"), "-p", "tsconfig.json"],
-    { cwd: consumer, stdio: "inherit" },
+    [join(consumer, "node_modules/typescript/bin/tsc"), "-p", "tsconfig.json"],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  // Extra call-site validation does not replace the full declaration pass above.
+  execFileSync(
+    process.execPath,
+    [
+      join(consumer, "node_modules/typescript/bin/tsc"),
+      "-p",
+      "tsconfig.json",
+      "--exactOptionalPropertyTypes",
+      "--skipLibCheck",
+    ],
+    {
+      cwd: consumer,
+      env: consumerEnv,
+      stdio: "inherit",
+    },
+  );
+  writeFileSync(
+    join(installation.evidenceDirectory, "declaration-checks.json"),
+    JSON.stringify(
+      {
+        strict: true,
+        skipLibCheck: false,
+        exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
+      },
+      null,
+      2,
+    ),
   );
   execFileSync(
     process.execPath,
     [
-      join(root, "node_modules/vite/bin/vite.js"),
+      join(consumer, "node_modules/vite/bin/vite.js"),
       "build",
       "--configLoader",
       "runner",
       "--config",
       "vite.config.ts",
     ],
-    { cwd: consumer, stdio: "inherit" },
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
   checkGraph();
-  const port = await unusedPort();
-  const preview = spawn(
+  execFileSync(
     process.execPath,
     [
-      join(root, "node_modules/vite/bin/vite.js"),
-      "preview",
+      join(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
       "--configLoader",
       "runner",
-      "--outDir",
-      "dist",
-      "--host",
-      "127.0.0.1",
-      "--port",
-      String(port),
-      "--strictPort",
+      "--config",
+      "vite.interop.config.ts",
     ],
-    { cwd: consumer, stdio: "pipe" },
+    {
+      cwd: consumer,
+      env: consumerEnv,
+      stdio: "inherit",
+    },
   );
-  try {
-    await waitForPreview(preview, `http://127.0.0.1:${port}/`);
-    await browserCheck(`http://127.0.0.1:${port}/`);
-  } finally {
-    preview.kill("SIGTERM");
-  }
+  checkGraph("interop");
+  await withPreview("dist", browserCheck);
+  await withPreview("interop-dist", interopBrowserCheck);
   console.log(
-    "Isolated resource consumer passed strict declarations, production bundle, provenance, and browser rendering checks.",
+    "Tarball resource consumers passed strict declarations, precompiled-application pure Vapor and separate interop production builds, provenance, and browser checks.",
   );
 }
 
