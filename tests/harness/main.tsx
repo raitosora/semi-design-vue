@@ -1,3 +1,5 @@
+import VirtualDemo from "../../website/examples/virtualization/Virtual.vapor";
+import PointerDemo from "../../website/examples/pointer/Pointer.vapor";
 import AnimationDemo from "../../website/examples/animation/Animation.vapor";
 import { createVaporApp, defineVaporComponent, ref } from "vue";
 import FoundationInput from "../../website/examples/foundation/Input.vapor";
@@ -19,54 +21,58 @@ const contextMode = new URLSearchParams(location.search).has("context");
 const overlayMode = new URLSearchParams(location.search).has("overlay");
 const domMode = new URLSearchParams(location.search).has("dom");
 const app = createVaporApp(
-  new URLSearchParams(location.search).has("animation")
-    ? AnimationDemo
-    : overlayMode
-      ? OverlayDemo
-      : domMode
-        ? DomDemo
-        : contextMode
-          ? ContextDemo
-          : foundationMode
-            ? defineVaporComponent(() => (
-                <main>
-                  <FoundationInput />
-                  <FoundationTooltip />
-                </main>
-              ))
-            : contractsMode
-              ? defineVaporComponent(() => (
-                  <main>
-                    <Contracts />
-                    <Generic />
-                  </main>
-                ))
-              : defineVaporComponent(() => (
-                  <main>
-                    <h1>Semi Design Vue</h1>
-                    <p>Vapor compiler and lifecycle fixture</p>
-                    <button
-                      onClick={() => {
-                        visible.value = !visible.value;
-                      }}
-                    >
-                      Toggle fixture
-                    </button>
-                    <Lifecycle
-                      v-if={visible.value}
-                      label="Lifecycle fixture"
-                      onDispose={() => {
-                        disposals.value += 1;
-                      }}
-                      onPulse={() => {
-                        pulses.value += 1;
-                      }}
-                    />
-                    <output aria-label="Lifecycle totals">
-                      Pulses {pulses.value} / Disposals {disposals.value}
-                    </output>
-                  </main>
-                )),
+  new URLSearchParams(location.search).has("virtual")
+    ? VirtualDemo
+    : new URLSearchParams(location.search).has("pointer")
+      ? PointerDemo
+      : new URLSearchParams(location.search).has("animation")
+        ? AnimationDemo
+        : overlayMode
+          ? OverlayDemo
+          : domMode
+            ? DomDemo
+            : contextMode
+              ? ContextDemo
+              : foundationMode
+                ? defineVaporComponent(() => (
+                    <main>
+                      <FoundationInput />
+                      <FoundationTooltip />
+                    </main>
+                  ))
+                : contractsMode
+                  ? defineVaporComponent(() => (
+                      <main>
+                        <Contracts />
+                        <Generic />
+                      </main>
+                    ))
+                  : defineVaporComponent(() => (
+                      <main>
+                        <h1>Semi Design Vue</h1>
+                        <p>Vapor compiler and lifecycle fixture</p>
+                        <button
+                          onClick={() => {
+                            visible.value = !visible.value;
+                          }}
+                        >
+                          Toggle fixture
+                        </button>
+                        <Lifecycle
+                          v-if={visible.value}
+                          label="Lifecycle fixture"
+                          onDispose={() => {
+                            disposals.value += 1;
+                          }}
+                          onPulse={() => {
+                            pulses.value += 1;
+                          }}
+                        />
+                        <output aria-label="Lifecycle totals">
+                          Pulses {pulses.value} / Disposals {disposals.value}
+                        </output>
+                      </main>
+                    )),
 );
 app.mount("#app");
 declare global {

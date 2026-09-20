@@ -2,6 +2,7 @@ import { checkContextConsumer } from "./context.js";
 import { checkDomConsumer } from "./dom.js";
 import { checkOverlayConsumer } from "./overlay.js";
 import { checkAnimationConsumer } from "./animation.js";
+import { mountVirtualPointerConsumer } from "./virtual-pointer.js";
 import { createVaporApp, defineVaporComponent, ref } from "vue";
 import IconAIFileLevel3, {
   IconAIFileLevel3 as NamedIconAIFileLevel3,
@@ -30,6 +31,7 @@ declare global {
       checkDom(): Promise<string>;
       checkOverlay(): Promise<string>;
       checkAnimation(): Promise<string>;
+      checkVirtualPointer(): Promise<string>;
       en_US: Locale;
       zh_CN: Locale;
       setHomeColor(color: string): void;
@@ -121,12 +123,14 @@ const second = mount("second");
 first.app.unmount();
 first.host.remove();
 const remounted = mount("remounted");
+const virtualPointer = mountVirtualPointerConsumer();
 
 window.resourceConsumer = {
   checkContext: checkContextConsumer,
   checkDom: checkDomConsumer,
   checkOverlay: checkOverlayConsumer,
   checkAnimation: checkAnimationConsumer,
+  checkVirtualPointer: virtualPointer.check,
   en_US,
   zh_CN,
   setHomeColor(color) {
@@ -135,6 +139,7 @@ window.resourceConsumer = {
   unmount() {
     second.app.unmount();
     remounted.app.unmount();
+    virtualPointer.unmount();
     second.host.remove();
     remounted.host.remove();
   },

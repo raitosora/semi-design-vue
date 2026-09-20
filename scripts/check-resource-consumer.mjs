@@ -225,6 +225,8 @@ function checkGraph() {
     "IllustrationNoContent",
     "en_US",
     "zh_CN",
+    "semi-ui-vue/dist/index.js",
+    "virtual-pointer.tsx",
   ])
     assert(
       modules.includes(expected),
@@ -420,6 +422,37 @@ async function browserCheck(url) {
       !messages.length,
       `Animation consumer browser errors: ${messages.join("; ")}`,
     );
+    assert(
+      (await page.evaluate(() =>
+        window.resourceConsumer.checkVirtualPointer(),
+      )) === "virtual pointer consumer passed",
+      "Built-package virtual list validation failed",
+    );
+    const rows = page.locator("[data-virtual-row]");
+    assert(
+      (await rows.count()) > 0 && (await rows.count()) < 24,
+      "Built-package virtual list did not keep a bounded DOM range",
+    );
+    const handle = page.locator("[data-pointer-handle]");
+    const box = await handle.boundingBox();
+    assert(box, "Built-package pointer handle was not rendered");
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width + 80, box.y + box.height + 20);
+    await page.mouse.up();
+    const pointer = page.locator("[data-pointer-state]");
+    const state = await pointer.evaluate((element) => element.dataset);
+    assert(
+      state.starts === "1" &&
+        Number(state.moves) > 0 &&
+        state.ends === "1" &&
+        state.captured === "true",
+      "Native pointer capture did not deliver move/up outside its handle",
+    );
+    assert(
+      !messages.length,
+      `Virtual/pointer consumer browser errors: ${messages.join("; ")}`,
+    );
     await page.screenshot({
       path: join(
         root,
@@ -457,6 +490,7 @@ async function run() {
     "context.tsx",
     "overlay.tsx",
     "animation.tsx",
+    "virtual-pointer.tsx",
     "vite.config.ts",
   ])
     copyFileSync(join(fixture, name), join(consumer, name));

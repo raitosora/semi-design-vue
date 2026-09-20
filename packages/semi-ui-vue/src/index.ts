@@ -89,3 +89,29 @@ export type {
   TriggerOptions,
   NativeEventHandler,
 } from "./internal/overlay/trigger.js";
+export {
+  createPointerSession,
+  clampDragOffset,
+  resizeRect,
+} from "./internal/pointer/index.js";
+export type {
+  PointerPoint,
+  PointerBounds,
+  PointerRect,
+  PointerSession,
+  PointerSessionEvent,
+  PointerSessionOptions,
+  PointerEndReason,
+  ResizeOptions,
+  ResizeEdge,
+} from "./internal/pointer/index.js";
+export { useVirtualList } from "./internal/virtual/use-virtual-list.js";
+export type {
+  VirtualList,
+  VirtualKey,
+  VirtualAlign,
+  VirtualItem,
+  VirtualRange,
+  VirtualListOptions,
+  ScrollToKeyOptions,
+} from "./internal/virtual/use-virtual-list.js";

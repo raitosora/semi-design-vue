@@ -1,0 +1,40 @@
+.semi-pointer-surface {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 300px);
+  margin: 8px;
+  vertical-align: top;
+}
+.semi-pointer-area {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: var(--vp-c-bg-soft, #f1f3f5);
+  outline: 1px solid #8a93a0;
+}
+.semi-pointer-drag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 48px;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.semi-pointer-resize {
+  position: relative;
+  max-width: 100%;
+  background: var(--vp-c-bg-soft, #f1f3f5);
+  outline: 1px solid #8a93a0;
+}
+.semi-pointer-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  touch-action: none;
+  cursor: nwse-resize;
+}

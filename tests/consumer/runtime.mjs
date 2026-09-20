@@ -211,3 +211,45 @@ assert(
 console.log(
   "Overlay imports and empty host disposal passed without browser globals; no component SSR/hydration or DOM mounting is asserted.",
 );
+
+import {
+  useVirtualList,
+  createPointerSession,
+  clampDragOffset,
+  resizeRect,
+} from "semi-ui-vue";
+const virtual = useVirtualList({
+  items: () => [{ id: "a" }, { id: "b" }],
+  getKey: (item) => item.id,
+  estimateSize: 24,
+  scrollElement: () => null,
+});
+assert(
+  virtual.totalSize.value === 48 && virtual.offsetFor("b") === 24,
+  "Virtual estimates must work without browser globals",
+);
+virtual.dispose();
+const pointer = createPointerSession({ element: () => null });
+pointer.refresh();
+pointer.dispose();
+assert(!pointer.active, "Disposed empty pointer session remained active");
+assert(
+  clampDragOffset(
+    { x: 0, y: 0 },
+    { x: 9, y: -1 },
+    { left: 0, top: 0, right: 5, bottom: 5 },
+  ).x === 5,
+  "Drag constraints failed",
+);
+assert(
+  resizeRect(
+    { x: 0, y: 0, width: 10, height: 10 },
+    { x: 0, y: 0 },
+    { x: 20, y: 0 },
+    ["right"],
+  ).width === 30,
+  "Resize geometry failed",
+);
+console.log(
+  "Virtual/pointer static imports and empty-target disposal passed without DOM globals; no SSR/hydration support is asserted.",
+);

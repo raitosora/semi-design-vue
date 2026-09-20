@@ -498,3 +498,63 @@ function overlayTypes(element: HTMLElement) {
   void [native, destroyed, widenedHost];
 }
 void overlayTypes;
+
+import {
+  useVirtualList,
+  createPointerSession,
+  clampDragOffset,
+  resizeRect,
+  type VirtualListOptions,
+  type VirtualItem,
+  type PointerSessionOptions,
+} from "semi-ui-vue";
+function virtualPointerTypes(element: HTMLElement) {
+  const options: VirtualListOptions<{ id: string }> = {
+    items: () => [{ id: "row" }],
+    getKey: (item) => item.id,
+    estimateSize: 32,
+    scrollElement: () => element,
+    focusedKey: undefined,
+    overscan: undefined,
+  };
+  const virtual = useVirtualList(options);
+  const item: VirtualItem<{ id: string }> | undefined =
+    virtual.virtualItems.value[0];
+  const start: number | undefined = virtual.offsetFor("row");
+  const found: boolean = virtual.scrollToKey("row", { align: "center" });
+  virtual.registerItem("row", element);
+  virtual.invalidate("row");
+  // @ts-expect-error Keys are stable primitives, not object identity.
+  virtual.scrollToKey({ id: "row" });
+  // @ts-expect-error Alignment is a closed supported set.
+  virtual.scrollToKey("row", { align: "smart" });
+  // @ts-expect-error Virtual window is consumer-readonly.
+  virtual.virtualItems.value = [];
+  const pointerOptions: PointerSessionOptions = {
+    element: () => element,
+    onMove(event) {
+      const delta: number = event.delta.x;
+      void delta;
+    },
+    onEnd(_event, reason) {
+      const end: "end" | "cancel" | "lost-capture" | "dispose" = reason;
+      void end;
+    },
+  };
+  const pointer = createPointerSession(pointerOptions);
+  pointer.refresh();
+  const point = clampDragOffset({ x: 0, y: 0 }, { x: 2, y: 3 });
+  const rect = resizeRect({ x: 0, y: 0, width: 20, height: 30 }, point, point, [
+    "right",
+  ]);
+  // @ts-expect-error Session state is not consumer-writable.
+  pointer.active = false;
+  // @ts-expect-error Component proxies are not native capture targets.
+  createPointerSession({ element: () => ({ $el: element }) });
+  // @ts-expect-error Physical edges are explicit.
+  resizeRect(rect, point, point, ["start"]);
+  pointer.dispose();
+  virtual.dispose();
+  void [item, start, found];
+}
+void virtualPointerTypes;
