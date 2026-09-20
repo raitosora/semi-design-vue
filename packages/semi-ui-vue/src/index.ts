@@ -67,3 +67,25 @@ export type {
 export { ariaIdScopeKey } from "./dom/aria.js";
 export type { AriaIdScope } from "./dom/aria.js";
 export type { DomScheduler } from "./dom/scheduling.js";
+export { createOverlayScope } from "./internal/overlay/scope.js";
+export type {
+  OverlayScope,
+  OverlayHandle,
+  OverlayOptions,
+} from "./internal/overlay/types.js";
+export { createOverlayHost } from "./internal/overlay/host.js";
+export type {
+  OverlayHost,
+  OverlayHostHandle,
+  OverlayHostOptions,
+  OverlayHostState,
+} from "./internal/overlay/host.js";
+export {
+  createTrigger,
+  mergeEventHandlers,
+} from "./internal/overlay/trigger.js";
+export type {
+  TriggerBinding,
+  TriggerOptions,
+  NativeEventHandler,
+} from "./internal/overlay/trigger.js";

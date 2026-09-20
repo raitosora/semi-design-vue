@@ -401,6 +401,15 @@ async function browserCheck(url) {
       !messages.length,
       `DOM consumer browser errors: ${messages.join("; ")}`,
     );
+    assert(
+      (await page.evaluate(() => window.resourceConsumer.checkOverlay())) ===
+        "overlay consumer passed",
+      "Built-package overlay host validation failed",
+    );
+    assert(
+      !messages.length,
+      `Overlay consumer browser errors: ${messages.join("; ")}`,
+    );
     await page.screenshot({
       path: join(
         root,
@@ -436,6 +445,7 @@ async function run() {
     "main.tsx",
     "dom.tsx",
     "context.tsx",
+    "overlay.tsx",
     "vite.config.ts",
   ])
     copyFileSync(join(fixture, name), join(consumer, name));

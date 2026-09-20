@@ -89,3 +89,14 @@ test("compiles DOM tools example to reactive Vapor DOM operations", async () => 
     /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
   );
 });
+
+test("compiles the overlay renderer and explicit triggers as Vapor DOM", async () => {
+  const result = await server.transformRequest(
+    "/website/examples/overlay/Overlay.vapor.tsx",
+  );
+  expect(result?.code).toMatch(/template\(/);
+  expect(result?.code).toMatch(/(?:renderEffect|setText)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+});

@@ -607,3 +607,49 @@ for (const port of [4180, 4181]) {
     await expect(region.locator("[data-dom-scheduled]")).toHaveText("0");
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: overlay containers, keyboard closure and independent disposal`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/overlay.html`);
+    const demos = page.locator("[data-overlay-demo]");
+    await expect(demos).toHaveCount(2);
+    const first = demos.first();
+    const trigger = first.getByRole("button", {
+      name: "打开浮层",
+      exact: true,
+    });
+    await trigger.click();
+    const dialog = page.getByRole("dialog", { name: "示例浮层" });
+    await expect(
+      dialog.getByRole("button", { name: "内部计数 0" }),
+    ).toBeFocused();
+    await dialog.getByRole("button", { name: "内部计数 0" }).click();
+    await dialog.getByRole("button", { name: "更新内容" }).click();
+    await expect(dialog.locator("[data-overlay-label]")).toHaveText(
+      "更新 2 · ltr",
+    );
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    await expect(first.locator("[data-overlay-closes]")).toHaveText("1");
+    await expect(demos.last().locator("[data-overlay-closes]")).toHaveText("0");
+    await trigger.click();
+    await dialog.getByRole("button", { name: "切换容器" }).click();
+    await expect(page.locator("body > [data-semi-overlay]")).toHaveCount(1);
+    await page.screenshot({
+      path: info.outputPath("overlay-host.png"),
+      fullPage: true,
+    });
+    await page.getByRole("heading", { level: 1 }).click();
+    await expect(dialog).toHaveCount(0);
+    const region = page
+      .getByRole("region", { name: "独立 Vapor 示例" })
+      .first();
+    await trigger.click();
+    await region.getByRole("button", { name: "卸载示例" }).click();
+    await expect(page.locator("[data-semi-overlay]")).toHaveCount(0);
+    await expect(region.locator("[data-vapor-host]")).toBeEmpty();
+  });
+}
