@@ -22,6 +22,7 @@ export default defineConfig({
         text: "开始使用",
         items: [
           { text: "项目介绍", link: "/zh-CN/guide/start" },
+          { text: "本地产物与消费", link: "/zh-CN/guide/packages" },
           { text: "真实 Vapor 示例", link: "/zh-CN/guide/runtime" },
           { text: "API 与类型约定", link: "/zh-CN/guide/api-contracts" },
           { text: "Foundation 桥接", link: "/zh-CN/guide/foundation" },

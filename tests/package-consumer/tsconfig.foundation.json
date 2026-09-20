@@ -1,0 +1,13 @@
+{
+  "extends": "../types/tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "rootDir": "../..",
+    "paths": {
+      "semi-ui-vue": ["../../packages/semi-ui-vue/dist/index.d.ts"]
+    }
+  },
+  "files": ["foundation-entry.ts"]
+}

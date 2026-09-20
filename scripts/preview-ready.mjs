@@ -35,3 +35,37 @@ export function waitForPreview(child, url, { timeout = 15_000 } = {}) {
     child.once("exit", onExit);
   });
 }
+
+/** Do not remove an isolated consumer until its preview process has closed. */
+export async function stopPreview(child, { timeout = 2_000 } = {}) {
+  if (!child.pid || child.exitCode != null || child.signalCode != null) return;
+  await new Promise((resolve, reject) => {
+    let timer;
+    const finish = (error) => {
+      clearTimeout(timer);
+      child.off("close", onClose);
+      child.off("error", onError);
+      if (error) reject(error);
+      else resolve();
+    };
+    const onClose = () => finish();
+    const onError = (error) => finish(error);
+    child.once("close", onClose);
+    child.once("error", onError);
+    const signal = (value) => {
+      try {
+        child.kill(value);
+      } catch (error) {
+        finish(error);
+      }
+    };
+    timer = setTimeout(() => {
+      timer = setTimeout(
+        () => finish(new Error("Preview did not close after SIGKILL")),
+        timeout,
+      );
+      signal("SIGKILL");
+    }, timeout);
+    signal("SIGTERM");
+  });
+}

@@ -25,7 +25,8 @@ jobs:
           test -z "$(git ls-files -- docs experiments NOTICE.md 'CONTRIB*')"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium --only-shell
-      - run: pnpm verify
+      - name: Verify source, packages and isolated tarball consumers
+        run: pnpm verify
       - run: pnpm audit --audit-level moderate
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

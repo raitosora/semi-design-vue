@@ -1,0 +1,296 @@
+import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { createServer } from "node:http";
+import {
+  cp,
+  mkdtemp,
+  mkdir,
+  readFile,
+  readdir,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { chromium, expect } from "@playwright/test";
+import { buildFoundationFixture } from "./build-foundation-fixture.mjs";
+import { installPackedConsumer } from "./packed-consumer.mjs";
+import { checkSource } from "./dependency-policy.mjs";
+
+const root = fileURLToPath(new URL("../", import.meta.url));
+const fixture = join(root, "tests/package-consumer");
+const evidence = join(root, ".vitest/attachments/foundation-consumer");
+const work = await mkdtemp(join(tmpdir(), "semi-foundation-tarball-"));
+
+async function outputFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const groups = await Promise.all(
+    entries.map((entry) =>
+      entry.isDirectory()
+        ? outputFiles(join(directory, entry.name))
+        : [join(directory, entry.name)],
+    ),
+  );
+  return groups.flat();
+}
+
+async function serve(directory) {
+  const server = createServer(async (request, response) => {
+    const path = resolve(
+      directory,
+      `.${new URL(request.url, "http://localhost").pathname === "/" ? "/index.html" : new URL(request.url, "http://localhost").pathname}`,
+    );
+    if (!path.startsWith(`${directory}/`)) {
+      response.writeHead(403).end();
+      return;
+    }
+    try {
+      response.setHeader(
+        "Content-Type",
+        path.endsWith(".js") ? "text/javascript" : "text/html",
+      );
+      response.end(await readFile(path));
+    } catch {
+      response.writeHead(404).end();
+    }
+  });
+  await new Promise((accept, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", accept);
+  });
+  return { server, url: `http://127.0.0.1:${server.address().port}` };
+}
+
+async function browserCheck(directory, mode) {
+  const { server, url } = await serve(directory);
+  let browser;
+  try {
+    browser = await chromium.launch({
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+    });
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error" || message.type() === "warning")
+        errors.push(message.text());
+    });
+    await page.goto(url);
+    const input = page.getByRole("textbox", {
+      name: "Foundation input",
+      exact: true,
+    });
+    await expect(input).toHaveValue("initial-input");
+    await input.fill("typed-input");
+    await expect(page.locator("#input-value")).toHaveText("typed-input");
+    await expect(page.locator("#changes")).toHaveText("1");
+    await page.locator("#update").click();
+    await expect(input).toHaveValue("parent-update");
+    await page
+      .getByRole("textbox", { name: "Model", exact: true })
+      .fill("typed-model");
+    await expect(page.locator("#model-value")).toHaveText("typed-model");
+    await page.locator("#expose").click();
+    await expect(page.locator("#exposed")).toHaveText("focused");
+    await expect(page.locator("#model-value")).toHaveText("reset-model");
+    await expect(
+      page.getByRole("textbox", { name: "Model", exact: true }),
+    ).toHaveValue("reset-model");
+    const trigger = page.getByRole("button", {
+      name: "Foundation tooltip trigger",
+    });
+    await trigger.hover();
+    await expect(page.getByRole("tooltip")).toHaveText("packed-tooltip");
+    await expect(page.locator("#visible")).toHaveText("true");
+    // Keep detached nodes to prove the Foundation-owned native listeners release.
+    await page.evaluate(() => {
+      window.detachedTrigger = document.querySelector("button");
+    });
+    await page.locator("#remove").click();
+    await expect(input).toHaveCount(0);
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+    const state = await page.locator("#visible").textContent();
+    await page.evaluate(() => {
+      window.detachedTrigger.dispatchEvent(new MouseEvent("mouseenter"));
+      window.dispatchEvent(new Event("resize"));
+      window.dispatchEvent(new Event("scroll"));
+    });
+    await expect(page.locator("#visible")).toHaveText(state);
+    assert.deepEqual(errors, [], `${mode} browser errors`);
+    await page.screenshot({ path: join(evidence, `${mode}.png`) });
+  } finally {
+    await browser?.close();
+    await new Promise((accept, reject) =>
+      server.close((error) => (error ? reject(error) : accept())),
+    );
+  }
+}
+
+try {
+  await rm(evidence, { recursive: true, force: true });
+  await mkdir(evidence, { recursive: true });
+  const packed = await buildFoundationFixture({ root, directory: work });
+  await writeFile(
+    join(evidence, "producer-graph.json"),
+    JSON.stringify(packed.graph, null, 2),
+  );
+  const consumerDirectory = join(work, "consumer");
+  const installed = await installPackedConsumer({
+    root,
+    directory: consumerDirectory,
+    packages: [packed.name, "semi-ui-vue"],
+    additionalTarballs: { [packed.name]: packed.tarball },
+    dependencies: { vue: "3.6.0-rc.9" },
+    devDependencies: {
+      vite: "8.3.0",
+      typescript: "5.9.3",
+      "@types/node": "24.12.0",
+    },
+    label: "foundation-consumer",
+  });
+  const consumer = installed.directory;
+  const env = installed.env;
+  for (const name of ["foundation-consumer.ts", "vite.foundation.config.mjs"])
+    await cp(join(fixture, name), join(consumer, name));
+  await writeFile(
+    join(consumer, "tsconfig.json"),
+    JSON.stringify({
+      compilerOptions: {
+        target: "ES2022",
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
+        strict: true,
+        skipLibCheck: false,
+        noEmit: true,
+      },
+      files: ["foundation-consumer.ts"],
+    }),
+  );
+  const tsc = join(consumer, "node_modules/typescript/bin/tsc");
+  execFileSync(process.execPath, [tsc, "-p", "tsconfig.json"], {
+    cwd: consumer,
+    env,
+    stdio: "inherit",
+  });
+  // Separate call-site-only exact optional pass; full dependency checking above stays enabled.
+  execFileSync(
+    process.execPath,
+    [
+      tsc,
+      "-p",
+      "tsconfig.json",
+      "--exactOptionalPropertyTypes",
+      "--skipLibCheck",
+    ],
+    { cwd: consumer, env, stdio: "inherit" },
+  );
+  await writeFile(
+    join(consumer, "index.html"),
+    '<!doctype html><html><head><link rel="icon" href="data:,"><title>Packed Foundation consumer</title></head><body><div id="app"></div><script type="module" src="/main.js"></script></body></html>',
+  );
+  const checks = [];
+  for (const mode of ["pure", "interop"]) {
+    await cp(join(fixture, `foundation-${mode}.js`), join(consumer, "main.js"));
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--config",
+        "vite.foundation.config.mjs",
+      ],
+      { cwd: consumer, env, stdio: "inherit" },
+    );
+    const graph = JSON.parse(
+      await readFile(join(consumer, "graph.json"), "utf8"),
+    );
+    assert(graph.modules.length > 0, "Empty consumer bundle graph");
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          id.includes(`${packed.name}/dist/index.js`) && renderedLength > 0,
+      ),
+      "Packed Foundation implementation is absent from consumer bundle",
+    );
+    assert(
+      graph.modules.every(
+        ({ id }) => !id.startsWith(root) && !/\.(?:tsx|jsx)$/.test(id),
+      ),
+      "Consumer resolved repository source or recompiled TSX",
+    );
+    assert(
+      graph.modules.every(
+        ({ id }) =>
+          !/(?:^|\/)(?:react(?:-dom)?|lodash(?:-es|\.[^/]+)?|@douyinfe\/semi-foundation)(?:\/|$)/.test(
+            id,
+          ),
+      ),
+      "Forbidden consumer bundle module",
+    );
+    const files = (await outputFiles(join(consumer, "dist"))).filter((path) =>
+      path.endsWith(".js"),
+    );
+    assert(files.length > 0, "No browser JavaScript output");
+    const code = (
+      await Promise.all(files.map((path) => readFile(path, "utf8")))
+    ).join("\n");
+    assert.deepEqual(
+      checkSource(code, `${mode}.js`, { foundationBundled: true }),
+      [],
+    );
+    assert(
+      /template\(/.test(code) && /useModel/.test(code),
+      "Missing Vapor DOM or macro runtime code",
+    );
+    const hasRenderer = /function\s+baseCreateRenderer\b/.test(code);
+    assert.equal(
+      hasRenderer,
+      mode === "interop",
+      `${mode} renderer boundary changed`,
+    );
+    await writeFile(
+      join(evidence, `${mode}-graph.json`),
+      JSON.stringify(
+        {
+          ...graph,
+          modules: graph.modules.map((entry) => ({
+            ...entry,
+            id: entry.id.replaceAll(consumer, "<consumer>"),
+          })),
+        },
+        null,
+        2,
+      ),
+    );
+    await browserCheck(join(consumer, "dist"), mode);
+    checks.push({
+      mode,
+      browser: "passed",
+      modules: graph.modules.length,
+      vdomRenderer: hasRenderer,
+      libraryTsxRecompiled: false,
+    });
+  }
+  await writeFile(
+    join(evidence, "summary.json"),
+    JSON.stringify(
+      {
+        checks,
+        strictDeclarations: true,
+        skipLibCheck: false,
+        exactOptionalCallSites: true,
+        ssr: "unsupported",
+        hydration: "unsupported",
+        publication: "private validation-only tarball",
+      },
+      null,
+      2,
+    ),
+  );
+  console.log(
+    "Foundation tarball consumers passed strict types, production graphs, pure Vapor and interop browser behavior.",
+  );
+} finally {
+  await rm(work, { recursive: true, force: true });
+}

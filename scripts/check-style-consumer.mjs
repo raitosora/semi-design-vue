@@ -1,7 +1,6 @@
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
-  cpSync,
   existsSync,
   mkdtempSync,
   mkdirSync,
@@ -9,7 +8,6 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { createServer } from "node:net";
@@ -18,46 +16,18 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
 import { checkManifest, checkSource } from "./dependency-policy.mjs";
-import { waitForPreview } from "./preview-ready.mjs";
+import { installPackedConsumer } from "./packed-consumer.mjs";
+import { waitForPreview, stopPreview } from "./preview-ready.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/style-consumer");
-const packages = [
-  "semi-animation-vue",
-  "semi-ui-vue",
-  "vite-plugin-semi-theme",
-];
+const packages = ["semi-ui-vue", "vite-plugin-semi-theme"];
 const work = mkdtempSync(join(tmpdir(), "semi-style-consumer-"));
 const consumer = join(work, "consumer");
+let consumerEnv;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
-}
-
-function copyDistPackage(name) {
-  const source = resolve(root, "packages", name);
-  const dist = join(source, "dist");
-  assert(existsSync(dist), `Missing built artifact: ${name}/dist`);
-  const manifest = JSON.parse(
-    readFileSync(join(source, "package.json"), "utf8"),
-  );
-  const manifestErrors = checkManifest(manifest);
-  assert(
-    !manifestErrors.length,
-    `${name} manifest: ${manifestErrors.join(", ")}`,
-  );
-  const staged = join(consumer, "node_modules", name);
-  mkdirSync(staged, { recursive: true });
-  copyFileSync(join(source, "package.json"), join(staged, "package.json"));
-  cpSync(dist, join(staged, "dist"), { recursive: true });
-}
-
-function linkLockedDependency(name) {
-  const source = resolve(root, "node_modules", name);
-  assert(existsSync(source), `Missing locked consumer tool or peer: ${name}`);
-  const target = join(consumer, "node_modules", name);
-  mkdirSync(resolve(target, ".."), { recursive: true });
-  symlinkSync(realpathSync(source), target, "junction");
 }
 
 function checkRuntimeClosure(entry) {
@@ -337,7 +307,7 @@ async function withPreview(outDir, check) {
   const preview = spawn(
     process.execPath,
     [
-      resolve(root, "node_modules/vite/bin/vite.js"),
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
       "preview",
       "--configLoader",
       "runner",
@@ -349,7 +319,7 @@ async function withPreview(outDir, check) {
       String(port),
       "--strictPort",
     ],
-    { cwd: consumer, stdio: "pipe" },
+    { cwd: consumer, env: consumerEnv, stdio: "pipe" },
   );
   try {
     await waitForPreview(preview, `http://127.0.0.1:${port}/`);
@@ -357,15 +327,49 @@ async function withPreview(outDir, check) {
       `http://127.0.0.1:${port}/${outDir === "plain-dist" ? "plain.html" : ""}`,
     );
   } finally {
-    preview.kill("SIGTERM");
+    await stopPreview(preview);
   }
 }
 
 try {
-  mkdirSync(join(consumer, "node_modules"), { recursive: true });
-  for (const name of packages) copyDistPackage(name);
-  for (const name of ["date-fns", "vite", "sass", "vue", "typescript"])
-    linkLockedDependency(name);
+  const installation = await installPackedConsumer({
+    root,
+    directory: consumer,
+    packages,
+    dependencies: { vue: "3.6.0-rc.9" },
+    devDependencies: {
+      typescript: "5.9.3",
+      vite: "8.3.0",
+      sass: "1.97.3",
+      "@types/node": "24.12.0",
+    },
+    label: "styles",
+  });
+  consumerEnv = installation.env;
+  const installSummary = JSON.parse(
+    readFileSync(
+      join(installation.evidenceDirectory, "install-summary.json"),
+      "utf8",
+    ),
+  );
+  assert(
+    !installSummary.roots.includes("semi-animation-vue"),
+    "Style consumer must not explicitly install the UI's animation dependency",
+  );
+  assert(
+    installation.productionTree.dependencies["semi-ui-vue"]?.dependencies?.[
+      "semi-animation-vue"
+    ]?.version === "0.0.0",
+    "Packed UI did not resolve its declared animation dependency",
+  );
+  for (const type of ["metadata", "tarball"])
+    assert(
+      installSummary.registryRequests.some(
+        (request) =>
+          request.name === "semi-animation-vue" && request.type === type,
+      ),
+      `Animation ${type} was not resolved transitively through the packed registry`,
+    );
   for (const name of [
     "consumer.ts",
     "input-only.scss",
@@ -390,6 +394,7 @@ try {
         moduleResolution: "NodeNext",
         noEmit: true,
         strict: true,
+        skipLibCheck: false,
       },
       files: ["consumer.ts"],
     }),
@@ -402,20 +407,52 @@ try {
   checkStyleMetadata();
   execFileSync(
     process.execPath,
-    [resolve(root, "node_modules/typescript/bin/tsc"), "-p", "tsconfig.json"],
-    { cwd: consumer, stdio: "inherit" },
+    [
+      resolve(consumer, "node_modules/typescript/bin/tsc"),
+      "-p",
+      "tsconfig.json",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  // Extra call-site validation does not replace the full declaration pass above.
+  execFileSync(
+    process.execPath,
+    [
+      join(consumer, "node_modules/typescript/bin/tsc"),
+      "-p",
+      "tsconfig.json",
+      "--exactOptionalPropertyTypes",
+      "--skipLibCheck",
+    ],
+    {
+      cwd: consumer,
+      env: consumerEnv,
+      stdio: "inherit",
+    },
+  );
+  writeFileSync(
+    join(installation.evidenceDirectory, "declaration-checks.json"),
+    JSON.stringify(
+      {
+        strict: true,
+        skipLibCheck: false,
+        exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
+      },
+      null,
+      2,
+    ),
   );
   execFileSync(
     process.execPath,
     [
-      resolve(root, "node_modules/vite/bin/vite.js"),
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
       "build",
       "--configLoader",
       "runner",
       "--config",
       "vite.direct.config.ts",
     ],
-    { cwd: consumer, stdio: "inherit" },
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
   const directCss = files(join(consumer, "direct-dist"))
     .filter((path) => path.endsWith(".css"))
@@ -436,14 +473,14 @@ try {
   execFileSync(
     process.execPath,
     [
-      resolve(root, "node_modules/vite/bin/vite.js"),
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
       "build",
       "--configLoader",
       "runner",
       "--config",
       "vite.plain.config.ts",
     ],
-    { cwd: consumer, stdio: "inherit" },
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
@@ -462,14 +499,14 @@ try {
   execFileSync(
     process.execPath,
     [
-      resolve(root, "node_modules/vite/bin/vite.js"),
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
       "build",
       "--configLoader",
       "runner",
       "--config",
       "vite.config.ts",
     ],
-    { cwd: consumer, stdio: "inherit" },
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
   const output = files(join(consumer, "dist"));
   const css = output
