@@ -111,3 +111,17 @@ test("compiles animation visibility and size lifecycles to native Vapor DOM", as
     /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
   );
 });
+
+for (const example of ["virtualization/Virtual", "pointer/Pointer"]) {
+  test(`compiles ${example} as native Vapor DOM`, async () => {
+    const result = await server.transformRequest(
+      `/website/examples/${example}.vapor.tsx`,
+    );
+    expect(result?.code).toMatch(/template\(/);
+    expect(result?.code).not.toMatch(
+      /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+    );
+    if (example.startsWith("virtualization"))
+      expect(result?.code).toMatch(/For/);
+  });
+}

@@ -29,6 +29,10 @@ export default defineConfig({
           { text: "DOM 与键盘交互", link: "/zh-CN/guide/dom" },
           { text: "浮层容器与触发器", link: "/zh-CN/guide/overlay" },
           { text: "动画与可见性", link: "/zh-CN/guide/animation" },
+          {
+            text: "虚拟滚动与指针交互",
+            link: "/zh-CN/guide/virtualization-pointer",
+          },
           { text: "安装与样式", link: "/zh-CN/guide/styles" },
           { text: "定制主题", link: "/zh-CN/guide/theme" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },

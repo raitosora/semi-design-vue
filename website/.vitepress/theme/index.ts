@@ -6,6 +6,8 @@ import "./style.css";
 import "../../../packages/semi-ui-vue/dist/styles/index.css";
 import "../../examples/theme/demo.css";
 import "../../examples/animation/motion.css";
+import "../../examples/virtualization/virtual.css";
+import "../../examples/pointer/pointer.css";
 export default {
   extends: DefaultTheme,
   async enhanceApp({ app }) {

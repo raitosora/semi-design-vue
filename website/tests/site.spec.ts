@@ -692,3 +692,41 @@ for (const port of [4180, 4181]) {
     await expect(second.getByLabel("动画状态")).toContainText("entered");
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: virtual list and native pointer product examples`, async ({
+    checkedPage: page,
+  }) => {
+    await page.goto(
+      `http://127.0.0.1:${port}/zh-CN/guide/virtualization-pointer.html`,
+    );
+    await page.getByRole("button", { name: "定位项目 500" }).click();
+    await page.locator("[data-virtual-scroll]").scrollIntoViewIfNeeded();
+    await expect(
+      page.getByRole("textbox", { name: "编辑项目 500", exact: true }),
+    ).toBeInViewport();
+    await page.getByRole("button", { name: "改变行高" }).click();
+    expect(await page.locator("[data-virtual-row]").count()).toBeLessThan(40);
+    const handle = page.locator("[data-drag-handle]").first();
+    await handle.scrollIntoViewIfNeeded();
+    const bounds = (await handle.boundingBox())!;
+    await page.mouse.move(bounds.x + 12, bounds.y + 12);
+    await page.mouse.down();
+    await page.mouse.move(bounds.x + 82, bounds.y + 62);
+    await page.mouse.up();
+    await expect(page.getByLabel("指针位置").first()).toHaveText(
+      "70, 50 · end",
+    );
+    await expect(page.getByLabel("指针位置").nth(1)).toHaveText("0, 0 · idle");
+    await page.getByRole("button", { name: "切换宽度" }).first().click();
+    await expect(page.locator("[data-resize-box]").first()).toHaveCSS(
+      "width",
+      "200px",
+    );
+    const demos = page.getByRole("region", { name: "独立 Vapor 示例" });
+    await demos.first().getByRole("button", { name: "卸载示例" }).click();
+    await expect(page.locator("[data-virtual-row]")).toHaveCount(0);
+    await demos.nth(1).getByRole("button", { name: "卸载示例" }).click();
+    await expect(page.locator("[data-drag-handle]")).toHaveCount(0);
+  });
+}
