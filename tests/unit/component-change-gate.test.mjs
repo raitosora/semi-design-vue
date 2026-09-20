@@ -3,7 +3,7 @@ import { execFile } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   changedFiles,
   inspectComponentChanges,
@@ -22,6 +22,7 @@ const complete = [
   "website/examples/button/basic.tsx",
   "tests/browser/button.test.tsx",
 ].map((path) => change(path));
+afterEach(() => vi.unstubAllEnvs());
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "semi-component-gate-"));
   roots.push(root);
@@ -369,7 +370,9 @@ describe("comparison modes", () => {
     await expect(resolveComparison({ root, base: next, head })).rejects.toThrow(
       "ancestor",
     );
-    await expect(resolveComparison({ root })).rejects.toThrow("Workspace mode");
+    await expect(resolveComparison({ root, event: "" })).rejects.toThrow(
+      "Workspace mode",
+    );
     await expect(
       resolveComparison({ root, base: "missing", head }),
     ).rejects.toThrow("rev-parse");
@@ -399,5 +402,34 @@ describe("comparison modes", () => {
     await expect(
       resolveComparison({ root, event: "push", eventPath: pushEvent }),
     ).resolves.toMatchObject({ base, head, mode: "push" });
+  });
+
+  it("inherits CI events unless an explicit local event mode is supplied", async () => {
+    const root = await fixture();
+    const base = (
+      await run("git", ["rev-parse", "HEAD"], { cwd: root })
+    ).stdout.trim();
+    await writeFile(join(root, "tracked.txt"), "two");
+    await run("git", ["commit", "-am", "feature"], { cwd: root });
+    const head = (
+      await run("git", ["rev-parse", "HEAD"], { cwd: root })
+    ).stdout.trim();
+    const eventPath = join(root, "event.json");
+    await writeFile(
+      eventPath,
+      JSON.stringify({
+        pull_request: { base: { sha: base }, head: { sha: head } },
+      }),
+    );
+    vi.stubEnv("GITHUB_EVENT_NAME", "pull_request");
+    vi.stubEnv("GITHUB_EVENT_PATH", eventPath);
+    await expect(resolveComparison({ root })).resolves.toMatchObject({
+      base,
+      head,
+      mode: "pull_request",
+    });
+    await expect(resolveComparison({ root, event: "" })).rejects.toThrow(
+      "Workspace mode",
+    );
   });
 });
