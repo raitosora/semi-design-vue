@@ -100,3 +100,14 @@ test("compiles the overlay renderer and explicit triggers as Vapor DOM", async (
     /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
   );
 });
+
+test("compiles animation visibility and size lifecycles to native Vapor DOM", async () => {
+  const result = await server.transformRequest(
+    "/website/examples/animation/Animation.vapor.tsx",
+  );
+  expect(result?.code).toMatch(/template\(/);
+  expect(result?.code).toMatch(/(?:renderEffect|setText)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+});

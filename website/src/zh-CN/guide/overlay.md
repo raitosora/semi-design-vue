@@ -54,7 +54,7 @@ entry.destroy();
 
 `overlay` 是 host 的默认浮层配置，每次 `open` 的 own key 覆盖它。未指定 container 时读取 `context.container`；显式 `container: undefined` 清除 context 容器选择，回到 body。host 不抓取“最后一个应用”，也不枚举 provides。context 的方向会同步为容器 `dir`；语言、日期和配置供 renderer 明确消费。需要向子组件注入时使用公开 `app.provide(semiContextKey, source)` 或 `provideSemiContext`，不会自动继承其他应用的插件或任意 injection。
 
-Vapor host 的容器必须属于创建 host 的当前 document；初始和显式 update 的跨 document 选择会同步报错，动态 getter 改到外部 document 会释放该实例并报告错误。当前 JSX 常规事件编译为直接监听；另行验证的 Vue RC8 document 委托事件不能随节点跨 document 迁移。host 统一采用当前 document 边界，以兼容这两种 renderer；iframe 内应使用 iframe 自身运行环境建立 app 和 host。原生 DOM scope 的 document 迁移不等于 Vapor renderer 迁移支持。
+Vapor host 的容器必须属于创建 host 的当前 document；初始和显式 update 的跨 document 选择会同步报错，动态 getter 改到外部 document 会释放该实例并报告错误。当前 JSX 常规事件编译为直接监听；另行验证的 Vue RC9 document 委托事件不能随节点跨 document 迁移。host 统一采用当前 document 边界，以兼容这两种 renderer；iframe 内应使用 iframe 自身运行环境建立 app 和 host。原生 DOM scope 的 document 迁移不等于 Vapor renderer 迁移支持。
 
 每次 `update` 合并自己的顶层 props，允许类型声明支持的显式 undefined；destroy 后更新无效。renderer 挂载失败时须自行卸载部分建立的应用，host 负责回收容器；正常卸载抛错也继续清理其他实例。所有权与初始化默认值约定见[上下文与默认配置](./context.md)。
 
@@ -69,3 +69,7 @@ Vapor host 的容器必须属于创建 host 的当前 document；初始和显式
 使用显式 DOM ref，不检查 slot 内容、不克隆 VNode、不依赖 `$el`。沿用 [DOM 工具](./dom.md) 的禁用、visibility、slot 和 ShadowRoot 约束；浏览器未公开的 closed slot 路径无法推断。焦点和滚动锁需按实际内容选择；自定义 dialog 的可访问名称与业务语义由调用方提供。
 
 真实编译、严格类型、Chromium 开发 / 生产交互与独立产物消费者验证这些组合工具。静态导入安全只保证 Node 求值边界，组件 SSR / 水合未建立。示例截图仅说明已验证页面结果，不表示完整 Semi 像素一致性。当前包均为 private，尚不发布 npm。
+
+## 退出动画
+
+需要退出动画时设置 `deferClose: true` 并提供 onClose：该回调只请求关闭，host 持续保留 DOM、焦点范围、叠层和滚动锁。调用方在动画 onExited 中显式 destroy；可反转 visible 取消退出。未提供 onClose 时仍立即销毁，回调抛错时先销毁清理再报告。默认 deferClose=false 保留立即关闭行为。详见[动画与可见性](./animation.md)。

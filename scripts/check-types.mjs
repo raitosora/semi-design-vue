@@ -32,7 +32,7 @@ rmSync(generated, { recursive: true, force: true });
 try {
   runTypecheck("tsmc", "tests/consumer/tsconfig.source.json");
   // Additional call-site check, separate from the full declaration check above:
-  // Vue rc.8's own declarations are not exact-optional compatible.
+  // Vue rc.9's own declarations are not exact-optional compatible.
   execFileSync(
     "pnpm",
     [

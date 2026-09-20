@@ -1,4 +1,16 @@
 import { version as animationVersion } from "semi-animation-vue";
+import {
+  usePresence,
+  waitForMotion,
+  type CssMotionOptions,
+  type PresenceOptions,
+  type SizeTransitionOptions,
+} from "semi-animation-vue";
+import {
+  createFoundationScope,
+  createDomScheduler as createAnimationDomScheduler,
+  type FoundationScope as AnimationFoundationScope,
+} from "semi-animation-vue/lifecycle";
 import { version as iconsLabVersion } from "semi-icons-lab-vue";
 import { version as iconsVersion } from "semi-icons-vue";
 import { version as illustrationsVersion } from "semi-illustrations-vue";
@@ -53,6 +65,63 @@ const versions: readonly string[] = [
   themeVersion,
 ];
 void versions;
+
+const motionOptions: CssMotionOptions = {
+  kind: "both",
+  timeout: 0,
+  property: "height",
+};
+const presenceOptions: PresenceOptions = {
+  visible: () => true,
+  element: () => null,
+  enterClass: undefined,
+  leaveClass: "leave",
+  keepMounted: false,
+  motion: () => true,
+  reducedMotion: () => false,
+  timeout: 0,
+  onEntered: (reason) => {
+    const valid: "end" | "cancel" | "timeout" | "none" | "finish" = reason;
+    void valid;
+  },
+};
+const sizeOptions: SizeTransitionOptions = {
+  element: () => null,
+  content: () => null,
+  axis: "height",
+  duration: () => 120,
+  reducedMotion: () => false,
+};
+const animationScope = createFoundationScope();
+const animationScopeContract: AnimationFoundationScope = animationScope;
+const animationScheduler = createAnimationDomScheduler(() => undefined);
+animationScheduler.dispose();
+animationScope.dispose();
+void [
+  motionOptions,
+  presenceOptions,
+  sizeOptions,
+  animationScopeContract,
+  usePresence,
+  waitForMotion,
+];
+
+// @ts-expect-error Presence requires explicit visibility and DOM resolvers.
+const missingPresence: PresenceOptions = {};
+// @ts-expect-error Motion kinds remain a closed public union.
+const invalidMotion: CssMotionOptions = { kind: "keyframes" };
+const invalidSizeAxis: SizeTransitionOptions = {
+  element: () => null,
+  content: () => null,
+  // @ts-expect-error Size transitions only accept physical height or width axes.
+  axis: "block",
+};
+const invalidElement: PresenceOptions = {
+  visible: () => true,
+  // @ts-expect-error A presence resolver must return an HTMLElement or null.
+  element: () => undefined,
+};
+void [missingPresence, invalidMotion, invalidSizeAxis, invalidElement];
 
 // @ts-expect-error callback value must remain number
 const badChange: ChangeCallback<number> = (next: string) => next;
@@ -359,6 +428,7 @@ function overlayTypes(element: HTMLElement) {
     parent: undefined,
     closeOnOutside: undefined,
     closeOnEscape: undefined,
+    deferClose: undefined,
     trapFocus: undefined,
     restoreFocus: undefined,
     lockScroll: undefined,
@@ -370,6 +440,7 @@ function overlayTypes(element: HTMLElement) {
     container: () => element,
     target: () => element,
     roots: () => [element],
+    deferClose: true,
     onClose(reason, event) {
       const close: "outside" | "escape" = reason;
       const native: Event = event;
@@ -414,6 +485,8 @@ function overlayTypes(element: HTMLElement) {
   layer.update({ container: element });
   // @ts-expect-error Close controls are boolean.
   layer.update({ closeOnEscape: "yes" });
+  // @ts-expect-error Deferred close is an explicit boolean option.
+  layer.update({ deferClose: "later" });
   // @ts-expect-error A host renderer must return explicit cleanup.
   createOverlayHost({ mount: () => undefined });
   child.destroy();

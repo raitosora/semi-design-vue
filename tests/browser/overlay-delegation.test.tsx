@@ -52,7 +52,7 @@ test("actual Vue document delegation respects inside pointer stop and Escape can
   }
 });
 
-test("Vue RC8 document-delegated events do not move to a different document with a native portal", async () => {
+test("Vue RC9 document-delegated events do not move to a different document with a native portal", async () => {
   const iframe = document.createElement("iframe");
   document.body.append(iframe);
   const scope = createOverlayScope();

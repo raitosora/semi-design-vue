@@ -27,6 +27,6 @@
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
-    "vue": "3.6.0-rc.8"
+    "vue": "3.6.0-rc.9"
   }
 }

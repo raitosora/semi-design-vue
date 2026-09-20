@@ -6,6 +6,11 @@
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "semi-animation-vue/lifecycle": [
+        "../semi-animation-vue/dist/lifecycle/index.d.ts"
+      ]
+    }
   }
 }

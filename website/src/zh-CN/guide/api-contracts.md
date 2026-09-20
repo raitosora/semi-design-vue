@@ -33,7 +33,7 @@ Semi Design Vue 使用原生 Vapor 模式。下面规定公共 API 的实现与�
 | `value=""`                    | true                              | 空字符串                       |
 | 动态 spread 增加 / 删除 value | 随实际键变化                      | 按当前模式选择                 |
 
-这是锁定 Vue `3.6.0-rc.8` / vue-jsx `3.3.0-rc.1` 下验证的模式。Vue 保留的 key/ref 和已声明 emits 对应 listener 不属于普通 attrs，不适用此检测方式。键按 attrs 中的实际拼写处理；例如未声明的 `activeKey` 与 `active-key` 不自动视为同一键，复合名称组件须明确规范化并测试冲突顺序。
+这是锁定 Vue `3.6.0-rc.9` / vue-jsx `3.3.0-rc.2` 下验证的模式。Vue 保留的 key/ref 和已声明 emits 对应 listener 不属于普通 attrs，不适用此检测方式。键按 attrs 中的实际拼写处理；例如未声明的 `activeKey` 与 `active-key` 不自动视为同一键，复合名称组件须明确规范化并测试冲突顺序。
 
 根入口的 `useControllableValue<T>` 接收三个 getter：`isControlled`、`value`、`defaultValue`，返回只读 computed `controlled`、`value` 与 `setValue(next)`。它只选择和保存状态，不派发事件、不运行异步钩子、不修改调用方对象。
 

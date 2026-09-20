@@ -15,6 +15,10 @@
       ],
       "semi-ui-vue/locale/source/*": [
         "../packages/semi-ui-vue/dist/locale/source/*.d.ts"
+      ],
+      "semi-animation-vue": ["../packages/semi-animation-vue/dist/index.d.ts"],
+      "semi-animation-vue/lifecycle": [
+        "../packages/semi-animation-vue/dist/lifecycle/index.d.ts"
       ]
     }
   },

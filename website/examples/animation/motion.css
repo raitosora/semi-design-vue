@@ -1,0 +1,49 @@
+.semi-demo-enter {
+  animation: semi-demo-enter 180ms ease-out;
+}
+.semi-demo-leave {
+  animation: semi-demo-leave 240ms ease-in;
+}
+@keyframes semi-demo-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes semi-demo-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+.semi-motion-example {
+  display: grid;
+  gap: 12px;
+}
+.semi-motion-example button {
+  padding: 4px 10px;
+  border: 1px solid var(--semi-color-border, #ccc);
+  border-radius: 4px;
+}
+.semi-motion-panel {
+  padding: 14px;
+  background: var(--semi-color-fill-0, #f2f3f5);
+  color: var(--semi-color-text-0, #222);
+  border-radius: 6px;
+}
+.semi-motion-size {
+  overflow: hidden;
+  background: var(--semi-color-fill-0, #f2f3f5);
+}
+.semi-motion-content {
+  padding: 12px;
+  box-sizing: border-box;
+}

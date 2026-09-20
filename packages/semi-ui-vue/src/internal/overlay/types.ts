@@ -11,6 +11,8 @@ export interface OverlayOptions {
   trapFocus?: boolean | undefined;
   restoreFocus?: boolean | undefined;
   lockScroll?: boolean | undefined;
+  /** Keep the layer alive after onClose; its owner must destroy after exit. */
+  deferClose?: boolean | undefined;
   onClose?: ((reason: OverlayCloseReason, event: Event) => void) | undefined;
   onDestroy?: (() => void) | undefined;
 }

@@ -26,6 +26,7 @@ const fixture = resolve(root, "tests/resource-consumer");
 const work = mkdtempSync(join(tmpdir(), "semi-resource-consumer-"));
 const consumer = join(work, "consumer");
 const packages = [
+  "semi-animation-vue",
   "semi-ui-vue",
   "semi-icons-vue",
   "semi-icons-lab-vue",
@@ -410,6 +411,15 @@ async function browserCheck(url) {
       !messages.length,
       `Overlay consumer browser errors: ${messages.join("; ")}`,
     );
+    assert(
+      (await page.evaluate(() => window.resourceConsumer.checkAnimation())) ===
+        "animation consumer passed",
+      "Built-package animation validation failed",
+    );
+    assert(
+      !messages.length,
+      `Animation consumer browser errors: ${messages.join("; ")}`,
+    );
     await page.screenshot({
       path: join(
         root,
@@ -446,6 +456,7 @@ async function run() {
     "dom.tsx",
     "context.tsx",
     "overlay.tsx",
+    "animation.tsx",
     "vite.config.ts",
   ])
     copyFileSync(join(fixture, name), join(consumer, name));

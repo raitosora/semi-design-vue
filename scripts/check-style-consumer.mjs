@@ -22,7 +22,11 @@ import { waitForPreview } from "./preview-ready.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/style-consumer");
-const packages = ["semi-ui-vue", "vite-plugin-semi-theme"];
+const packages = [
+  "semi-animation-vue",
+  "semi-ui-vue",
+  "vite-plugin-semi-theme",
+];
 const work = mkdtempSync(join(tmpdir(), "semi-style-consumer-"));
 const consumer = join(work, "consumer");
 

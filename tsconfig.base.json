@@ -22,6 +22,9 @@
       ],
       "semi-ui-vue/locale/source/*": [
         "./packages/semi-ui-vue/src/locale/source/*.ts"
+      ],
+      "semi-animation-vue/lifecycle": [
+        "./packages/semi-animation-vue/src/lifecycle/index.ts"
       ]
     },
     "allowImportingTsExtensions": true
