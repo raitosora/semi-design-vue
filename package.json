@@ -51,7 +51,7 @@
     "check:types": "node scripts/check-types.mjs",
     "check:consumer": "node scripts/check-consumer.mjs && pnpm check:style-consumer && pnpm check:resource-consumer && pnpm check:foundation-consumer",
     "check:surfaces": "node scripts/check-surfaces.mjs",
-    "verify": "pnpm check && pnpm format:check && pnpm check:dependencies && pnpm check:types && pnpm check:surfaces && pnpm test:coverage && pnpm build && pnpm check:consumer && pnpm build:test-harness && pnpm test:e2e",
+    "verify": "pnpm check && pnpm format:check && pnpm check:dependencies && pnpm check:upstream && pnpm check:foundation-patch && pnpm check:types && pnpm check:surfaces && pnpm test:coverage && pnpm build && pnpm check:consumer && pnpm build:test-harness && pnpm test:e2e",
     "check:docs": "node scripts/check-docs.mjs",
     "docs:dev": "pnpm docs:build && pnpm exec vitepress dev website",
     "docs:build": "node website/build.mjs",
@@ -62,7 +62,12 @@
     "generate:resources": "node scripts/generate-resources.mjs && node scripts/locale-inputs.mjs && node scripts/resource-index.mjs",
     "check:resource-index": "node scripts/resource-index.mjs --check",
     "check:foundation-consumer": "node scripts/check-foundation-consumer.mjs",
-    "check:packages": "pnpm build:packages && pnpm check:consumer"
+    "check:packages": "pnpm build:packages && pnpm check:consumer",
+    "refresh:upstream": "node scripts/upstream-refresh.mjs",
+    "generate:upstream": "node scripts/check-upstream.mjs --write",
+    "check:upstream": "node scripts/check-upstream.mjs --check",
+    "check:foundation-patch": "node scripts/check-foundation-patch.mjs",
+    "check:component-changes": "node scripts/component-change-gate.mjs"
   },
   "license": "MIT"
 }

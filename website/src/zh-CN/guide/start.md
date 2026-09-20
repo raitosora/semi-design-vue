@@ -17,3 +17,5 @@ Semi Design Vue 是面向 Vue 的 Semi Design 实现，Vapor 是采用的编译�
 ## 支持范围
 
 请先阅读[兼容边界](./compatibility.md)。文档站静态构建成功不代表组件库支持 SSR 或水合。
+
+[上游对齐与完成度](./upstream-matrix.md)按固定来源生成模块与导出清单，分别展示同名存在、内部设施、公开交付与行为验收；资源和测试夹具不计为完整公共组件。

@@ -1,0 +1,112 @@
+{
+  "input": [
+    {
+      "label": "Foundation 状态机 / HTML 测试夹具及登记样式",
+      "kind": "fixture",
+      "paths": [
+        "website/examples/foundation/Input.vapor.tsx",
+        "tests/browser/foundation-input-regressions.test.tsx",
+        "website/src/zh-CN/guide/foundation.md"
+      ]
+    }
+  ],
+  "tooltip": [
+    {
+      "label": "Foundation 状态机 / HTML 测试夹具及登记样式",
+      "kind": "fixture",
+      "paths": [
+        "website/examples/foundation/Tooltip.vapor.tsx",
+        "tests/browser/foundation-real.test.tsx",
+        "website/src/zh-CN/guide/foundation.md"
+      ]
+    }
+  ],
+  "configProvider": [
+    {
+      "label": "typed context / defaults 内核；无 Provider 组件",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/context/index.ts",
+        "tests/browser/context-app.test.tsx",
+        "website/src/zh-CN/guide/context.md"
+      ]
+    }
+  ],
+  "locale": [
+    {
+      "label": "locale 字典与 context 内核；无 Provider / Consumer",
+      "kind": "resource",
+      "paths": [
+        "resources/locale/manifest.json",
+        "tests/unit/locale-inputs.test.mjs",
+        "website/src/zh-CN/guide/resources.md"
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "label": "原生 SVG 资源包装；无 UI Icon 组件",
+      "kind": "resource",
+      "paths": [
+        "resources/svg/manifest.json",
+        "tests/browser/svg-all.test.tsx",
+        "website/src/zh-CN/guide/resources.md"
+      ]
+    }
+  ],
+  "form": [
+    {
+      "label": "可选字段注册类型协议；无 Form 组件或字段引擎",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/contracts/field.ts",
+        "tests/browser/field-contract.test.tsx",
+        "website/src/zh-CN/guide/api-contracts.md"
+      ]
+    }
+  ],
+  "dragMove": [
+    {
+      "label": "pointer session / 几何工具",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/internal/pointer/index.ts",
+        "tests/browser/pointer-session.test.tsx",
+        "website/src/zh-CN/guide/virtualization-pointer.md"
+      ]
+    }
+  ],
+  "resizable": [
+    {
+      "label": "pointer session / resize 几何；无 Group 协议",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/internal/pointer/index.ts",
+        "tests/browser/pointer-session.test.tsx",
+        "website/src/zh-CN/guide/virtualization-pointer.md"
+      ]
+    }
+  ],
+  "tree": [
+    {
+      "label": "通用 key 虚拟列表内核；无 Tree 数据/键盘语义",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/internal/virtual/use-virtual-list.ts",
+        "tests/browser/virtual-native.test.tsx",
+        "website/src/zh-CN/guide/virtualization-pointer.md"
+      ]
+    }
+  ],
+  "table": [
+    {
+      "label": "通用 key 虚拟列表内核；无 Table 数据/列语义",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/internal/virtual/use-virtual-list.ts",
+        "tests/browser/virtual-list.test.tsx",
+        "website/src/zh-CN/guide/virtualization-pointer.md"
+      ]
+    }
+  ]
+}
