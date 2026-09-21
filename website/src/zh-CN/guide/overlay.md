@@ -73,3 +73,7 @@ Vapor host 的容器必须属于创建 host 的当前 document；初始和显式
 ## 退出动画
 
 需要退出动画时设置 `deferClose: true` 并提供 onClose：该回调只请求关闭，host 持续保留 DOM、焦点范围、叠层和滚动锁。调用方在动画 onExited 中显式 destroy；可反转 visible 取消退出。未提供 onClose 时仍立即销毁，回调抛错时先销毁清理再报告。默认 deferClose=false 保留立即关闭行为。详见[动画与可见性](./animation.md)。
+
+## ConfigProvider 接入
+
+[ConfigProvider](../components/configProvider.md) 将 direction 与 getPopupContainer 传入同一 Semi context。后代用 createStaticContext(useSemiContext()) 显式把该来源交给 host，可保持容器迁移与方向的动态更新。Provider 不自动创建 host，也不复制任意 app provides；host 的 realm/document 和清理责任不变。组件页包含两个独立 app 的真实容器迁移与卸载示例。

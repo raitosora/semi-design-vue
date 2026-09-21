@@ -266,6 +266,55 @@ try {
     { cwd: work, env },
     /has no exported member ['"]Icon['"]|has no exported member Icon/,
   );
+  const rejectedConfigExports = [];
+  for (const exportName of ["ConfigProvider", "ConfigConsumer"]) {
+    // Each export is tested alone: another missing named export cannot make a
+    // leaked ConfigProvider or ConfigConsumer accidentally pass this gate.
+    const fixtureName = `node-${exportName}-negative`;
+    for (const extension of ["ts", "mjs"])
+      writeFileSync(
+        join(work, `${fixtureName}.${extension}`),
+        readFileSync(
+          resolve(
+            root,
+            `tests/consumer/node-configProvider-negative.${extension}`,
+          ),
+          "utf8",
+        ).replaceAll("ConfigProvider", exportName),
+      );
+    const configName = `tsconfig.${fixtureName}.json`;
+    writeFileSync(
+      join(work, configName),
+      JSON.stringify({
+        compilerOptions: {
+          target: "ES2022",
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+          strict: true,
+          skipLibCheck: false,
+          noEmit: true,
+        },
+        files: [`${fixtureName}.ts`],
+      }),
+    );
+    expectFailure(
+      process.execPath,
+      [tsc, "-p", configName],
+      { cwd: work, env },
+      new RegExp(`has no exported member ['"]?${exportName}['"]?`),
+    );
+    expectFailure(
+      process.execPath,
+      [join(work, `${fixtureName}.mjs`)],
+      { cwd: work, env },
+      new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
+    );
+    rejectedConfigExports.push({
+      name: exportName,
+      types: "rejected",
+      esm: "rejected",
+    });
+  }
   // Extra call-site-only check; the full declaration check above keeps skipLibCheck=false.
   execFileSync(
     process.execPath,
@@ -307,6 +356,7 @@ try {
         exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
         typedEntries,
         conditionalTypeTargets,
+        rejectedConfigExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

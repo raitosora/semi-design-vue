@@ -70,7 +70,11 @@
       "default": "./dist/styles/components/icons.css"
     },
     "./styles/components/icons.css": "./dist/styles/components/icons.css",
-    "./styles/components/icons.scss": "./dist/styles/components/icons.scss"
+    "./styles/components/icons.scss": "./dist/styles/components/icons.scss",
+    "./configProvider": {
+      "types": "./dist/components/configProvider/index.d.ts",
+      "import": "./dist/components/configProvider/index.js"
+    }
   },
   "files": [
     "dist",

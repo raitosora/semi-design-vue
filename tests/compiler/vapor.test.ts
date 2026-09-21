@@ -125,3 +125,15 @@ for (const example of ["virtualization/Virtual", "pointer/Pointer"]) {
       expect(result?.code).toMatch(/For/);
   });
 }
+
+for (const component of ["ConfigProvider", "ConfigConsumer"]) {
+  test(`compiles ${component} with native Vapor slots`, async () => {
+    const result = await server.transformRequest(
+      `/packages/semi-ui-vue/src/components/configProvider/${component}.tsx`,
+    );
+    expect(result?.code).toMatch(/createSlot/);
+    expect(result?.code).not.toMatch(
+      /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+    );
+  });
+}

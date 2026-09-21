@@ -279,7 +279,7 @@ function checkGraph(mode = "vapor") {
     ),
   ].sort();
   assert(
-    isDeepStrictEqual(dateLocales, mode === "vapor" ? ["en-US", "zh-CN"] : []),
+    isDeepStrictEqual(dateLocales, ["en-US", "zh-CN"]),
     `Resource bundle retained unexpected date-fns locales: ${dateLocales.join(", ")}`,
   );
   assert(
@@ -590,6 +590,16 @@ async function browserCheck(url) {
       `Resource consumer browser errors: ${messages.join("; ")}`,
     );
     assert(
+      (await page.evaluate(() =>
+        window.resourceConsumer.checkConfigProvider(),
+      )) === "config provider consumer passed",
+      "Built-package public ConfigProvider validation failed",
+    );
+    assert(
+      !messages.length,
+      `ConfigProvider consumer browser errors: ${messages.join("; ")}`,
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkContext())) ===
         "context consumer passed",
       "Built-package context validation failed",
@@ -740,6 +750,15 @@ async function interopBrowserCheck(url) {
       (await page.locator(".interop-resources svg").count()) === 5,
       "Interop did not mount all precompiled resource families",
     );
+    for (const selector of [".interop-config-hook", ".interop-config-slot"])
+      assert(
+        (await page.locator(selector).textContent()) === "en-US|rtl|8",
+        `Interop ConfigProvider initial configuration failed: ${selector}`,
+      );
+    assert(
+      (await page.locator(".interop-resources .semi-rtl").count()) === 2,
+      "Interop nested ConfigProvider did not inherit RTL",
+    );
     const home = page.locator('[aria-label="Interop home"] path');
     assert(
       (await home.evaluate((node) => getComputedStyle(node).fill)) ===
@@ -762,6 +781,15 @@ async function interopBrowserCheck(url) {
       "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
     );
     await page.evaluate(() => window.interopConsumer.update());
+    for (const selector of [".interop-config-hook", ".interop-config-slot"])
+      assert(
+        (await page.locator(selector).textContent()) === "zh-CN|ltr|0",
+        `Interop ConfigProvider dynamic configuration failed: ${selector}`,
+      );
+    assert(
+      (await page.locator(".interop-resources .semi-rtl").count()) === 0,
+      "Interop direction update retained an RTL wrapper",
+    );
     assert(
       (await home.evaluate((node) => getComputedStyle(node).fill)) ===
         "rgb(153, 72, 40)",
@@ -834,6 +862,19 @@ async function withPreview(outDir, check) {
 async function run() {
   mkdirSync(consumer, { recursive: true });
   prepareResourceApplication(root, work, consumer);
+  const fixtureCompilation = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        ".vitest/attachments/resource-consumer/fixture-compilation.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:configProvider.tsx"),
+    "ConfigProvider application fixture was omitted from actual precompilation",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,

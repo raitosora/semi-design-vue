@@ -41,3 +41,47 @@ export const examples = (
 );
 api.value?.focus();
 api.value?.decide(false);
+
+import ConfigProviderFromPath, {
+  ConfigConsumer,
+  defaultResponsiveMap,
+  type ConfigConsumerSlots,
+  type ConfigContextSource,
+  type ConfigProviderProps,
+} from "semi-ui-vue/configProvider";
+const configSlots: ConfigConsumerSlots = {
+  default: ({ config }) => <span>{config.value.direction}</span>,
+};
+const configProps: ConfigProviderProps = {
+  direction: undefined,
+  timeZone: 0,
+  responsiveObserve: true,
+  responsiveMap: { ...defaultResponsiveMap, md: "(min-width: 500px)" },
+};
+export const configExample = (
+  <ConfigProviderFromPath {...configProps}>
+    {() => <ConfigConsumer v-slots={configSlots} />}
+  </ConfigProviderFromPath>
+);
+export function configSourceTypes(source: ConfigContextSource) {
+  const stop = source.value.onBreakpoint?.(["md"], (screen, match) => {
+    const key: string = screen;
+    const matching: boolean = match;
+    void [key, matching];
+  });
+  stop?.();
+}
+
+export const configConsumerShorthand = (
+  <ConfigConsumer>
+    {({ config }) => <span>{config.value.direction}</span>}
+  </ConfigConsumer>
+);
+
+// Vue's reserved identity/ref attributes remain available; no public methods
+// are promised by the ref callback.
+export const configReservedAttributes = (
+  <ConfigProviderFromPath key="provider" ref={() => {}}>
+    {() => <ConfigConsumer key="consumer" ref={() => {}} />}
+  </ConfigProviderFromPath>
+);

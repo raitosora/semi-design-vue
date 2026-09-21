@@ -7,3 +7,24 @@ export type {
   IconSvgScope,
   IconHandle,
 } from "./components/icons/index.js";
+
+export {
+  ConfigProvider,
+  ConfigConsumer,
+  useConfigContext,
+} from "./components/configProvider/index.js";
+export type {
+  ConfigProviderProps,
+  ConfigProviderSlots,
+  ConfigConsumerProps,
+  ConfigConsumerSlots,
+  ConfigContextValue,
+  ConfigContextSource,
+  ResponsiveMap,
+  BreakpointScreens,
+  Breakpoint,
+  OnBreakpointScreensCallback,
+  OnBreakpointChangeCallback,
+  OnBreakpoint,
+  ResponsiveConfig,
+} from "./components/configProvider/index.js";

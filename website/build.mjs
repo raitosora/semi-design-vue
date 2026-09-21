@@ -170,6 +170,9 @@ await writeFile(
         skipLibCheck: false,
         paths: {
           "semi-ui-vue": ["../../packages/semi-ui-vue/dist/index.d.ts"],
+          "semi-ui-vue/configProvider": [
+            "../../packages/semi-ui-vue/dist/components/configProvider/index.d.ts",
+          ],
         },
       },
       files: ["contracts-positive.tsx", "contracts-negative.tsx"],

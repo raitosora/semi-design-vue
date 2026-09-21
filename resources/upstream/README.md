@@ -18,7 +18,7 @@ implementations.
 - `acceptance.json`: reviewer-owned acceptance decisions. A cited file path,
   matching export name, generated SVG, or successful gate never changes a family
   from pending. An accepted record needs all evidence categories and a completed
-  verification review identifier. The current `icons` decision and its explicit
+  verification review identifier. The current `icons` and `configProvider` decisions and their explicit
   differences are recorded below and in `acceptance.json`.
 
 The fixed official source is Semi Design 2.103.0 at
@@ -49,7 +49,19 @@ documentation and consumer evidence must each include their corresponding test,
 website or consumer surface. Every cited file is checked for formal location,
 real path and content hash before use. Acceptance also requires every inventoried
 root export of the family to exist. These checks validate record consistency;
-they do not replace behavior tests or independent review. Other public families
-remain unaccepted.
-Its direct SVG resources do not claim Icon wrapper, `spin`, SSR/hydration, or
-CJS behavior.
+they do not replace behavior tests or independent review. Direct SVG resources
+do not claim Icon wrapper, `spin`, SSR/hydration, or CJS behavior.
+
+The `configProvider` record accepts the browser ConfigProvider/ConfigConsumer
+contract with native Vapor scoped slots, field inheritance, a stable directional
+wrapper, responsive subscriptions and existing overlay context integration.
+The record cites source and generated type checks, live documentation, browser
+lifecycles and isolated tarball consumers. Locale data forwarding does not accept
+LocaleProvider/LocaleConsumer or date formatting. Theme configuration remains
+external CSS and native containers; no new theme prop is implied. All other
+public families remain unaccepted.
+
+When a shared evidence file changes, rerun its affected checks and independently
+review the new content before refreshing its hash and review identifier. An
+unchanged component contract can retain its acceptance decision while its shared
+consumer or documentation evidence receives a new verification identifier.
