@@ -7,6 +7,11 @@ import { jsxOptions } from "./config/vue-jsx.ts";
 export default defineConfig({
   root: fileURLToPath(new URL("./tests/harness", import.meta.url)),
   plugins: [vueJsx(jsxOptions)],
+  // Dependency scanning must not inject an automatic JSX runtime.
+  // Actual application transforms still use the native Vapor plugin above.
+  optimizeDeps: {
+    rolldownOptions: { transform: { jsx: { runtime: "classic" } } },
+  },
   resolve: { alias: sourceAliases, dedupe: ["vue", "@vue-jsx/runtime"] },
   build: {
     // Named functions make browser execution coverage auditable.
