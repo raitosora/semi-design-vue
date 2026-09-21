@@ -34,7 +34,7 @@
   ],
   "locale": [
     {
-      "label": "locale 字典与 context 内核；无 Provider / Consumer",
+      "label": "生成 locale 字典与 context 内核；公开 Provider / Consumer 验收另见 acceptance",
       "kind": "resource",
       "paths": [
         "resources/locale/manifest.json",

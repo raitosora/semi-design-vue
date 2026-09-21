@@ -74,6 +74,10 @@
     "./configProvider": {
       "types": "./dist/components/configProvider/index.d.ts",
       "import": "./dist/components/configProvider/index.js"
+    },
+    "./locale": {
+      "types": "./dist/components/locale/index.d.ts",
+      "import": "./dist/components/locale/index.js"
     }
   },
   "files": [

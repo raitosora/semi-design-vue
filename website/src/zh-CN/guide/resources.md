@@ -35,7 +35,7 @@ const confirmText = zhCN.Modal.confirm;
 
 图标与插画同时提供根具名导出和名称子路径默认导出。生产构建可以移除未使用的资源；只需要单项时可直接使用名称子路径。语言数据按 `semi-ui-vue/locale/source/<名称>` 默认导入，不从 UI 根入口加载整套语言。
 
-语言数据完整保留上游文案、占位符和 `dateFnsLocale`，后者使用声明的 `date-fns@2.30.0`。这里提供数据，不自动设置全局语言、fallback、时区或日期格式，也没有 LocaleProvider / LocaleConsumer。需要在组件树中传递动态语言数据时，可使用[上下文与默认配置](./context.md)中的显式注入接口。
+语言数据完整保留上游文案、占位符和 `dateFnsLocale`，后者使用声明的 `date-fns@2.30.0`。静态资源入口只提供数据，不设置全局语言或时区。组件树的语言选择与 fallback 使用 [LocaleProvider / LocaleConsumer](../components/locale.md)，完整规则见[国际化指南](./internationalization.md)。
 
 ## 来源与贡献
 

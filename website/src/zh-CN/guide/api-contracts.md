@@ -91,3 +91,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 协议示例参与真实 TSX 编译、浏览器交互、源码及生成声明的严格类型正反例、文档开发/生产构建及独立 createVaporApp 消费者。嵌套 JSX 由编译器通用组件分派 helper 处理，独立消费者检查 bundle 无 VDOM renderer/interop，并通过浏览器执行证据确认原生 Vapor 创建路径。简单计数器另有不含该分派 helper 的严格纯产物门禁，两者不混为相同输出形态。库根入口还有 manifest + dist 隔离消费检查。仍不等于完整 tarball 安装、组件 SSR/水合、Firefox/WebKit、真实移动硬件或 Semi 视觉对齐。完整边界见[兼容边界](./compatibility.md)。
 
 相关基础说明：[Vue attrs](https://vuejs.org/guide/components/attrs.html)、[Vue v-model](https://vuejs.org/guide/components/v-model.html)。本页 Vapor 行为以锁定版本的实际夹具为准，不将普通 Vue 文档视为全部 Vapor 支持保证。
+
+## Locale 消费
+
+[LocaleProvider / LocaleConsumer](../components/locale.md) 使用独立的语言上下文。Consumer 的原生 Vapor slot 传递稳定只读 Ref，字段通过 `.value` 动态读取；与 React 四个位置参数的 render callback 不同。slot 返回 JSX 或空 fragment，原始字符串/null 不属于已验证的 Vapor block。Provider 不透传 class/style，无公开 ref 方法、事件或 v-model。

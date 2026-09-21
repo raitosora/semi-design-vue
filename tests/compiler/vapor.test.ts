@@ -66,7 +66,8 @@ test("production fixture bundle contains Vapor DOM code without the VDOM rendere
       ),
     ),
   ).toBe(true);
-});
+  // This builds the complete example harness, including date-fns formatting.
+}, 30_000);
 
 test("compiles the context example to reactive Vapor DOM operations", async () => {
   const result = await server.transformRequest(
@@ -130,6 +131,18 @@ for (const component of ["ConfigProvider", "ConfigConsumer"]) {
   test(`compiles ${component} with native Vapor slots`, async () => {
     const result = await server.transformRequest(
       `/packages/semi-ui-vue/src/components/configProvider/${component}.tsx`,
+    );
+    expect(result?.code).toMatch(/createSlot/);
+    expect(result?.code).not.toMatch(
+      /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+    );
+  });
+}
+
+for (const component of ["LocaleProvider", "LocaleConsumer"]) {
+  test(`compiles ${component} with native Vapor slots`, async () => {
+    const result = await server.transformRequest(
+      `/packages/semi-ui-vue/src/components/locale/${component}.tsx`,
     );
     expect(result?.code).toMatch(/createSlot/);
     expect(result?.code).not.toMatch(

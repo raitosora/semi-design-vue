@@ -85,3 +85,49 @@ export const configReservedAttributes = (
     {() => <ConfigConsumer key="consumer" ref={() => {}} />}
   </ConfigProviderFromPath>
 );
+
+import {
+  LocaleProvider,
+  LocaleConsumer,
+  type LocaleConsumerSlots,
+  type LocaleContextSource,
+  type LocaleProviderProps,
+} from "semi-ui-vue/locale";
+import type { Locale } from "semi-ui-vue/locale/interface";
+import enUS from "semi-ui-vue/locale/source/en_US";
+const localeProps: LocaleProviderProps = { locale: undefined };
+const localeSlots: LocaleConsumerSlots<"Modal"> = {
+  default: ({ locale }) => <span>{locale.value.componentLocale?.confirm}</span>,
+};
+export const localeExample = (
+  <LocaleProvider {...localeProps} key="language" ref={() => {}}>
+    {() => (
+      <LocaleConsumer<"Modal"> componentName="Modal" v-slots={localeSlots} />
+    )}
+  </LocaleProvider>
+);
+export const localeInline = (
+  <LocaleProvider locale={enUS}>
+    {() => (
+      <LocaleConsumer<"Modal"> componentName="Modal">
+        {({ locale }) => <span>{locale.value.componentLocale?.confirm}</span>}
+      </LocaleConsumer>
+    )}
+  </LocaleProvider>
+);
+export const localeObjectSlot = (
+  <LocaleConsumer<"Modal">
+    componentName="Modal"
+    v-slots={{
+      default: ({ locale }) => (
+        <span>{locale.value.componentLocale?.confirm}</span>
+      ),
+    }}
+  />
+);
+export function localeSourceTypes(source: LocaleContextSource<"Modal">) {
+  const dictionary: Locale["Modal"] | undefined = source.value.componentLocale;
+  const code: string = source.value.localeCode;
+  const currency: string | undefined = source.value.currency;
+  void [dictionary, code, currency];
+}

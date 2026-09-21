@@ -39,14 +39,14 @@ Provider 始终渲染一个稳定的 `div`。它设置 `dir`，仅 RTL 时添加
 
 ## ConfigProvider API
 
-| 属性              | 类型                                            | 默认值 / 继承        | 说明                                                                       |
-| ----------------- | ----------------------------------------------- | -------------------- | -------------------------------------------------------------------------- |
-| locale            | `Locale \| undefined`                           | 根层 zh_CN           | 传递既有语言资源；不实现 LocaleProvider/LocaleConsumer 的双来源与 fallback |
-| timeZone          | `string \| number \| undefined`                 | 无                   | 保留 0 和空字符串；不转换日期                                              |
-| direction         | `'ltr' \| 'rtl' \| undefined`                   | 根层 ltr             | 动态上下文与稳定 div 的方向                                                |
-| getPopupContainer | `(() => HTMLElement \| undefined) \| undefined` | 无                   | 惰性容器，undefined 由使用方按其容器规则回退                               |
-| responsiveMap     | `ResponsiveMap \| undefined`                    | defaultResponsiveMap | 六个字段完整替换，不是局部 patch                                           |
-| responsiveObserve | `boolean \| undefined`                          | false                | 开关本层按需媒体订阅                                                       |
+| 属性              | 类型                                            | 默认值 / 继承        | 说明                                                               |
+| ----------------- | ----------------------------------------------- | -------------------- | ------------------------------------------------------------------ |
+| locale            | `Locale \| undefined`                           | 根层 zh_CN           | 传递语言资源；后代 LocaleConsumer 按独立优先级与 fallback 规则读取 |
+| timeZone          | `string \| number \| undefined`                 | 无                   | 保留 0 和空字符串；不转换日期                                      |
+| direction         | `'ltr' \| 'rtl' \| undefined`                   | 根层 ltr             | 动态上下文与稳定 div 的方向                                        |
+| getPopupContainer | `(() => HTMLElement \| undefined) \| undefined` | 无                   | 惰性容器，undefined 由使用方按其容器规则回退                       |
+| responsiveMap     | `ResponsiveMap \| undefined`                    | defaultResponsiveMap | 六个字段完整替换，不是局部 patch                                   |
+| responsiveObserve | `boolean \| undefined`                          | false                | 开关本层按需媒体订阅                                               |
 
 没有通知事件、受控 value/model、公开 ref 方法或静态子组件。default slot 返回 JSX/原生可渲染块；文本请用 `<span>` 包裹，空内容用 `<></>`（空 fragment）或 `[]`，不直接返回字符串、null 或 undefined。不接受任意 DOM attrs、style、className 或 prefixCls；需要布局和主题容器时由调用方在外层提供原生元素。
 
@@ -102,6 +102,6 @@ onScopeDispose(() => {
 
 来源固定为 Semi Design 2.103.0。本实现明确增加按字段的嵌套继承、动态移除恢复及稳定 DOM 包装；上游 React Provider 不自动合并父配置。上游订阅本来就返回取消函数；本实现另明确卸载后的失效保护，以及 responsiveObserve 重启和 map 更新时重新采样并通知的行为。响应式生命周期、回调失效与多 app 隔离由真实浏览器测试验证。
 
-locale/timeZone/getPopupContainer 复用已有 context；`semiGlobal` 的默认 props 初始化策略保持[上下文指南](../guide/context.md)约定，不自动订阅进程单例。公开 LocaleProvider/LocaleConsumer 尚未提供，不能把本页语言数据展示当作完整国际化组件交付。
+locale/timeZone/getPopupContainer 复用已有 context；`semiGlobal` 的默认 props 初始化策略保持[上下文指南](../guide/context.md)约定，不自动订阅进程单例。[LocaleProvider/LocaleConsumer](./locale.md) 提供语言选择与 fallback；实际 ConfigProvider 的非空 locale 优先于独立 LocaleProvider。ConfigProvider 自身仍只传递字典与时区，不执行日期格式化。
 
 运行示例参与源码与生成声明检查、文档开发/生产浏览器及包消费者验证。纯 Vapor 与普通 Vue interop 分开验证；`skipLibCheck=false` 保留，额外 exactOptional 调用点检查不代表所有依赖声明兼容。Vue RC9 / vue-jsx RC2 的独立编译器严格 peer 安装限制仍在，预编译消费者不代表该限制已解除。仅在 Chromium 验证，截图不是完整像素级一致性。详见[兼容边界](../guide/compatibility.md)与[完成度矩阵](../guide/upstream-matrix.md)。
