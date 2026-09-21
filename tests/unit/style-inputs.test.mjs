@@ -155,5 +155,6 @@ describe("fixed Semi style inputs", () => {
     } finally {
       await rm(output, { recursive: true, force: true });
     }
-  });
+    // This builds every style entrypoint and compiles a custom Sass consumer.
+  }, 30_000);
 });

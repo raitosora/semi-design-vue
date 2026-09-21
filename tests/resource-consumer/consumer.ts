@@ -266,3 +266,101 @@ const invalidConfigSlotResult: ConfigConsumerSlots = {
   default: () => "plain text",
 };
 void invalidConfigSlotResult;
+
+import {
+  LocaleProvider,
+  LocaleConsumer,
+  type LocaleProviderProps,
+  type LocaleConsumerProps,
+  type LocaleConsumerSlots,
+} from "semi-ui-vue";
+import LocaleProviderFromSubpath, {
+  LocaleProvider as NamedLocaleProvider,
+  type LocaleProviderProps as SubpathLocaleProviderProps,
+} from "semi-ui-vue/locale";
+import {
+  LocaleConsumer as LocaleConsumerFromSubpath,
+  type LocaleConsumerProps as SubpathLocaleConsumerProps,
+  type LocaleConsumerSlots as SubpathLocaleConsumerSlots,
+} from "semi-ui-vue/locale";
+const localeProviderIdentity: typeof LocaleProvider = LocaleProviderFromSubpath;
+const namedLocaleProviderIdentity: typeof LocaleProvider = NamedLocaleProvider;
+const localeConsumerIdentity: typeof LocaleConsumer = LocaleConsumerFromSubpath;
+const localeProviderProps: LocaleProviderProps = { locale: enUS };
+const defaultLocaleProviderProps: LocaleProviderProps = { locale: undefined };
+const localeConsumerProps: LocaleConsumerProps = {
+  componentName: "Pagination",
+};
+const unknownLocaleComponent: LocaleConsumerProps = {
+  componentName: "CustomWidget",
+};
+const defaultLocaleConsumerProps: LocaleConsumerProps = {
+  componentName: undefined,
+};
+const localeConsumerSlots: LocaleConsumerSlots = {
+  default: ({ locale }) => {
+    const code: string = locale.value.localeCode;
+    const currency: string | undefined = locale.value.currency;
+    const month = locale.value.dateFnsLocale.localize?.month(0);
+    // @ts-expect-error Native Consumer supplies a readonly ref.
+    locale.value = locale.value;
+    // @ts-expect-error Resolved locale fields cannot be reassigned.
+    locale.value.localeCode = "replacement";
+    // @ts-expect-error Native Consumer's scope is not a React callback locale dictionary.
+    void locale.Pagination;
+    void [code, currency, month];
+    return [];
+  },
+};
+const modalLocaleSlots: LocaleConsumerSlots<"Modal"> = {
+  default: ({ locale }) => {
+    const confirm: string | undefined = locale.value.componentLocale?.confirm;
+    // @ts-expect-error Known component keys retain their dictionary shape.
+    void locale.value.componentLocale?.page;
+    void confirm;
+    return [];
+  },
+};
+const localeTypes: readonly true[] = [
+  true satisfies Same<LocaleProviderProps, SubpathLocaleProviderProps>,
+  true satisfies Same<LocaleConsumerProps, SubpathLocaleConsumerProps>,
+  true satisfies Same<LocaleConsumerSlots, SubpathLocaleConsumerSlots>,
+];
+const invalidLocaleProvider: LocaleProviderProps = {
+  // @ts-expect-error Public API requires a complete dictionary, not a partial merge request.
+  locale: { code: "en-US" },
+};
+// @ts-expect-error LocaleProvider has no timezone formatting property.
+const invalidLocaleZone: LocaleProviderProps = { timeZone: 8 };
+// @ts-expect-error Component names are strings, not dictionary objects.
+const invalidLocaleName: LocaleConsumerProps = { componentName: enUS };
+// @ts-expect-error LocaleProvider does not forward class attributes.
+const invalidLocaleClass: LocaleProviderProps = { class: "extra" };
+// @ts-expect-error LocaleConsumer does not forward style attributes.
+const invalidLocaleStyle: LocaleConsumerProps = { style: {} };
+// @ts-expect-error A React children callback is not a native Consumer prop.
+const invalidLocaleChildren: LocaleConsumerProps = { children: () => [] };
+const invalidLocaleSlot: LocaleConsumerSlots = {
+  // @ts-expect-error Native Vapor slots return renderable blocks, not raw text.
+  default: () => "plain text",
+};
+void [
+  localeProviderIdentity,
+  namedLocaleProviderIdentity,
+  localeConsumerIdentity,
+  localeProviderProps,
+  defaultLocaleProviderProps,
+  localeConsumerProps,
+  unknownLocaleComponent,
+  defaultLocaleConsumerProps,
+  localeConsumerSlots,
+  modalLocaleSlots,
+  localeTypes,
+  invalidLocaleProvider,
+  invalidLocaleZone,
+  invalidLocaleName,
+  invalidLocaleClass,
+  invalidLocaleStyle,
+  invalidLocaleChildren,
+  invalidLocaleSlot,
+];

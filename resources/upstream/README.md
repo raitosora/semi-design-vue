@@ -56,10 +56,20 @@ The `configProvider` record accepts the browser ConfigProvider/ConfigConsumer
 contract with native Vapor scoped slots, field inheritance, a stable directional
 wrapper, responsive subscriptions and existing overlay context integration.
 The record cites source and generated type checks, live documentation, browser
-lifecycles and isolated tarball consumers. Locale data forwarding does not accept
-LocaleProvider/LocaleConsumer or date formatting. Theme configuration remains
-external CSS and native containers; no new theme prop is implied. All other
-public families remain unaccepted.
+lifecycles and isolated tarball consumers. Its locale data forwarding is distinct
+from the separately accepted locale family. Theme configuration remains external
+CSS and native containers; no new theme prop is implied.
+
+The `locale` record accepts LocaleProvider/LocaleConsumer with independent
+subtree contexts, ConfigProvider precedence, whole-dictionary selection and the
+upstream field fallback rules. Native Vapor scoped slots expose readonly refs;
+explicit string-key generics replace the React callback type mechanism. The
+record covers dynamic switching, nested and separate apps, teardown, strict
+source/generated declarations and all 57 static language subpaths in actual
+tarballs. Date language formatting is demonstrated separately from timeZone
+configuration; no picker or automatic timezone conversion is accepted. The
+accepted public families are icons, configProvider and locale. All other public
+families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An

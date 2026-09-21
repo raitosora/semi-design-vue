@@ -2,7 +2,7 @@
 
 Semi Design Vue 是面向 Vue 的 Semi Design 实现，Vapor 是采用的编译和运行模式。
 
-当前提供 [Icon](../components/icons.md) 与 [ConfigProvider / ConfigConsumer](../components/configProvider.md)，其余组件仍在建设中。它们仅在浏览器 Vapor 应用中从 `semi-ui-vue` 根入口使用；纯 Node 根入口只保留静态工具。包保持 private，未来发布统一使用 `@raitosora` scope；现在不提供 npm 安装命令。
+当前提供 [Icon](../components/icons.md) 、[ConfigProvider / ConfigConsumer](../components/configProvider.md) 与 [LocaleProvider / LocaleConsumer](../components/locale.md)，其余组件仍在建设中。它们仅在浏览器 Vapor 应用中从 `semi-ui-vue` 根入口使用；纯 Node 根入口只保留静态工具。包保持 private，未来发布统一使用 `@raitosora` scope；现在不提供 npm 安装命令。
 
 本地 tarball、预编译 ESM、声明与依赖说明见[本地产物与消费方式](./packages.md)。
 

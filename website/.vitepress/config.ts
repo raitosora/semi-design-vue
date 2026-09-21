@@ -41,6 +41,8 @@ export default defineConfig({
             text: "ConfigProvider 全局配置",
             link: "/zh-CN/components/configProvider",
           },
+          { text: "Locale 国际化", link: "/zh-CN/components/locale" },
+          { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },
           { text: "上游对齐与完成度", link: "/zh-CN/guide/upstream-matrix" },

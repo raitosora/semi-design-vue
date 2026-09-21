@@ -25,6 +25,12 @@
       "semi-animation-vue": ["../packages/semi-animation-vue/dist/index.d.ts"],
       "semi-animation-vue/lifecycle": [
         "../packages/semi-animation-vue/dist/lifecycle/index.d.ts"
+      ],
+      "semi-ui-vue/locale": [
+        "../packages/semi-ui-vue/dist/components/locale/index.d.ts"
+      ],
+      "semi-ui-vue/locale/interface": [
+        "../packages/semi-ui-vue/dist/locale/interface.d.ts"
       ]
     }
   },

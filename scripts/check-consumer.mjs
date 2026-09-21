@@ -186,6 +186,50 @@ try {
       runtimeEntries.push(specifier);
     }
   }
+  const localeManifest = JSON.parse(
+    readFileSync(join(root, "resources/locale/manifest.json"), "utf8"),
+  );
+  const localeSpecifiers = localeManifest.files.map(
+    ({ path }) => `semi-ui-vue/locale/${path.replace(/\.ts$/, "")}`,
+  );
+  for (const specifier of localeSpecifiers) {
+    if (!typedEntries.includes(specifier)) typedEntries.push(specifier);
+    if (!runtimeEntries.includes(specifier)) runtimeEntries.push(specifier);
+  }
+  writeFileSync(
+    join(work, "locale-static.mjs"),
+    [
+      `const dictionaries = [];`,
+      `for (const specifier of ${JSON.stringify(localeSpecifiers)}) {`,
+      `  const { default: locale } = await import(specifier);`,
+      `  if (typeof locale.code !== "string" || !locale.Pagination || typeof locale.dateFnsLocale?.localize?.month !== "function") throw new Error("Incomplete static locale export: " + specifier);`,
+      `  const month = locale.dateFnsLocale.localize.month(0, { width: "wide" });`,
+      `  if (typeof month !== "string" || !month.length) throw new Error("Nonfunctional date-fns locale: " + specifier);`,
+      `  dictionaries.push({ specifier, code: locale.code, month });`,
+      `}`,
+      `console.log(JSON.stringify(dictionaries));`,
+    ].join("\n"),
+  );
+  const staticLocales = JSON.parse(
+    execFileSync(process.execPath, [join(work, "locale-static.mjs")], {
+      cwd: work,
+      env,
+      encoding: "utf8",
+    }),
+  );
+  writeFileSync(
+    join(evidenceDirectory, "static-locales.json"),
+    JSON.stringify(
+      {
+        count: staticLocales.length,
+        dictionaries: staticLocales,
+        runtime:
+          "Pure Node ESM dictionary imports and date-fns localize; no UI component SSR/hydration",
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(work, "exports.ts"),
     typedEntries
@@ -267,9 +311,15 @@ try {
     /has no exported member ['"]Icon['"]|has no exported member Icon/,
   );
   const rejectedConfigExports = [];
-  for (const exportName of ["ConfigProvider", "ConfigConsumer"]) {
+  const rejectedLocaleExports = [];
+  for (const exportName of [
+    "ConfigProvider",
+    "ConfigConsumer",
+    "LocaleProvider",
+    "LocaleConsumer",
+  ]) {
     // Each export is tested alone: another missing named export cannot make a
-    // leaked ConfigProvider or ConfigConsumer accidentally pass this gate.
+    // leaked browser component accidentally pass this gate.
     const fixtureName = `node-${exportName}-negative`;
     for (const extension of ["ts", "mjs"])
       writeFileSync(
@@ -277,10 +327,13 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-configProvider-negative.${extension}`,
+            `tests/consumer/node-${exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
-        ).replaceAll("ConfigProvider", exportName),
+        ).replaceAll(
+          exportName.startsWith("Locale") ? "LocaleProvider" : "ConfigProvider",
+          exportName,
+        ),
       );
     const configName = `tsconfig.${fixtureName}.json`;
     writeFileSync(
@@ -309,7 +362,10 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    rejectedConfigExports.push({
+    (exportName.startsWith("Locale")
+      ? rejectedLocaleExports
+      : rejectedConfigExports
+    ).push({
       name: exportName,
       types: "rejected",
       esm: "rejected",
@@ -357,6 +413,7 @@ try {
         typedEntries,
         conditionalTypeTargets,
         rejectedConfigExports,
+        rejectedLocaleExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

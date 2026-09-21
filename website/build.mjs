@@ -170,6 +170,15 @@ await writeFile(
         skipLibCheck: false,
         paths: {
           "semi-ui-vue": ["../../packages/semi-ui-vue/dist/index.d.ts"],
+          "semi-ui-vue/locale/source/*": [
+            "../../packages/semi-ui-vue/dist/locale/source/*.d.ts",
+          ],
+          "semi-ui-vue/locale/interface": [
+            "../../packages/semi-ui-vue/dist/locale/interface.d.ts",
+          ],
+          "semi-ui-vue/locale": [
+            "../../packages/semi-ui-vue/dist/components/locale/index.d.ts",
+          ],
           "semi-ui-vue/configProvider": [
             "../../packages/semi-ui-vue/dist/components/configProvider/index.d.ts",
           ],

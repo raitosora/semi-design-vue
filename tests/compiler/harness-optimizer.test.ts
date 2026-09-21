@@ -21,4 +21,5 @@ test("discovers harness dependencies without inventing a React JSX runtime", asy
   } finally {
     await rm(cacheDir, { recursive: true, force: true });
   }
-});
+  // Cold dependency discovery and prebundling can exceed the unit-test budget.
+}, 30_000);

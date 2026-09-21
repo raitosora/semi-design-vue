@@ -28,3 +28,17 @@ export type {
   OnBreakpoint,
   ResponsiveConfig,
 } from "./components/configProvider/index.js";
+
+export {
+  LocaleProvider,
+  LocaleConsumer,
+  useLocaleContext,
+} from "./components/locale/index.js";
+export type {
+  LocaleProviderProps,
+  LocaleProviderSlots,
+  LocaleConsumerProps,
+  LocaleConsumerSlots,
+  LocaleContextValue,
+  LocaleContextSource,
+} from "./components/locale/index.js";

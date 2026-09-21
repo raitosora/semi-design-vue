@@ -9,6 +9,9 @@ import {
 import {
   ConfigConsumer,
   ConfigProvider,
+  LocaleProvider,
+  LocaleConsumer,
+  type LocaleContextSource,
   useConfigContext,
   type ConfigContextSource,
 } from "semi-ui-vue";
@@ -26,6 +29,25 @@ const fill = ref<readonly string[]>(["#465fff", "#9caeff"]);
 const size = ref<IconSize>("inherit");
 const rotate = ref(90);
 const configLocale = shallowRef(enUS);
+const standaloneLocale = shallowRef(enUS);
+function localeOutput(name: string) {
+  return h(
+    LocaleConsumer,
+    { componentName: "Pagination" },
+    {
+      default: ({
+        locale,
+      }: {
+        readonly locale: LocaleContextSource<"Pagination">;
+      }) =>
+        h(
+          "output",
+          { class: `interop-locale-${name}` },
+          `${locale.value.localeCode}|${locale.value.componentLocale?.page}|${locale.value.dateFnsLocale.code}`,
+        ),
+    },
+  );
+}
 const configDirection = ref<"rtl" | "ltr">("rtl");
 const configTimeZone = ref(8);
 const ConfigHookReader = {
@@ -44,6 +66,25 @@ const app = createApp({
     return () =>
       h("section", { class: "interop-resources" }, [
         h(
+          LocaleProvider,
+          { locale: standaloneLocale.value },
+          {
+            default: () => [
+              localeOutput("standalone"),
+              h(
+                LocaleProvider,
+                { locale: zhCN },
+                { default: () => localeOutput("nested") },
+              ),
+              h(
+                LocaleProvider,
+                { locale: undefined },
+                { default: () => localeOutput("default") },
+              ),
+            ],
+          },
+        ),
+        h(
           ConfigProvider,
           {
             locale: configLocale.value,
@@ -58,6 +99,11 @@ const app = createApp({
                 {
                   default: () => [
                     h(ConfigHookReader),
+                    h(
+                      LocaleProvider,
+                      { locale: zhCN },
+                      { default: () => localeOutput("configured") },
+                    ),
                     h(
                       ConfigConsumer,
                       {},
@@ -164,6 +210,7 @@ declare global {
 window.interopConsumer = {
   async update() {
     configLocale.value = zhCN;
+    standaloneLocale.value = zhCN;
     configDirection.value = "ltr";
     configTimeZone.value = 0;
     color.value = "rgb(153, 72, 40)";

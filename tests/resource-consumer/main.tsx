@@ -1,3 +1,4 @@
+import { checkLocaleConsumer } from "./locale.js";
 import { checkConfigProviderConsumer } from "./configProvider.js";
 import { checkContextConsumer } from "./context.js";
 import { checkDomConsumer } from "./dom.js";
@@ -41,6 +42,7 @@ import type { Locale } from "semi-ui-vue/locale/interface";
 declare global {
   interface Window {
     resourceConsumer: {
+      checkLocale(): Promise<string>;
       checkConfigProvider(): Promise<string>;
       checkContext(): Promise<string>;
       checkDom(): Promise<string>;
@@ -282,6 +284,7 @@ const remounted = mount("remounted");
 const virtualPointer = mountVirtualPointerConsumer();
 
 window.resourceConsumer = {
+  checkLocale: checkLocaleConsumer,
   checkConfigProvider: checkConfigProviderConsumer,
   checkContext: checkContextConsumer,
   checkDom: checkDomConsumer,

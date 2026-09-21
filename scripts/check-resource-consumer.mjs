@@ -1,4 +1,5 @@
 import { execFileSync, spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   copyFileSync,
   existsSync,
@@ -220,6 +221,33 @@ function checkProvenance() {
     ),
     "Locale provenance differs from the locked locale manifest",
   );
+  const localeDist = join(consumer, "node_modules/semi-ui-vue/dist/locale");
+  const expectedLocaleFiles = localeManifest.files
+    .map(({ path }) => path.replace(/\.ts$/, ".js"))
+    .sort();
+  const actualLocaleFiles = files(join(localeDist, "source"))
+    .filter((path) => path.endsWith(".js"))
+    .map((path) => path.slice(localeDist.length + 1))
+    .sort();
+  assert(
+    isDeepStrictEqual(actualLocaleFiles, expectedLocaleFiles),
+    "Packed locale dictionaries differ from the complete locked manifest",
+  );
+  for (const entry of localeManifest.files) {
+    const javascript = join(localeDist, entry.path.replace(/\.ts$/, ".js"));
+    const sourceMap = JSON.parse(readFileSync(`${javascript}.map`, "utf8"));
+    assert(
+      sourceMap.sources.length === 1,
+      `Unexpected locale source map: ${entry.path}`,
+    );
+    const source = readFileSync(
+      resolve(dirname(javascript), sourceMap.sources[0]),
+    );
+    assert(
+      createHash("sha256").update(source).digest("hex") === entry.outputSha256,
+      `Packed locale mapped source differs from its generated provenance: ${entry.path}`,
+    );
+  }
   checkLicense(
     join(
       consumer,
@@ -590,6 +618,15 @@ async function browserCheck(url) {
       `Resource consumer browser errors: ${messages.join("; ")}`,
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkLocale())) ===
+        "locale consumer passed",
+      "Built-package public LocaleProvider/LocaleConsumer validation failed",
+    );
+    assert(
+      !messages.length,
+      `Locale consumer browser errors: ${messages.join("; ")}`,
+    );
+    assert(
       (await page.evaluate(() =>
         window.resourceConsumer.checkConfigProvider(),
       )) === "config provider consumer passed",
@@ -759,6 +796,18 @@ async function interopBrowserCheck(url) {
       (await page.locator(".interop-resources .semi-rtl").count()) === 2,
       "Interop nested ConfigProvider did not inherit RTL",
     );
+    const initialLocales = {
+      standalone: "en-US| page|en-US",
+      nested: "zh-CN|页|zh-CN",
+      default: "zh-CN|页|zh-CN",
+      configured: "en-US| page|en-US",
+    };
+    for (const [name, expected] of Object.entries(initialLocales))
+      assert(
+        (await page.locator(`.interop-locale-${name}`).textContent()) ===
+          expected,
+        `Interop LocaleConsumer initial contract failed: ${name}`,
+      );
     const home = page.locator('[aria-label="Interop home"] path');
     assert(
       (await home.evaluate((node) => getComputedStyle(node).fill)) ===
@@ -781,6 +830,12 @@ async function interopBrowserCheck(url) {
       "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
     );
     await page.evaluate(() => window.interopConsumer.update());
+    for (const name of ["standalone", "nested", "default", "configured"])
+      assert(
+        (await page.locator(`.interop-locale-${name}`).textContent()) ===
+          "zh-CN|页|zh-CN",
+        `Interop LocaleConsumer dynamic contract failed: ${name}`,
+      );
     for (const selector of [".interop-config-hook", ".interop-config-slot"])
       assert(
         (await page.locator(selector).textContent()) === "zh-CN|ltr|0",
@@ -874,6 +929,10 @@ async function run() {
   assert(
     fixtureCompilation.modules?.includes("fixture:configProvider.tsx"),
     "ConfigProvider application fixture was omitted from actual precompilation",
+  );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:locale.tsx"),
+    "Locale application fixture was omitted from actual precompilation",
   );
   const installation = await installPackedConsumer({
     root,

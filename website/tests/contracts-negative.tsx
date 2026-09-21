@@ -133,3 +133,77 @@ export const invalidConfigConsumerDirectSlotResult = (
   // @ts-expect-error Native Consumer slots cannot render raw string results.
   <ConfigConsumer v-slots={{ default: () => "plain text" }} />
 );
+
+import {
+  LocaleProvider,
+  LocaleConsumer,
+  type LocaleContextSource,
+  type LocaleConsumerSlots,
+} from "semi-ui-vue/locale";
+// @ts-expect-error LocaleProvider accepts the full generated locale interface.
+export const partialLocale = <LocaleProvider locale={{ code: "en-US" }} />;
+// @ts-expect-error No timezone prop on LocaleProvider.
+export const localeZone = <LocaleProvider timeZone={8} />;
+// @ts-expect-error LocaleProvider has no DOM root or class fallthrough.
+export const localeClass = <LocaleProvider class="language" />;
+// @ts-expect-error LocaleProvider has no style fallthrough.
+export const localeStyle = <LocaleProvider style={{ color: "red" }} />;
+// @ts-expect-error No direction prop on LocaleProvider.
+export const localeDirection = <LocaleProvider direction="rtl" />;
+// @ts-expect-error LocaleConsumer does not forward class.
+export const localeConsumerClass = <LocaleConsumer class="language" />;
+// @ts-expect-error LocaleConsumer does not forward style.
+export const localeConsumerStyle = <LocaleConsumer style={{ color: "red" }} />;
+// @ts-expect-error Component name is a string.
+export const localeName = <LocaleConsumer componentName={1} />;
+// @ts-expect-error Native slots require a block rather than a raw string.
+export const localeText = <LocaleProvider>{() => "text"}</LocaleProvider>;
+export const localeConsumerText = (
+  // @ts-expect-error Native slots require a block rather than a raw string.
+  <LocaleConsumer v-slots={{ default: () => "text" }} />
+);
+export const localeNull: LocaleConsumerSlots = {
+  // @ts-expect-error Empty native slots use a fragment rather than null.
+  default: () => null,
+};
+export function rejectLocaleMutation(source: LocaleContextSource) {
+  // @ts-expect-error The source Ref is readonly.
+  source.value = source.value;
+  // @ts-expect-error The selected metadata snapshot is readonly.
+  source.value.localeCode = "en-US";
+}
+export const localeInlineNegative = (
+  <LocaleConsumer<"Modal">
+    componentName="Modal"
+    v-slots={{
+      default: ({ locale }) => {
+        // @ts-expect-error Generic component dictionary does not become any.
+        const wrong: number = locale.value.componentLocale?.confirm;
+        // @ts-expect-error Snapshot remains readonly in the actual JSX slot.
+        locale.value.currency = "USD";
+        return <span>{wrong}</span>;
+      },
+    }}
+  />
+);
+export const localeShorthandNegative = (
+  <LocaleConsumer<"Modal"> componentName="Modal">
+    {({ locale }) => {
+      // @ts-expect-error Missing dictionary fields retain the supplied generic contract.
+      return <span>{locale.value.componentLocale?.unknownField}</span>;
+    }}
+  </LocaleConsumer>
+);
+
+export const localeUnknownDictionary = (
+  <LocaleConsumer componentName="Modal">
+    {({ locale }) => {
+      // @ts-expect-error Without the explicit key generic the dictionary is unknown.
+      return <span>{locale.value.componentLocale?.confirm}</span>;
+    }}
+  </LocaleConsumer>
+);
+export const localeMismatchedKey = (
+  // @ts-expect-error Explicit key generic constrains the selected field.
+  <LocaleConsumer<"Modal"> componentName="Pagination" />
+);

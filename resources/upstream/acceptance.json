@@ -81,41 +81,41 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "icons-config-provider-review2-20260921",
+        "reviewId": "icons-locale-shared-review2-20260921",
         "evidenceHashes": {
-          "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
           "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
+          "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
           "packages/semi-icons-vue/src/components/convertIcon.ts": "746c6c1b51e826db3a02fe49eb4a3b962f0e2e748a3fdb62a15c30b5f0630085",
           "packages/semi-icons-vue/src/components/factory-setup.tsx": "d98bd387a13320c9c4bcaed776deb6ab37182a5faeb3563df7a2f4c9dc1f6439",
-          "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
-          "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
-          "packages/semi-ui-vue/package.json": "c8361c676f3439314e2f6678a0b6902057e7403dc29b4e8b049dd13cfecf9514",
           "packages/semi-ui-vue/src/components/icons/index.ts": "97dec056a7f3162ba77e3ad5b1cccc3f32ff54f779d27d8cb73b2be5964304de",
-          "packages/semi-ui-vue/src/index.ts": "a7f999614aa4da9266157cf484bddd1feea3e0fe599a975c80fb27d2a59272e3",
-          "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
           "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3",
-          "scripts/check-consumer.mjs": "fbfc541b1d786c4f1a07f51273b47c0f4cc391a6997562edfdd1105209ae87f3",
-          "scripts/check-resource-consumer.mjs": "c605317b0a686bfcdbd3e00671d47186dc57372ee10421ae665654f332eb28e4",
-          "tests/browser/icons-interop.test.ts": "b0382f418a97d5da98b5a3558b0fa6c02da8cf3ef2809b305723743c5fbd551f",
-          "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
-          "tests/browser/svg-all.test.tsx": "0b189ff8e13621ba8d831c044cd43ad4d0db8dabb2559c399d99a34768633d5a",
-          "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
+          "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
+          "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
+          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
+          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
+          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
           "tests/consumer/node-icon-negative.ts": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
-          "tests/consumer/runtime.mjs": "01fb82bfd3195c91eca9ad2dc55ac440e9ada08aeb6810993987f1975c7b667e",
+          "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
+          "tests/browser/icons-interop.test.ts": "b0382f418a97d5da98b5a3558b0fa6c02da8cf3ef2809b305723743c5fbd551f",
+          "tests/browser/svg-all.test.tsx": "0b189ff8e13621ba8d831c044cd43ad4d0db8dabb2559c399d99a34768633d5a",
           "tests/e2e/icons.spec.ts": "320263dfcfb6ed27d3cb659c400425761beff99a7497bb27465362a42525b33b",
-          "tests/resource-consumer/consumer.ts": "464be14592f2d12fc2b48557ad47f3544cf653466cff3b192ad18b8ceed4b538",
-          "tests/resource-consumer/interop-main.ts": "1bf234abe956bda64bfd654ec5da89420d8d8620f543a8601dcf0d2e62b80903",
-          "tests/resource-consumer/main.tsx": "b1436dc6ab2a7a00f2d75f1a4649d7370e6cc7731116dea85390d1b19ef7ede1",
-          "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831",
           "tests/unit/icons-style.test.mjs": "0eacfc4f3ee23cfab89748e06d0756458df69d9324760876ff787fe4ff4a2396",
+          "website/src/zh-CN/components/icons.md": "145ceddda105d465af19ecb87a35c3f26018d00ef0449b393ccbe312d511f065",
+          "website/src/zh-CN/guide/packages.md": "0d53da65025b67e9a851b3ba10d542060ce4a8a744efc1d43cf84e2fc0ac5c6d",
+          "website/src/zh-CN/guide/compatibility.md": "7a84e6ac3ce36b88f65f162f3ae16101d1c6e0da3b6dbd593a723c3df183884e",
           "website/examples/icons/Basic.vapor.tsx": "8a92410dd6a6e4b0ed76808dfc2f3698c1a67b26f6c1914fb3eb360c1d6f54a3",
-          "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
           "website/examples/icons/CustomSvg.vapor.tsx": "07b899b4709b6b7f2a245ae1d47ce85aeec2c2f1628e1a712949cf57e6840612",
           "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
-          "website/src/zh-CN/components/icons.md": "145ceddda105d465af19ecb87a35c3f26018d00ef0449b393ccbe312d511f065",
-          "website/src/zh-CN/guide/compatibility.md": "73943817f6100d8a27b2294a6660ddcafafdc66b5cb123f91d1b902187d7bf2e",
-          "website/src/zh-CN/guide/packages.md": "861e16660cc1fb8af334f4421ca1e20803206766d7d2b0ddb29b0dbe4808a0c4",
-          "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85"
+          "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
+          "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
+          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
+          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
+          "tests/consumer/runtime.mjs": "01fb82bfd3195c91eca9ad2dc55ac440e9ada08aeb6810993987f1975c7b667e",
+          "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
+          "tests/resource-consumer/main.tsx": "35c908355cd49cd57889a04e33705e5b16478001661b37a29b6ab1d0b73ca9b4",
+          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
+          "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831"
         }
       }
     },
@@ -167,7 +167,7 @@
         ],
         "limitations": [
           "稳定 div/dir 与按 own key 嵌套继承是明确的 Vue 差异；undefined 清空、缺失继承。",
-          "Consumer 使用原生 Vapor scoped slot 传递只读 Ref，不是 React Consumer children 机制；没有公开 LocaleProvider/LocaleConsumer。",
+          "Consumer 使用原生 Vapor scoped slot 传递只读 Ref，不是 React Consumer children 机制；公开 LocaleProvider/LocaleConsumer 由独立 locale 族验收。",
           "响应式首次同步采样、按需监听，map/启用会通知，卸载函数失效；禁用保留最近快照。",
           "locale/timeZone只传递现有配置，不提供 locale fallback 或日期转换；host保留创建realm边界。",
           "仅浏览器ESM，Node根不导出组件；不支持组件SSR/水合/CJS。Vue RC peer/exact调用点/Chromium和截图限制不变。"
@@ -196,36 +196,150 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "config-provider-review2-20260921",
+        "reviewId": "configProvider-locale-shared-review2-20260921",
         "evidenceHashes": {
-          "packages/semi-ui-vue/package.json": "c8361c676f3439314e2f6678a0b6902057e7403dc29b4e8b049dd13cfecf9514",
-          "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
-          "packages/semi-ui-vue/src/components/configProvider/ConfigProvider.tsx": "e62df856abb35c7d61561c6e72d924139a74d76d16d6378ebc490a680e85ea97",
-          "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
-          "packages/semi-ui-vue/src/components/configProvider/index.ts": "9b8476194cb63fd9d206db194c22f4b29079287c88ec593ed848319197ca5f8a",
-          "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
-          "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
           "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
-          "packages/semi-ui-vue/src/index.ts": "a7f999614aa4da9266157cf484bddd1feea3e0fe599a975c80fb27d2a59272e3",
-          "scripts/check-consumer.mjs": "fbfc541b1d786c4f1a07f51273b47c0f4cc391a6997562edfdd1105209ae87f3",
-          "scripts/check-resource-consumer.mjs": "c605317b0a686bfcdbd3e00671d47186dc57372ee10421ae665654f332eb28e4",
-          "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
-          "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
+          "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
+          "packages/semi-ui-vue/src/components/configProvider/ConfigProvider.tsx": "e62df856abb35c7d61561c6e72d924139a74d76d16d6378ebc490a680e85ea97",
+          "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
+          "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
+          "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
+          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
+          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/src/components/configProvider/index.ts": "9b8476194cb63fd9d206db194c22f4b29079287c88ec593ed848319197ca5f8a",
+          "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
+          "website/tests/contracts-positive.tsx": "a35f1ad281421578da523b75bc0f0a615f4620b2cd0d587e63c913ba1d631171",
+          "website/tests/contracts-negative.tsx": "8a16ba369da54c7b9f2e8759496b42f7e438e04b24a16c932f0b9770de45c502",
+          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
           "tests/browser/configProvider.test.tsx": "78344078b2928ec7d624b45c908d72bb0fee28ac583fc642451e55329fa62770",
-          "tests/compiler/vapor.test.ts": "710b3c10b05a85517193146457e341834715ae2b610d7c4f0b817ebd2d4d8cf5",
-          "tests/consumer/node-configProvider-negative.mjs": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
-          "tests/consumer/node-configProvider-negative.ts": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
+          "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
+          "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
           "tests/e2e/configProvider.spec.ts": "f31548ba05b7d35302c9b6b2781e004c2a1fdbbdf55b152d877d804c03bb3f6c",
-          "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
-          "tests/resource-consumer/consumer.ts": "464be14592f2d12fc2b48557ad47f3544cf653466cff3b192ad18b8ceed4b538",
-          "tests/resource-consumer/interop-main.ts": "1bf234abe956bda64bfd654ec5da89420d8d8620f543a8601dcf0d2e62b80903",
+          "tests/compiler/vapor.test.ts": "960fad7b21539f593a80243e7ae900d3507dca9b19c33572e402f44537157628",
           "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
-          "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
           "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
-          "website/src/zh-CN/components/configProvider.md": "a94c8e5d14df3266c68b55c4268b4132cdc524253e48e4b19b50a4b78f0e4d8a",
-          "website/tests/contracts-negative.tsx": "5ff34bfeb437a1ad9d4b8f677a2b788fd064c295f91e3d882eab672bdcc75186",
-          "website/tests/contracts-positive.tsx": "f930223a0b34cae4d81644030105e0b3cf94ad97e26004717d20fa24f1388306",
-          "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85"
+          "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
+          "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
+          "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
+          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
+          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
+          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
+          "tests/consumer/node-configProvider-negative.ts": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
+          "tests/consumer/node-configProvider-negative.mjs": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd"
+        }
+      }
+    },
+    {
+      "family": "locale",
+      "status": "accepted",
+      "reviewedDecision": "The public LocaleProvider and LocaleConsumer browser contracts are accepted against the fixed upstream language selection and field fallback behavior. Native Vapor scoped slots, explicit dictionary-key generics, independent locale/config contexts and their differences are documented. Strict source and generated declarations, dynamic and isolated browser behavior, live documentation, all 57 generated dictionaries and four isolated tarball consumer flows passed verification and independent implementation review. Other public families remain independently assessed.",
+      "evidence": {
+        "contract": [
+          "packages/semi-ui-vue/src/components/locale/types.ts",
+          "website/src/zh-CN/components/locale.md"
+        ],
+        "implementation": [
+          "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx",
+          "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx",
+          "packages/semi-ui-vue/src/components/locale/context.ts"
+        ],
+        "sourceAndDeclarations": [
+          "packages/semi-ui-vue/src/index.ts",
+          "packages/semi-ui-vue/src/components/locale/index.ts",
+          "packages/semi-ui-vue/package.json",
+          "website/tests/contracts-positive.tsx",
+          "website/tests/contracts-negative.tsx",
+          "website/build.mjs",
+          "website/tsconfig.examples.json",
+          "tests/resource-consumer/consumer.ts"
+        ],
+        "browser": [
+          "tests/browser/locale.test.tsx",
+          "tests/compiler/vapor.test.ts",
+          "tests/e2e/locale.spec.ts",
+          "tests/browser/configProvider-responsive.test.tsx"
+        ],
+        "documentation": [
+          "website/src/zh-CN/components/locale.md",
+          "website/src/zh-CN/guide/internationalization.md",
+          "website/examples/locale/Dynamic.vapor.tsx",
+          "website/examples/locale/Fallback.vapor.tsx",
+          "website/examples/locale/Nested.vapor.tsx",
+          "website/examples/locale/DateBoundary.vapor.tsx",
+          "website/tests/locale.spec.ts"
+        ],
+        "consumer": [
+          "scripts/check-consumer.mjs",
+          "scripts/check-resource-consumer.mjs",
+          "tests/resource-consumer/locale.tsx",
+          "tests/resource-consumer/interop-main.ts",
+          "tests/consumer/node-locale-negative.ts",
+          "tests/consumer/node-locale-negative.mjs",
+          "tests/unit/locale-inputs.test.mjs"
+        ],
+        "limitations": [
+          "Native scoped slots carry a stable readonly Ref instead of four positional React callback arguments. Explicit string-key generics provide dictionary types; unparameterized Consumer dictionaries are unknown.",
+          "Public inputs remain complete Locale objects. Coded partial runtime dictionaries are not merged; missing code resets the whole locale, undefined dateFnsLocale falls back, currency does not.",
+          "Only actual ConfigProvider locale participates in precedence over LocaleProvider; independent G09 defaults do not mask it. Existing ConfigProvider inheritance and explicit clearing remain unchanged.",
+          "timeZone is configuration data; dateFnsLocale is formatting language data. No date picker, automatic timezone conversion or asynchronous loader is provided.",
+          "Browser ESM and ordinary Vue interop are separate paths. Node UI roots exclude the components; locale/source/* and interface remain static entries. No CJS, component SSR or hydration.",
+          "Pinned RC9/RC2, strict declarations, separate exact-optional call-site checks and the compiler peer-install limitation remain. Chromium screenshots are not complete pixel parity."
+        ]
+      },
+      "mappings": {
+        "api": "Provider replaces its dictionary and defaults omitted/undefined locale to zh_CN. Consumer selects Config locale then independent Locale locale, validates code and preserves field/dateFns/currency fallback differences. No wrapper DOM, events or exposed methods.",
+        "types": "Generated Locale is unchanged. Consumer string-key generic, unknown/undefined boundaries and VaporRenderResult slots replace unconstrained React T and positional children callbacks.",
+        "statics": "No static child components or public instance methods; defaultProps become synchronous defaults.",
+        "subpaths": "Browser root exports both components, hook and types; ./locale aggregates default Provider and named Consumer. Legacy deep component-file paths are not exported. Existing ./locale/source/* and ./locale/interface retain static Node access.",
+        "differences": {
+          "types": [
+            {
+              "name": "LocaleProviderProps",
+              "sourcePath": "packages/semi-ui/locale/localeProvider.tsx"
+            },
+            {
+              "name": "LocaleConsumerProps",
+              "sourcePath": "packages/semi-ui/locale/localeConsumer.tsx"
+            }
+          ],
+          "staticMembers": [],
+          "subpaths": []
+        }
+      },
+      "verification": {
+        "status": "complete",
+        "reviewId": "c-locale-review-final-20260922",
+        "evidenceHashes": {
+          "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
+          "website/src/zh-CN/components/locale.md": "af7e7a8d43de026dd8907db5a4dcfd16eada3fed832dcfc0d159ac7f175fbf31",
+          "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx": "6f5f381fe26f2fee87cfcc47b02453078ebd2e27e4ac6707f8a9868fcbe940c9",
+          "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx": "220fa47b137918087d8c012f976e66983f4bcdfed860a96d3c7411ad9bc33a64",
+          "packages/semi-ui-vue/src/components/locale/context.ts": "fc97a18235107fe6c6ac24fb7fb7f6c4b196fa9cbf3ac863a1a53bce64deba23",
+          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/src/components/locale/index.ts": "a09e4c3b03b238e178125963b98a71a5f05011b6bed50444d30e4c8c148bf2fc",
+          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
+          "website/tests/contracts-positive.tsx": "a35f1ad281421578da523b75bc0f0a615f4620b2cd0d587e63c913ba1d631171",
+          "website/tests/contracts-negative.tsx": "8a16ba369da54c7b9f2e8759496b42f7e438e04b24a16c932f0b9770de45c502",
+          "website/build.mjs": "4be6f2b535cd2a52157eb54ac08dbd27f31b513d8e1c9681c80f36a1875b370d",
+          "website/tsconfig.examples.json": "5aa2393c42274fa43986fb79501ac5ea98aebeb686d7868615cd383957fefb33",
+          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
+          "tests/browser/locale.test.tsx": "0cd3d059ee70e9b93b4dcf2ac34d037f8356ac4388b55870cb943fedea01c304",
+          "tests/compiler/vapor.test.ts": "960fad7b21539f593a80243e7ae900d3507dca9b19c33572e402f44537157628",
+          "tests/e2e/locale.spec.ts": "95a3ff04385d47fce5bd410ff096ea21eb06b2834488d8c622173f0d7be42a19",
+          "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
+          "website/src/zh-CN/guide/internationalization.md": "953940c2ac129297a248165ec19a76c06768a80b2e3cf0e9c6fb6b74d4e85283",
+          "website/examples/locale/Dynamic.vapor.tsx": "31f9e0d213e313fb76881504a1884ed96f7a2afd72d421a3e68d345749ea2e34",
+          "website/examples/locale/Fallback.vapor.tsx": "a5e7240a03c128b7db41bac15db80a7b2498e18a0120b2656455230055048f4d",
+          "website/examples/locale/Nested.vapor.tsx": "c616d4297f91b05733976089d7e214b52dbfa4a6bf9e2fe7d5c19314479e7ccd",
+          "website/examples/locale/DateBoundary.vapor.tsx": "c2da1e505ae535db36343576828ec288e550988f2d7cec36b3c4f23f86bcd22c",
+          "website/tests/locale.spec.ts": "8109f1112749628bdcc98c36acc6622ca01a7fda7a1c8dd33578c019a9ce19fc",
+          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
+          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
+          "tests/resource-consumer/locale.tsx": "9d483bbca9d4bbd96ff954a3a53b42416eeee3964958606773dc6b17b02aa459",
+          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
+          "tests/consumer/node-locale-negative.ts": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
+          "tests/consumer/node-locale-negative.mjs": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
+          "tests/unit/locale-inputs.test.mjs": "1d4180303e7c56bade94c1ec184b8140c48ef01061f11ebd0ae1c0a68c56a328"
         }
       }
     }

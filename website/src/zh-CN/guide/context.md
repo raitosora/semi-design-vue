@@ -1,6 +1,6 @@
 # 上下文与默认配置
 
-Semi Design Vue 提供类型化的上下文内核，用于应用自己的组合函数和原生 Vapor 组件。当前接口从 `semi-ui-vue` 根入口导出；公开 [ConfigProvider / ConfigConsumer](../components/configProvider.md) 复用此内核；尚无公开 LocaleProvider 或命令式弹层组件。
+Semi Design Vue 提供类型化的上下文内核，用于应用自己的组合函数和原生 Vapor 组件。当前接口从 `semi-ui-vue` 根入口导出；公开 [ConfigProvider / ConfigConsumer](../components/configProvider.md) 复用此内核；独立语言上下文由 [LocaleProvider / LocaleConsumer](../components/locale.md) 提供，尚无公开命令式弹层组件。
 
 ## 动态继承与应用隔离
 
@@ -99,7 +99,7 @@ const contexts = () => getFoundationContexts(context);
 
 基准为 Semi Design `2.103.0`。上游 ConfigContext 暴露 direction/timeZone/locale/getPopupContainer；此处将日期和容器拆成明确字段。上游 ConfigProvider 默认 zh_CN/ltr/responsiveObserve=false，但嵌套 Provider 并不自动合并父层；这里的按字段继承是明确的 Vue 契约。
 
-上游独立 LocaleContext 与 ConfigContext 有双来源优先级，LocaleConsumer 还负责中文 fallback 与 date-fns fallback。当前内核提供统一语言来源。ConfigProvider 传递语言数据，不实现公开 LocaleProvider/LocaleConsumer 的双来源与 fallback 策略。ConfigProvider 自己提供 responsiveMap、screens、onBreakpoint 与按需媒体监听；本页的 createSemiContext 本身不注册媒体监听。
+上游独立 LocaleContext 与 ConfigContext 有双来源优先级，LocaleConsumer 还负责中文 fallback 与 date-fns fallback。内核仍提供统一配置数据；[LocaleConsumer](../components/locale.md) 另行读取实际 ConfigProvider 与独立 LocaleProvider 的双来源，执行固定上游 fallback。直接 provideSemiContext 的默认中文不会屏蔽独立 LocaleProvider；需要让配置参与 LocaleConsumer 优先级时使用 ConfigProvider。ConfigProvider 自己提供 responsiveMap、screens、onBreakpoint 与按需媒体监听；本页的 createSemiContext 本身不注册媒体监听。
 
 上游 `semiGlobal.config.overrideDefaultProps` 使用延迟读取的 Proxy，配置可在组件导入后设置。这里用创建实例时捕获的默认值和显式 `configure` 替换配置；不依赖框架默认 props 工厂。上游 `semiGlobal.config.createRoot` 只用于 React 渲染根，不提供 Vue 映射。上游静态通知的默认配置/选项合并行为只作为接口依据，当前没有对应公共组件。
 

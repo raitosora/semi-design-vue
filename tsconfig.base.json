@@ -34,6 +34,12 @@
       ],
       "semi-ui-vue/configProvider": [
         "./packages/semi-ui-vue/src/components/configProvider/index.ts"
+      ],
+      "semi-ui-vue/locale": [
+        "./packages/semi-ui-vue/src/components/locale/index.ts"
+      ],
+      "semi-ui-vue/locale/interface": [
+        "./packages/semi-ui-vue/src/locale/interface.ts"
       ]
     },
     "allowImportingTsExtensions": true
