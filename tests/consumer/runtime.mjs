@@ -4,6 +4,7 @@ import {
   version as uiVersion,
 } from "semi-ui-vue";
 import { ref } from "vue";
+import { createRequire } from "node:module";
 import { version as animationVersion } from "semi-animation-vue";
 import { usePresence, waitForMotion } from "semi-animation-vue";
 import {
@@ -17,6 +18,21 @@ const assert = (condition, message) => {
 };
 for (const version of [uiVersion, animationVersion, themeVersion])
   assert(version === "0.0.0", "package version export must remain available");
+const nodeUiRoot = await import("semi-ui-vue");
+assert(
+  !Object.hasOwn(nodeUiRoot, "Icon"),
+  "Node's infrastructure-only UI root must not expose Icon",
+);
+let requireError;
+try {
+  createRequire(import.meta.url)("semi-ui-vue");
+} catch (error) {
+  requireError = error;
+}
+assert(
+  requireError?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED",
+  "UI root must not add a CommonJS require export",
+);
 assert(!hasProvidedProp({}, "value"), "missing prop must be absent");
 assert(
   typeof usePresence === "function" && typeof waitForMotion === "function",

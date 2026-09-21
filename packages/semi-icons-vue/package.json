@@ -12,7 +12,13 @@
     "./*": {
       "types": "./dist/icons/*.d.ts",
       "import": "./dist/icons/*.js"
-    }
+    },
+    "./Icon": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./styles.css": "./dist/styles/index.css",
+    "./styles.scss": "./dist/styles/index.scss"
   },
   "files": [
     "dist",
@@ -23,10 +29,11 @@
     "**/*.scss"
   ],
   "scripts": {
-    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-svg-resources.mjs && node ../../scripts/finalize-package.mjs",
+    "build": "vite build --config ../../vite.package.config.ts && tsmc -p tsconfig.build.json && node ../../scripts/build-svg-resources.mjs && node ../../scripts/build-icon-styles.mjs && node ../../scripts/finalize-package.mjs",
     "typecheck": "tsmc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
     "vue": "3.6.0-rc.9"
-  }
+  },
+  "style": "./dist/styles/index.css"
 }

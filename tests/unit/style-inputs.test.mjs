@@ -28,6 +28,7 @@ async function copyInputs(destination) {
   );
   for (const source of [
     ...sources,
+    "resources/upstream/sources.json",
     "node_modules/@douyinfe/semi-foundation/package.json",
     "node_modules/@douyinfe/semi-theme-default/package.json",
     "node_modules/@douyinfe/semi-theme-default/LICENSE",

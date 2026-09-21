@@ -1,6 +1,6 @@
 import { defineVaporComponent, nextTick, ref } from "vue";
 import { expect, test } from "vitest";
-import * as icons from "../../packages/semi-icons-vue/src/index.js";
+import * as iconPackage from "../../packages/semi-icons-vue/src/index.js";
 import * as lab from "../../packages/semi-icons-lab-vue/src/index.js";
 import * as illustrations from "../../packages/semi-illustrations-vue/src/index.js";
 import {
@@ -17,6 +17,19 @@ import {
 } from "../../packages/semi-illustrations-vue/src/runtime.js";
 import inventory from "../../resources/svg/manifest.json";
 import { mountVapor } from "../support/mount-vapor.js";
+
+const {
+  default: DefaultIcon,
+  Icon: PublicIcon,
+  convertIcon,
+  ...icons
+} = iconPackage;
+
+test("public Icon exports remain separate from the full generated SVG inventory", () => {
+  expect(DefaultIcon).toBe(PublicIcon);
+  expect(PublicIcon.elementType).toBe("Icon");
+  expect(typeof convertIcon).toBe("function");
+});
 
 for (const [kind, exports] of [
   ["icons", icons],

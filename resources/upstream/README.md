@@ -15,6 +15,11 @@ implementations.
   resource checks. These entries do not claim public component delivery.
 - `matrix.json`: generated current exports and differences, separate existence,
   public delivery and behavior acceptance dimensions.
+- `acceptance.json`: reviewer-owned acceptance decisions. A cited file path,
+  matching export name, generated SVG, or successful gate never changes a family
+  from pending. An accepted record needs all evidence categories and a completed
+  verification review identifier. The current `icons` decision and its explicit
+  differences are recorded below and in `acceptance.json`.
 
 The fixed official source is Semi Design 2.103.0 at
 `8bed560dd3f36579f85b7a522f19762f2bace756` in
@@ -35,5 +40,16 @@ content drift fails. Updating pins is a separately reviewed maintenance change.
 
 The inventory is syntax evidence, not semantic type equivalence or behavior
 acceptance. Current public component delivery and acceptance are explicitly
-unestablished. The first actual public component must add reviewed acceptance
-records and extend that policy; names and files alone cannot promote it.
+unestablished except where `acceptance.json` contains an explicit completed
+review decision. The `icons` record accepts the reviewed browser Icon contract
+with explicit Vue API and environment differences; its content-hashed evidence
+cites contract, implementation, source/declarations, browser, documentation,
+consumer and limitation surfaces. Evidence categories are closed: browser,
+documentation and consumer evidence must each include their corresponding test,
+website or consumer surface. Every cited file is checked for formal location,
+real path and content hash before use. Acceptance also requires every inventoried
+root export of the family to exist. These checks validate record consistency;
+they do not replace behavior tests or independent review. Other public families
+remain unaccepted.
+Its direct SVG resources do not claim Icon wrapper, `spin`, SSR/hydration, or
+CJS behavior.

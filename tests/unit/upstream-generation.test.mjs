@@ -12,14 +12,37 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
+import {
+  validateAcceptedEvidence,
+  validateAcceptanceRecords,
+} from "../../scripts/upstream-acceptance.mjs";
 
 const repository = fileURLToPath(new URL("../../", import.meta.url));
+const copyableEvidenceKinds = [
+  "contract",
+  "implementation",
+  "sourceAndDeclarations",
+  "browser",
+  "documentation",
+  "consumer",
+];
 
 it("checks formal inputs alone and fails on real source, generated output and invocation drift", async () => {
   const root = await mkdtemp(join(tmpdir(), "semi-upstream-gate-"));
   const copy = async (path) => {
     await mkdir(dirname(join(root, path)), { recursive: true });
     await cp(join(repository, path), join(root, path), { recursive: true });
+  };
+  const copyAcceptedEvidence = async (acceptance) => {
+    const verifiedAcceptance = await validateAcceptedEvidence(
+      repository,
+      validateAcceptanceRecords(acceptance),
+    );
+    for (const record of verifiedAcceptance.families) {
+      if (record.status !== "accepted") continue;
+      for (const kind of copyableEvidenceKinds)
+        for (const path of record.evidence[kind]) await copy(path);
+    }
   };
   const run = (args = ["--check"]) =>
     execFileSync(process.execPath, ["scripts/check-upstream.mjs", ...args], {
@@ -49,6 +72,62 @@ it("checks formal inputs alone and fails on real source, generated output and in
     );
     for (const entry of Object.values(facilities).flat())
       for (const path of entry.paths) await copy(path);
+    const acceptance = JSON.parse(
+      await readFile(
+        join(repository, "resources/upstream/acceptance.json"),
+        "utf8",
+      ),
+    );
+    const unsafeAccepted = structuredClone(acceptance);
+    unsafeAccepted.families[0] = {
+      ...unsafeAccepted.families[0],
+      status: "accepted",
+      evidence: {
+        ...unsafeAccepted.families[0].evidence,
+        contract: ["docs/unsafe-evidence.ts"],
+        limitations: ["Intentionally rejected before copy."],
+      },
+      verification: {
+        status: "complete",
+        reviewId: "unsafe-copy-order",
+        evidenceHashes: Object.fromEntries(
+          [
+            "docs/unsafe-evidence.ts",
+            ...copyableEvidenceKinds
+              .filter((kind) => kind !== "contract")
+              .flatMap((kind) => unsafeAccepted.families[0].evidence[kind]),
+          ].map((path) => [path, "a".repeat(64)]),
+        ),
+      },
+      mappings: {
+        ...unsafeAccepted.families[0].mappings,
+        differences: {
+          types: [
+            {
+              name: "IconProps",
+              sourcePath: "packages/semi-icons/src/components/Icon.tsx",
+            },
+          ],
+          staticMembers: [],
+          subpaths: [],
+        },
+      },
+    };
+    await expect(copyAcceptedEvidence(unsafeAccepted)).rejects.toThrow(
+      /outside formal roots/,
+    );
+    await expect(
+      readFile(join(root, "docs/unsafe-evidence.ts"), "utf8"),
+    ).rejects.toThrow(/ENOENT/);
+    const unsafeExtra = structuredClone(acceptance);
+    unsafeExtra.families[0].evidence.extra = ["../../outside-probe"];
+    await expect(copyAcceptedEvidence(unsafeExtra)).rejects.toThrow(
+      /unknown evidence/i,
+    );
+    await expect(readFile(join(root, "outside-probe"), "utf8")).rejects.toThrow(
+      /ENOENT/,
+    );
+    await copyAcceptedEvidence(acceptance);
     // Tooling-only dependency access. Consumer isolation is tested independently by the tarball flows.
     await symlink(
       join(repository, "node_modules"),

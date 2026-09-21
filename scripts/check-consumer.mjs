@@ -71,6 +71,45 @@ function runtimeFiles(directory) {
   });
 }
 
+function typeTargets(conditions) {
+  if (!conditions || typeof conditions !== "object") return [];
+  return Object.entries(conditions).flatMap(([condition, target]) => {
+    if (condition === "types" && typeof target === "string") return [target];
+    return typeTargets(target);
+  });
+}
+
+function runtimeTargets(conditions) {
+  if (typeof conditions === "string") return [conditions];
+  if (!conditions || typeof conditions !== "object") return [];
+  return Object.entries(conditions).flatMap(([condition, target]) =>
+    condition === "types" ? [] : runtimeTargets(target),
+  );
+}
+
+function hasPackedDeclaration(packageRoot, target) {
+  if (!target.includes("*")) return existsSync(join(packageRoot, target));
+  const [prefix, suffix] = target.split("*");
+  return declarationFiles(packageRoot).some((file) => {
+    const relative = file.slice(packageRoot.length + 1);
+    return (
+      relative.startsWith(prefix.replace(/^\.\//, "")) &&
+      relative.endsWith(suffix)
+    );
+  });
+}
+
+function expectFailure(command, args, options, message) {
+  try {
+    execFileSync(command, args, { ...options, stdio: "pipe" });
+  } catch (error) {
+    const output = `${error.stdout ?? ""}\n${error.stderr ?? ""}`;
+    if (message.test(output)) return output;
+    throw new Error(`Unexpected rejected consumer fixture:\n${output}`);
+  }
+  throw new Error("Negative consumer fixture unexpectedly succeeded");
+}
+
 try {
   const { env, evidenceDirectory } = await installPackedConsumer({
     root,
@@ -98,6 +137,7 @@ try {
     }
   }
   const typedEntries = [];
+  const conditionalTypeTargets = [];
   const runtimeEntries = [];
   for (const name of packages) {
     const packageRoot = join(work, "node_modules", name);
@@ -105,12 +145,28 @@ try {
       readFileSync(join(packageRoot, "package.json"), "utf8"),
     );
     for (const [subpath, conditions] of Object.entries(manifest.exports)) {
-      const types = typeof conditions === "object" && conditions.types;
+      const types = typeTargets(conditions);
+      const runtime = runtimeTargets(conditions);
+      if (!types.length && runtime.some((target) => /\.[cm]?js$/.test(target)))
+        throw new Error(
+          `Export has no declaration target: ${name}${subpath.slice(1)}`,
+        );
+      for (const target of types) {
+        if (!hasPackedDeclaration(packageRoot, target))
+          throw new Error(
+            `Missing packed declaration target for ${name}${subpath.slice(1)}: ${target}`,
+          );
+        conditionalTypeTargets.push({
+          specifier: subpath === "." ? name : `${name}/${subpath.slice(2)}`,
+          target,
+        });
+      }
       let specifier = subpath === "." ? name : `${name}/${subpath.slice(2)}`;
       if (subpath.includes("*")) {
-        if (!types)
+        const wildcardTarget = types.find((target) => target.includes("*"));
+        if (!wildcardTarget)
           throw new Error(`Wildcard has no declaration target: ${specifier}`);
-        const [prefix, suffix] = types.split("*");
+        const [prefix, suffix] = wildcardTarget.split("*");
         const candidates = declarationFiles(packageRoot)
           .map((file) => file.slice(packageRoot.length + 1))
           .filter(
@@ -126,7 +182,7 @@ try {
         );
         specifier = specifier.replace("*", match);
       }
-      if (types) typedEntries.push(specifier);
+      if (types.length) typedEntries.push(specifier);
       runtimeEntries.push(specifier);
     }
   }
@@ -146,6 +202,17 @@ try {
   writeFileSync(
     join(work, "consumer.ts"),
     readFileSync(resolve(root, "tests/consumer/consumer.ts"), "utf8"),
+  );
+  writeFileSync(
+    join(work, "node-icon-negative.ts"),
+    readFileSync(resolve(root, "tests/consumer/node-icon-negative.ts"), "utf8"),
+  );
+  writeFileSync(
+    join(work, "node-icon-negative.mjs"),
+    readFileSync(
+      resolve(root, "tests/consumer/node-icon-negative.mjs"),
+      "utf8",
+    ),
   );
   writeFileSync(
     join(work, "tsconfig.json"),
@@ -175,6 +242,30 @@ try {
     env,
     stdio: "inherit",
   });
+  writeFileSync(
+    join(work, "tsconfig.node-icon-negative.json"),
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: "ES2022",
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+          strict: true,
+          skipLibCheck: false,
+          noEmit: true,
+        },
+        files: ["node-icon-negative.ts"],
+      },
+      null,
+      2,
+    ),
+  );
+  expectFailure(
+    process.execPath,
+    [tsc, "-p", "tsconfig.node-icon-negative.json"],
+    { cwd: work, env },
+    /has no exported member ['"]Icon['"]|has no exported member Icon/,
+  );
   // Extra call-site-only check; the full declaration check above keeps skipLibCheck=false.
   execFileSync(
     process.execPath,
@@ -196,6 +287,12 @@ try {
     env,
     stdio: "inherit",
   });
+  expectFailure(
+    process.execPath,
+    [join(work, "node-icon-negative.mjs")],
+    { cwd: work, env },
+    /does not provide an export named ['"]Icon['"]|does not provide an export named Icon/,
+  );
   execFileSync(process.execPath, [join(work, "resolve-exports.mjs")], {
     cwd: work,
     env,
@@ -209,6 +306,7 @@ try {
         skipLibCheck: false,
         exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
         typedEntries,
+        conditionalTypeTargets,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

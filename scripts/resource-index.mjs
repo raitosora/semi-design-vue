@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { format } from "prettier";
 
@@ -60,14 +60,59 @@ const output = await format(lines.join("\n"), {
   printWidth: 80,
 });
 const target = new URL("website/src/zh-CN/guide/resource-index.md", root);
+const catalogTarget = new URL("website/examples/icons/catalog.ts", root);
+const catalog = [
+  ...svg.generated.icons.map(({ name, source }) => ({
+    name,
+    source,
+    packageName: "semi-icons-vue",
+    group: "图标",
+  })),
+  ...svg.generated.iconsLab.map(({ name, source }) => ({
+    name,
+    source,
+    packageName: "semi-icons-lab-vue",
+    group: "实验图标",
+  })),
+  ...svg.generated.illustrations.map(({ name, source }) => ({
+    name,
+    source,
+    packageName: "semi-illustrations-vue",
+    group: "插画",
+  })),
+];
+const catalogOutput = await format(
+  [
+    "// Generated from resources/svg/manifest.json by scripts/resource-index.mjs.",
+    "export interface ResourceCatalogEntry {",
+    "  name: string;",
+    "  source: string;",
+    '  packageName: "semi-icons-vue" | "semi-icons-lab-vue" | "semi-illustrations-vue";',
+    '  group: "图标" | "实验图标" | "插画";',
+    "}",
+    "",
+    "export const resourceCatalog = " +
+      JSON.stringify(catalog) +
+      " as const satisfies readonly ResourceCatalogEntry[];",
+    "",
+  ].join("\n"),
+  { parser: "typescript", printWidth: 80 },
+);
 if (process.argv.includes("--check")) {
   assert.equal(
     await readFile(target, "utf8"),
     output,
     "Resource index is stale. Run pnpm generate:resources.",
   );
+  assert.equal(
+    await readFile(catalogTarget, "utf8"),
+    catalogOutput,
+    "Icon catalog is stale. Run pnpm generate:resources.",
+  );
   console.log("Resource index matches the locked resource inventories.");
 } else {
   await writeFile(target, output);
+  await mkdir(new URL("website/examples/icons/", root), { recursive: true });
+  await writeFile(catalogTarget, catalogOutput);
   console.log(`Generated ${fileURLToPath(target)}.`);
 }

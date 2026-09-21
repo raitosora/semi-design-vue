@@ -53,11 +53,11 @@ const report = {
       "built ESM entry import",
       "plain TypeScript declaration consumption",
       "isolated CSS/SCSS theme consumer build and Chromium checks",
-      "isolated SVG/locale consumer types, tree shaking, provenance and Chromium checks",
+      "isolated Icon/SVG/locale consumer types, tree shaking, provenance and Chromium checks",
       "patched Foundation fixture tarball in pure Vapor and interop",
     ],
     limitation:
-      "Four isolated tarball consumer flows check ESM/declarations, styles, resources and patched Foundation fixtures; public components and full publication acceptance remain unestablished.",
+      "Four isolated tarball consumer flows check ESM/declarations, styles, Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

@@ -6,8 +6,14 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": {
+        "node": {
+          "types": "./dist/infrastructure.d.ts",
+          "default": "./dist/infrastructure.js"
+        },
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./styles": {
       "sass": "./dist/styles/index.scss",
@@ -54,7 +60,17 @@
     "./locale/interface": {
       "types": "./dist/locale/interface.d.ts",
       "import": "./dist/locale/interface.js"
-    }
+    },
+    "./icons": {
+      "types": "./dist/components/icons/index.d.ts",
+      "import": "./dist/components/icons/index.js"
+    },
+    "./styles/components/icons": {
+      "sass": "./dist/styles/components/icons.scss",
+      "default": "./dist/styles/components/icons.css"
+    },
+    "./styles/components/icons.css": "./dist/styles/components/icons.css",
+    "./styles/components/icons.scss": "./dist/styles/components/icons.scss"
   },
   "files": [
     "dist",
@@ -74,6 +90,7 @@
   },
   "dependencies": {
     "date-fns": "2.30.0",
-    "semi-animation-vue": "workspace:*"
+    "semi-animation-vue": "workspace:*",
+    "semi-icons-vue": "workspace:*"
   }
 }

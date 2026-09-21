@@ -9,7 +9,12 @@ import DomDemo from "../../website/examples/dom/Dom.vapor";
 import ContextDemo from "../../website/examples/context/Context.vapor";
 import Contracts from "../../website/examples/contracts/Protocol.vapor";
 import Generic from "../../website/examples/contracts/Generic.vapor";
+import IconBasic from "../../website/examples/icons/Basic.vapor";
+import IconCustomSvg from "../../website/examples/icons/CustomSvg.vapor";
+import IconStates from "../../website/examples/icons/States.vapor";
+import IconCatalog from "../../website/examples/icons/Catalog.vapor";
 import { Lifecycle } from "../fixtures/Lifecycle.vapor";
+import "../../packages/semi-ui-vue/dist/styles/components/icons.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -20,6 +25,7 @@ const foundationMode = new URLSearchParams(location.search).has("foundation");
 const contextMode = new URLSearchParams(location.search).has("context");
 const overlayMode = new URLSearchParams(location.search).has("overlay");
 const domMode = new URLSearchParams(location.search).has("dom");
+const iconsMode = new URLSearchParams(location.search).has("icons");
 const app = createVaporApp(
   new URLSearchParams(location.search).has("virtual")
     ? VirtualDemo
@@ -33,46 +39,56 @@ const app = createVaporApp(
             ? DomDemo
             : contextMode
               ? ContextDemo
-              : foundationMode
+              : iconsMode
                 ? defineVaporComponent(() => (
                     <main>
-                      <FoundationInput />
-                      <FoundationTooltip />
+                      <h1>Icon examples</h1>
+                      <IconBasic />
+                      <IconCustomSvg />
+                      <IconStates />
+                      <IconCatalog />
                     </main>
                   ))
-                : contractsMode
+                : foundationMode
                   ? defineVaporComponent(() => (
                       <main>
-                        <Contracts />
-                        <Generic />
+                        <FoundationInput />
+                        <FoundationTooltip />
                       </main>
                     ))
-                  : defineVaporComponent(() => (
-                      <main>
-                        <h1>Semi Design Vue</h1>
-                        <p>Vapor compiler and lifecycle fixture</p>
-                        <button
-                          onClick={() => {
-                            visible.value = !visible.value;
-                          }}
-                        >
-                          Toggle fixture
-                        </button>
-                        <Lifecycle
-                          v-if={visible.value}
-                          label="Lifecycle fixture"
-                          onDispose={() => {
-                            disposals.value += 1;
-                          }}
-                          onPulse={() => {
-                            pulses.value += 1;
-                          }}
-                        />
-                        <output aria-label="Lifecycle totals">
-                          Pulses {pulses.value} / Disposals {disposals.value}
-                        </output>
-                      </main>
-                    )),
+                  : contractsMode
+                    ? defineVaporComponent(() => (
+                        <main>
+                          <Contracts />
+                          <Generic />
+                        </main>
+                      ))
+                    : defineVaporComponent(() => (
+                        <main>
+                          <h1>Semi Design Vue</h1>
+                          <p>Vapor compiler and lifecycle fixture</p>
+                          <button
+                            onClick={() => {
+                              visible.value = !visible.value;
+                            }}
+                          >
+                            Toggle fixture
+                          </button>
+                          <Lifecycle
+                            v-if={visible.value}
+                            label="Lifecycle fixture"
+                            onDispose={() => {
+                              disposals.value += 1;
+                            }}
+                            onPulse={() => {
+                              pulses.value += 1;
+                            }}
+                          />
+                          <output aria-label="Lifecycle totals">
+                            Pulses {pulses.value} / Disposals {disposals.value}
+                          </output>
+                        </main>
+                      )),
 );
 app.mount("#app");
 declare global {

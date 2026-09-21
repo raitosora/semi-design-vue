@@ -310,6 +310,92 @@ describe("component change gate policy", () => {
       }),
     ).toMatchObject({ status: "failed", components: ["button", "card"] });
   });
+  it("treats the Icon component surfaces as the icons family without promoting raw SVG exports", () => {
+    const iconComponent = change(
+      "packages/semi-icons-vue/src/components/Icon.tsx",
+    );
+    const evidence = [
+      "website/src/zh-CN/components/icons.md",
+      "website/examples/icons/basic.tsx",
+      "tests/browser/icons.test.tsx",
+    ].map((path) => change(path));
+    expect(inspectComponentChanges([iconComponent, ...evidence])).toMatchObject(
+      {
+        status: "checked",
+        components: ["icons"],
+      },
+    );
+    expect(
+      inspectComponentChanges([
+        change("packages/semi-icons-vue/src/icons/IconActivity.tsx"),
+      ]),
+    ).toEqual({ status: "not-applicable", components: [] });
+  });
+  it("requires icon delivery evidence when Icon package root, default, ./Icon, UI exports, or style build behavior changes", () => {
+    const iconManifest = change("packages/semi-icons-vue/package.json");
+    const iconIndex = change("packages/semi-icons-vue/src/index.ts");
+    const uiIndex = change("packages/semi-ui-vue/src/index.ts");
+    const styleBuilder = change("scripts/build-icon-styles.mjs");
+    const evidence = [
+      "website/src/zh-CN/components/icons.md",
+      "website/examples/icons/basic.tsx",
+      "tests/e2e/icons.spec.ts",
+    ].map((path) => change(path));
+    const root = JSON.stringify({
+      exports: { ".": { import: "./dist/index.js" } },
+    });
+    const icon = JSON.stringify({
+      exports: {
+        ".": { import: "./dist/index.js", types: "./dist/index.d.ts" },
+        "./Icon": { import: "./dist/components/Icon.js" },
+      },
+    });
+    expect(
+      inspectComponentChanges([iconManifest], {
+        beforeIconManifest: root,
+        afterIconManifest: icon,
+      }),
+    ).toMatchObject({ status: "failed", components: ["icons"] });
+    expect(
+      inspectComponentChanges([iconIndex, ...evidence], {
+        beforeIconIndex: "export * from './icons/index.js'",
+        afterIconIndex:
+          "export { default, Icon } from './components/Icon.js'; export * from './icons/index.js'",
+      }),
+    ).toMatchObject({ status: "checked", components: ["icons"] });
+    expect(
+      inspectComponentChanges([iconIndex], {
+        beforeIconIndex: "export * from './icons/index.js'",
+        afterIconIndex: "export * from './components/index.js'",
+      }),
+    ).toMatchObject({ status: "failed", components: ["icons"] });
+    expect(
+      inspectComponentChanges([uiIndex, ...evidence], {
+        beforeIndex: "export const version = '0'",
+        afterIndex:
+          "export { default as Icon } from './components/icons/index.js'",
+      }),
+    ).toMatchObject({ status: "checked", components: ["icons"] });
+    expect(inspectComponentChanges([styleBuilder, ...evidence])).toMatchObject({
+      status: "checked",
+      components: ["icons"],
+    });
+    for (const afterIconManifest of [
+      JSON.stringify({
+        exports: { "./styles.css": "./dist/styles/index.css" },
+      }),
+      JSON.stringify({
+        exports: { "./styles.scss": "./dist/styles/index.scss" },
+      }),
+      JSON.stringify({ style: "./dist/styles/index.css", exports: {} }),
+    ])
+      expect(
+        inspectComponentChanges([iconManifest], {
+          beforeIconManifest: JSON.stringify({ exports: {} }),
+          afterIconManifest,
+        }),
+      ).toMatchObject({ status: "failed", components: ["icons"] });
+  });
   it("rejects malformed status records including copy, unresolved and bad rename forms", () => {
     expect(parseNameStatus("M\0a.ts\0R100\0old.ts\0new.ts\0")).toHaveLength(2);
     for (const input of [

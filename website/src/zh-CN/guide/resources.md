@@ -24,11 +24,12 @@ const confirmText = zhCN.Modal.confirm;
 
 ## 尺寸、颜色与 SVG 属性
 
-资源组件直接输出 SVG。`size` 设置宽高；`color` 设置当前颜色，只有使用 `currentColor` 的图形随之改变，多色实验图标与插画保留原来的配色。`width` / `height`、`class`、`style` 和 SVG 属性用于具体调整。
+资源组件直接输出 SVG。`size` 设置宽高；`color` 设置当前颜色，只有使用 `currentColor` 的单色图形随之改变，多色实验图标与插画保留原来的配色。`width` / `height`、`class`、`style` 和 SVG 属性用于具体调整。资源 SVG 自己的 `size` 协议独立于 [Icon 图标](../components/icons.md) 外层的具名 `IconSize`。
 
 具名尺寸沿用图标基线：`extra-small` 8、`small` 12、`default` 16、`large` 20、`extra-large` 24；`inherit` 使用当前字体尺寸。插画默认尺寸沿用来源 SVG。
 
-这些资源不包含通用 Icon 的自定义 SVG、spin、rotate 或外层 span 协议；通用 Icon 组件仍在建设中。装饰图形不应重复朗读，具有含义的图形应提供适当的可访问名称。
+这些资源不包含通用 Icon 的自定义 SVG、spin、rotate 或外层 span 协议；需要这些能力时使用
+[Icon 图标](../components/icons.md)。装饰图形不应重复朗读，具有含义的图形应提供适当的可访问名称。
 
 ## 按需导入
 

@@ -25,6 +25,12 @@
       ],
       "semi-animation-vue/lifecycle": [
         "./packages/semi-animation-vue/src/lifecycle/index.ts"
+      ],
+      "semi-ui-vue/icons": [
+        "./packages/semi-ui-vue/src/components/icons/index.ts"
+      ],
+      "semi-icons-vue/Icon": [
+        "./packages/semi-icons-vue/src/components/index.ts"
       ]
     },
     "allowImportingTsExtensions": true
