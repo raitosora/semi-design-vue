@@ -4,18 +4,18 @@ Semi Design Vue 尚未发布可安装版本，六个包均保持 private。当�
 
 ## 产物入口
 
-| 本地包                   | 已有入口与内容                                                                                                                                                                 |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `semi-ui-vue`            | 浏览器 / 默认条件的根入口含 Icon、状态、Foundation 桥接、context、DOM、浮层、虚拟列表与 pointer 工具；`icons`、`locale/source/<名称>`、`locale/interface`；已登记的 CSS / SCSS |
-| `semi-animation-vue`     | 动画工具根入口与 `lifecycle` 共享资源子入口                                                                                                                                    |
-| `semi-icons-vue`         | 根具名 SVG 导出与图标名称子路径；`Icon` 子路径与根入口的 `convertIcon`                                                                                                         |
-| `semi-icons-lab-vue`     | 根具名导出与实验图标名称子路径                                                                                                                                                 |
-| `semi-illustrations-vue` | 根具名导出与插画名称子路径                                                                                                                                                     |
-| `vite-plugin-semi-theme` | Vite 主题插件根入口                                                                                                                                                            |
+| 本地包                   | 已有入口与内容                                                                                                                                                                                                                    |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `semi-ui-vue`            | 浏览器 / 默认条件的根入口含 Icon、ConfigProvider / ConfigConsumer、状态、Foundation 桥接、context、DOM、浮层、虚拟列表与 pointer 工具；`icons`、`configProvider`、`locale/source/<名称>`、`locale/interface`；已登记的 CSS / SCSS |
+| `semi-animation-vue`     | 动画工具根入口与 `lifecycle` 共享资源子入口                                                                                                                                                                                       |
+| `semi-icons-vue`         | 根具名 SVG 导出与图标名称子路径；`Icon` 子路径与根入口的 `convertIcon`                                                                                                                                                            |
+| `semi-icons-lab-vue`     | 根具名导出与实验图标名称子路径                                                                                                                                                                                                    |
+| `semi-illustrations-vue` | 根具名导出与插画名称子路径                                                                                                                                                                                                        |
+| `vite-plugin-semi-theme` | Vite 主题插件根入口                                                                                                                                                                                                               |
 
 JavaScript 为预编译 ESM，声明为 `.d.ts`，附带 source map 和随包可读取的源快照。消费者不需要再次编译库内部 TSX。没有 CJS / `require` 入口，也不承诺组件 SSR 或水合。
 
-`semi-ui-vue` 根入口按条件导出：浏览器和默认条件提供 `Icon`；纯 Node 导入条件只提供原有的静态工具，不提供伪造的 `Icon`。对应条件的 `.d.ts` 也保持一致。浏览器应用以 TypeScript 的 `moduleResolution: "Bundler"` 使用组件；NodeNext 消费者仅可依赖已验证的静态工具，不应把该检查当作 Icon 的 Node、SSR 或 CJS 支持。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 仍是浏览器 Vapor 编译/运行路径。
+`semi-ui-vue` 根入口按条件导出：浏览器和默认条件提供 `Icon`、`ConfigProvider`、`ConfigConsumer`；纯 Node 导入条件只提供原有的静态工具，不提供这些浏览器组件。对应条件的 `.d.ts` 也保持一致。浏览器应用以 TypeScript 的 `moduleResolution: "Bundler"` 使用组件；NodeNext 消费者仅可依赖已验证的静态工具，不应把该检查当作 浏览器组件的 Node、SSR 或 CJS 支持。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 仍是浏览器 Vapor 编译/运行路径。
 
 资源名称见[资源索引](./resource-index.md)，样式入口见[安装与样式](./styles.md)。这些入口不表示完整的 Input、Tooltip 或其他公共组件已交付；Icon 的范围见[图标页面](../components/icons.md)。
 
@@ -44,3 +44,5 @@ pnpm check:packages
 CSS / SCSS 保留副作用声明，JavaScript 不自动加载全部样式。请显式导入需要的[样式](./styles.md)或[主题](./theme.md)。按名称导入资源和语言数据可避免携带未使用的资源。
 
 严格声明检查保留 `skipLibCheck: false`。额外的 `exactOptionalPropertyTypes` 调用点检查不代表 Vue RC 依赖声明完全支持该选项。浏览器 Bundler 类型和基础 NodeNext 工具消费者均有独立验证；浏览器、ref / slots、SSR 与视觉范围继续以[兼容边界](./compatibility.md)为准。
+
+`semi-ui-vue/configProvider` 提供默认与具名 ConfigProvider、具名 ConfigConsumer、useConfigContext、defaultResponsiveMap 及对应类型，与浏览器根的组件身份相同。其原生 scoped slot 与 React Consumer 的差异、稳定包装和响应式清理见[组件页面](../components/configProvider.md)。

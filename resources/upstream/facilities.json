@@ -23,7 +23,7 @@
   ],
   "configProvider": [
     {
-      "label": "typed context / defaults 内核；无 Provider 组件",
+      "label": "typed context / defaults 内核；公开 Provider 验收另见 acceptance",
       "kind": "infrastructure",
       "paths": [
         "packages/semi-ui-vue/src/context/index.ts",

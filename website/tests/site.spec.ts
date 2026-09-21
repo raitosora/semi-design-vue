@@ -812,3 +812,187 @@ for (const port of [4180, 4181]) {
     await expect(page.locator("[data-drag-handle]")).toHaveCount(0);
   });
 }
+
+for (const port of [4180, 4181]) {
+  test(`${port}: ConfigProvider nesting, responsive cleanup and isolated overlay apps`, async ({
+    checkedPage: page,
+  }, info) => {
+    await page.setViewportSize({ width: 1100, height: 900 });
+    await page.goto(
+      `http://127.0.0.1:${port}/zh-CN/components/configProvider.html`,
+    );
+    const nested = page.locator("[data-config-nested-demo]");
+    await expect(nested).toHaveClass("semi-always-light");
+    await expect(nested).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    const lightColors = await nested.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { background: style.backgroundColor, text: style.color };
+    });
+    const buttons = nested.getByRole("button");
+    const lightButtonColors = await buttons.evaluateAll((elements) =>
+      elements.map((element) => {
+        const style = getComputedStyle(element);
+        return { background: style.backgroundColor, text: style.color };
+      }),
+    );
+    expect(lightButtonColors.length).toBeGreaterThan(0);
+    for (const colors of lightButtonColors) {
+      expect(colors.background).not.toBe("rgba(0, 0, 0, 0)");
+      expect(colors.text).toBe(lightColors.text);
+    }
+    await nested.screenshot({
+      path: info.outputPath("config-provider-light.png"),
+      animations: "disabled",
+    });
+    await nested.getByRole("button", { name: "切换局部深色" }).click();
+    await expect(nested).toHaveClass("semi-always-dark");
+    await expect(nested).not.toHaveCSS(
+      "background-color",
+      lightColors.background,
+    );
+    await expect(nested).not.toHaveCSS("color", lightColors.text);
+    for (const [index, colors] of lightButtonColors.entries()) {
+      await expect(buttons.nth(index)).not.toHaveCSS(
+        "background-color",
+        colors.background,
+      );
+      await expect(buttons.nth(index)).not.toHaveCSS("color", colors.text);
+    }
+    await expect(nested.locator("[data-config-outer]")).toHaveText(
+      "zh-CN|ltr|8",
+    );
+    await expect(nested.locator("[data-config-inner]")).toHaveText(
+      "zh-CN|rtl|8",
+    );
+    await nested.getByRole("button", { name: "子树计数 0" }).click();
+    await nested.getByRole("button", { name: "切换外层配置" }).click();
+    await expect(nested.locator("[data-config-outer]")).toHaveText(
+      "en-US|rtl|0",
+    );
+    await nested.getByRole("button", { name: "移除方向覆盖" }).click();
+    await expect(nested.locator("[data-config-inner]")).toHaveText(
+      "en-US|rtl|0",
+    );
+    await nested.getByRole("button", { name: "内层使用 LTR" }).click();
+    await expect(nested.locator("[data-config-inner]")).toHaveText(
+      "en-US|ltr|0",
+    );
+    await expect(
+      nested.getByRole("button", { name: "子树计数 1" }),
+    ).toBeVisible();
+    await nested.getByRole("button", { name: "清空方向" }).click();
+    await expect(nested.locator("[data-config-inner]")).toHaveText(
+      "en-US|undefined|0",
+    );
+    const providerRoot = nested.locator(":scope > div");
+    await expect(providerRoot).toHaveAttribute("dir", "rtl");
+    await expect(providerRoot).toHaveClass("semi-rtl");
+    await expect(nested.locator("[data-config-outer]")).toHaveCSS(
+      "direction",
+      "rtl",
+    );
+    await page.setViewportSize({ width: 375, height: 812 });
+    await nested.scrollIntoViewIfNeeded();
+    expect(
+      await nested.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth,
+      ),
+    ).toBe(true);
+    await expect(
+      nested.getByRole("button", { name: "子树计数 1" }),
+    ).toBeVisible();
+    await nested.screenshot({
+      path: info.outputPath("config-provider-dark-rtl-narrow.png"),
+      animations: "disabled",
+    });
+    await nested.getByRole("button", { name: "切换局部浅色" }).click();
+    await expect(nested).toHaveCSS("background-color", lightColors.background);
+    await expect(nested).toHaveCSS("color", lightColors.text);
+    for (const [index, colors] of lightButtonColors.entries()) {
+      await expect(buttons.nth(index)).toHaveCSS(
+        "background-color",
+        colors.background,
+      );
+      await expect(buttons.nth(index)).toHaveCSS("color", colors.text);
+    }
+    await page.setViewportSize({ width: 1100, height: 900 });
+    const responsive = page.locator("[data-config-responsive-demo]");
+    await expect(responsive.locator("[data-config-md]")).toHaveText("md=true");
+    await responsive.getByRole("button", { name: "暂停响应式监听" }).click();
+    const frozen = await responsive
+      .locator("[data-config-notifications]")
+      .textContent();
+    await page.setViewportSize({ width: 700, height: 900 });
+    await expect(responsive.locator("[data-config-md]")).toHaveText("md=true");
+    await expect(responsive.locator("[data-config-notifications]")).toHaveText(
+      frozen!,
+    );
+    await responsive.getByRole("button", { name: "恢复响应式监听" }).click();
+    await expect(responsive.locator("[data-config-md]")).toHaveText("md=false");
+    await responsive.getByRole("button", { name: "自定义 md 阈值" }).click();
+    await expect(responsive.locator("[data-config-md]")).toHaveText("md=true");
+    await responsive.getByRole("button", { name: "卸载订阅者" }).click();
+    await expect(responsive.locator("[data-config-md]")).toHaveCount(0);
+    const stopped = await responsive
+      .locator("[data-config-notifications]")
+      .textContent();
+    await page.setViewportSize({ width: 1100, height: 900 });
+    await expect(responsive.locator("[data-config-notifications]")).toHaveText(
+      stopped!,
+    );
+    const apps = page.locator("[data-config-overlay-demo]");
+    await expect(apps).toHaveCount(2);
+    await apps.nth(0).getByRole("button", { name: "打开配置浮层" }).click();
+    await apps.nth(1).getByRole("button", { name: "打开配置浮层" }).click();
+    await expect(page.locator("[data-config-popup]")).toHaveCount(2);
+    await page.getByRole("switch").click();
+    await expect(page.locator("html")).toHaveClass(/dark/);
+    for (const app of [apps.nth(0), apps.nth(1)]) {
+      const popup = app.locator("[data-config-popup]");
+      // Semi's light surface must retain its paired text/button colors even
+      // when the surrounding VitePress shell switches to a dark foreground.
+      await expect(popup).toHaveCSS("color", lightColors.text);
+      await expect(popup.getByRole("button")).toHaveCSS(
+        "color",
+        lightColors.text,
+      );
+      await expect(popup.getByRole("button")).toHaveCSS(
+        "background-color",
+        "rgb(255, 255, 255)",
+      );
+    }
+    await apps
+      .nth(0)
+      .locator("[data-config-popup]")
+      .screenshot({
+        path: info.outputPath("config-provider-overlay-dark-shell.png"),
+        animations: "disabled",
+      });
+    await page.getByRole("switch").click();
+    await apps.nth(0).getByRole("button", { name: "浮层计数 0" }).click();
+    await apps.nth(0).getByRole("button", { name: "切换浮层容器" }).click();
+    await expect(
+      apps.nth(0).locator("[data-config-container-b] [data-config-popup]"),
+    ).toHaveCount(1);
+    await expect(
+      apps.nth(0).getByRole("button", { name: "浮层计数 1" }),
+    ).toBeVisible();
+    await apps.nth(0).getByRole("button", { name: "切换浮层方向" }).click();
+    await expect(
+      apps.nth(0).locator("[data-config-popup-direction]"),
+    ).toHaveText("rtl");
+    await expect(
+      apps.nth(1).locator("[data-config-popup-direction]"),
+    ).toHaveText("ltr");
+    await apps.nth(0).getByRole("button", { name: "卸载配置区域" }).click();
+    await expect(apps.nth(0).locator("[data-config-popup]")).toHaveCount(0);
+    await expect(apps.nth(1).locator("[data-config-popup]")).toHaveCount(1);
+    await page.screenshot({
+      path: info.outputPath("config-provider.png"),
+      fullPage: true,
+      animations: "disabled",
+    });
+    await apps.nth(1).getByRole("button", { name: "卸载配置区域" }).click();
+    await expect(page.locator("[data-config-popup]")).toHaveCount(0);
+  });
+}

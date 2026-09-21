@@ -164,3 +164,105 @@ void [
   invalidSlotFill,
   invalidConvertIcon,
 ];
+
+// Browser/default exports use native Vapor components. Node conditions are
+// rejected independently in the ordinary NodeNext tarball consumer.
+import {
+  ConfigProvider,
+  ConfigConsumer,
+  useConfigContext,
+  type ConfigProviderProps,
+  type ConfigConsumerSlots,
+  type ConfigContextSource,
+  type ResponsiveMap,
+} from "semi-ui-vue";
+import ProviderFromSubpath, {
+  ConfigProvider as NamedProviderFromSubpath,
+  ConfigConsumer as ConsumerFromSubpath,
+  useConfigContext as useSubpathContext,
+  type ConfigProviderProps as SubpathProviderProps,
+  type ConfigConsumerSlots as SubpathConsumerSlots,
+  type ConfigContextSource as SubpathContextSource,
+} from "semi-ui-vue/configProvider";
+const providerIdentity: typeof ConfigProvider = ProviderFromSubpath;
+const namedProviderIdentity: typeof ConfigProvider = NamedProviderFromSubpath;
+const consumerIdentity: typeof ConfigConsumer = ConsumerFromSubpath;
+const configHookIdentity: typeof useConfigContext = useSubpathContext;
+const responsiveMap: ResponsiveMap = ConfigProvider.defaultResponsiveMap;
+const providerProps: ConfigProviderProps = {
+  locale: enUS,
+  timeZone: 0,
+  direction: "rtl",
+  responsiveObserve: true,
+  responsiveMap,
+  getPopupContainer: () => document.body,
+};
+const clearProviderProps: ConfigProviderProps = {
+  locale: undefined,
+  direction: undefined,
+  timeZone: undefined,
+};
+const consumerSlots: ConfigConsumerSlots = {
+  default: ({ config }) => {
+    const typedSource: ConfigContextSource = config;
+    const unsubscribe: (() => void) | undefined = config.value.onBreakpoint?.(
+      (screens) => {
+        const matched: boolean = screens.md;
+        void matched;
+      },
+    );
+    const unsubscribeSelected = config.value.onBreakpoint?.(
+      ["xs", "md"],
+      (screen, matched) => {
+        const breakpoint: "xs" | "sm" | "md" | "lg" | "xl" | "xxl" = screen;
+        const matching: boolean = matched;
+        void [breakpoint, matching];
+      },
+    );
+    // @ts-expect-error Consumer gives a live readonly ref, not a mutable configuration.
+    config.value = typedSource.value;
+    // @ts-expect-error Resolved configuration fields are readonly.
+    config.value.direction = "ltr";
+    // @ts-expect-error Slot configuration is accessed through its live ref value.
+    void config.direction;
+    void [unsubscribe, unsubscribeSelected];
+    return [];
+  },
+};
+const configTypes: readonly true[] = [
+  true satisfies Same<ConfigProviderProps, SubpathProviderProps>,
+  true satisfies Same<ConfigConsumerSlots, SubpathConsumerSlots>,
+  true satisfies Same<ConfigContextSource, SubpathContextSource>,
+];
+// @ts-expect-error Direction is restricted to the documented modes.
+const invalidDirection: ConfigProviderProps = { direction: "auto" };
+const invalidContainer: ConfigProviderProps = {
+  // @ts-expect-error Container resolvers return an element, not a selector string.
+  getPopupContainer: () => "body",
+};
+// @ts-expect-error The responsive map requires all six named breakpoints.
+const invalidResponsiveMap: ResponsiveMap = { xs: "all" };
+const invalidResponsiveObserve: ConfigProviderProps = {
+  // @ts-expect-error Responsive observation is a boolean opt-in.
+  responsiveObserve: "true",
+};
+void [
+  providerIdentity,
+  namedProviderIdentity,
+  consumerIdentity,
+  configHookIdentity,
+  providerProps,
+  clearProviderProps,
+  consumerSlots,
+  configTypes,
+  invalidDirection,
+  invalidContainer,
+  invalidResponsiveMap,
+  invalidResponsiveObserve,
+];
+
+const invalidConfigSlotResult: ConfigConsumerSlots = {
+  // @ts-expect-error Native slots must return a renderable block, not raw text.
+  default: () => "plain text",
+};
+void invalidConfigSlotResult;

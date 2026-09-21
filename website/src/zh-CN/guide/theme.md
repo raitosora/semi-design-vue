@@ -1,6 +1,6 @@
 # 定制主题
 
-本页使用 Foundation / Theme `2.103.0` 的 tokens、基础样式和输入/浮层样式。示例中的控件是原生 HTML 夹具，尚未提供公共 Input、Tooltip 或 ConfigProvider。
+本页使用 Foundation / Theme `2.103.0` 的 tokens、基础样式和输入/浮层样式。示例中的控件是原生 HTML 夹具，尚未提供公共 Input 或 Tooltip。[ConfigProvider](../components/configProvider.md) 可动态传递方向，但不代替此页的主题 token 配置。
 
 ## 运行示例
 
@@ -20,7 +20,7 @@ document.body.setAttribute("theme-mode", "dark");
 document.body.removeAttribute("theme-mode");
 ```
 
-局部区块可使用 `semi-always-light` 或 `semi-always-dark`。RTL 同时设置 HTML `dir="rtl"` 与外层 `semi-rtl` 类；原生文字方向和上游结构规则共同生效。浮层若移动到外部容器，需要在对应容器应用 `semi-portal-rtl`。这只是样式约定，不提供 Portal 实现。
+局部区块可使用 `semi-always-light` 或 `semi-always-dark`。RTL 同时设置 HTML `dir="rtl"` 与外层 `semi-rtl` 类；原生文字方向和上游结构规则共同生效。浮层若移动到外部容器，需要在对应容器应用 `semi-portal-rtl`。这是样式约定；已有 host 的动态容器和方向行为见[浮层指南](./overlay.md)。
 
 ```html
 <div dir="rtl" class="semi-rtl">

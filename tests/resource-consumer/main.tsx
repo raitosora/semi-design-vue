@@ -1,3 +1,4 @@
+import { checkConfigProviderConsumer } from "./configProvider.js";
 import { checkContextConsumer } from "./context.js";
 import { checkDomConsumer } from "./dom.js";
 import { checkOverlayConsumer } from "./overlay.js";
@@ -40,6 +41,7 @@ import type { Locale } from "semi-ui-vue/locale/interface";
 declare global {
   interface Window {
     resourceConsumer: {
+      checkConfigProvider(): Promise<string>;
       checkContext(): Promise<string>;
       checkDom(): Promise<string>;
       checkOverlay(): Promise<string>;
@@ -280,6 +282,7 @@ const remounted = mount("remounted");
 const virtualPointer = mountVirtualPointerConsumer();
 
 window.resourceConsumer = {
+  checkConfigProvider: checkConfigProviderConsumer,
   checkContext: checkContextConsumer,
   checkDom: checkDomConsumer,
   checkOverlay: checkOverlayConsumer,

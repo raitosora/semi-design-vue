@@ -31,6 +31,9 @@
       ],
       "semi-icons-vue/Icon": [
         "./packages/semi-icons-vue/src/components/index.ts"
+      ],
+      "semi-ui-vue/configProvider": [
+        "./packages/semi-ui-vue/src/components/configProvider/index.ts"
       ]
     },
     "allowImportingTsExtensions": true
