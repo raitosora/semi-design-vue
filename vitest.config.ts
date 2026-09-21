@@ -26,6 +26,8 @@ export default defineConfig({
         "scripts/upstream-matrix.mjs",
         "scripts/upstream-acceptance.mjs",
         "scripts/component-change-policy.mjs",
+        "scripts/commit-message-policy.mjs",
+        "scripts/check-commit-messages.mjs",
         "scripts/foundation-patch-policy.mjs",
       ],
       exclude: ["**/*.d.ts", "**/*.{test,spec}.{ts,tsx}"],
