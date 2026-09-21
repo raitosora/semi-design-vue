@@ -36,6 +36,7 @@ export default defineConfig({
           },
           { text: "安装与样式", link: "/zh-CN/guide/styles" },
           { text: "定制主题", link: "/zh-CN/guide/theme" },
+          { text: "Icon 图标", link: "/zh-CN/components/icons" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },
           { text: "上游对齐与完成度", link: "/zh-CN/guide/upstream-matrix" },

@@ -13,6 +13,12 @@
       "semi-illustrations-vue": [
         "../packages/semi-illustrations-vue/dist/index.d.ts"
       ],
+      "semi-icons-vue/Icon": [
+        "../packages/semi-icons-vue/dist/components/index.d.ts"
+      ],
+      "semi-ui-vue/icons": [
+        "../packages/semi-ui-vue/dist/components/icons/index.d.ts"
+      ],
       "semi-ui-vue/locale/source/*": [
         "../packages/semi-ui-vue/dist/locale/source/*.d.ts"
       ],

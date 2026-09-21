@@ -1,10 +1,15 @@
 import { createApp, h, nextTick, ref, vaporInteropPlugin } from "vue";
+import Icon, { type IconSize, type IconSvgScope } from "semi-icons-vue";
 import IconHome from "semi-icons-vue/IconHome";
 import IconForm from "semi-icons-lab-vue/IconForm";
 import IllustrationNoContent from "semi-illustrations-vue/IllustrationNoContent";
 import "semi-ui-vue/styles/base.css";
+import "semi-ui-vue/styles/components/icons.css";
 
 const color = ref("rgb(12, 90, 190)");
+const fill = ref<readonly string[]>(["#465fff", "#9caeff"]);
+const size = ref<IconSize>("inherit");
+const rotate = ref(90);
 const app = createApp({
   setup() {
     return () =>
@@ -14,6 +19,64 @@ const app = createApp({
           size: 32,
           "aria-label": "Interop home",
         }),
+        h(
+          Icon,
+          {
+            "aria-label": "Interop wrapped generated icon",
+            className: "interop-wrapped-icon",
+            color: color.value,
+            prefixCls: "semi",
+            rotate: rotate.value,
+            size: size.value,
+            spin: true,
+            style: { fontSize: size.value === "inherit" ? "31px" : undefined },
+            type: "primary",
+          },
+          {
+            svg: () => h(IconHome, { "aria-hidden": true, size: "inherit" }),
+          },
+        ),
+        h(
+          Icon,
+          {
+            "aria-label": "Interop custom icon",
+            className: "interop-custom-icon",
+            color: color.value,
+            fill: fill.value,
+            prefixCls: "consumer",
+          },
+          {
+            svg: (scope: IconSvgScope) =>
+              h(
+                "svg",
+                {
+                  "data-fill": scope.fill?.join(","),
+                  "data-icon-id": scope.id,
+                  height: scope.size,
+                  viewBox: "0 0 12 12",
+                  width: scope.size,
+                },
+                [
+                  h("defs", [
+                    h("linearGradient", { id: `${scope.id}-gradient` }, [
+                      h("stop", {
+                        offset: "0",
+                        "stop-color": scope.fill?.[0] ?? "currentColor",
+                      }),
+                      h("stop", {
+                        offset: "1",
+                        "stop-color": scope.fill?.[1] ?? "currentColor",
+                      }),
+                    ]),
+                  ]),
+                  h("path", {
+                    d: "M1 1h10v10H1z",
+                    fill: `url(#${scope.id}-gradient)`,
+                  }),
+                ],
+              ),
+          },
+        ),
         h(IconForm, { size: 40, "aria-label": "Interop form" }),
         h(IllustrationNoContent, {
           size: 120,
@@ -35,7 +98,10 @@ declare global {
 }
 window.interopConsumer = {
   async update() {
-    color.value = "rgb(17, 128, 74)";
+    color.value = "rgb(153, 72, 40)";
+    fill.value = ["#994828", "#f4c3aa"];
+    size.value = "extra-large";
+    rotate.value = 1.5;
     await nextTick();
   },
   unmount() {

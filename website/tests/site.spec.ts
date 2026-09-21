@@ -449,6 +449,88 @@ for (const port of [4180, 4181]) {
 }
 
 for (const port of [4180, 4181]) {
+  test(`${port}: Icon product examples keep SVG scope, semantics and lazy catalog previews`, async ({
+    checkedPage: page,
+  }) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/components/icons.html`);
+    const basic = page.locator("[data-icon-basic]");
+    await expect(basic.locator("[data-icon-labelled]")).toHaveAttribute(
+      "role",
+      "img",
+    );
+    await expect(basic.locator("[data-icon-decorative]")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    await expect(basic.locator("[data-icon-factory]")).toHaveAttribute(
+      "aria-label",
+      "工厂创建的星形图标",
+    );
+
+    const custom = page.locator("[data-icon-custom]");
+    const gradient = custom.locator("[data-icon-gradient]");
+    const svg = gradient.locator("svg");
+    const originalSvg = await svg.elementHandle();
+    const originalId = await gradient
+      .locator("linearGradient")
+      .getAttribute("id");
+    await custom.getByRole("button", { name: "切换渐变颜色" }).click();
+    await expect(gradient.locator("stop").first()).toHaveAttribute(
+      "stop-color",
+      "#2563eb",
+    );
+    expect(
+      await svg.evaluate((node, previous) => node === previous, originalSvg),
+    ).toBe(true);
+    await expect(gradient.locator("linearGradient")).toHaveAttribute(
+      "id",
+      originalId ?? "",
+    );
+    await expect(gradient.locator("path")).toHaveAttribute(
+      "fill",
+      `url(#${originalId})`,
+    );
+
+    const states = page.locator("[data-icon-states]");
+    await expect(
+      states.locator("[data-icon-button] > .semi-icon[aria-hidden='true']"),
+    ).toBeVisible();
+    await states.getByRole("button", { name: "开始旋转" }).click();
+    await expect(states.locator("[data-icon-spinner]")).toHaveClass(/spinning/);
+
+    const catalog = page.locator("[data-icon-catalog]");
+    await expect(catalog.locator("[data-icon-catalog-count]")).toContainText(
+      "623",
+    );
+    await catalog
+      .getByRole("textbox", { name: "搜索资源名称" })
+      .fill("IconHome");
+    await expect(catalog.locator("[data-icon-result-count]")).toHaveText(
+      "找到 2 项",
+    );
+    await catalog
+      .getByRole("button", { name: "IconHome", exact: true })
+      .click();
+    await expect(catalog.locator("[data-icon-preview-host] svg")).toBeVisible();
+    await expect(catalog.locator("[data-icon-preview]")).toContainText(
+      "semi-icons-vue/IconHome",
+    );
+    await catalog
+      .getByRole("combobox", { name: "资源包" })
+      .selectOption("semi-illustrations-vue");
+    await expect(catalog.locator("[data-icon-result-count]")).toHaveText(
+      "找到 0 项",
+    );
+    await catalog
+      .getByRole("textbox", { name: "搜索资源名称" })
+      .fill("IllustrationNoContent");
+    await expect(catalog.locator("[data-icon-result-count]")).toHaveText(
+      "找到 2 项",
+    );
+  });
+}
+
+for (const port of [4180, 4181]) {
   test(`${port}: generated resources and locale data`, async ({
     checkedPage: page,
   }, info) => {

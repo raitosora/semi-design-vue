@@ -15,6 +15,11 @@ import {
   readCurrentExports,
   renderMatrix,
 } from "./upstream-matrix.mjs";
+import {
+  applyAcceptance,
+  validateAcceptedEvidence,
+  validateAcceptanceRecords,
+} from "./upstream-acceptance.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFile(join(root, path), "utf8");
@@ -61,25 +66,6 @@ for (const entries of Object.values(facilities)) {
     }
   }
 }
-const current = readCurrentExports(
-  await read("packages/semi-ui-vue/src/index.ts"),
-);
-const rootExports = inventory.root.namedExports.map((entry) => {
-  const relative = entry.moduleSpecifier?.startsWith("./")
-    ? entry.moduleSpecifier.slice(2).split("/")[0]
-    : undefined;
-  return {
-    ...entry,
-    family: relative && !relative.startsWith("_") ? relative : null,
-  };
-});
-const families = inventory.moduleFamilies.map((family) => ({
-  ...family,
-  exports: rootExports
-    .filter((entry) => entry.family === family.name)
-    .map((entry) => entry.name),
-}));
-const matrix = buildMatrix({ families, rootExports }, current, facilities);
 const packages = (await readdir(join(root, "packages"))).sort();
 async function sourceFiles(directory) {
   const entries = await readdir(join(root, directory), { withFileTypes: true });
@@ -120,6 +106,32 @@ function packageEntry(path, seen = new Set()) {
     return packageEntry(target, new Set([...seen, path]));
   });
 }
+const current = packageEntry("packages/semi-ui-vue/src/index.ts");
+const rootExports = inventory.root.namedExports.map((entry) => {
+  const relative = entry.moduleSpecifier?.startsWith("./")
+    ? entry.moduleSpecifier.slice(2).split("/")[0]
+    : undefined;
+  return {
+    ...entry,
+    family: relative && !relative.startsWith("_") ? relative : null,
+  };
+});
+const families = inventory.moduleFamilies.map((family) => ({
+  ...family,
+  exports: rootExports
+    .filter((entry) => entry.family === family.name)
+    .map((entry) => entry.name),
+}));
+const acceptance = await validateAcceptedEvidence(
+  root,
+  validateAcceptanceRecords(
+    await readJson("resources/upstream/acceptance.json"),
+  ),
+);
+const matrix = applyAcceptance(
+  buildMatrix({ families, rootExports }, current, facilities),
+  acceptance,
+);
 const packageSurfaces = await Promise.all(
   packages.map(async (name) => {
     const manifest = await readJson(`packages/${name}/package.json`);
@@ -133,6 +145,14 @@ const packageSurfaces = await Promise.all(
 );
 const svg = await readJson("resources/svg/manifest.json");
 const locale = await readJson("resources/locale/manifest.json");
+const iconStyleSourcePaths = [
+  "packages/semi-icons/src/styles/icons.scss",
+  "packages/semi-icons/src/styles/variables.scss",
+  "packages/semi-theme-default/scss/variables.scss",
+];
+const iconStyleSources = Object.fromEntries(
+  iconStyleSourcePaths.map((path) => [path, sha256(files[path])]),
+);
 // Existing resource source/generation, style, dependency and consumer checks remain
 // authoritative. This matrix references those inputs without duplicating them.
 const resources = {
@@ -154,11 +174,19 @@ const resources = {
     check: "pnpm check:dependencies",
   },
   styles: {
-    generator: "scripts/style-inputs.mjs",
-    sha256: sha256(await read("scripts/style-inputs.mjs")),
+    generators: {
+      "scripts/style-inputs.mjs": sha256(
+        await read("scripts/style-inputs.mjs"),
+      ),
+      "scripts/build-icon-styles.mjs": sha256(
+        await read("scripts/build-icon-styles.mjs"),
+      ),
+    },
+    iconSources: iconStyleSources,
     scope:
-      "Registered base, Input and Tooltip CSS/SCSS plus theme tokens/mixins only",
-    check: "pnpm check:style-consumer",
+      "Registered base, Input and Tooltip CSS/SCSS plus theme tokens/mixins; Icon CSS comes only from the fixed semi-icons styles and fixed theme variables.",
+    check:
+      "pnpm check:style-consumer && pnpm test -- tests/unit/icons-style.test.mjs",
   },
   foundation: {
     patch: "patches/@douyinfe__semi-foundation@2.103.0.patch",
@@ -202,6 +230,12 @@ for (const [path, hash] of Object.entries(styleInputs.sourceHashes)) {
     currentInput: `node_modules/@douyinfe/semi-${path.startsWith("theme/") ? "theme-default/scss/" + path.slice(6) : "foundation/" + path.slice(11)}`,
   };
 }
+for (const [path, hash] of Object.entries(iconStyleSources))
+  resourceSources[path] = {
+    kind: "icon-style",
+    sha256: hash,
+    currentInput: "scripts/build-icon-styles.mjs",
+  };
 for (const [path, entry] of Object.entries(resourceSources))
   if (!Object.hasOwn(files, path) || sha256(files[path]) !== entry.sha256)
     throw new Error(`Registered source does not match fixed upstream: ${path}`);
@@ -210,6 +244,7 @@ const differences = buildSurfaceDifferences(
   current,
   packageSurfaces,
   resourceSources,
+  acceptance,
 );
 // Locale sources are TypeScript data, so they are listed separately from SVG/SCSS.
 const localeDifferences = Object.entries(resourceSources)

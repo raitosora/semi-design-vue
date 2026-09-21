@@ -3,6 +3,7 @@ import { cp, mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import * as sass from "sass";
+import { buildIconStyles } from "./build-icon-styles.mjs";
 
 const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
@@ -127,12 +128,14 @@ function entrySources() {
       '@import "../vendor/foundation/tooltip/tooltip";',
       "",
     ].join("\n"),
+    "components/icons.scss": ['@import "../icons/index";', ""].join("\n"),
     "index.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
       '@import "./base";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
+      '@import "./components/icons";',
       "",
     ].join("\n"),
   };
@@ -228,6 +231,14 @@ export async function buildStyles({ root, output }) {
     await mkdir(dirname(join(output, file)), { recursive: true }).then(() =>
       writeFile(join(output, file), source),
     );
+  await buildIconStyles({
+    root,
+    output: join(output, "icons"),
+    metadataOutput: output,
+  });
+  const iconSources = JSON.parse(
+    await readFile(join(output, "sources.json"), "utf8"),
+  );
   for (const [file, source] of Object.entries(entrySources())) {
     const css = sass.compileString(source, {
       loadPaths: [output],
@@ -243,6 +254,7 @@ export async function buildStyles({ root, output }) {
         foundation: foundationPackage + "@" + inputs.foundationVersion,
         theme: themePackage + "@" + inputs.themeVersion,
         sources: inputs.sourceHashes,
+        icons: iconSources,
         adaptation: {
           "theme/variables.scss": [
             "prepend $semi-prefix default",

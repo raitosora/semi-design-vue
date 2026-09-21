@@ -11,6 +11,8 @@ import {
 import { promisify } from "node:util";
 import {
   inspectComponentChanges,
+  iconIndex,
+  iconManifest,
   manifest,
   parseNameStatus,
   publicIndex,
@@ -195,19 +197,36 @@ async function targetNonEmpty(root, ref, workspace, path) {
   }
 }
 async function componentExists(root, ref, workspace, name) {
-  const folder = "packages/semi-ui-vue/src/components/" + name + "/";
+  const folders =
+    name === "icons"
+      ? [
+          "packages/semi-ui-vue/src/components/icons/",
+          "packages/semi-icons-vue/src/components/",
+        ]
+      : ["packages/semi-ui-vue/src/components/" + name + "/"];
   if (workspace) {
-    try {
-      return (await readdir(root + "/" + folder)).length > 0;
-    } catch {
-      return false;
-    }
+    return (
+      await Promise.all(
+        folders.map(async (folder) => {
+          try {
+            return (await readdir(root + "/" + folder)).length > 0;
+          } catch {
+            return false;
+          }
+        }),
+      )
+    ).some(Boolean);
   }
   return (
-    (
-      await git(root, ["ls-tree", "-r", "--name-only", ref, "--", folder])
-    ).trim().length > 0
-  );
+    await Promise.all(
+      folders.map(
+        async (folder) =>
+          (
+            await git(root, ["ls-tree", "-r", "--name-only", ref, "--", folder])
+          ).trim().length > 0,
+      ),
+    )
+  ).some(Boolean);
 }
 async function assertEvidence(root, ref, workspace, result) {
   if (result.infrastructure) {
@@ -355,6 +374,30 @@ export async function runComponentChangeGate(options) {
       comparison.head,
       workspace,
       manifest,
+    ),
+    beforeIconIndex: await source(
+      options.root,
+      comparison.mergeBase ?? comparison.base,
+      false,
+      iconIndex,
+    ),
+    afterIconIndex: await source(
+      options.root,
+      comparison.head,
+      workspace,
+      iconIndex,
+    ),
+    beforeIconManifest: await source(
+      options.root,
+      comparison.mergeBase ?? comparison.base,
+      false,
+      iconManifest,
+    ),
+    afterIconManifest: await source(
+      options.root,
+      comparison.head,
+      workspace,
+      iconManifest,
     ),
   });
   const complete = { comparison, changes, ...result };

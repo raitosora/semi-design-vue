@@ -259,7 +259,6 @@ function checkGraph(mode = "vapor") {
         "IllustrationNoContent",
         "en_US",
         "zh_CN",
-        "semi-ui-vue/dist/index.js",
         "prepared-app.js",
       ]
     : ["IconHome", "IconForm", "IllustrationNoContent", "interop-main.ts"])
@@ -287,6 +286,24 @@ function checkGraph(mode = "vapor") {
     Array.isArray(graph.compilationInputs) &&
       graph.compilationInputs.length > 0,
     "Missing actual compilation inputs",
+  );
+  // Pure re-export entries may be eliminated; prove root resolution separately
+  // from the implementation chunks that actually survive tree shaking.
+  if (mode === "vapor") {
+    assert(
+      graph.compilationInputs.some((id) =>
+        id.endsWith("/semi-ui-vue/dist/index.js"),
+      ),
+      "Browser consumer did not resolve the public UI root entry",
+    );
+    assert(
+      /semi-ui-vue\/dist\/infrastructure-[^/\n]+\.js/.test(modules),
+      "Resource graph omitted the selected UI infrastructure implementation",
+    );
+  }
+  assert(
+    /semi-icons-vue\/dist\/components-[^/\n]+\.js/.test(modules),
+    "Resource graph omitted the selected public Icon implementation",
   );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
@@ -415,7 +432,7 @@ async function browserCheck(url) {
         }),
       );
     assert(
-      rendered.length === 8 &&
+      rendered.length === 20 &&
         rendered.every((svg) => svg.width > 0 && svg.height > 0),
       "Resource SVGs are not visually rendered",
     );
@@ -440,6 +457,128 @@ async function browserCheck(url) {
         "rgb(17, 128, 74)",
       "IconHome paint did not update after its color prop changed",
     );
+    const wrapped = page.locator(".wrapped-generated-icon").first();
+    assert(
+      (await page.locator(".wrapped-generated-icon").count()) === 2,
+      "Icon wrapper did not mount once per Vapor resource app",
+    );
+    assert(
+      (await wrapped.getAttribute("role")) === "img" &&
+        (await wrapped.getAttribute("aria-label"))?.includes(
+          "wrapped generated icon",
+        ),
+      "Named Icon did not expose its accessible image role",
+    );
+    assert(
+      (await wrapped.getAttribute("class"))?.includes("semi-icon") &&
+        (await wrapped.getAttribute("class"))?.includes("semi-icon-spinning") &&
+        (await wrapped.getAttribute("class"))?.includes("semi-icon-primary"),
+      "Icon prefix, spin, or type classes were not applied",
+    );
+    assert(
+      (await wrapped.locator("svg").getAttribute("aria-hidden")) === "true",
+      "Generated SVG inside Icon was not kept decorative",
+    );
+    assert(
+      (await wrapped.locator("svg").getAttribute("width")) === "1em" &&
+        (await wrapped.evaluate(
+          (element) => getComputedStyle(element).fontSize,
+        )) === "31px",
+      "Icon size=inherit did not preserve 1em SVG sizing and the caller's arbitrary font size",
+    );
+    assert(
+      (await page.evaluate(
+        () => window.resourceConsumer.getIconElement()?.tagName,
+      )) === "SPAN",
+      "IconHandle.getElement did not expose the outer span",
+    );
+    const decorative = page.locator(".decorative-icon").first();
+    assert(
+      (await decorative.getAttribute("aria-hidden")) === "true" &&
+        (await decorative.getAttribute("role")) === null &&
+        (await decorative.getAttribute("class"))?.includes(
+          "consumer-icon-warning",
+        ),
+      "Decorative Icon should remain hidden; type must only affect styling",
+    );
+    assert(
+      (await page.locator('.slot-priority-icon [data-slot="svg"]').count()) ===
+        2 &&
+        (await page
+          .locator('.slot-priority-icon [data-slot="default"]')
+          .count()) === 0,
+      "Named svg slot did not take priority over the default slot",
+    );
+    const ariaOverride = page.locator(".aria-override-icon").first();
+    assert(
+      (await ariaOverride.getAttribute("aria-hidden")) === "false" &&
+        (await ariaOverride.getAttribute("role")) === "presentation",
+      "Explicit Icon role and aria-hidden attributes did not override defaults",
+    );
+    const customIds = await page
+      .locator(".custom-slot-icon svg")
+      .evaluateAll((svgs) =>
+        svgs.map((svg) => svg.getAttribute("data-icon-id")),
+      );
+    assert(
+      customIds.length === 2 && new Set(customIds).size === customIds.length,
+      "Icon custom SVG slot ids collided across mounted apps",
+    );
+    await page.evaluate(() =>
+      window.resourceConsumer.updateIcon(
+        "rgb(153, 72, 40)",
+        ["#994828", "#f4c3aa"],
+        "extra-large",
+        1.5,
+      ),
+    );
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(".custom-slot-icon svg")
+          ?.getAttribute("data-fill") === "#994828,#f4c3aa",
+    );
+    assert(
+      (await wrapped.evaluate((element) => element.style.transform)) === "",
+      "Icon accepted an unsafe fractional rotation",
+    );
+    assert(
+      (await wrapped.evaluate(
+        (element) => getComputedStyle(element).fontSize,
+      )) === "24px",
+      "Named Icon size did not update the wrapped generated SVG",
+    );
+    const custom = page.locator(".custom-slot-icon").first();
+    assert(
+      (await custom.getAttribute("role")) === "img" &&
+        (await custom.getAttribute("aria-labelledby"))?.includes(
+          "custom-title",
+        ) &&
+        (await custom.locator("stop").first().getAttribute("stop-color")) ===
+          "#994828" &&
+        (await custom.locator("stop").nth(1).getAttribute("stop-color")) ===
+          "#f4c3aa",
+      "Custom Icon svg slot did not react to fill or labelled-by attributes",
+    );
+    assert(
+      (await page
+        .locator(".factory-icon path")
+        .first()
+        .getAttribute("fill")) === "#994828",
+      "convertIcon did not execute its SVG factory with reactive fill values",
+    );
+    await page.evaluate(() =>
+      window.resourceConsumer.updateIcon(
+        "rgb(153, 72, 40)",
+        ["#994828", "#f4c3aa"],
+        "large",
+        180,
+      ),
+    );
+    await page.waitForFunction(() => {
+      const icon = document.querySelector(".wrapped-generated-icon");
+      return icon?.style.transform === "rotate(180deg)";
+    });
     const locale = await page.locator(".locale-output").first().textContent();
     assert(
       locale?.includes("Items per page: ${pageSize}") &&
@@ -598,7 +737,7 @@ async function interopBrowserCheck(url) {
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
     assert(
-      (await page.locator(".interop-resources svg").count()) === 3,
+      (await page.locator(".interop-resources svg").count()) === 5,
       "Interop did not mount all precompiled resource families",
     );
     const home = page.locator('[aria-label="Interop home"] path');
@@ -607,11 +746,51 @@ async function interopBrowserCheck(url) {
         "rgb(12, 90, 190)",
       "Interop initial resource color failed",
     );
+    const wrapped = page.locator(".interop-wrapped-icon");
+    assert(
+      (await wrapped.getAttribute("role")) === "img" &&
+        (await wrapped.getAttribute("class"))?.includes("semi-icon-spinning") &&
+        (await wrapped.getAttribute("class"))?.includes("semi-icon-primary") &&
+        (await wrapped.locator("svg").getAttribute("aria-hidden")) === "true",
+      "Interop Icon wrapper did not retain ARIA, spin, type, or decorative child semantics",
+    );
+    assert(
+      (await wrapped.locator("svg").getAttribute("width")) === "1em" &&
+        (await wrapped.evaluate(
+          (element) => getComputedStyle(element).fontSize,
+        )) === "31px",
+      "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
+    );
     await page.evaluate(() => window.interopConsumer.update());
     assert(
       (await home.evaluate((node) => getComputedStyle(node).fill)) ===
-        "rgb(17, 128, 74)",
+        "rgb(153, 72, 40)",
       "Interop reactive resource update failed",
+    );
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(".interop-custom-icon svg")
+          ?.getAttribute("data-fill") === "#994828,#f4c3aa",
+    );
+    assert(
+      (await wrapped.evaluate((element) => element.style.transform)) === "",
+      "Interop Icon accepted an unsafe fractional rotation",
+    );
+    assert(
+      (await wrapped.evaluate(
+        (element) => getComputedStyle(element).fontSize,
+      )) === "24px",
+      "Interop named Icon size did not update its generated SVG",
+    );
+    const custom = page.locator(".interop-custom-icon");
+    assert(
+      (await custom.getAttribute("role")) === "img" &&
+        (await custom.locator("stop").first().getAttribute("stop-color")) ===
+          "#994828" &&
+        (await custom.locator("stop").nth(1).getAttribute("stop-color")) ===
+          "#f4c3aa",
+      "Interop custom Icon svg slot did not react to fill values",
     );
     await page.evaluate(() => window.interopConsumer.unmount());
     assert(
@@ -683,8 +862,8 @@ async function run() {
     JSON.stringify(
       {
         compilerOptions: {
-          module: "NodeNext",
-          moduleResolution: "NodeNext",
+          module: "ESNext",
+          moduleResolution: "Bundler",
           noEmit: true,
           strict: true,
           skipLibCheck: false,
@@ -725,6 +904,8 @@ async function run() {
       {
         strict: true,
         skipLibCheck: false,
+        module: "ESNext",
+        moduleResolution: "Bundler",
         exactOptionalCallSitesOnly: { enabled: true, skipLibCheck: true },
       },
       null,

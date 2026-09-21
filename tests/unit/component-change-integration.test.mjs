@@ -65,6 +65,55 @@ afterEach(async () =>
 );
 
 describe("G16 component-change gate integration", () => {
+  it("requires the icons family evidence when the public Icon implementation changes", async () => {
+    const root = await fixture();
+    const base = await sha(root);
+    const head = await commit(root, {
+      "packages/semi-icons-vue/src/components/Icon.tsx":
+        "export const Icon = () => null;\n",
+      "website/src/zh-CN/components/icons.md": "# 图标\n",
+      "website/examples/icons/basic.tsx": "export default () => <svg />;\n",
+      "tests/browser/icons.test.tsx": "it('icon regression', () => {});\n",
+    });
+    await expect(expectGate(root, base, head)).resolves.toMatchObject({
+      status: "checked",
+      components: ["icons"],
+    });
+  }, 30000);
+
+  it("requires icons evidence when UI root export conditions change while Icon is public", async () => {
+    const root = await fixture();
+    const base = await commit(root, {
+      "packages/semi-ui-vue/src/index.ts":
+        "export { Icon } from './components/icons/index.js';\n",
+      "packages/semi-ui-vue/src/components/icons/index.ts":
+        "export const Icon = () => null;\n",
+      "packages/semi-ui-vue/package.json": JSON.stringify({
+        exports: {
+          ".": {
+            browser: "./dist/index.js",
+            node: "./dist/infrastructure.js",
+          },
+        },
+      }),
+    });
+    const head = await commit(root, {
+      "packages/semi-ui-vue/package.json": JSON.stringify({
+        exports: {
+          ".": {
+            browser: "./dist/index.browser.js",
+            node: "./dist/infrastructure.js",
+          },
+        },
+      }),
+      "website/src/zh-CN/guide/packages.md": "# package condition change\n",
+      "tests/types/package-contracts.test.ts": "export {};\n",
+    });
+    await expect(expectGate(root, base, head)).rejects.toThrow(
+      '"components":["icons"]',
+    );
+  }, 30000);
+
   it("rejects every missing delivery surface and accepts non-empty TSX, Chinese documentation and regression", async () => {
     for (const missing of ["doc", "example", "test"]) {
       const root = await fixture();

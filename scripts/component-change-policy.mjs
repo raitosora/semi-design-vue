@@ -2,10 +2,14 @@ import ts from "typescript";
 
 export const componentRoot =
   /^packages\/semi-ui-vue\/src\/components\/([^/]+)\//;
+export const iconComponentRoot = /^packages\/semi-icons-vue\/src\/components\//;
 export const componentStyle =
   /^packages\/semi-ui-vue\/styles\/components\/([^/.]+)\.(?:css|scss)$/;
 export const publicIndex = "packages/semi-ui-vue/src/index.ts";
 export const manifest = "packages/semi-ui-vue/package.json";
+export const iconIndex = "packages/semi-icons-vue/src/index.ts";
+export const iconManifest = "packages/semi-icons-vue/package.json";
+export const iconStyleBuilder = "scripts/build-icon-styles.mjs";
 
 export const validPath = (path) =>
   typeof path === "string" &&
@@ -228,6 +232,62 @@ function manifestComponentExports(source = "") {
   return found;
 }
 
+function manifestRootExportFingerprint(source = "") {
+  if (!source) return undefined;
+  let json;
+  try {
+    json = JSON.parse(source);
+  } catch {
+    throw new Error("Package manifest must contain valid JSON.");
+  }
+  const exports = json.exports;
+  if (typeof exports === "string") return JSON.stringify(exports);
+  if (!exports || typeof exports !== "object" || Array.isArray(exports))
+    return undefined;
+  const root = Object.hasOwn(exports, ".")
+    ? exports["."]
+    : Object.keys(exports).some((key) => key.startsWith("."))
+      ? undefined
+      : exports;
+  return root === undefined ? undefined : JSON.stringify(root);
+}
+
+const publicUiIcon = (source) =>
+  [...publicComponentExports(source).values()].includes("icons") ||
+  iconPublicExports(source).size > 0;
+
+function iconPublicExports(source = "") {
+  return new Map(
+    [...publicComponentExports(source)]
+      .filter(
+        ([fingerprint, folder]) =>
+          folder === "Icon" || fingerprint.includes('"./components/index'),
+      )
+      .map(([fingerprint]) => [fingerprint, "icons"]),
+  );
+}
+
+function iconManifestExports(source = "") {
+  if (!source) return new Map();
+  let json;
+  try {
+    json = JSON.parse(source);
+  } catch {
+    throw new Error("Icon package manifest must contain valid JSON.");
+  }
+  const exports = json.exports;
+  if (!exports || typeof exports !== "object" || Array.isArray(exports))
+    return new Map();
+  const found = new Map(
+    [".", "./Icon", "./styles.css", "./styles.scss", "style"]
+      .filter((key) => Object.hasOwn(exports, key))
+      .map((key) => [key, JSON.stringify(exports[key])]),
+  );
+  if (Object.hasOwn(json, "style"))
+    found.set("style", JSON.stringify(json.style));
+  return found;
+}
+
 export function inspectComponentChanges(
   changes,
   {
@@ -235,6 +295,10 @@ export function inspectComponentChanges(
     afterIndex = "",
     beforeManifest = "",
     afterManifest = "",
+    beforeIconIndex = "",
+    afterIconIndex = "",
+    beforeIconManifest = "",
+    afterIconManifest = "",
   } = {},
 ) {
   validateChanges(changes);
@@ -247,9 +311,13 @@ export function inspectComponentChanges(
       style = path.match(componentStyle);
     if (source) names.add(source[1]);
     if (style) names.add(style[1]);
+    if (iconComponentRoot.test(path) || path === iconStyleBuilder)
+      names.add("icons");
   }
   const indexChanged = paths.includes(publicIndex),
-    manifestChanged = paths.includes(manifest);
+    manifestChanged = paths.includes(manifest),
+    iconIndexChanged = paths.includes(iconIndex),
+    iconManifestChanged = paths.includes(iconManifest);
   if (indexChanged) {
     const before = publicComponentExports(beforeIndex),
       after = publicComponentExports(afterIndex);
@@ -271,6 +339,32 @@ export function inspectComponentChanges(
           .flatMap(({ folders }) => [...folders])
           .forEach((folder) => names.add(folder));
     }
+    if (
+      manifestRootExportFingerprint(beforeManifest) !==
+        manifestRootExportFingerprint(afterManifest) &&
+      (publicUiIcon(beforeIndex) || publicUiIcon(afterIndex))
+    )
+      names.add("icons");
+  }
+  if (iconIndexChanged) {
+    const before = iconPublicExports(beforeIconIndex),
+      after = iconPublicExports(afterIconIndex);
+    if (
+      [...new Set([...before.keys(), ...after.keys()])].some(
+        (key) => before.get(key) !== after.get(key),
+      )
+    )
+      names.add("icons");
+  }
+  if (iconManifestChanged) {
+    const before = iconManifestExports(beforeIconManifest),
+      after = iconManifestExports(afterIconManifest);
+    if (
+      [...new Set([...before.keys(), ...after.keys()])].some(
+        (key) => before.get(key) !== after.get(key),
+      )
+    )
+      names.add("icons");
   }
   if (names.size) {
     const components = [...names].sort();
@@ -282,9 +376,11 @@ export function inspectComponentChanges(
         const removed = changes.some(
           ({ status, before, after }) =>
             (status === "D" || (status === "R" && after !== before)) &&
-            before.startsWith(
+            (before.startsWith(
               "packages/semi-ui-vue/src/components/" + name + "/",
-            ),
+            ) ||
+              (name === "icons" &&
+                before.startsWith("packages/semi-icons-vue/src/components/"))),
         );
         return {
           name,
@@ -301,7 +397,12 @@ export function inspectComponentChanges(
       ? { status: "failed", components, evidence, paths, missing }
       : { status: "checked", components, evidence, paths };
   }
-  if (!indexChanged && !manifestChanged)
+  if (
+    !indexChanged &&
+    !manifestChanged &&
+    !iconIndexChanged &&
+    !iconManifestChanged
+  )
     return { status: "not-applicable", components: [] };
   const guide = manifestChanged ? "packages" : "api-contracts";
   const evidence = {

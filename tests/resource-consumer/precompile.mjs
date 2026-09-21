@@ -18,10 +18,11 @@ export function prepareResourceApplication(root, work, consumer) {
       readFileSync(join(packageRoot, "package.json"), "utf8"),
     );
     for (const [subpath, conditions] of Object.entries(manifest.exports)) {
-      if (typeof conditions === "object" && conditions.types) {
+      const types = browserTypeTarget(conditions);
+      if (types) {
         const specifier =
           subpath === "." ? name : `${name}/${subpath.slice(2)}`;
-        paths[specifier] = [join(packageRoot, conditions.types)];
+        paths[specifier] = [join(packageRoot, types)];
       }
     }
   }
@@ -30,8 +31,8 @@ export function prepareResourceApplication(root, work, consumer) {
     JSON.stringify({
       compilerOptions: {
         target: "ES2022",
-        module: "NodeNext",
-        moduleResolution: "NodeNext",
+        module: "ESNext",
+        moduleResolution: "Bundler",
         jsx: "preserve",
         jsxImportSource: "vue-jsx",
         strict: true,
@@ -78,4 +79,10 @@ export function prepareResourceApplication(root, work, consumer) {
     join(directory, "dist/fixture-compilation.json"),
     join(evidence, "fixture-compilation.json"),
   );
+}
+
+function browserTypeTarget(conditions) {
+  if (!conditions || typeof conditions !== "object") return undefined;
+  if (typeof conditions.types === "string") return conditions.types;
+  return browserTypeTarget(conditions.import);
 }

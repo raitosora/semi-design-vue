@@ -3,9 +3,10 @@
   "summary": {
     "upstreamFamilies": 83,
     "upstreamRootExports": 130,
-    "sameNameRootExports": 1,
-    "publiclyDeliveredFamilies": 0,
-    "behaviorAcceptedFamilies": 0
+    "sameNameRootExports": 2,
+    "publiclyDeliveredFamilies": 1,
+    "behaviorAcceptedFamilies": 1,
+    "pendingAcceptanceFamilies": 0
   },
   "families": [
     {
@@ -20,7 +21,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "aiChatInput",
@@ -34,7 +36,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "anchor",
@@ -48,7 +51,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "audioPlayer",
@@ -62,7 +66,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "autoComplete",
@@ -76,7 +81,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "avatar",
@@ -90,7 +96,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "backtop",
@@ -104,7 +111,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "badge",
@@ -118,7 +126,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "banner",
@@ -132,7 +141,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "breadcrumb",
@@ -146,7 +156,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "button",
@@ -160,7 +171,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "calendar",
@@ -174,7 +186,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "card",
@@ -188,7 +201,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "carousel",
@@ -202,7 +216,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "cascader",
@@ -216,7 +231,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "chat",
@@ -230,7 +246,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "checkbox",
@@ -244,7 +261,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "codeHighlight",
@@ -258,7 +276,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "collapse",
@@ -272,7 +291,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "collapsible",
@@ -286,7 +306,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "colorPicker",
@@ -300,7 +321,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "configProvider",
@@ -324,7 +346,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "cropper",
@@ -338,7 +361,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "datePicker",
@@ -352,7 +376,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "descriptions",
@@ -366,7 +391,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "divider",
@@ -380,7 +406,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "dragMove",
@@ -404,7 +431,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "dropdown",
@@ -423,7 +451,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "empty",
@@ -437,7 +466,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "feedback",
@@ -451,7 +481,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "floatButton",
@@ -465,7 +496,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "form",
@@ -499,7 +531,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "grid",
@@ -513,7 +546,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "highlight",
@@ -527,7 +561,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "hotKeys",
@@ -541,7 +576,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "iconButton",
@@ -555,14 +591,15 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "icons",
       "sourcePath": "packages/semi-ui/icons/index.tsx",
       "exports": ["Icon"],
       "upstreamExists": true,
-      "currentExports": [],
+      "currentExports": ["Icon"],
       "infrastructure": [
         {
           "label": "原生 SVG 资源包装；无 UI Icon 组件",
@@ -574,12 +611,130 @@
           ]
         }
       ],
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
-      "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
-      "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "apiDifference": "Icon span 包装、六种 size、spin、整数 rotate、prefixCls/type/class/style/native attrs 已映射；React svg 节点改为 svg/default slot，fill 由调用方显式读取，ref 改为 getElement()，convertIcon 接收同一 SVG slot 工厂。ARIA 默认装饰性，有名称时为 img；显式 role/aria-hidden 优先。",
+      "typeDifference": "IconProps 映射为 Vue HTMLAttributes、只读 fill、IconSlots 和 IconHandle；另提供 IconSize、IconSvgScope、ConvertedIconProps。源/声明正反类型与实际 tarball 消费验证，不宣称 React 类型同构。",
+      "staticDifference": "Icon 与 convertIcon 结果提供 elementType = Icon，无静态子组件。固定上游的动态赋值 marker 不在 AST 静态成员索引中，人工契约和浏览器/类型测试覆盖。",
+      "subpathDifference": "浏览器 semi-icons-vue 根及 ./Icon 提供 default/Icon/convertIcon；semi-ui-vue 根提供具名 Icon，./icons 另提供 default。Node import 的 UI 根仅静态工具且声明一致。固定上游 icons 使用 legacy main/module/types，无 exports map，故不虚构结构化子路径映射；不提供 CJS、SSR 或 hydration。",
+      "acceptanceStatus": "accepted",
+      "acceptance": {
+        "family": "icons",
+        "status": "accepted",
+        "reviewedDecision": "The public Icon browser contract is accepted against the fixed upstream API with explicit Vue slot/ref/ARIA and environment differences. Source and declaration checks, pure Vapor and separate interop browser behavior, documentation examples, package provenance, and four isolated tarball consumer flows passed; the cited contract and evidence were independently reviewed. Other public families remain unaccepted.",
+        "evidence": {
+          "contract": [
+            "packages/semi-icons-vue/src/components/Icon.tsx",
+            "packages/semi-icons-vue/src/components/types.ts",
+            "packages/semi-icons-vue/src/components/convertIcon.ts"
+          ],
+          "implementation": [
+            "packages/semi-icons-vue/src/components/Icon.tsx",
+            "packages/semi-icons-vue/src/components/factory-setup.tsx",
+            "packages/semi-ui-vue/src/components/icons/index.ts",
+            "scripts/build-icon-styles.mjs"
+          ],
+          "sourceAndDeclarations": [
+            "packages/semi-icons-vue/src/index.ts",
+            "packages/semi-icons-vue/package.json",
+            "packages/semi-ui-vue/src/index.ts",
+            "packages/semi-ui-vue/src/infrastructure.ts",
+            "packages/semi-ui-vue/package.json",
+            "tests/resource-consumer/consumer.ts",
+            "tests/consumer/node-icon-negative.ts"
+          ],
+          "browser": [
+            "tests/browser/icons.test.tsx",
+            "tests/browser/icons-interop.test.ts",
+            "tests/browser/svg-all.test.tsx",
+            "tests/e2e/icons.spec.ts",
+            "tests/unit/icons-style.test.mjs"
+          ],
+          "documentation": [
+            "website/src/zh-CN/components/icons.md",
+            "website/src/zh-CN/guide/packages.md",
+            "website/src/zh-CN/guide/compatibility.md",
+            "website/examples/icons/Basic.vapor.tsx",
+            "website/examples/icons/CustomSvg.vapor.tsx",
+            "website/examples/icons/States.vapor.tsx",
+            "website/examples/icons/Catalog.vapor.tsx",
+            "website/tests/site.spec.ts"
+          ],
+          "consumer": [
+            "scripts/check-consumer.mjs",
+            "scripts/check-resource-consumer.mjs",
+            "tests/consumer/runtime.mjs",
+            "tests/consumer/node-icon-negative.mjs",
+            "tests/resource-consumer/consumer.ts",
+            "tests/resource-consumer/main.tsx",
+            "tests/resource-consumer/interop-main.ts",
+            "tests/resource-consumer/precompile.mjs"
+          ],
+          "limitations": [
+            "直接 SVG 资源包装不声明 span 包装或 spin 行为。",
+            "Icon 使用 svg/default slot；作用域提供 size: 1em、只读 fill 和实例 id。动态字段通过 scope 对象读取，调用方显式绑定 SVG 定义和引用。",
+            "不克隆 VNode；ref 仅公开 getElement()；elementType 为 Icon。颜色通过 currentColor 继承，多色资源保留原色。",
+            "浏览器 ESM 提供真实 Icon；UI 根的 Node import 条件仅提供已有静态工具及对应声明，不导出 Icon。icons 包根与组件子路径需浏览器 Vapor 运行时。无 CJS、组件 SSR 或 hydration 支持。",
+            "Vue RC9 与 vue-jsx RC2 精确锁定；vue-jsx 的 ^3 peer 严格安装限制仍存在。独立预编译应用消费者不代表独立 TSX 编译器安装问题已解决。",
+            "浏览器行为限 Chromium；截图不表示完整像素级一致性。"
+          ]
+        },
+        "mappings": {
+          "api": "Icon span 包装、六种 size、spin、整数 rotate、prefixCls/type/class/style/native attrs 已映射；React svg 节点改为 svg/default slot，fill 由调用方显式读取，ref 改为 getElement()，convertIcon 接收同一 SVG slot 工厂。ARIA 默认装饰性，有名称时为 img；显式 role/aria-hidden 优先。",
+          "types": "IconProps 映射为 Vue HTMLAttributes、只读 fill、IconSlots 和 IconHandle；另提供 IconSize、IconSvgScope、ConvertedIconProps。源/声明正反类型与实际 tarball 消费验证，不宣称 React 类型同构。",
+          "statics": "Icon 与 convertIcon 结果提供 elementType = Icon，无静态子组件。固定上游的动态赋值 marker 不在 AST 静态成员索引中，人工契约和浏览器/类型测试覆盖。",
+          "subpaths": "浏览器 semi-icons-vue 根及 ./Icon 提供 default/Icon/convertIcon；semi-ui-vue 根提供具名 Icon，./icons 另提供 default。Node import 的 UI 根仅静态工具且声明一致。固定上游 icons 使用 legacy main/module/types，无 exports map，故不虚构结构化子路径映射；不提供 CJS、SSR 或 hydration。",
+          "differences": {
+            "types": [
+              {
+                "name": "IconProps",
+                "sourcePath": "packages/semi-icons/src/components/Icon.tsx"
+              }
+            ],
+            "staticMembers": [],
+            "subpaths": []
+          }
+        },
+        "verification": {
+          "status": "complete",
+          "reviewId": "icons-contract-20260921",
+          "evidenceHashes": {
+            "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
+            "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
+            "packages/semi-icons-vue/src/components/convertIcon.ts": "746c6c1b51e826db3a02fe49eb4a3b962f0e2e748a3fdb62a15c30b5f0630085",
+            "packages/semi-icons-vue/src/components/factory-setup.tsx": "d98bd387a13320c9c4bcaed776deb6ab37182a5faeb3563df7a2f4c9dc1f6439",
+            "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
+            "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
+            "packages/semi-ui-vue/package.json": "277d8e2fcb8529bf0daa111e8757508ff6e81eb9019c2d1e02f0425bcbd96c9c",
+            "packages/semi-ui-vue/src/components/icons/index.ts": "97dec056a7f3162ba77e3ad5b1cccc3f32ff54f779d27d8cb73b2be5964304de",
+            "packages/semi-ui-vue/src/index.ts": "9d751ba3f1685d2d49234a288d40b70566e97228162ffc00751fc8a90a4fbb9d",
+            "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
+            "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3",
+            "scripts/check-consumer.mjs": "c747fdd15c65aac787560fbe25af07b1988e7ad04ef178d96fdaeb11e20ab82d",
+            "scripts/check-resource-consumer.mjs": "a5dae9ef867bd1f1e8f403f72b7238392ee7e95006f314be10d5a45dd241b42e",
+            "tests/browser/icons-interop.test.ts": "b0382f418a97d5da98b5a3558b0fa6c02da8cf3ef2809b305723743c5fbd551f",
+            "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
+            "tests/browser/svg-all.test.tsx": "0b189ff8e13621ba8d831c044cd43ad4d0db8dabb2559c399d99a34768633d5a",
+            "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
+            "tests/consumer/node-icon-negative.ts": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
+            "tests/consumer/runtime.mjs": "01fb82bfd3195c91eca9ad2dc55ac440e9ada08aeb6810993987f1975c7b667e",
+            "tests/e2e/icons.spec.ts": "320263dfcfb6ed27d3cb659c400425761beff99a7497bb27465362a42525b33b",
+            "tests/resource-consumer/consumer.ts": "90deeb80cfd6b23db61236d9aa24cde58af730df9c18aae5947b167e97b20e48",
+            "tests/resource-consumer/interop-main.ts": "5210e1690f358ff254c8cd0ee0f4d182d9b1165fb92084fbfc2fd27f2f0d8899",
+            "tests/resource-consumer/main.tsx": "ca59d76d38df057f2df6c1b3adc527845225048cfdf4b95f501c3ad60657ea9a",
+            "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831",
+            "tests/unit/icons-style.test.mjs": "0eacfc4f3ee23cfab89748e06d0756458df69d9324760876ff787fe4ff4a2396",
+            "website/examples/icons/Basic.vapor.tsx": "8a92410dd6a6e4b0ed76808dfc2f3698c1a67b26f6c1914fb3eb360c1d6f54a3",
+            "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
+            "website/examples/icons/CustomSvg.vapor.tsx": "07b899b4709b6b7f2a245ae1d47ce85aeec2c2f1628e1a712949cf57e6840612",
+            "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
+            "website/src/zh-CN/components/icons.md": "145ceddda105d465af19ecb87a35c3f26018d00ef0449b393ccbe312d511f065",
+            "website/src/zh-CN/guide/compatibility.md": "00804f69d024b6d55152a1d1ca7ccc62b3fafe3dc899f8465830ba0b9a544d29",
+            "website/src/zh-CN/guide/packages.md": "a6f70e2b29ee328b0db474bdfa34c04d1014f52b0b69864a79575e961f2a6e8a",
+            "website/tests/site.spec.ts": "7a137054214c262495d8b67359f81a32f6609c8c046bf18a0dd8cf4bf0966a74"
+          }
+        }
+      }
     },
     {
       "name": "image",
@@ -593,7 +748,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "input",
@@ -617,7 +773,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "inputNumber",
@@ -631,7 +788,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "jsonViewer",
@@ -645,7 +803,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "layout",
@@ -659,7 +818,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "list",
@@ -673,7 +833,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "locale",
@@ -697,7 +858,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "lottie",
@@ -711,7 +873,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "markdownRender",
@@ -725,7 +888,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "modal",
@@ -739,7 +903,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "navigation",
@@ -753,7 +918,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "notification",
@@ -767,7 +933,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "overflowList",
@@ -781,7 +948,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "pagination",
@@ -795,7 +963,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "pincode",
@@ -809,7 +978,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "popconfirm",
@@ -823,7 +993,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "popover",
@@ -837,7 +1008,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "progress",
@@ -851,7 +1023,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "radio",
@@ -865,7 +1038,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "rating",
@@ -879,7 +1053,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "resizable",
@@ -903,7 +1078,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "scrollList",
@@ -917,7 +1093,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "select",
@@ -931,7 +1108,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "sideBar",
@@ -945,7 +1123,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "sideSheet",
@@ -959,7 +1138,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "skeleton",
@@ -973,7 +1153,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "slider",
@@ -987,7 +1168,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "space",
@@ -1001,7 +1183,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "spin",
@@ -1015,7 +1198,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "steps",
@@ -1029,7 +1213,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "switch",
@@ -1043,7 +1228,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "table",
@@ -1067,7 +1253,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "tabs",
@@ -1081,7 +1268,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "tag",
@@ -1095,7 +1283,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "tagInput",
@@ -1109,7 +1298,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "timeline",
@@ -1123,7 +1313,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "timePicker",
@@ -1137,7 +1328,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "toast",
@@ -1151,7 +1343,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "tooltip",
@@ -1175,7 +1368,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "transfer",
@@ -1189,7 +1383,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "tree",
@@ -1213,7 +1408,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "treeSelect",
@@ -1227,7 +1423,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "typography",
@@ -1241,7 +1438,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "upload",
@@ -1255,7 +1453,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "userGuide",
@@ -1269,7 +1468,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "videoPlayer",
@@ -1283,7 +1483,8 @@
       "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
       "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
       "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries."
+      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
+      "acceptanceStatus": "unrecorded"
     }
   ],
   "rootExports": [
@@ -1304,7 +1505,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "AIChatInput",
@@ -1323,7 +1525,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Anchor",
@@ -1342,7 +1545,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Annotation",
@@ -1361,7 +1565,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ArrayField",
@@ -1380,7 +1585,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "AudioPlayer",
@@ -1399,7 +1605,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "AutoComplete",
@@ -1418,7 +1625,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "AvatarGroup",
@@ -1437,7 +1645,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Avatar",
@@ -1456,7 +1665,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "BackTop",
@@ -1475,7 +1685,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Badge",
@@ -1494,7 +1705,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Banner",
@@ -1513,7 +1725,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "BaseComponent",
@@ -1532,7 +1745,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "BaseFoundation",
@@ -1551,7 +1765,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Breadcrumb",
@@ -1570,7 +1785,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ButtonGroup",
@@ -1589,7 +1805,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Button",
@@ -1608,7 +1825,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Calendar",
@@ -1627,7 +1845,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "CardGroup",
@@ -1646,7 +1865,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Card",
@@ -1665,7 +1885,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Carousel",
@@ -1684,7 +1905,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Cascader",
@@ -1703,7 +1925,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "chatCompletionToMessage",
@@ -1722,7 +1945,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "chatInputToChatCompletion",
@@ -1741,7 +1965,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "chatInputToMessage",
@@ -1760,7 +1985,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Chat",
@@ -1779,7 +2005,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "CheckboxGroup",
@@ -1798,7 +2025,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Checkbox",
@@ -1817,7 +2045,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "CodeHighlight",
@@ -1836,7 +2065,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Collapse",
@@ -1855,7 +2085,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Collapsible",
@@ -1874,7 +2105,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ColorPicker",
@@ -1893,7 +2125,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Col",
@@ -1912,7 +2145,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ConfigConsumer",
@@ -1931,7 +2165,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ConfigProvider",
@@ -1950,7 +2185,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Cropper",
@@ -1969,7 +2205,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "DatePicker",
@@ -1988,7 +2225,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Descriptions",
@@ -2007,7 +2245,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Divider",
@@ -2026,7 +2265,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "DragMove",
@@ -2045,7 +2285,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "DropdownDivider",
@@ -2064,7 +2305,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "DropdownItem",
@@ -2083,7 +2325,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "DropdownMenu",
@@ -2102,7 +2345,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Dropdown",
@@ -2121,7 +2365,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Empty",
@@ -2140,7 +2385,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Feedback",
@@ -2159,7 +2405,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "FloatButtonGroup",
@@ -2178,7 +2425,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "FloatButton",
@@ -2197,7 +2445,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Form",
@@ -2216,7 +2465,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "getConfigureItem",
@@ -2235,7 +2485,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Highlight",
@@ -2254,7 +2505,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "HotKeys",
@@ -2273,7 +2525,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "IconButton",
@@ -2292,7 +2545,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Icon",
@@ -2306,12 +2560,13 @@
       "fingerprint": "a2801ed9f1a8a5185312c98f5fcb3814f7d8e1c146b98adbf62f94b2e29f294d",
       "family": "icons",
       "upstreamExists": true,
-      "currentExportExists": false,
-      "classification": "absent",
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "currentExportExists": true,
+      "classification": "public-component",
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "alignment": "accepted-reviewed-contract",
+      "difference": "Icon span 包装、六种 size、spin、整数 rotate、prefixCls/type/class/style/native attrs 已映射；React svg 节点改为 svg/default slot，fill 由调用方显式读取，ref 改为 getElement()，convertIcon 接收同一 SVG slot 工厂。ARIA 默认装饰性，有名称时为 img；显式 role/aria-hidden 优先。",
+      "acceptanceStatus": "accepted"
     },
     {
       "name": "ImagePreview",
@@ -2330,7 +2585,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Image",
@@ -2349,7 +2605,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "InputGroup",
@@ -2368,7 +2625,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "InputNumber",
@@ -2387,7 +2645,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Input",
@@ -2406,7 +2665,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "JsonViewer",
@@ -2425,7 +2685,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Layout",
@@ -2444,7 +2705,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "List",
@@ -2463,7 +2725,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "LocaleConsumer",
@@ -2482,7 +2745,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "LocaleProvider",
@@ -2501,7 +2765,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Lottie",
@@ -2520,7 +2785,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "MarkdownRender",
@@ -2539,7 +2805,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "MCPConfigure",
@@ -2558,7 +2825,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Modal",
@@ -2577,7 +2845,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "NavItem",
@@ -2596,7 +2865,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Nav",
@@ -2615,7 +2885,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Notification",
@@ -2634,7 +2905,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "OverflowList",
@@ -2653,7 +2925,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Pagination",
@@ -2672,7 +2945,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "PinCode",
@@ -2691,7 +2965,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Popconfirm",
@@ -2710,7 +2985,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Popover",
@@ -2729,7 +3005,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Progress",
@@ -2748,7 +3025,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "RadioGroup",
@@ -2767,7 +3045,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Radio",
@@ -2786,7 +3065,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Rating",
@@ -2805,7 +3085,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Resizable",
@@ -2824,7 +3105,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ResizeGroup",
@@ -2843,7 +3125,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ResizeHandler",
@@ -2862,7 +3145,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ResizeItem",
@@ -2881,7 +3165,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "responseToMessage",
@@ -2900,7 +3185,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Row",
@@ -2919,7 +3205,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ScrollItem",
@@ -2938,7 +3225,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ScrollList",
@@ -2957,7 +3245,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Select",
@@ -2976,7 +3265,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "semiGlobal",
@@ -2995,7 +3285,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "same-name-different-contract",
-      "difference": "Vue defaults are captured at resolver creation; React createRoot is not implemented. Same name does not imply upstream API parity."
+      "difference": "Vue defaults are captured at resolver creation; React createRoot is not implemented. Same name does not imply upstream API parity.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Sidebar",
@@ -3014,7 +3305,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "SideSheet",
@@ -3033,7 +3325,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Skeleton",
@@ -3052,7 +3345,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Slider",
@@ -3071,7 +3365,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Space",
@@ -3090,7 +3385,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Spin",
@@ -3109,7 +3405,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "SplitButtonGroup",
@@ -3128,7 +3425,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "SplitTagGroup",
@@ -3147,7 +3445,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Steps",
@@ -3166,7 +3465,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Step",
@@ -3185,7 +3485,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "streamingChatCompletionToMessage",
@@ -3204,7 +3505,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "streamingResponseToMessage",
@@ -3223,7 +3525,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "SubNav",
@@ -3242,7 +3545,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Switch",
@@ -3261,7 +3565,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Table",
@@ -3280,7 +3585,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TabPane",
@@ -3299,7 +3605,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Tabs",
@@ -3318,7 +3625,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TagGroup",
@@ -3337,7 +3645,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TagInput",
@@ -3356,7 +3665,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Tag",
@@ -3375,7 +3685,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TextArea",
@@ -3394,7 +3705,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Timeline",
@@ -3413,7 +3725,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TimePicker",
@@ -3432,7 +3745,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "ToastFactory",
@@ -3451,7 +3765,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Toast",
@@ -3470,7 +3785,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Tooltip",
@@ -3489,7 +3805,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Transfer",
@@ -3508,7 +3825,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "TreeSelect",
@@ -3527,7 +3845,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Tree",
@@ -3546,7 +3865,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Typography",
@@ -3565,7 +3885,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "Upload",
@@ -3584,7 +3905,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "useFieldApi",
@@ -3603,7 +3925,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "useFieldState",
@@ -3622,7 +3945,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "useFormApi",
@@ -3641,7 +3965,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "useFormState",
@@ -3660,7 +3985,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "UserGuide",
@@ -3679,7 +4005,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "VideoPlayer",
@@ -3698,7 +4025,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "withField",
@@ -3717,7 +4045,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "withFormApi",
@@ -3736,7 +4065,8 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     },
     {
       "name": "withFormState",
@@ -3755,11 +4085,13 @@
       "publicDelivery": "not-delivered",
       "behaviorAcceptance": "not-accepted",
       "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract."
+      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
+      "acceptanceStatus": "unrecorded"
     }
   ],
   "current": {
     "values": [
+      "Icon",
       "ariaIdScopeKey",
       "clampDragOffset",
       "createAriaIdScope",
@@ -3817,6 +4149,11 @@
       "FoundationLifecycle",
       "FoundationOptions",
       "FoundationScope",
+      "IconHandle",
+      "IconProps",
+      "IconSize",
+      "IconSlots",
+      "IconSvgScope",
       "NativeEventHandler",
       "NavigationKey",
       "OverlayHandle",
@@ -3893,7 +4230,7 @@
     "useVirtualList",
     "version"
   ],
-  "acceptancePolicy": "No complete public components are accepted. Infrastructure, resources, same-name exports and fixtures remain separate; adding the first public component requires explicit acceptance records and extending this policy.",
+  "acceptancePolicy": "A public family changes from pending only through a reviewed acceptance decision with cited contract, implementation, source/declaration, browser, documentation, consumer, and limitation evidence. Matching names, source paths, generated SVG resources, or a successful command never accept a family. An accepted record additionally retains a completed verification review identifier.",
   "packageSurfaces": [
     {
       "name": "semi-animation-vue",
@@ -4025,6 +4362,7 @@
       "private": true,
       "entry": {
         "values": [
+          "Icon",
           "IconAIBellLevel1",
           "IconAIBellLevel2",
           "IconAIBellLevel3",
@@ -4548,13 +4886,33 @@
           "IconWrenchStroked",
           "IconXiguaLogo",
           "IconYoutube",
+          "convertIcon",
+          "default",
           "version"
         ],
-        "types": ["SvgResourceProps", "SvgSize"]
+        "types": [
+          "ConvertedIconProps",
+          "IconHandle",
+          "IconProps",
+          "IconSize",
+          "IconSlots",
+          "IconSvgScope",
+          "SvgResourceProps",
+          "SvgSize"
+        ]
       },
       "exports": {
         ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-        "./*": { "types": "./dist/icons/*.d.ts", "import": "./dist/icons/*.js" }
+        "./*": {
+          "types": "./dist/icons/*.d.ts",
+          "import": "./dist/icons/*.js"
+        },
+        "./Icon": {
+          "types": "./dist/components/index.d.ts",
+          "import": "./dist/components/index.js"
+        },
+        "./styles.css": "./dist/styles/index.css",
+        "./styles.scss": "./dist/styles/index.scss"
       }
     },
     {
@@ -4595,6 +4953,7 @@
       "private": true,
       "entry": {
         "values": [
+          "Icon",
           "ariaIdScopeKey",
           "clampDragOffset",
           "createAriaIdScope",
@@ -4652,6 +5011,11 @@
           "FoundationLifecycle",
           "FoundationOptions",
           "FoundationScope",
+          "IconHandle",
+          "IconProps",
+          "IconSize",
+          "IconSlots",
+          "IconSvgScope",
           "NativeEventHandler",
           "NavigationKey",
           "OverlayHandle",
@@ -4693,7 +5057,16 @@
         ]
       },
       "exports": {
-        ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+        ".": {
+          "import": {
+            "node": {
+              "types": "./dist/infrastructure.d.ts",
+              "default": "./dist/infrastructure.js"
+            },
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+          }
+        },
         "./styles": {
           "sass": "./dist/styles/index.scss",
           "default": "./dist/styles/index.css"
@@ -4739,7 +5112,17 @@
         "./locale/interface": {
           "types": "./dist/locale/interface.d.ts",
           "import": "./dist/locale/interface.js"
-        }
+        },
+        "./icons": {
+          "types": "./dist/components/icons/index.d.ts",
+          "import": "./dist/components/icons/index.js"
+        },
+        "./styles/components/icons": {
+          "sass": "./dist/styles/components/icons.scss",
+          "default": "./dist/styles/components/icons.css"
+        },
+        "./styles/components/icons.css": "./dist/styles/components/icons.css",
+        "./styles/components/icons.scss": "./dist/styles/components/icons.scss"
       }
     },
     {
@@ -4773,10 +5156,17 @@
       "check": "pnpm check:dependencies"
     },
     "styles": {
-      "generator": "scripts/style-inputs.mjs",
-      "sha256": "3c7c8f1565819021f1f5686b31178650b9c57d755672a521921f3f1c9dfdeb6b",
-      "scope": "Registered base, Input and Tooltip CSS/SCSS plus theme tokens/mixins only",
-      "check": "pnpm check:style-consumer"
+      "generators": {
+        "scripts/style-inputs.mjs": "9fa21ec5b9d752759aaeabf2ebd5be328454c45fd07a53e32f1a2ccf8146514f",
+        "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3"
+      },
+      "iconSources": {
+        "packages/semi-icons/src/styles/icons.scss": "6df72106fbcb6682d9657e0d34add977af2591fe687a129bc5bb36a15a55c668",
+        "packages/semi-icons/src/styles/variables.scss": "9ead8d09f9be5766faa3467f40c65f2f15c1fdee1231350621728403aa9d2a12",
+        "packages/semi-theme-default/scss/variables.scss": "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d"
+      },
+      "scope": "Registered base, Input and Tooltip CSS/SCSS plus theme tokens/mixins; Icon CSS comes only from the fixed semi-icons styles and fixed theme variables.",
+      "check": "pnpm check:style-consumer && pnpm test -- tests/unit/icons-style.test.mjs"
     },
     "foundation": {
       "patch": "patches/@douyinfe__semi-foundation@2.103.0.patch",
@@ -10484,7 +10874,7 @@
         "sourcePath": "packages/semi-icons-lab/src/components/Icon.tsx",
         "line": 8,
         "fingerprint": "382084cc163973785ea475c86cdc0f82a9a0c386a3c2e89274dbca95b0b6109d",
-        "sameNameRootType": false,
+        "sameNameRootType": true,
         "alignment": "no-accepted-type-mapping"
       },
       {
@@ -10494,7 +10884,7 @@
         "sourcePath": "packages/semi-icons-lab/src/components/Icon.tsx",
         "line": 6,
         "fingerprint": "ae70b5f42a97033cefa4063232e2436211036ee360b51351f6c5872a9eb08ed2",
-        "sameNameRootType": false,
+        "sameNameRootType": true,
         "alignment": "no-accepted-type-mapping"
       },
       {
@@ -10504,8 +10894,8 @@
         "sourcePath": "packages/semi-icons/src/components/Icon.tsx",
         "line": 8,
         "fingerprint": "e88c41a9cacf573bbd04d6264bd6b6a47e6dcf93855b30fd952dd381bb5eebfa",
-        "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "sameNameRootType": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "IconSize",
@@ -10514,7 +10904,7 @@
         "sourcePath": "packages/semi-icons/src/components/Icon.tsx",
         "line": 6,
         "fingerprint": "ae70b5f42a97033cefa4063232e2436211036ee360b51351f6c5872a9eb08ed2",
-        "sameNameRootType": false,
+        "sameNameRootType": true,
         "alignment": "no-accepted-type-mapping"
       },
       {
@@ -15564,7 +15954,7 @@
         "sourcePath": "packages/semi-ui/spin/icon.tsx",
         "line": 8,
         "fingerprint": "1ebe602a7a1ba6e683fa11dd20b442ff56202895168c19f1332d73f357a5f2d1",
-        "sameNameRootType": false,
+        "sameNameRootType": true,
         "alignment": "no-accepted-type-mapping"
       },
       {
@@ -163443,15 +163833,23 @@
         "path": "packages/semi-icons/src/styles/icons.scss",
         "kind": "style",
         "fingerprint": "6df72106fbcb6682d9657e0d34add977af2591fe687a129bc5bb36a15a55c668",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "icon-style",
+          "sha256": "6df72106fbcb6682d9657e0d34add977af2591fe687a129bc5bb36a15a55c668",
+          "currentInput": "scripts/build-icon-styles.mjs"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-icons/src/styles/variables.scss",
         "kind": "style",
         "fingerprint": "9ead8d09f9be5766faa3467f40c65f2f15c1fdee1231350621728403aa9d2a12",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "icon-style",
+          "sha256": "9ead8d09f9be5766faa3467f40c65f2f15c1fdee1231350621728403aa9d2a12",
+          "currentInput": "scripts/build-icon-styles.mjs"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-icons/src/svgs/absolute_stroked.svg",
@@ -169445,9 +169843,9 @@
         "kind": "style",
         "fingerprint": "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
         "registration": {
-          "kind": "style",
+          "kind": "icon-style",
           "sha256": "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
-          "currentInput": "node_modules/@douyinfe/semi-theme-default/scss/variables.scss"
+          "currentInput": "scripts/build-icon-styles.mjs"
         },
         "alignment": "registered-source-not-component-acceptance"
       },
@@ -170080,6 +170478,11 @@
     "packages/semi-icons-lab-vue/src/icons/index.ts": "43ee15f7fafe23ecc13d4cc8ec9cc17d1f33e7f4cd6e6ac959037a520852bcfd",
     "packages/semi-icons-lab-vue/src/index.ts": "58430576fdaac14735417ba22e84f5054c82bb940f595df6f0cd1efe3f13f492",
     "packages/semi-icons-lab-vue/src/runtime.ts": "acac5b775235eafc1365733a9bd8121df57288c074539df60422fef0f4accfb0",
+    "packages/semi-icons-vue/src/components/convertIcon.ts": "746c6c1b51e826db3a02fe49eb4a3b962f0e2e748a3fdb62a15c30b5f0630085",
+    "packages/semi-icons-vue/src/components/factory-setup.tsx": "d98bd387a13320c9c4bcaed776deb6ab37182a5faeb3563df7a2f4c9dc1f6439",
+    "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
+    "packages/semi-icons-vue/src/components/index.ts": "ff48abf2f037b0feeb8987e3436d8101c970d369a496d63e577d3d4e54c104d4",
+    "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
     "packages/semi-icons-vue/src/icons/IconAbsoluteStroked.tsx": "a6be89436d6314cf057b411d9dc9f4259e1b3f534811eeab0ed90e50dcd667e1",
     "packages/semi-icons-vue/src/icons/IconActivity.tsx": "d4144507fb4fe5fef307390d130be198cdd15eb8e0cc90e0a946f6b6c98d6299",
     "packages/semi-icons-vue/src/icons/IconAIBellLevel1.tsx": "030c064b2d73e4921fd9441e1e9911802a32ecfb0f9c4d89ccb6e57221cfe05e",
@@ -170604,7 +171007,7 @@
     "packages/semi-icons-vue/src/icons/IconXiguaLogo.tsx": "0616adfe3a51fed7cc53073989d8cb48056f08ee119d931eeac6f8cf6ce12eef",
     "packages/semi-icons-vue/src/icons/IconYoutube.tsx": "cb3926d952e83cb5cf7e53cf0246947aabc90abfaa0412a84492fba713bfe514",
     "packages/semi-icons-vue/src/icons/index.ts": "504fa44d4d50a36665bfbcd0a4cee14ba57b9bc4cd94c315338096053ec34068",
-    "packages/semi-icons-vue/src/index.ts": "58430576fdaac14735417ba22e84f5054c82bb940f595df6f0cd1efe3f13f492",
+    "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
     "packages/semi-icons-vue/src/runtime.ts": "71e01cd506c62f2a4287e43d181b2c8d1fbd4e4b8bb5845f4a6850ee038c87c9",
     "packages/semi-illustrations-vue/src/illustrations/IllustrationConstruction.tsx": "f8325cb18521aa0943edb44970cc3913a1deb38b82aff882010c76e75239861b",
     "packages/semi-illustrations-vue/src/illustrations/IllustrationConstructionDark.tsx": "ca279f20f8d978461d26f16eca2fa87b3b6ec2448bf6522845aa44f1ab7ff5bc",
@@ -170625,6 +171028,7 @@
     "packages/semi-illustrations-vue/src/illustrations/index.ts": "8cf82338e904d93e942ebee98ec5c3fb5d6279c450124c412490a318223b9d27",
     "packages/semi-illustrations-vue/src/index.ts": "a73c7b000a654c2171deedf0906640d3cca0551bf2eed5bd85d4d4ada06ee1ff",
     "packages/semi-illustrations-vue/src/runtime.ts": "daaa133a9de197a847ccc43b782dfc68c562f4afa137717f8de4c508cca66e18",
+    "packages/semi-ui-vue/src/components/icons/index.ts": "97dec056a7f3162ba77e3ad5b1cccc3f32ff54f779d27d8cb73b2be5964304de",
     "packages/semi-ui-vue/src/composables/foundation-scope.ts": "6f2ee6a3c311112745cf7efec1e4498f2a379908eb0f7d471b1f2a94d06cd38a",
     "packages/semi-ui-vue/src/composables/use-controllable-value.ts": "fde9cbba09454665b228a7120528e8a747186fa0207ef7218b584a6072df5619",
     "packages/semi-ui-vue/src/composables/use-foundation.ts": "91458b6dca3470207229086ab8135338f4c98c51981194496aed1fae9f079fd8",
@@ -170641,7 +171045,8 @@
     "packages/semi-ui-vue/src/dom/keyboard.ts": "e74e69634df12cbb070845913ed25fa9f3b86a23a0bc0f75dc15f02d87557fe0",
     "packages/semi-ui-vue/src/dom/resources.ts": "7122740e4cfbce84d9c643d173318bbf44d0445dca33e444d0fbefa2bcbbf15d",
     "packages/semi-ui-vue/src/dom/scheduling.ts": "101d1fe62b8610ba8828fdbbec11b79f456dd9a39132f77239e0d9693ec6dd0d",
-    "packages/semi-ui-vue/src/index.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
+    "packages/semi-ui-vue/src/index.ts": "9d751ba3f1685d2d49234a288d40b70566e97228162ffc00751fc8a90a4fbb9d",
+    "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
     "packages/semi-ui-vue/src/internal/overlay/focus.ts": "fb5880e2fe30563b2e5cafd1419e50be649e4b904c1bee48118b495ee65e05d9",
     "packages/semi-ui-vue/src/internal/overlay/host.ts": "b886b27b161ce9a431128f9906e3d402de95d617b445f52d6ff6f7a78fd3f4da",
     "packages/semi-ui-vue/src/internal/overlay/portal.ts": "e69c1c6c9830f288faa2efea6d06d4767cd258f207fad952ef55f076dffb19c7",

@@ -9,9 +9,22 @@ import IconAIFileLevel3, {
 } from "semi-icons-vue/IconAIFileLevel3";
 import IconHome from "semi-icons-vue/IconHome";
 import {
+  default as Icon,
+  convertIcon,
+  Icon as NamedIcon,
   IconHome as RootIconHome,
+  type IconHandle,
+  type IconSize,
   version as iconsVersion,
 } from "semi-icons-vue";
+import IconFromSubpath, {
+  Icon as NamedIconFromSubpath,
+} from "semi-icons-vue/Icon";
+import { Icon as UiIcon } from "semi-ui-vue";
+import UiIconFromSubpath, {
+  Icon as NamedUiIconFromSubpath,
+} from "semi-ui-vue/icons";
+import "semi-ui-vue/styles/components/icons.css";
 import { version as labVersion } from "semi-icons-lab-vue";
 import { version as illustrationsVersion } from "semi-illustrations-vue";
 import IconForm, {
@@ -35,6 +48,13 @@ declare global {
       en_US: Locale;
       zh_CN: Locale;
       setHomeColor(color: string): void;
+      updateIcon(
+        color: string,
+        fill: readonly string[],
+        size: IconSize,
+        rotate: number,
+      ): void;
+      getIconElement(): HTMLSpanElement | null;
       unmount(): void;
     };
   }
@@ -52,6 +72,24 @@ for (const version of [iconsVersion, labVersion, illustrationsVersion])
 
 const locale: Locale = en_US;
 const homeColor = ref("rgb(12, 90, 190)");
+const iconColor = ref("rgb(70, 107, 255)");
+const iconFill = ref<readonly string[]>(["#465fff", "#9caeff"]);
+const iconSize = ref<IconSize>("inherit");
+const iconRotate = ref(90);
+const generatedIconHandle = ref<IconHandle | null>(null);
+const FactoryIcon = convertIcon(
+  (scope) => (
+    <svg
+      data-icon-id={scope.id}
+      height={scope.size}
+      viewBox="0 0 8 8"
+      width={scope.size}
+    >
+      <path d="M1 1h6v6H1z" fill={scope.fill?.[0] ?? "currentColor"} />
+    </svg>
+  ),
+  "factory",
+);
 assert(en_US.dateFnsLocale.localize, "English date-fns localize is missing");
 assert(zh_CN.dateFnsLocale.localize, "Chinese date-fns localize is missing");
 assert(locale.code === "en-US", "English locale did not retain its code");
@@ -68,6 +106,29 @@ assert(
   "Icon subpath exports disagree",
 );
 assert(IconHome === RootIconHome, "Root and subpath icon exports disagree");
+assert(Icon === NamedIcon, "Icon root default and named exports disagree");
+assert(Icon.elementType === "Icon", "Icon elementType marker is unavailable");
+assert(
+  FactoryIcon.elementType === "Icon",
+  "convertIcon did not retain the Icon elementType marker",
+);
+assert(
+  Icon === IconFromSubpath,
+  "Icon root and subpath default exports disagree",
+);
+assert(
+  Icon === NamedIconFromSubpath,
+  "Icon subpath default and named exports disagree",
+);
+assert(
+  Icon === UiIcon,
+  "UI root Icon does not re-export the icons package Icon",
+);
+assert(Icon === UiIconFromSubpath, "UI icons default does not re-export Icon");
+assert(
+  Icon === NamedUiIconFromSubpath,
+  "UI icons named export does not re-export Icon",
+);
 assert(IconForm === NamedIconForm, "Lab icon subpath exports disagree");
 assert(
   IllustrationNoContent === NamedIllustrationNoContent,
@@ -82,6 +143,99 @@ const ResourceView = defineVaporComponent<{ label: string }>(
         class="recolorable-icon"
         color={homeColor.value}
         size="large"
+      />
+      <Icon
+        aria-label={`${props.label} wrapped generated icon`}
+        className="wrapped-generated-icon"
+        color={iconColor.value}
+        prefixCls="semi"
+        ref={generatedIconHandle}
+        rotate={iconRotate.value}
+        size={iconSize.value}
+        spin={true}
+        style={{ fontSize: iconSize.value === "inherit" ? "31px" : undefined }}
+        type="primary"
+        v-slots={{
+          svg: () => <IconHome aria-hidden="true" size="inherit" />,
+        }}
+      />
+      <Icon
+        className="slot-priority-icon"
+        prefixCls="consumer"
+        v-slots={{
+          default: () => <svg data-slot="default" viewBox="0 0 1 1" />,
+          svg: () => <svg data-slot="svg" viewBox="0 0 1 1" />,
+        }}
+      />
+      <Icon
+        aria-hidden={false}
+        className="aria-override-icon"
+        prefixCls="consumer"
+        role="presentation"
+        v-slots={{
+          svg: () => <svg data-slot="aria-override" viewBox="0 0 1 1" />,
+        }}
+      />
+      <Icon
+        className="decorative-icon"
+        data-icon-contract="decorative"
+        prefixCls="consumer"
+        type="warning"
+        v-slots={{
+          default: (scope) => (
+            <svg
+              aria-hidden="true"
+              data-fill={scope.fill?.join(",")}
+              data-icon-id={scope.id}
+              height={scope.size}
+              viewBox="0 0 8 8"
+              width={scope.size}
+            >
+              <path d="M1 1h6v6H1z" fill="currentColor" />
+            </svg>
+          ),
+        }}
+      />
+      <Icon
+        aria-labelledby={`${props.label}-custom-title`}
+        className="custom-slot-icon"
+        color={iconColor.value}
+        fill={iconFill.value}
+        prefixCls="consumer"
+        v-slots={{
+          svg: (scope) => (
+            <svg
+              data-fill={scope.fill?.join(",")}
+              data-icon-id={scope.id}
+              height={scope.size}
+              viewBox="0 0 12 12"
+              width={scope.size}
+            >
+              <title id={`${props.label}-custom-title`}>
+                Custom consumer icon
+              </title>
+              <defs>
+                <linearGradient id={`${scope.id}-gradient`}>
+                  <stop
+                    offset="0"
+                    stop-color={scope.fill?.[0] ?? "currentColor"}
+                  />
+                  <stop
+                    offset="1"
+                    stop-color={scope.fill?.[1] ?? "currentColor"}
+                  />
+                </linearGradient>
+              </defs>
+              <path d="M1 1h10v10H1z" fill={`url(#${scope.id}-gradient)`} />
+            </svg>
+          ),
+        }}
+      />
+      <FactoryIcon
+        aria-label={`${props.label} factory icon`}
+        className="factory-icon"
+        fill={iconFill.value}
+        prefixCls="semi"
       />
       <IconAIFileLevel3
         aria-label={`${props.label} gradient icon`}
@@ -135,6 +289,15 @@ window.resourceConsumer = {
   zh_CN,
   setHomeColor(color) {
     homeColor.value = color;
+  },
+  updateIcon(color, fill, size, rotate) {
+    iconColor.value = color;
+    iconFill.value = fill;
+    iconSize.value = size;
+    iconRotate.value = rotate;
+  },
+  getIconElement() {
+    return generatedIconHandle.value?.getElement() ?? null;
   },
   unmount() {
     second.app.unmount();

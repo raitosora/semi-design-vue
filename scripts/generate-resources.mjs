@@ -171,7 +171,10 @@ export async function renderResources() {
     );
     outputs.set(
       `packages/${kind.packageName}/src/index.ts`,
-      `export const version = "0.0.0";\nexport * from "./${kind.directory}/index.js";\nexport type { SvgResourceProps, SvgSize } from "./runtime.js";\n`,
+      await prettier.format(
+        `export const version = "0.0.0";\nexport * from "./${kind.directory}/index.js";\nexport type { SvgResourceProps, SvgSize } from "./runtime.js";\n${kind.key === "icons" ? 'export { default, Icon, convertIcon } from "./components/index.js";\nexport type { IconProps, IconSize, IconSlots, IconSvgScope, IconHandle, ConvertedIconProps } from "./components/index.js";\n' : ""}`,
+        { parser: "typescript" },
+      ),
     );
   }
   return outputs;

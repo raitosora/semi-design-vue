@@ -18,6 +18,9 @@ const resourceEntries = globSync([
   "src/illustrations/index.ts",
   "src/locale/**/*.ts",
   "src/lifecycle/index.ts",
+  "src/infrastructure.ts",
+  "src/components/index.ts",
+  "src/components/*/index.ts",
 ]).filter((file) => !file.endsWith(".d.ts"));
 const entries = Object.fromEntries(
   ["src/index.ts", ...resourceEntries].map((file) => [

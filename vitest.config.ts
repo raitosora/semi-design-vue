@@ -24,6 +24,7 @@ export default defineConfig({
         "scripts/upstream-source.mjs",
         "scripts/upstream-inventory.mjs",
         "scripts/upstream-matrix.mjs",
+        "scripts/upstream-acceptance.mjs",
         "scripts/component-change-policy.mjs",
         "scripts/foundation-patch-policy.mjs",
       ],

@@ -109,6 +109,24 @@ it("resolves explicit star inputs and refuses empty resolution evidence", () => 
   ).toThrow(/Empty/);
 });
 
+it("preserves value and type infrastructure exports through a root export-star", () => {
+  expect(
+    readCurrentExports(
+      "export * from './infrastructure.js'; export { Icon } from './components/icons';",
+      (specifier) => {
+        expect(specifier).toBe("./infrastructure.js");
+        return {
+          values: ["useFoundation", "version"],
+          types: ["FoundationOptions"],
+        };
+      },
+    ),
+  ).toEqual({
+    values: ["Icon", "useFoundation", "version"],
+    types: ["FoundationOptions"],
+  });
+});
+
 it("records type/static/subpath/resource gaps rather than equating names with parity", async () => {
   const { buildSurfaceDifferences } =
     await import("../../scripts/upstream-matrix.mjs");
@@ -149,4 +167,131 @@ it("records type/static/subpath/resource gaps rather than equating names with pa
       "a.svg": { sha256: "drift" },
     }),
   ).toThrow(/differs/);
+});
+
+it("renders reviewed acceptance state rather than hardcoded undecided labels", async () => {
+  const { applyAcceptance } =
+    await import("../../scripts/upstream-acceptance.mjs");
+  const { renderMatrix } = await import("../../scripts/upstream-matrix.mjs");
+  const matrix = applyAcceptance(
+    buildMatrix(
+      {
+        families: [{ name: "icons", exports: ["Icon"] }],
+        rootExports: [
+          { name: "Icon", family: "icons", currentExportExists: true },
+        ],
+      },
+      { values: ["Icon"], types: [] },
+    ),
+    {
+      schema: 1,
+      policy: "reviewed acceptance",
+      families: [
+        {
+          family: "icons",
+          status: "accepted",
+          reviewedDecision: "Reviewed contract.",
+          verification: {
+            status: "complete",
+            reviewId: "icons-review",
+            evidenceHashes: {
+              "a.ts": "a".repeat(64),
+              "tests/browser/icons.test.tsx": "a".repeat(64),
+              "website/src/zh-CN/components/icons.md": "a".repeat(64),
+              "tests/resource-consumer/icons.tsx": "a".repeat(64),
+            },
+          },
+          mappings: {
+            api: "Vue Icon contract reviewed.",
+            types: "Vue declarations reviewed.",
+            statics: "No static subcomponent mapping.",
+            subpaths: "ESM root and ./Icon reviewed.",
+            differences: {
+              types: [{ name: "IconProps", sourcePath: "a.ts" }],
+              staticMembers: [{ rootExport: "Icon", name: "elementType" }],
+              subpaths: [
+                { upstreamPackage: "@douyinfe/semi-icons", subpath: "./Icon" },
+              ],
+            },
+          },
+          evidence: {
+            contract: ["a.ts"],
+            implementation: ["a.ts"],
+            sourceAndDeclarations: ["a.ts"],
+            browser: ["tests/browser/icons.test.tsx"],
+            documentation: ["website/src/zh-CN/components/icons.md"],
+            consumer: ["tests/resource-consumer/icons.tsx"],
+            limitations: ["No CJS."],
+          },
+        },
+      ],
+    },
+  );
+  const text = renderMatrix(matrix, {
+    version: "fixed",
+    repository: "https://example.com/source",
+    commit: "abc",
+  });
+  expect(matrix.rootExports[0]).toMatchObject({
+    publicDelivery: "delivered",
+    behaviorAcceptance: "accepted",
+  });
+  expect(text).toContain("已交付");
+  expect(text).toContain("已验收");
+  expect(text).toContain("Vue Icon contract reviewed.");
+});
+
+it("applies accepted mappings only to exact Icon type, member, and package keys", async () => {
+  const { buildSurfaceDifferences } =
+    await import("../../scripts/upstream-matrix.mjs");
+  const result = buildSurfaceDifferences(
+    {
+      typeDeclarations: [
+        {
+          name: "IconProps",
+          sourcePath: "packages/semi-icons/src/components/Icon.tsx",
+        },
+        { name: "IconProps", sourcePath: "packages/semi-ui/spin/icon.tsx" },
+      ],
+      staticApis: { Icon: { members: [{ name: "elementType" }] } },
+      packageSurfaces: [
+        { name: "@douyinfe/semi-icons", exports: [{ subpath: "./Icon" }] },
+      ],
+      resources: [],
+    },
+    { types: ["IconProps"] },
+    [{ name: "semi-icons-vue", exports: { "./Icon": {} } }],
+    {},
+    {
+      families: [
+        {
+          family: "future-family",
+          status: "accepted",
+          mappings: {
+            differences: {
+              types: [
+                {
+                  name: "IconProps",
+                  sourcePath: "packages/semi-icons/src/components/Icon.tsx",
+                },
+              ],
+              staticMembers: [{ rootExport: "Icon", name: "elementType" }],
+              subpaths: [
+                { upstreamPackage: "@douyinfe/semi-icons", subpath: "./Icon" },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  );
+  expect(result.types.map((entry) => entry.alignment)).toEqual([
+    "accepted-reviewed-mapping",
+    "no-accepted-type-mapping",
+  ]);
+  expect(result.staticMembers[0]).toMatchObject({
+    currentPublicMemberAccepted: true,
+    alignment: "accepted-reviewed-mapping",
+  });
+  expect(result.subpaths[0].alignment).toBe("accepted-reviewed-mapping");
 });
