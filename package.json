@@ -67,7 +67,8 @@
     "generate:upstream": "node scripts/check-upstream.mjs --write",
     "check:upstream": "node scripts/check-upstream.mjs --check",
     "check:foundation-patch": "node scripts/check-foundation-patch.mjs",
-    "check:component-changes": "node scripts/component-change-gate.mjs"
+    "check:component-changes": "node scripts/component-change-gate.mjs",
+    "check:commit-messages": "node scripts/check-commit-messages.mjs"
   },
   "license": "MIT"
 }
