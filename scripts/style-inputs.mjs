@@ -8,7 +8,7 @@ import { buildIconStyles } from "./build-icon-styles.mjs";
 const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
-const components = ["input", "tooltip", "spin"];
+const components = ["input", "tooltip", "spin", "iconButton"];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
@@ -31,6 +31,16 @@ const foundationFiles = {
     "spin/rtl.scss",
     "spin/spin.scss",
     "spin/variables.scss",
+  ],
+  iconButton: [
+    "button/animation.scss",
+    "button/button.scss",
+    "button/cssVariables.scss",
+    "button/iconButton.scss",
+    "button/rtl.scss",
+    "button/splitButtonGroup.scss",
+    "button/variables.scss",
+    "keyframes/rotate.scss",
   ],
 };
 const sourceHashes = {
@@ -74,6 +84,22 @@ const sourceHashes = {
     "1badea287390c8e5ab709cfd20f6478b85643a1c31b152c6bd34751bf81b535d",
   "foundation/spin/variables.scss":
     "60778e1aeb3c2d5f972d2d6246e84d13a2684372ccfe0621719ff1a1472bee1f",
+  "foundation/button/animation.scss":
+    "51f16d31421059c89b2590851f70f7fd656a8cb3dd839c673ee8962d4b4aa224",
+  "foundation/button/button.scss":
+    "8c16dde00a8d952b5a2de35e66615a77597763a5925f9f7ee7c0f7d29a41d223",
+  "foundation/button/cssVariables.scss":
+    "61a0ed1a596b80e3f99c9d47537b2abd8959ad65e32a4cba7cbf563878cc89ad",
+  "foundation/button/iconButton.scss":
+    "9a882a07c1d004a4fd07a357cb4944bb99e246ecaa4e875da8e4f14c4445d631",
+  "foundation/button/rtl.scss":
+    "768e086248f34b4bac35947c22c6805154139d988a0b1ecbc4f6531f8916b999",
+  "foundation/button/splitButtonGroup.scss":
+    "8c012d8d2da7d23510eb1e79899602a2ba28835e49aaf29991c554f69d4a35db",
+  "foundation/button/variables.scss":
+    "221a6e13f27fcfa1a28974c569af6804592d565c577dcf65db871ab36e07b21a",
+  "foundation/keyframes/rotate.scss":
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
 };
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
@@ -153,6 +179,15 @@ function entrySources() {
       '@import "../vendor/foundation/spin/spin";',
       "",
     ].join("\n"),
+    "components/iconButton.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/button/button";',
+      '@import "../vendor/foundation/button/iconButton";',
+      "",
+    ].join("\n"),
     "components/icons.scss": ['@import "../icons/index";', ""].join("\n"),
     "index.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -162,6 +197,7 @@ function entrySources() {
       '@import "./components/tooltip";',
       '@import "./components/icons";',
       '@import "./components/spin";',
+      '@import "./components/iconButton";',
       "",
     ].join("\n"),
   };
@@ -317,6 +353,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon and Spin CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin and IconButton CSS/SCSS style entries.",
   );
 }

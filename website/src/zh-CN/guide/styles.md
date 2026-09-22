@@ -9,15 +9,16 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Icon、Spin、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
+UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Icon、Spin、IconButton、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
+import "semi-ui-vue/styles/components/iconButton.css";
 ```
 
-按需路径只加载基础、图标和加载样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
+按需路径只加载基础、图标、加载和图标按钮样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
 
 ```ts
 import "semi-ui-vue/styles/index.css";
@@ -29,7 +30,7 @@ import "semi-ui-vue/styles/index.css";
 
 样式来源固定为 Foundation / Theme `2.103.0`。构建只提取登记的 SCSS 闭包，随包提供必要源码、许可证及来源摘要；消费者无需安装官方 Foundation，也不需要 patch、override 或源码 alias。
 
-SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
+SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
 
 CSS variables 使用上游 `--semi-*` 名称。例如：
 
@@ -42,6 +43,8 @@ CSS variables 使用上游 `--semi-*` 名称。例如：
 ```
 
 Spin 的三种默认图标尺寸为 14 / 20 / 32px，指示器颜色来自 `--semi-color-primary`，随明暗 tokens 更新；包裹模式沿用官方内容透明度和遮罩规则。定制 SCSS 前缀只生成对应类名，公开 Spin 当前仍输出 `semi-*`，不能通过 ConfigProvider 修改它。
+
+IconButton 样式入口包含基础按钮与图标按钮规则，不代表公开 Button 已实现。其 prefixCls 只改变装饰类与文本类，内部基础按钮仍为 `semi-button`；不能仅修改 SCSS 前缀实现完整的运行时前缀替换，见 [IconButton](../components/iconButton.md)。
 
 深色、RTL、前缀与主题覆盖方式见[定制主题](./theme.md)。[主题许可](/licenses/semi-theme-default-2.103.0-MIT.txt)与[Foundation 许可](/licenses/semi-foundation-2.103.0-MIT.txt)随产物保留。
 

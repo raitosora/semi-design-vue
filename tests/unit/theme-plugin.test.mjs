@@ -98,7 +98,7 @@ describe("explicit Semi theme style generation", () => {
       const css = compile(
         semiTheme({
           prefix: "acme",
-          styles: ["base", "input", "tooltip", "spin"],
+          styles: ["base", "input", "tooltip", "spin", "iconButton"],
           scss: { variables: { "height-control-default": "40px" } },
         }),
       );
@@ -106,6 +106,8 @@ describe("explicit Semi theme style generation", () => {
       expect(css).toContain("height: 40px");
       expect(css).toContain(".acme-tooltip-wrapper");
       expect(css).toContain(".acme-spin-wrapper");
+      expect(css).toContain(".acme-button-with-icon");
+      expect(css).not.toContain(".semi-button");
       expect(css).toContain(".acme-rtl .acme-spin");
       expect(css).not.toContain(".semi-spin");
       expect(css).toContain("--semi-color-primary:");

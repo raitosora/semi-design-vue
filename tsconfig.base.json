@@ -32,6 +32,9 @@
       "semi-icons-vue/Icon": [
         "./packages/semi-icons-vue/src/components/index.ts"
       ],
+      "semi-icons-vue/IconAILoading": [
+        "./packages/semi-icons-vue/src/icons/IconAILoading.tsx"
+      ],
       "semi-ui-vue/configProvider": [
         "./packages/semi-ui-vue/src/components/configProvider/index.ts"
       ],
@@ -43,6 +46,9 @@
       ],
       "semi-ui-vue/spin": [
         "./packages/semi-ui-vue/src/components/spin/index.ts"
+      ],
+      "semi-ui-vue/iconButton": [
+        "./packages/semi-ui-vue/src/components/iconButton/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

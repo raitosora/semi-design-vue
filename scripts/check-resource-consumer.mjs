@@ -345,6 +345,17 @@ function checkGraph(mode = "vapor") {
       "Pure Vapor consumer did not resolve the public Spin subpath",
     );
   }
+  assert(
+    /semi-ui-vue\/dist\/iconButton-[^/\n]+\.js/.test(modules),
+    "IconButton implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/iconButton\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public IconButton subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -409,7 +420,9 @@ async function browserCheck(url) {
     });
     const messages = [];
     page.on("console", (message) =>
-      messages.push(`${message.type()}: ${message.text()}`),
+      messages.push(
+        `${message.type()}: ${message.text()} (${message.location().url})`,
+      ),
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
@@ -630,6 +643,11 @@ async function browserCheck(url) {
       `Resource consumer browser errors: ${messages.join("; ")}`,
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkIconButton())) ===
+        "iconButton consumer passed",
+      "Packed IconButton behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -801,6 +819,22 @@ async function interopBrowserCheck(url) {
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
     assert(
+      (await page
+        .locator('.interop-icon-button [data-icon="spin"]')
+        .count()) === 1 &&
+        (await page.locator(".interop-icon-button").textContent()).includes(
+          "Save",
+        ),
+      "Interop IconButton loading/default slot failed",
+    );
+    await page
+      .locator(".interop-icon-button")
+      .evaluate((button) => button.click());
+    assert(
+      (await page.locator(".interop-button-clicks").textContent()) === "1",
+      "Interop loading click callback duplicated or blocked",
+    );
+    assert(
       (await page.locator(".interop-spin .semi-spin-wrapper").count()) === 1,
       "Interop Spin initial loading failed",
     );
@@ -810,7 +844,7 @@ async function interopBrowserCheck(url) {
       "Interop indicator slot missing",
     );
     assert(
-      (await page.locator(".interop-resources svg").count()) === 5,
+      (await page.locator(".interop-resources svg").count()) === 6,
       "Interop did not mount all precompiled resource families",
     );
     for (const selector of [".interop-config-hook", ".interop-config-slot"])
@@ -856,6 +890,32 @@ async function interopBrowserCheck(url) {
       "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
     );
     await page.evaluate(() => window.interopConsumer.update());
+    assert(
+      (await page
+        .locator('.interop-icon-button [data-icon="spin"]')
+        .count()) === 0 &&
+        (await page
+          .locator(".interop-icon-button [data-interop-button-icon]")
+          .count()) === 1 &&
+        (await page.locator(".interop-icon-button").textContent()).includes(
+          "Updated",
+        ),
+      "Interop IconButton reactive loading/slots failed",
+    );
+    await page.locator(".interop-icon-button").click();
+    assert(
+      (await page.locator(".interop-button-clicks").textContent()) === "2",
+      "Interop IconButton native click duplicated",
+    );
+    await page.evaluate(() => window.interopConsumer.disableButton());
+    await page
+      .locator(".interop-icon-button")
+      .evaluate((button) => button.click());
+    assert(
+      (await page.locator(".interop-icon-button").isDisabled()) &&
+        (await page.locator(".interop-button-clicks").textContent()) === "2",
+      "Interop disabled IconButton dispatched click",
+    );
     assert(
       (await page.locator(".interop-spin .semi-spin-wrapper").count()) === 0,
       "Interop Spin did not stop",
@@ -963,6 +1023,10 @@ async function run() {
   assert(
     fixtureCompilation.modules?.includes("fixture:configProvider.tsx"),
     "ConfigProvider application fixture was omitted from actual precompilation",
+  );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:iconButton.tsx"),
+    "IconButton fixture was not compiled",
   );
   assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),

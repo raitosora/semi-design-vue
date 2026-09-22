@@ -179,3 +179,109 @@ export const spinInline = (
     }}
   />
 );
+
+import { IconButton as RootIconButton } from "semi-ui-vue";
+import IconButton, {
+  type IconButtonProps,
+  type IconButtonSlots,
+  type IconButtonIconScope,
+  type HorizontalPaddingType,
+} from "semi-ui-vue/iconButton";
+const iconButtonPadding: readonly HorizontalPaddingType[] = ["left", "right"];
+const iconButtonProps: IconButtonProps = {
+  text: undefined,
+  iconPosition: undefined,
+  loading: undefined,
+  htmlType: "submit",
+  noHorizontalPadding: iconButtonPadding,
+  iconStyle: { color: "red" },
+  style: [{ paddingLeft: "12px" }, { color: "blue" }],
+};
+const iconButtonSlots: IconButtonSlots = {
+  default: () => <strong>操作</strong>,
+  icon: (scope: IconButtonIconScope) => (
+    <svg aria-hidden="true" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" fill={scope.fill?.[0] ?? "currentColor"} r="6" />
+    </svg>
+  ),
+};
+export const iconButtonExample = (
+  <IconButton
+    {...iconButtonProps}
+    aria-label="提交操作"
+    contentClassName="content"
+    onBlur={(event) => {
+      const focusEvent: FocusEvent = event;
+      void focusEvent.relatedTarget;
+    }}
+    onClick={(event) => {
+      const pointerEvent: PointerEvent = event;
+      pointerEvent.preventDefault();
+    }}
+    onFocus={(event) => {
+      const focusEvent: FocusEvent = event;
+      void focusEvent.relatedTarget;
+    }}
+    onKeydown={(event) => {
+      const keyboardEvent: KeyboardEvent = event;
+      void keyboardEvent.key;
+    }}
+    onKeyup={(event) => {
+      const keyboardEvent: KeyboardEvent = event;
+      void keyboardEvent.code;
+    }}
+    onMousedown={(event) => {
+      const mouseEvent: MouseEvent = event;
+      void mouseEvent.button;
+    }}
+    onMouseenter={(event) => {
+      const mouseEvent: MouseEvent = event;
+      void mouseEvent.clientX;
+    }}
+    onMouseleave={(event) => {
+      const mouseEvent: MouseEvent = event;
+      void mouseEvent.relatedTarget;
+    }}
+    v-slots={iconButtonSlots}
+  />
+);
+const iconButtonColorful = ref(false);
+export const iconButtonDynamicFill = (
+  <RootIconButton
+    colorful={iconButtonColorful.value}
+    text={0}
+    theme="light"
+    type="tertiary"
+    v-slots={{
+      icon: (scope) => (
+        <svg aria-hidden="true">
+          <path d="M0 0H16V16H0Z" fill={scope.fill?.[0] ?? "currentColor"} />
+        </svg>
+      ),
+    }}
+  />
+);
+export const iconButtonShorthand = (
+  <RootIconButton>{() => <span>内容</span>}</RootIconButton>
+);
+export const iconButtonEmpty = (
+  <IconButton text={null} v-slots={{ icon: () => [], default: () => <></> }} />
+);
+const iconButtonMarker: "IconButton" = IconButton.elementType;
+void iconButtonMarker;
+
+export const iconButtonConditionalSlot = (
+  <IconButton
+    v-slots={{
+      icon: () => (
+        <>
+          <svg v-if={iconButtonColorful.value} aria-hidden="true" />
+        </>
+      ),
+    }}
+  />
+);
+
+export const iconButtonDisabledFalse = <IconButton disabled={false} />;
+export const iconButtonDisabledTrue = <IconButton disabled={true} />;
+export const iconButtonDisabledUndefined = <IconButton disabled={undefined} />;

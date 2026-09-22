@@ -1,4 +1,7 @@
 import { afterAll, beforeAll, expect, test } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import ts from "typescript";
 import { build, createServer, type ViteDevServer } from "vite";
 import vueJsx from "vue-jsx/vite";
 import { jsxOptions } from "../../config/vue-jsx.ts";
@@ -16,6 +19,47 @@ beforeAll(async () => {
 });
 afterAll(async () => {
   await server?.close();
+});
+test("resolves IconButton icon imports without built package declarations", () => {
+  const file = resolve(
+    "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx",
+  );
+  const source = ts.createSourceFile(
+    file,
+    readFileSync(file, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const imports = source.statements
+    .filter(ts.isImportDeclaration)
+    .map((statement) => statement.moduleSpecifier)
+    .filter(ts.isStringLiteral)
+    .map((specifier) => specifier.text)
+    .filter((specifier) => specifier.startsWith("semi-icons-vue/"));
+  expect(imports.length).toBeGreaterThan(0);
+  const config = ts.readConfigFile("tsconfig.base.json", ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const { options, errors } = ts.convertCompilerOptionsFromJson(
+    config.config.compilerOptions,
+    process.cwd(),
+  );
+  expect(errors).toEqual([]);
+  const isBuilt = (path: string) => /\/dist(?:\/|$)/.test(path);
+  const coldHost = {
+    ...ts.sys,
+    fileExists: (path: string) => !isBuilt(path) && ts.sys.fileExists(path),
+    directoryExists: (path: string) =>
+      !isBuilt(path) && ts.sys.directoryExists(path),
+  };
+  for (const specifier of imports) {
+    const result = ts.resolveModuleName(specifier, file, options, coldHost);
+    expect(result.resolvedModule?.resolvedFileName).toBe(
+      resolve(
+        `packages/semi-icons-vue/src/icons/${specifier.split("/")[1]}.tsx`,
+      ),
+    );
+  }
 });
 test("compiles the lifecycle fixture to direct Vapor DOM operations", async () => {
   const result = await server.transformRequest(
@@ -161,3 +205,21 @@ test("compiles Spin slots and reactive loading state as native Vapor DOM", async
     /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
   );
 });
+
+for (const file of [
+  "components/iconButton/IconButton",
+  "internal/button/BaseButton",
+]) {
+  test(`compiles ${file} with native Vapor slots and DOM`, async () => {
+    const result = await server.transformRequest(
+      `/packages/semi-ui-vue/src/${file}.tsx`,
+    );
+    expect(result?.code).toMatch(/createSlot/);
+    expect(result?.code).toMatch(
+      /(?:renderEffect|setClass|setStyle|createComponent)\(/,
+    );
+    expect(result?.code).not.toMatch(
+      /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+    );
+  });
+}

@@ -16,14 +16,21 @@
   margin: 24px 0;
   background: var(--vp-c-bg-soft);
 }
-.vapor-demo button {
+.vapor-demo button:where(:not(.semi-button)) {
   border: 1px solid var(--vp-c-divider);
   padding: 6px 12px;
   margin: 8px 12px 8px 0;
   border-radius: 6px;
   background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
 }
-.vapor-demo button:focus-visible,
+/* Native example controls inherit local Semi tokens; component buttons keep their own CSS. */
+.vapor-demo :where([data-vapor-host]) button:where(:not(.semi-button)) {
+  background: var(--semi-color-bg-0, var(--vp-c-bg));
+  color: var(--semi-color-text-0, var(--vp-c-text-1));
+  border-color: var(--semi-color-border, var(--vp-c-divider));
+}
+.vapor-demo button:where(:not(.semi-button)):focus-visible,
 .vapor-demo summary:focus-visible {
   outline: 2px solid var(--vp-c-brand-1);
   outline-offset: 3px;

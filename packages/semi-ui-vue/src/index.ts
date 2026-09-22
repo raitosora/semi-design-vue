@@ -49,3 +49,11 @@ export type {
   SpinSize,
   SpinSlots,
 } from "./components/spin/index.js";
+
+export { IconButton } from "./components/iconButton/index.js";
+export type {
+  IconButtonProps,
+  IconButtonSlots,
+  IconButtonIconScope,
+  HorizontalPaddingType,
+} from "./components/iconButton/index.js";

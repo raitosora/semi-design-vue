@@ -1,3 +1,4 @@
+import { checkIconButtonConsumer } from "./iconButton.js";
 import { checkSpinConsumer } from "./spin.js";
 import { checkLocaleConsumer } from "./locale.js";
 import { checkConfigProviderConsumer } from "./configProvider.js";
@@ -43,6 +44,7 @@ import type { Locale } from "semi-ui-vue/locale/interface";
 declare global {
   interface Window {
     resourceConsumer: {
+      checkIconButton(): Promise<string>;
       checkSpin(): Promise<string>;
       checkLocale(): Promise<string>;
       checkConfigProvider(): Promise<string>;
@@ -286,6 +288,7 @@ const remounted = mount("remounted");
 const virtualPointer = mountVirtualPointerConsumer();
 
 window.resourceConsumer = {
+  checkIconButton: checkIconButtonConsumer,
   checkSpin: checkSpinConsumer,
   checkLocale: checkLocaleConsumer,
   checkConfigProvider: checkConfigProviderConsumer,

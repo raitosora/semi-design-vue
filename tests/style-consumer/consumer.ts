@@ -8,7 +8,7 @@ const options: SemiThemeOptions = {
   tokens: { "color-primary": "rgb(17, 105, 170)" },
   darkTokens: { "color-primary": "rgb(144, 202, 249)" },
   scss: { variables: { "height-control-default": "40px" } },
-  styles: ["input", "spin"],
+  styles: ["input", "spin", "iconButton"],
 };
 
 const plugin = semiTheme(options);

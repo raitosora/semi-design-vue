@@ -313,12 +313,14 @@ try {
   const rejectedConfigExports = [];
   const rejectedLocaleExports = [];
   const rejectedSpinExports = [];
+  const rejectedIconButtonExports = [];
   for (const exportName of [
     "ConfigProvider",
     "ConfigConsumer",
     "LocaleProvider",
     "LocaleConsumer",
     "Spin",
+    "IconButton",
   ]) {
     // Each export is tested alone: another missing named export cannot make a
     // leaked browser component accidentally pass this gate.
@@ -329,15 +331,17 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${exportName === "Spin" ? "spin" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
-          exportName === "Spin"
-            ? "Spin"
-            : exportName.startsWith("Locale")
-              ? "LocaleProvider"
-              : "ConfigProvider",
+          exportName === "IconButton"
+            ? "IconButton"
+            : exportName === "Spin"
+              ? "Spin"
+              : exportName.startsWith("Locale")
+                ? "LocaleProvider"
+                : "ConfigProvider",
           exportName,
         ),
       );
@@ -368,11 +372,13 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    (exportName === "Spin"
-      ? rejectedSpinExports
-      : exportName.startsWith("Locale")
-        ? rejectedLocaleExports
-        : rejectedConfigExports
+    (exportName === "IconButton"
+      ? rejectedIconButtonExports
+      : exportName === "Spin"
+        ? rejectedSpinExports
+        : exportName.startsWith("Locale")
+          ? rejectedLocaleExports
+          : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -423,6 +429,7 @@ try {
         rejectedConfigExports,
         rejectedLocaleExports,
         rejectedSpinExports,
+        rejectedIconButtonExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",
