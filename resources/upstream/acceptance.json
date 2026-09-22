@@ -196,7 +196,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "configProvider-iconButton-disabled-rereview-20260922",
+        "reviewId": "configProvider-iconButton-cold-source-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
           "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
@@ -215,7 +215,7 @@
           "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
           "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
           "tests/e2e/configProvider.spec.ts": "f31548ba05b7d35302c9b6b2781e004c2a1fdbbdf55b152d877d804c03bb3f6c",
-          "tests/compiler/vapor.test.ts": "efa1bc116a9db522b6c352e9c3daad4cc116eb2a7a70672d594fcdf31dc2686e",
+          "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
           "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
           "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
           "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
@@ -308,7 +308,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "locale-iconButton-disabled-rereview-20260922",
+        "reviewId": "locale-iconButton-cold-source-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
           "website/src/zh-CN/components/locale.md": "af7e7a8d43de026dd8907db5a4dcfd16eada3fed832dcfc0d159ac7f175fbf31",
@@ -324,7 +324,7 @@
           "website/tsconfig.examples.json": "d47d1cbbcaf29402f238be8b135ebd49e3e306133401f1b8880c1d7494051330",
           "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
           "tests/browser/locale.test.tsx": "0cd3d059ee70e9b93b4dcf2ac34d037f8356ac4388b55870cb943fedea01c304",
-          "tests/compiler/vapor.test.ts": "efa1bc116a9db522b6c352e9c3daad4cc116eb2a7a70672d594fcdf31dc2686e",
+          "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
           "tests/e2e/locale.spec.ts": "95a3ff04385d47fce5bd410ff096ea21eb06b2834488d8c622173f0d7be42a19",
           "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
           "website/src/zh-CN/guide/internationalization.md": "953940c2ac129297a248165ec19a76c06768a80b2e3cf0e9c6fb6b74d4e85283",
@@ -428,7 +428,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "spin-iconButton-disabled-rereview-20260922",
+        "reviewId": "spin-iconButton-cold-source-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/spin/types.ts": "c4f6683132ba0f90b1c1c5dccee210cd7b3a7eae497de09694e36395ae1e59aa",
           "website/src/zh-CN/components/spin.md": "f97975a8c22164d661f06b5f7a8de3051edbb5bea9a0b84c74987e23be8d265a",
@@ -445,7 +445,7 @@
           "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
           "tests/consumer/node-spin-negative.ts": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
           "tests/browser/spin.test.tsx": "3b38b79d84736406b9ec9176a97b144ce4b4c949399b9e5467ae5d705b26bfbf",
-          "tests/compiler/vapor.test.ts": "efa1bc116a9db522b6c352e9c3daad4cc116eb2a7a70672d594fcdf31dc2686e",
+          "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
           "tests/e2e/spin.spec.ts": "e0c7e57ca56ebff591c2fc6d1486488a04df7eab847d58076bf4a8539e86b394",
           "tests/unit/style-inputs.test.mjs": "ef2ece31acaa99fa8e55dada770a3c6490e11bc202cfd9a2379083d4e68110a6",
           "website/examples/spin/Basic.vapor.tsx": "b9f4acd818ce88fe7142f13dde2d6cb9e9c539898d0a94d3584effeda485cb2f",
@@ -563,7 +563,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "iconButton-iconButton-disabled-rereview-20260922",
+        "reviewId": "iconButton-iconButton-cold-source-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/iconButton/types.ts": "0f98bd9b93ffd09c4a8dc1b8514944445999c1a2874f22bb14f8a0cb59fd5bd7",
           "website/src/zh-CN/components/iconButton.md": "2a496974bb7ee45eee65b692d4087cd0a0fc5f0ad3a58e89c23c714cd2508de7",
@@ -581,7 +581,7 @@
           "website/tsconfig.examples.json": "d47d1cbbcaf29402f238be8b135ebd49e3e306133401f1b8880c1d7494051330",
           "tests/browser/iconButton.test.tsx": "23c86b941b52ca11f24720869b24331f417562394f801b05a7524d7a402f38f1",
           "tests/e2e/iconButton.spec.ts": "36edb616f132027c96e4e589623651faf34a52e838f06dde45ea4b81f2066a08",
-          "tests/compiler/vapor.test.ts": "efa1bc116a9db522b6c352e9c3daad4cc116eb2a7a70672d594fcdf31dc2686e",
+          "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
           "tests/unit/style-inputs.test.mjs": "ef2ece31acaa99fa8e55dada770a3c6490e11bc202cfd9a2379083d4e68110a6",
           "tests/style-consumer/iconButton-check.mjs": "8050728a7175c39ec2b576c20f02fe73a19a2b029d27125b5c12cd2929f81313",
           "website/examples/iconButton/Basic.vapor.tsx": "c6493309c01b417105ff63d62d8896e960c1773301893b09d480825eb1b13ed8",
