@@ -95,3 +95,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Locale 消费
 
 [LocaleProvider / LocaleConsumer](../components/locale.md) 使用独立的语言上下文。Consumer 的原生 Vapor slot 传递稳定只读 Ref，字段通过 `.value` 动态读取；与 React 四个位置参数的 render callback 不同。slot 返回 JSX 或空 fragment，原始字符串/null 不属于已验证的 Vapor block。Provider 不透传 class/style，无公开 ref 方法、事件或 v-model。
+
+## Spin 的原生内容
+
+[Spin](../components/spin.md) 的 children、indicator 与富文本 tip 使用 default、indicator、tip 原生插槽，返回 VaporRenderResult；字符串需包在元素中，条件空内容可返回空数组。tip 文本属性仅接受 string/number，不接受 React 节点或异步回调。组件只按 slot 键存在性决定包装布局，不调用 slot 检测内容，也不缓存或克隆渲染结果。size、spinning、delay 的显式 undefined 与缺省采用有效默认值；这个组件的默认值规则不等同于 context 字段的显式清空规则。

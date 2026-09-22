@@ -98,13 +98,16 @@ describe("explicit Semi theme style generation", () => {
       const css = compile(
         semiTheme({
           prefix: "acme",
-          styles: ["base", "input", "tooltip"],
+          styles: ["base", "input", "tooltip", "spin"],
           scss: { variables: { "height-control-default": "40px" } },
         }),
       );
       expect(css).toContain(".acme-input-wrapper");
       expect(css).toContain("height: 40px");
       expect(css).toContain(".acme-tooltip-wrapper");
+      expect(css).toContain(".acme-spin-wrapper");
+      expect(css).toContain(".acme-rtl .acme-spin");
+      expect(css).not.toContain(".semi-spin");
       expect(css).toContain("--semi-color-primary:");
       expect(css).not.toContain(".semi-input-wrapper");
       expect(() =>

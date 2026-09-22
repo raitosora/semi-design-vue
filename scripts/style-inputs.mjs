@@ -8,7 +8,7 @@ import { buildIconStyles } from "./build-icon-styles.mjs";
 const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
-const components = ["input", "tooltip"];
+const components = ["input", "tooltip", "spin"];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
@@ -24,6 +24,13 @@ const foundationFiles = {
     "tooltip/rtl.scss",
     "tooltip/tooltip.scss",
     "tooltip/variables.scss",
+  ],
+  spin: [
+    "spin/animation.scss",
+    "spin/mixin.scss",
+    "spin/rtl.scss",
+    "spin/spin.scss",
+    "spin/variables.scss",
   ],
 };
 const sourceHashes = {
@@ -57,6 +64,16 @@ const sourceHashes = {
     "7651157602a578305d953812c1337526e1a3a5a6b1244d92e2ddef973884685b",
   "foundation/tooltip/variables.scss":
     "e44815031ce2c375026a63744edbcc25481eb69a2b7d10cd35b6ebfc70161d96",
+  "foundation/spin/animation.scss":
+    "0e011fe048b70a3e85ac33d98f0b5b87df1c09b578e481f1fdbcbda92a4af103",
+  "foundation/spin/mixin.scss":
+    "bdac7a7e28654505376e6291b3e7732439031d4e56126b184f49c06ad4317aa7",
+  "foundation/spin/rtl.scss":
+    "e627797e2785141f0f0706eb07c82465aa2e68c65aa7c3792ed02537aed86f54",
+  "foundation/spin/spin.scss":
+    "1badea287390c8e5ab709cfd20f6478b85643a1c31b152c6bd34751bf81b535d",
+  "foundation/spin/variables.scss":
+    "60778e1aeb3c2d5f972d2d6246e84d13a2684372ccfe0621719ff1a1472bee1f",
 };
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
@@ -128,6 +145,14 @@ function entrySources() {
       '@import "../vendor/foundation/tooltip/tooltip";',
       "",
     ].join("\n"),
+    "components/spin.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/spin/spin";',
+      "",
+    ].join("\n"),
     "components/icons.scss": ['@import "../icons/index";', ""].join("\n"),
     "index.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -136,6 +161,7 @@ function entrySources() {
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/icons";',
+      '@import "./components/spin";',
       "",
     ].join("\n"),
   };
@@ -144,29 +170,43 @@ function entrySources() {
 export async function checkStyleInputs(root) {
   const foundationRoot = await rootFor(root, foundationPackage);
   const themeRoot = await rootFor(root, themePackage);
-  const [foundation, theme, themeLicense, installedThemeLicense, registered] =
-    await Promise.all([
-      readManifest(foundationRoot),
-      readManifest(themeRoot),
-      readFile(
-        join(root, "third-party-licenses/semi-theme-default-2.103.0-MIT.txt"),
-        "utf8",
+  const [
+    foundation,
+    theme,
+    themeLicense,
+    installedThemeLicense,
+    foundationLicense,
+    installedFoundationLicense,
+    registered,
+  ] = await Promise.all([
+    readManifest(foundationRoot),
+    readManifest(themeRoot),
+    readFile(
+      join(root, "third-party-licenses/semi-theme-default-2.103.0-MIT.txt"),
+      "utf8",
+    ),
+    readFile(join(themeRoot, "LICENSE"), "utf8"),
+    readFile(
+      join(root, "third-party-licenses/semi-foundation-2.103.0-MIT.txt"),
+      "utf8",
+    ),
+    readFile(join(foundationRoot, "LICENSE"), "utf8"),
+    Promise.all([
+      ...themeFiles.map((file) =>
+        readFile(join(themeRoot, "scss", file), "utf8"),
       ),
-      readFile(join(themeRoot, "LICENSE"), "utf8"),
-      Promise.all([
-        ...themeFiles.map((file) =>
-          readFile(join(themeRoot, "scss", file), "utf8"),
-        ),
-        readFile(join(themeRoot, "scss/variables.scss"), "utf8"),
-        ...Object.values(foundationFiles)
-          .flat()
-          .map((file) => readFile(join(foundationRoot, file), "utf8")),
-      ]),
-    ]);
+      readFile(join(themeRoot, "scss/variables.scss"), "utf8"),
+      ...Object.values(foundationFiles)
+        .flat()
+        .map((file) => readFile(join(foundationRoot, file), "utf8")),
+    ]),
+  ]);
   if (foundation.version !== version || theme.version !== version)
     throw new Error(`Expected Foundation and Theme sources at ${version}.`);
   if (themeLicense !== installedThemeLicense)
     throw new Error("Theme license notice is missing or incomplete.");
+  if (foundationLicense !== installedFoundationLicense)
+    throw new Error("Foundation license notice is missing or incomplete.");
   const actualHashes = Object.fromEntries(
     Object.keys(sourceHashes).map((file, index) => [
       file,
@@ -276,5 +316,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     root,
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
-  console.log("Built locked base, Input and Tooltip CSS/SCSS style entries.");
+  console.log(
+    "Built locked base, Input, Tooltip, Icon and Spin CSS/SCSS style entries.",
+  );
 }

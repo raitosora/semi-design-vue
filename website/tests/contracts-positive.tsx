@@ -131,3 +131,51 @@ export function localeSourceTypes(source: LocaleContextSource<"Modal">) {
   const currency: string | undefined = source.value.currency;
   void [dictionary, code, currency];
 }
+
+import { Spin as RootSpin } from "semi-ui-vue";
+import Spin, {
+  type SpinProps,
+  type SpinSlots,
+  type SpinSize,
+} from "semi-ui-vue/spin";
+const spinSize: SpinSize = "middle";
+const spinProps: SpinProps = {
+  size: spinSize,
+  spinning: undefined,
+  delay: undefined,
+  tip: undefined,
+  childStyle: { minHeight: "50px" },
+};
+const spinSlots: SpinSlots = {
+  default: () => <input />,
+  indicator: () => <span>*</span>,
+  tip: () => <strong>加载中</strong>,
+};
+export const spinExample = (
+  <Spin
+    {...spinProps}
+    aria-label="加载"
+    class="custom-spin"
+    data-test="spin"
+    v-slots={spinSlots}
+  />
+);
+export const spinShorthand = (
+  <RootSpin>
+    {() => (
+      <>
+        <input />
+        <span>content</span>
+      </>
+    )}
+  </RootSpin>
+);
+export const spinInline = (
+  <Spin
+    v-slots={{
+      default: () => [],
+      indicator: () => <svg />,
+      tip: () => <span>text</span>,
+    }}
+  />
+);

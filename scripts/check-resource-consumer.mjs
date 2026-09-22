@@ -333,6 +333,18 @@ function checkGraph(mode = "vapor") {
     /semi-icons-vue\/dist\/components-[^/\n]+\.js/.test(modules),
     "Resource graph omitted the selected public Icon implementation",
   );
+  assert(
+    /semi-ui-vue\/dist\/spin-[^/\n]+\.js/.test(modules),
+    "Spin implementation missing from consumer graph",
+  );
+  if (mode === "vapor") {
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/spin\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Spin subpath",
+    );
+  }
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -618,6 +630,11 @@ async function browserCheck(url) {
       `Resource consumer browser errors: ${messages.join("; ")}`,
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
+        "spin consumer passed",
+      "Packed Spin behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkLocale())) ===
         "locale consumer passed",
       "Built-package public LocaleProvider/LocaleConsumer validation failed",
@@ -784,6 +801,15 @@ async function interopBrowserCheck(url) {
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
     assert(
+      (await page.locator(".interop-spin .semi-spin-wrapper").count()) === 1,
+      "Interop Spin initial loading failed",
+    );
+    assert(
+      (await page.locator(".interop-spin [data-interop-indicator]").count()) ===
+        1,
+      "Interop indicator slot missing",
+    );
+    assert(
       (await page.locator(".interop-resources svg").count()) === 5,
       "Interop did not mount all precompiled resource families",
     );
@@ -830,6 +856,14 @@ async function interopBrowserCheck(url) {
       "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
     );
     await page.evaluate(() => window.interopConsumer.update());
+    assert(
+      (await page.locator(".interop-spin .semi-spin-wrapper").count()) === 0,
+      "Interop Spin did not stop",
+    );
+    assert(
+      (await page.locator(".interop-spin input").inputValue()) === "retained",
+      "Interop Spin replaced content",
+    );
     for (const name of ["standalone", "nested", "default", "configured"])
       assert(
         (await page.locator(`.interop-locale-${name}`).textContent()) ===
@@ -929,6 +963,10 @@ async function run() {
   assert(
     fixtureCompilation.modules?.includes("fixture:configProvider.tsx"),
     "ConfigProvider application fixture was omitted from actual precompilation",
+  );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:spin.tsx"),
+    "Spin fixture was not compiled",
   );
   assert(
     fixtureCompilation.modules?.includes("fixture:locale.tsx"),

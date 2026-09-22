@@ -78,7 +78,17 @@
     "./locale": {
       "types": "./dist/components/locale/index.d.ts",
       "import": "./dist/components/locale/index.js"
-    }
+    },
+    "./spin": {
+      "types": "./dist/components/spin/index.d.ts",
+      "import": "./dist/components/spin/index.js"
+    },
+    "./styles/components/spin": {
+      "sass": "./dist/styles/components/spin.scss",
+      "default": "./dist/styles/components/spin.css"
+    },
+    "./styles/components/spin.css": "./dist/styles/components/spin.css",
+    "./styles/components/spin.scss": "./dist/styles/components/spin.scss"
   },
   "files": [
     "dist",

@@ -30,6 +30,8 @@ async function copyInputs(destination) {
     ...sources,
     "resources/upstream/sources.json",
     "node_modules/@douyinfe/semi-foundation/package.json",
+    "node_modules/@douyinfe/semi-foundation/LICENSE",
+    "third-party-licenses/semi-foundation-2.103.0-MIT.txt",
     "node_modules/@douyinfe/semi-theme-default/package.json",
     "node_modules/@douyinfe/semi-theme-default/LICENSE",
     "third-party-licenses/semi-theme-default-2.103.0-MIT.txt",
@@ -40,11 +42,11 @@ async function copyInputs(destination) {
 }
 
 describe("fixed Semi style inputs", () => {
-  it("locks the 2.103.0 Theme source and only registers the base, Input and Tooltip SCSS closure", async () => {
+  it("locks the 2.103.0 Theme source and registers the base, Input, Tooltip and Spin SCSS closures", async () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
-      components: ["input", "tooltip"],
+      components: ["input", "tooltip", "spin"],
     });
   });
 
@@ -57,6 +59,45 @@ describe("fixed Semi style inputs", () => {
     expect(() => checkStyleSourceHashes(mutated)).toThrow(
       "Locked style source drift: foundation/input/input.scss.",
     );
+  });
+
+  it("locks every Spin SCSS source and rejects drift in each source", async () => {
+    const inputs = await checkStyleInputs(root);
+    const snapshot = JSON.parse(
+      await readFile(join(root, "resources/upstream/sources.json"), "utf8"),
+    );
+    for (const name of ["animation", "mixin", "rtl", "spin", "variables"]) {
+      const source = `foundation/spin/${name}.scss`;
+      expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        await readFile(
+          join(root, "node_modules/@douyinfe/semi-" + source),
+          "utf8",
+        ),
+      ).toBe(snapshot.files[`packages/semi-${source}`]);
+      expect(() =>
+        checkStyleSourceHashes({
+          ...inputs.sourceHashes,
+          [source]: "0".repeat(64),
+        }),
+      ).toThrow(source);
+    }
+  });
+
+  it("rejects an incomplete Foundation license notice", async () => {
+    const isolated = await mkdtemp(join(tmpdir(), "semi-style-license-"));
+    try {
+      await copyInputs(isolated);
+      await writeFile(
+        join(isolated, "third-party-licenses/semi-foundation-2.103.0-MIT.txt"),
+        "MIT",
+      );
+      await expect(checkStyleInputs(isolated)).rejects.toThrow(
+        "Foundation license notice",
+      );
+    } finally {
+      await rm(isolated, { recursive: true, force: true });
+    }
   });
 
   it("rejects actual input drift, a wrong version, and incomplete license text", async () => {
@@ -140,6 +181,40 @@ describe("fixed Semi style inputs", () => {
       ).css;
       expect(customized).toContain(".consumer-input-wrapper");
       expect(customized).toContain("height: 40px");
+      const spin = await read("components/spin.css");
+      for (const [size, pixels] of [
+        ["small", 14],
+        ["middle", 20],
+        ["large", 32],
+      ]) {
+        expect(spin).toContain(
+          `.semi-spin-${size} {\n  width: ${pixels}px;\n  height: ${pixels}px;`,
+        );
+      }
+      expect(spin).toContain("color: var(--semi-color-primary)");
+      expect(spin).toContain(".semi-spin-block::after");
+      expect(spin).toContain(".semi-spin-hidden::after {\n  content: none;");
+      expect(spin).toContain(
+        ".semi-spin-hidden > .semi-spin-children {\n  opacity: 1;",
+      );
+      expect(spin).toContain(".semi-rtl .semi-spin");
+      expect(spin).toContain(".semi-portal-rtl .semi-spin-container");
+      expect(spin).toContain(
+        "animation: 600ms linear infinite semi-animation-rotate",
+      );
+      expect(spin).toContain(
+        "animation: 1600ms linear infinite semi-animation-rotate",
+      );
+      expect(spin).not.toMatch(/\.semi-(?:input|tooltip|icon)/);
+      expect(await read("index.css")).toContain(spin.trim());
+      const prefixedSpin = sass.compileString(
+        '@use "components/spin" with ($semi-prefix: consumer);',
+        { loadPaths: [output] },
+      ).css;
+      expect(prefixedSpin).toContain(".consumer-spin-small");
+      expect(prefixedSpin).toContain(".consumer-rtl .consumer-spin");
+      expect(prefixedSpin).toContain("consumer-animation-rotate");
+      expect(prefixedSpin).not.toContain(".semi-spin");
       const provenance = JSON.parse(await read("sources.json"));
       expect(provenance.sources).toEqual(
         (await checkStyleInputs(root)).sourceHashes,

@@ -7,6 +7,7 @@ import {
   vaporInteropPlugin,
 } from "vue";
 import {
+  Spin,
   ConfigConsumer,
   ConfigProvider,
   LocaleProvider,
@@ -23,7 +24,9 @@ import IconForm from "semi-icons-lab-vue/IconForm";
 import IllustrationNoContent from "semi-illustrations-vue/IllustrationNoContent";
 import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/icons.css";
+import "semi-ui-vue/styles/components/spin.css";
 
+const spinning = ref(true);
 const color = ref("rgb(12, 90, 190)");
 const fill = ref<readonly string[]>(["#465fff", "#9caeff"]);
 const size = ref<IconSize>("inherit");
@@ -65,6 +68,19 @@ const app = createApp({
   setup() {
     return () =>
       h("section", { class: "interop-resources" }, [
+        h(
+          Spin,
+          {
+            spinning: spinning.value,
+            wrapperClassName: "interop-spin",
+            tip: "Loading",
+            delay: 60,
+          },
+          {
+            default: () => h("input", { value: "retained" }),
+            indicator: () => h("span", { "data-interop-indicator": "" }, "*"),
+          },
+        ),
         h(
           LocaleProvider,
           { locale: standaloneLocale.value },
@@ -209,6 +225,7 @@ declare global {
 }
 window.interopConsumer = {
   async update() {
+    spinning.value = false;
     configLocale.value = zhCN;
     standaloneLocale.value = zhCN;
     configDirection.value = "ltr";
