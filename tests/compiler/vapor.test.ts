@@ -150,3 +150,14 @@ for (const component of ["LocaleProvider", "LocaleConsumer"]) {
     );
   });
 }
+
+test("compiles Spin slots and reactive loading state as native Vapor DOM", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/spin/Spin.tsx",
+  );
+  expect(result?.code).toMatch(/createSlot/);
+  expect(result?.code).toMatch(/(?:renderEffect|setClass|setStyle)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+});

@@ -207,3 +207,37 @@ export const localeMismatchedKey = (
   // @ts-expect-error Explicit key generic constrains the selected field.
   <LocaleConsumer<"Modal"> componentName="Pagination" />
 );
+
+import { Spin, type SpinSlots, type SpinProps } from "semi-ui-vue/spin";
+// @ts-expect-error Spin has three fixed sizes.
+export const spinInvalidSize = <Spin size="default" />;
+// @ts-expect-error Delays are milliseconds, not strings.
+export const spinInvalidDelay = <Spin delay="100" />;
+// @ts-expect-error Loading is boolean, not a render callback.
+export const spinInvalidState = <Spin spinning={() => true} />;
+// @ts-expect-error Native Vapor custom indicators use slots, not React nodes.
+export const spinNode = <Spin indicator={<svg />} />;
+// @ts-expect-error Spin does not accept a Button loading alias.
+export const spinLoading = <Spin loading />;
+// @ts-expect-error React className is not an alias for wrapperClassName.
+export const spinClassName = <Spin className="wrong" />;
+// @ts-expect-error Spin does not expose a click event.
+export const spinClick = <Spin onClick={() => {}} />;
+// @ts-expect-error Raw text is not a Vapor slot result.
+export const spinText = <Spin>{() => "text"}</Spin>;
+// @ts-expect-error Raw null is not a Vapor slot result.
+export const spinNull = <Spin v-slots={{ indicator: () => null }} />;
+// @ts-expect-error Async slot results are unsupported.
+export const spinAsync: SpinSlots = { tip: async () => [] };
+// @ts-expect-error tip prop is text; rich content uses its native named slot.
+export const spinTip: SpinProps = { tip: <span>text</span> };
+// @ts-expect-error DOM children are expressed as slots.
+export const spinChildren: SpinProps = { children: <input /> };
+
+import { semiGlobal } from "semi-ui-vue";
+export function spinDefaultBoundary() {
+  semiGlobal.configure({
+    // @ts-expect-error Global Spin defaults exclude instance slots and attributes.
+    overrideDefaultProps: { Spin: { "aria-label": "global" } },
+  });
+}

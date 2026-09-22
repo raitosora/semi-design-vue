@@ -42,3 +42,10 @@ export type {
   LocaleContextValue,
   LocaleContextSource,
 } from "./components/locale/index.js";
+
+export { Spin } from "./components/spin/index.js";
+export type {
+  SpinProps,
+  SpinSize,
+  SpinSlots,
+} from "./components/spin/index.js";

@@ -312,11 +312,13 @@ try {
   );
   const rejectedConfigExports = [];
   const rejectedLocaleExports = [];
+  const rejectedSpinExports = [];
   for (const exportName of [
     "ConfigProvider",
     "ConfigConsumer",
     "LocaleProvider",
     "LocaleConsumer",
+    "Spin",
   ]) {
     // Each export is tested alone: another missing named export cannot make a
     // leaked browser component accidentally pass this gate.
@@ -327,11 +329,15 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "Spin" ? "spin" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
-          exportName.startsWith("Locale") ? "LocaleProvider" : "ConfigProvider",
+          exportName === "Spin"
+            ? "Spin"
+            : exportName.startsWith("Locale")
+              ? "LocaleProvider"
+              : "ConfigProvider",
           exportName,
         ),
       );
@@ -362,9 +368,11 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    (exportName.startsWith("Locale")
-      ? rejectedLocaleExports
-      : rejectedConfigExports
+    (exportName === "Spin"
+      ? rejectedSpinExports
+      : exportName.startsWith("Locale")
+        ? rejectedLocaleExports
+        : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -414,6 +422,7 @@ try {
         conditionalTypeTargets,
         rejectedConfigExports,
         rejectedLocaleExports,
+        rejectedSpinExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

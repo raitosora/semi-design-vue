@@ -31,6 +31,9 @@
       ],
       "semi-ui-vue/locale/interface": [
         "../packages/semi-ui-vue/dist/locale/interface.d.ts"
+      ],
+      "semi-ui-vue/spin": [
+        "../packages/semi-ui-vue/dist/components/spin/index.d.ts"
       ]
     }
   },

@@ -68,10 +68,19 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider and locale. All other public
-families remain unaccepted.
+accepted public families are icons, configProvider, locale and spin. All other
+public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
 unchanged component contract can retain its acceptance decision while its shared
 consumer or documentation evidence receives a new verification identifier.
+
+The `spin` record accepts the browser Spin contract: fixed size/default/loading
+semantics, native content/indicator/tip slots, scoped delay cancellation and
+instance-safe cleanup, and the upstream themed mask. Explicit differences cover
+initial delayed visibility, effective global defaults, limited DOM attributes,
+React-node conversion and timer races. The five fixed SCSS sources and their
+licenses are verified; strict declarations, live examples and actual tarballs
+exercise pure Vapor and interop separately. Existing Icon rotation and lifecycle
+facilities are reusable evidence only; they do not substitute for Spin behavior.

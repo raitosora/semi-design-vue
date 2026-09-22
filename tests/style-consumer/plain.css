@@ -1,5 +1,6 @@
 @import "semi-ui-vue/styles/base";
 @import "semi-ui-vue/styles/components/input";
+@import "semi-ui-vue/styles/components/spin";
 
 .primary-swatch {
   background: var(--semi-color-primary);

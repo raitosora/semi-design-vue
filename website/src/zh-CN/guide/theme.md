@@ -78,13 +78,13 @@ import "virtual:semi-theme.css";
 
 | 选项             | 作用                                                                      |
 | ---------------- | ------------------------------------------------------------------------- |
-| `styles`         | 显式选择 `base`、`input`、`tooltip`；默认只有 `base`，重复项去重          |
+| `styles`         | 显式选择 `base`、`input`、`tooltip`、`spin`；默认只有 `base`，重复项去重  |
 | `prefix`         | SCSS 生成的类名前缀，默认 `semi`；不会改写应用 DOM                        |
 | `tokens`         | 浅色 CSS variables，键省略 `--semi-`，值为非空 CSS 值或有限数字           |
 | `darkTokens`     | `body[theme-mode="dark"]` 的独立覆盖值                                    |
 | `scss.variables` | 编译期变量；当前公开验证 `height-control-default`，带单位尺寸以字符串传入 |
 
-前缀设为 `acme` 后，DOM 需对应使用 `acme-input`、`acme-input-wrapper`、`acme-rtl` 等类。CSS 变量仍叫 `--semi-*`，局部主题选择器仍沿用 `semi-always-light` / `semi-always-dark`。插件不会替换已经编译好的默认 `.css` 中的类名。
+前缀设为 `acme` 后，DOM 需对应使用 `acme-input`、`acme-input-wrapper`、`acme-rtl` 等类。CSS 变量仍叫 `--semi-*`，局部主题选择器仍沿用 `semi-always-light` / `semi-always-dark`。插件不会替换已经编译好的默认 `.css` 中的类名。公开 Spin 的类名固定为 `semi-*`；此处定制前缀用于自行提供对应 DOM 的样式消费，ConfigProvider 没有 `prefixCls` 属性。
 
 插件只生成这两个虚拟入口，不自动发现 JSX 组件或拦截第三方 CSS。应用自行编写的 Sass `with` 配置独立于插件；请勿将已定制的虚拟 SCSS 与同名默认 CSS 重复加载。未知或未开放配置的 Sass 变量会构建失败。尺寸适配只开放已经测试的 `height-control-default`；其他上游变量不作可配置承诺。
 
@@ -108,7 +108,7 @@ import "virtual:semi-theme.css";
 );
 ```
 
-各入口是独立 Sass 模块；对基础入口的配置不会自动传给另一个组件入口。可以导入 `semi-ui-vue/styles` 完整 SCSS 入口一次统一配置，但它会包含本阶段登记的 Input 和 Tooltip 样式。
+各入口是独立 Sass 模块；对基础入口的配置不会自动传给另一个组件入口。可以导入 `semi-ui-vue/styles` 完整 SCSS 入口一次统一配置，但它会包含本阶段登记的 Icon、Spin、Input 和 Tooltip 样式。
 
 ## 验证与限制
 

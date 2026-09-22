@@ -81,7 +81,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "icons-locale-shared-review2-20260921",
+        "reviewId": "icons-spin-shared-review-20260922",
         "evidenceHashes": {
           "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
           "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
@@ -91,10 +91,10 @@
           "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3",
           "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
           "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
-          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/src/index.ts": "72a882f71dd55fe3b08c4d687fbb354f57e49519c616a0a95addacf4070f64d7",
           "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
-          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
-          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
+          "packages/semi-ui-vue/package.json": "9a0c556911e38c5d0a5938e79190a86c6a0fd843b19c9a4d9b210da5ce5428a3",
+          "tests/resource-consumer/consumer.ts": "855d12cd78e0557fc3ebc9e2c0b14e71779e6ba2f8609f720cc0c2303e9889d7",
           "tests/consumer/node-icon-negative.ts": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
           "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
           "tests/browser/icons-interop.test.ts": "b0382f418a97d5da98b5a3558b0fa6c02da8cf3ef2809b305723743c5fbd551f",
@@ -102,19 +102,19 @@
           "tests/e2e/icons.spec.ts": "320263dfcfb6ed27d3cb659c400425761beff99a7497bb27465362a42525b33b",
           "tests/unit/icons-style.test.mjs": "0eacfc4f3ee23cfab89748e06d0756458df69d9324760876ff787fe4ff4a2396",
           "website/src/zh-CN/components/icons.md": "145ceddda105d465af19ecb87a35c3f26018d00ef0449b393ccbe312d511f065",
-          "website/src/zh-CN/guide/packages.md": "0d53da65025b67e9a851b3ba10d542060ce4a8a744efc1d43cf84e2fc0ac5c6d",
-          "website/src/zh-CN/guide/compatibility.md": "7a84e6ac3ce36b88f65f162f3ae16101d1c6e0da3b6dbd593a723c3df183884e",
+          "website/src/zh-CN/guide/packages.md": "f5f43c12dc94df8e5ab0669fd8b7e8377848f1c9ea80127c92585281d3fef9fd",
+          "website/src/zh-CN/guide/compatibility.md": "a23288cf80d4801e281cf1692dbfe95eaaccee9e2a66f2df3f61314e85a9c27e",
           "website/examples/icons/Basic.vapor.tsx": "8a92410dd6a6e4b0ed76808dfc2f3698c1a67b26f6c1914fb3eb360c1d6f54a3",
           "website/examples/icons/CustomSvg.vapor.tsx": "07b899b4709b6b7f2a245ae1d47ce85aeec2c2f1628e1a712949cf57e6840612",
           "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
           "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
           "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
-          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
-          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
+          "scripts/check-consumer.mjs": "2307e7acefc3aca10c14533370d12cbda76bf17ddec919232da924492f2d6345",
+          "scripts/check-resource-consumer.mjs": "f7940f3c1595cd791b9415494031448b24a1e54c9e8d8392bfa6b2f15131195c",
           "tests/consumer/runtime.mjs": "01fb82bfd3195c91eca9ad2dc55ac440e9ada08aeb6810993987f1975c7b667e",
           "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
-          "tests/resource-consumer/main.tsx": "35c908355cd49cd57889a04e33705e5b16478001661b37a29b6ab1d0b73ca9b4",
-          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
+          "tests/resource-consumer/main.tsx": "63831e53040ef55ba7f27d7b0e20b4e5e90cbc69a4f85d52dd77fe342d55bdf7",
+          "tests/resource-consumer/interop-main.ts": "783d58757d88d91088e35d4a24290b165142168b4f8157a79842a6d6226dd479",
           "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831"
         }
       }
@@ -196,7 +196,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "configProvider-locale-shared-review2-20260921",
+        "reviewId": "configProvider-spin-shared-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
           "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
@@ -204,26 +204,26 @@
           "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
           "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
           "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
-          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
-          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/package.json": "9a0c556911e38c5d0a5938e79190a86c6a0fd843b19c9a4d9b210da5ce5428a3",
+          "packages/semi-ui-vue/src/index.ts": "72a882f71dd55fe3b08c4d687fbb354f57e49519c616a0a95addacf4070f64d7",
           "packages/semi-ui-vue/src/components/configProvider/index.ts": "9b8476194cb63fd9d206db194c22f4b29079287c88ec593ed848319197ca5f8a",
           "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
-          "website/tests/contracts-positive.tsx": "a35f1ad281421578da523b75bc0f0a615f4620b2cd0d587e63c913ba1d631171",
-          "website/tests/contracts-negative.tsx": "8a16ba369da54c7b9f2e8759496b42f7e438e04b24a16c932f0b9770de45c502",
-          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
+          "website/tests/contracts-positive.tsx": "56631d53a807359f60f2cd0a25ca577310c56002ed339d1fb1db66de3e321513",
+          "website/tests/contracts-negative.tsx": "a8d72455b7be0d39022cdb02eeba417dd0ae0e4841b708c32f913fc5e9a8f806",
+          "tests/resource-consumer/consumer.ts": "855d12cd78e0557fc3ebc9e2c0b14e71779e6ba2f8609f720cc0c2303e9889d7",
           "tests/browser/configProvider.test.tsx": "78344078b2928ec7d624b45c908d72bb0fee28ac583fc642451e55329fa62770",
           "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
           "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
           "tests/e2e/configProvider.spec.ts": "f31548ba05b7d35302c9b6b2781e004c2a1fdbbdf55b152d877d804c03bb3f6c",
-          "tests/compiler/vapor.test.ts": "960fad7b21539f593a80243e7ae900d3507dca9b19c33572e402f44537157628",
+          "tests/compiler/vapor.test.ts": "7ac410ec94f7fc637ec633e5981f50ae9a1d5ae87c7e4c5bafd853ccb50c35c5",
           "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
           "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
           "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
           "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
           "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
-          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
-          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
-          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
+          "tests/resource-consumer/interop-main.ts": "783d58757d88d91088e35d4a24290b165142168b4f8157a79842a6d6226dd479",
+          "scripts/check-resource-consumer.mjs": "f7940f3c1595cd791b9415494031448b24a1e54c9e8d8392bfa6b2f15131195c",
+          "scripts/check-consumer.mjs": "2307e7acefc3aca10c14533370d12cbda76bf17ddec919232da924492f2d6345",
           "tests/consumer/node-configProvider-negative.ts": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
           "tests/consumer/node-configProvider-negative.mjs": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd"
         }
@@ -308,23 +308,23 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "c-locale-review-final-20260922",
+        "reviewId": "locale-spin-shared-review-20260922",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
           "website/src/zh-CN/components/locale.md": "af7e7a8d43de026dd8907db5a4dcfd16eada3fed832dcfc0d159ac7f175fbf31",
           "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx": "6f5f381fe26f2fee87cfcc47b02453078ebd2e27e4ac6707f8a9868fcbe940c9",
           "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx": "220fa47b137918087d8c012f976e66983f4bcdfed860a96d3c7411ad9bc33a64",
           "packages/semi-ui-vue/src/components/locale/context.ts": "fc97a18235107fe6c6ac24fb7fb7f6c4b196fa9cbf3ac863a1a53bce64deba23",
-          "packages/semi-ui-vue/src/index.ts": "381877af02029471d9cbb6a455931195f4eaec01147b3d69ca5d6340d4252377",
+          "packages/semi-ui-vue/src/index.ts": "72a882f71dd55fe3b08c4d687fbb354f57e49519c616a0a95addacf4070f64d7",
           "packages/semi-ui-vue/src/components/locale/index.ts": "a09e4c3b03b238e178125963b98a71a5f05011b6bed50444d30e4c8c148bf2fc",
-          "packages/semi-ui-vue/package.json": "b21b5b63cc4aeb862bf9fd92165bf06e15da51fb8ecc8911a57ee7aa88705e35",
-          "website/tests/contracts-positive.tsx": "a35f1ad281421578da523b75bc0f0a615f4620b2cd0d587e63c913ba1d631171",
-          "website/tests/contracts-negative.tsx": "8a16ba369da54c7b9f2e8759496b42f7e438e04b24a16c932f0b9770de45c502",
-          "website/build.mjs": "4be6f2b535cd2a52157eb54ac08dbd27f31b513d8e1c9681c80f36a1875b370d",
-          "website/tsconfig.examples.json": "5aa2393c42274fa43986fb79501ac5ea98aebeb686d7868615cd383957fefb33",
-          "tests/resource-consumer/consumer.ts": "98313d6abf32835e5349ef96ffc7a599d1004e07a27e15121998b39b774d488b",
+          "packages/semi-ui-vue/package.json": "9a0c556911e38c5d0a5938e79190a86c6a0fd843b19c9a4d9b210da5ce5428a3",
+          "website/tests/contracts-positive.tsx": "56631d53a807359f60f2cd0a25ca577310c56002ed339d1fb1db66de3e321513",
+          "website/tests/contracts-negative.tsx": "a8d72455b7be0d39022cdb02eeba417dd0ae0e4841b708c32f913fc5e9a8f806",
+          "website/build.mjs": "422b1abff343f35247d30cc42a715e26f217304014ab68ab5e3f983fa9cc656d",
+          "website/tsconfig.examples.json": "3bb9ba830a64adea254a74d30921af24c0c60ce0744c5720538f6cc781e0d512",
+          "tests/resource-consumer/consumer.ts": "855d12cd78e0557fc3ebc9e2c0b14e71779e6ba2f8609f720cc0c2303e9889d7",
           "tests/browser/locale.test.tsx": "0cd3d059ee70e9b93b4dcf2ac34d037f8356ac4388b55870cb943fedea01c304",
-          "tests/compiler/vapor.test.ts": "960fad7b21539f593a80243e7ae900d3507dca9b19c33572e402f44537157628",
+          "tests/compiler/vapor.test.ts": "7ac410ec94f7fc637ec633e5981f50ae9a1d5ae87c7e4c5bafd853ccb50c35c5",
           "tests/e2e/locale.spec.ts": "95a3ff04385d47fce5bd410ff096ea21eb06b2834488d8c622173f0d7be42a19",
           "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
           "website/src/zh-CN/guide/internationalization.md": "953940c2ac129297a248165ec19a76c06768a80b2e3cf0e9c6fb6b74d4e85283",
@@ -333,13 +333,133 @@
           "website/examples/locale/Nested.vapor.tsx": "c616d4297f91b05733976089d7e214b52dbfa4a6bf9e2fe7d5c19314479e7ccd",
           "website/examples/locale/DateBoundary.vapor.tsx": "c2da1e505ae535db36343576828ec288e550988f2d7cec36b3c4f23f86bcd22c",
           "website/tests/locale.spec.ts": "8109f1112749628bdcc98c36acc6622ca01a7fda7a1c8dd33578c019a9ce19fc",
-          "scripts/check-consumer.mjs": "691c8079b031afcbbbde8f6068c084b5af4966239b4013c8c6b65d72b21da65a",
-          "scripts/check-resource-consumer.mjs": "d07512c9f0bc4b2ad230f3d4502facc36fa0f4fe4db0cb840b59ddfe8fbda10b",
+          "scripts/check-consumer.mjs": "2307e7acefc3aca10c14533370d12cbda76bf17ddec919232da924492f2d6345",
+          "scripts/check-resource-consumer.mjs": "f7940f3c1595cd791b9415494031448b24a1e54c9e8d8392bfa6b2f15131195c",
           "tests/resource-consumer/locale.tsx": "9d483bbca9d4bbd96ff954a3a53b42416eeee3964958606773dc6b17b02aa459",
-          "tests/resource-consumer/interop-main.ts": "0eb3311b39dae40a189afdb428737f190f7b5bcd1d288daa2212b03074c61698",
+          "tests/resource-consumer/interop-main.ts": "783d58757d88d91088e35d4a24290b165142168b4f8157a79842a6d6226dd479",
           "tests/consumer/node-locale-negative.ts": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
           "tests/consumer/node-locale-negative.mjs": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
           "tests/unit/locale-inputs.test.mjs": "1d4180303e7c56bade94c1ec184b8140c48ef01061f11ebd0ae1c0a68c56a328"
+        }
+      }
+    },
+    {
+      "family": "spin",
+      "status": "accepted",
+      "reviewedDecision": "The public Spin browser contract is accepted against the fixed upstream defaults, derived loading state, DOM and styles. Native Vapor slot and attribute differences, instance-scoped delay cancellation, global-default edge cases, source/generated declarations, live documentation, Chromium behavior and four isolated tarball consumers passed complete local verification and independent review. Other public families remain independently assessed.",
+      "evidence": {
+        "contract": [
+          "packages/semi-ui-vue/src/components/spin/types.ts",
+          "website/src/zh-CN/components/spin.md"
+        ],
+        "implementation": [
+          "packages/semi-ui-vue/src/components/spin/Spin.tsx",
+          "packages/semi-ui-vue/src/components/spin/icon.tsx",
+          "scripts/style-inputs.mjs"
+        ],
+        "sourceAndDeclarations": [
+          "packages/semi-ui-vue/src/index.ts",
+          "packages/semi-ui-vue/src/components/spin/index.ts",
+          "packages/semi-ui-vue/package.json",
+          "website/tests/contracts-positive.tsx",
+          "website/tests/contracts-negative.tsx",
+          "website/build.mjs",
+          "website/tsconfig.examples.json",
+          "tests/resource-consumer/consumer.ts",
+          "tests/consumer/node-spin-negative.ts"
+        ],
+        "browser": [
+          "tests/browser/spin.test.tsx",
+          "tests/compiler/vapor.test.ts",
+          "tests/e2e/spin.spec.ts",
+          "tests/unit/style-inputs.test.mjs"
+        ],
+        "documentation": [
+          "website/src/zh-CN/components/spin.md",
+          "website/examples/spin/Basic.vapor.tsx",
+          "website/examples/spin/Dynamic.vapor.tsx",
+          "website/examples/spin/Custom.vapor.tsx",
+          "website/tests/spin.spec.ts"
+        ],
+        "consumer": [
+          "scripts/check-consumer.mjs",
+          "scripts/check-resource-consumer.mjs",
+          "scripts/check-style-consumer.mjs",
+          "tests/resource-consumer/spin.tsx",
+          "tests/resource-consumer/interop-main.ts",
+          "tests/consumer/node-spin-negative.ts",
+          "tests/consumer/node-spin-negative.mjs",
+          "tests/style-consumer/spin-markup.ts",
+          "tests/style-consumer/spin-only.scss"
+        ],
+        "limitations": [
+          "React children/indicator/tip nodes become native Vapor slots. Block layout follows default-slot presence; slots are not invoked to inspect their content. No VNode cloning or React callback equivalence is claimed.",
+          "Initial true plus truthy delay remains visible. Later delays use one scoped timer with cancellation and stale-task rejection; this fixes the upstream render-time timer race. Global defaults are captured per instance; call-site undefined and global own undefined have distinct verified behavior.",
+          "Global Spin configuration includes only size, spinning, delay, tip, wrapperClassName, childStyle and style. Custom indicator/children/tip nodes belong to slots; the upstream global clone path is not provided.",
+          "The default SVG has instance-isolated gradient IDs. Callers manage semantics and IDs inside custom indicators. The mask does not disable keyboard interaction or provide focus management, automatic live/busy/status or spoken tip updates.",
+          "Fixed upstream Spin CSS has no built-in reduced-motion branch. Application CSS must handle that preference. Light/dark, RTL and narrow Chromium checks do not establish complete pixel parity.",
+          "Browser ESM root and spin subpath are separate from the static Node root. Pure Vapor and ordinary Vue interop are verified separately; no component SSR, hydration or CJS is provided. RC9/RC2 remain pinned; strict JSX compiler peer installation and all-dependency exact-optional compatibility are not claimed."
+        ]
+      },
+      "mappings": {
+        "api": "三尺寸、spinning/delay、文本tip、wrapperClassName/childStyle和遮罩保留来源语义；React节点改原生default/indicator/tip slots。初次truthy delay仍可立即显示；后续取消、延迟重配和过期回调由既有scope管理。default slot存在决定block。根仅转发声明的class/style、role/ARIA/data；无事件、model或公开实例方法。",
+        "types": "SpinProps/SpinSize映射固定来源；VaporRenderResult slots、StyleValue与有限DOM属性替代ReactNode/CSSProperties。SpinSlots是新增Vue类型。正反例覆盖原始文本/null/Promise slot与不支持属性边界。",
+        "statics": "保留只读Spin.__SemiComponentName__ = Spin；无静态子组件。getDerivedStateFromProps是React生命周期，不作为公开静态API导出；默认值通过实例配置解析与Vue响应式状态实现。",
+        "subpaths": "浏览器根具名Spin/types；semi-ui-vue/spin提供default/named Spin与types。Node根仅静态设施。上游./lib/es/spin、./lib/es/spin/icon、./lib/es/spin/icon.js、./lib/es/spin/index和./lib/es/spin/index.js未作为兼容路径公开；内部icon与状态机不导出。无CJS、组件SSR或水合。",
+        "differences": {
+          "types": [
+            {
+              "name": "SpinProps",
+              "sourcePath": "packages/semi-ui/spin/index.tsx"
+            },
+            {
+              "name": "SpinSize",
+              "sourcePath": "packages/semi-ui/spin/index.tsx"
+            }
+          ],
+          "staticMembers": [
+            {
+              "rootExport": "Spin",
+              "name": "__SemiComponentName__"
+            }
+          ],
+          "subpaths": []
+        }
+      },
+      "verification": {
+        "status": "complete",
+        "reviewId": "c-spin-rereview-20260922",
+        "evidenceHashes": {
+          "packages/semi-ui-vue/src/components/spin/types.ts": "c4f6683132ba0f90b1c1c5dccee210cd7b3a7eae497de09694e36395ae1e59aa",
+          "website/src/zh-CN/components/spin.md": "f97975a8c22164d661f06b5f7a8de3051edbb5bea9a0b84c74987e23be8d265a",
+          "packages/semi-ui-vue/src/components/spin/Spin.tsx": "bb673c012ce14c5baf6058ea862323ddf71c2489fbb935440cabd03673e9a027",
+          "packages/semi-ui-vue/src/components/spin/icon.tsx": "48aa282336d39dc3d0fe5a96d3d7fc54b5c2f5a053d93342b80404cd77c82f66",
+          "scripts/style-inputs.mjs": "93421672b310519abb213c1683ddfaabcab9a1ef4efadd2c59f56175912b8637",
+          "packages/semi-ui-vue/src/index.ts": "72a882f71dd55fe3b08c4d687fbb354f57e49519c616a0a95addacf4070f64d7",
+          "packages/semi-ui-vue/src/components/spin/index.ts": "b251f07dc1c879ffc3735884ae678da1fdfbcf5aea1a658fbba4ba99fdb856f4",
+          "packages/semi-ui-vue/package.json": "9a0c556911e38c5d0a5938e79190a86c6a0fd843b19c9a4d9b210da5ce5428a3",
+          "website/tests/contracts-positive.tsx": "56631d53a807359f60f2cd0a25ca577310c56002ed339d1fb1db66de3e321513",
+          "website/tests/contracts-negative.tsx": "a8d72455b7be0d39022cdb02eeba417dd0ae0e4841b708c32f913fc5e9a8f806",
+          "website/build.mjs": "422b1abff343f35247d30cc42a715e26f217304014ab68ab5e3f983fa9cc656d",
+          "website/tsconfig.examples.json": "3bb9ba830a64adea254a74d30921af24c0c60ce0744c5720538f6cc781e0d512",
+          "tests/resource-consumer/consumer.ts": "855d12cd78e0557fc3ebc9e2c0b14e71779e6ba2f8609f720cc0c2303e9889d7",
+          "tests/consumer/node-spin-negative.ts": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
+          "tests/browser/spin.test.tsx": "3b38b79d84736406b9ec9176a97b144ce4b4c949399b9e5467ae5d705b26bfbf",
+          "tests/compiler/vapor.test.ts": "7ac410ec94f7fc637ec633e5981f50ae9a1d5ae87c7e4c5bafd853ccb50c35c5",
+          "tests/e2e/spin.spec.ts": "e0c7e57ca56ebff591c2fc6d1486488a04df7eab847d58076bf4a8539e86b394",
+          "tests/unit/style-inputs.test.mjs": "152ba17973d8fd7ed03aea286c7b7fb1ebcb88f741dcc8102879b90e3e5c2630",
+          "website/examples/spin/Basic.vapor.tsx": "b9f4acd818ce88fe7142f13dde2d6cb9e9c539898d0a94d3584effeda485cb2f",
+          "website/examples/spin/Dynamic.vapor.tsx": "c902c0a3303a0dad2871f6e76e77fafe782bd300d0c75045b492427689a38079",
+          "website/examples/spin/Custom.vapor.tsx": "10b3f6829ae45c1b4957faeb7304fc38b31f874d7f1ef14f4e55cf88a1642bd8",
+          "website/tests/spin.spec.ts": "be7acc358688dac05238684ea3a10cd00a266defac436eda72be8d8e8e89802f",
+          "scripts/check-consumer.mjs": "2307e7acefc3aca10c14533370d12cbda76bf17ddec919232da924492f2d6345",
+          "scripts/check-resource-consumer.mjs": "f7940f3c1595cd791b9415494031448b24a1e54c9e8d8392bfa6b2f15131195c",
+          "scripts/check-style-consumer.mjs": "3194830d33263371f3579cbfc41b5bc175dc7b18b2c579400fa9006456b612a9",
+          "tests/resource-consumer/spin.tsx": "624ba3d48b37bc59639b3fd0f144793768cbb6d8cc5bbe557cd1d6d7a9cf3f70",
+          "tests/resource-consumer/interop-main.ts": "783d58757d88d91088e35d4a24290b165142168b4f8157a79842a6d6226dd479",
+          "tests/consumer/node-spin-negative.mjs": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
+          "tests/style-consumer/spin-markup.ts": "755ba8576c24a632d1baf541bcb8606109cc1f288455fc67cd2dd53d58237581",
+          "tests/style-consumer/spin-only.scss": "d9d34c5d4085fc17ba1b44cc2c6b96c954a92f98415437453387f29b3a5554d9"
         }
       }
     }

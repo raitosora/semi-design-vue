@@ -89,9 +89,14 @@ function checkStyleMetadata() {
     "Style source manifest has the wrong Theme version",
   );
   assert(
-    sources.sources && Object.keys(sources.sources).length >= 15,
+    sources.sources && Object.keys(sources.sources).length >= 20,
     "Style source manifest is incomplete",
   );
+  for (const name of ["animation", "mixin", "rtl", "spin", "variables"])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/spin/${name}.scss`]),
+      `Spin style source hash is missing: ${name}`,
+    );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
     "semi-theme-default-2.103.0-MIT.txt",
@@ -136,6 +141,88 @@ async function unusedPort() {
   return address.port;
 }
 
+async function spinStyleCheck(page, prefix, expectedColor) {
+  const probes = page.locator(`.${prefix}-spin-probes`);
+  for (const [size, pixels] of [
+    ["small", 14],
+    ["middle", 20],
+    ["large", 32],
+  ]) {
+    const dimensions = await probes
+      .locator(`[data-spin-size="${size}"]`)
+      .evaluate((element) => ({
+        root: getComputedStyle(element).width,
+        svg: getComputedStyle(element.querySelector("svg")).width,
+        color: getComputedStyle(element.querySelector("div")).color,
+        duration: getComputedStyle(element.querySelector("svg"))
+          .animationDuration,
+      }));
+    assert(
+      dimensions.root === `${pixels}px` && dimensions.svg === `${pixels}px`,
+      `${prefix} Spin ${size} dimensions drifted`,
+    );
+    assert(
+      dimensions.color === expectedColor,
+      `${prefix} Spin primary token drifted: ${dimensions.color}`,
+    );
+    assert(
+      dimensions.duration === "0.6s",
+      "Spin SVG animation duration drifted",
+    );
+  }
+  const state = await probes
+    .locator("[data-spin-block]")
+    .evaluate((element) => ({
+      mask: getComputedStyle(element, "::after").content,
+      maskWidth: getComputedStyle(element, "::after").width,
+      width: getComputedStyle(element).width,
+      opacity: getComputedStyle(element.lastElementChild).opacity,
+      duration: getComputedStyle(element.querySelector("span"))
+        .animationDuration,
+    }));
+  assert(
+    state.mask === '""' &&
+      state.maskWidth === state.width &&
+      state.opacity === "0.5",
+    `${prefix} Spin overlay or content dimming drifted`,
+  );
+  assert(
+    state.duration === "1.6s",
+    "Spin custom indicator animation duration drifted",
+  );
+}
+
+async function spinRtlAndHiddenCheck(page, prefix) {
+  const probes = page.locator(`.${prefix}-spin-probes`);
+  for (const selector of [`.${prefix}-spin`, `.${prefix}-spin-container`])
+    assert(
+      (await probes
+        .locator(selector)
+        .first()
+        .evaluate((element) => getComputedStyle(element).direction)) === "rtl",
+      `${prefix} Spin RTL is missing`,
+    );
+  await probes
+    .locator("[data-spin-block]")
+    .evaluate(
+      (element, name) => element.classList.add(`${name}-spin-hidden`),
+      prefix,
+    );
+  const hidden = await probes
+    .locator("[data-spin-block]")
+    .evaluate((element) => ({
+      mask: getComputedStyle(element, "::after").content,
+      opacity: getComputedStyle(element.lastElementChild).opacity,
+      selection: getComputedStyle(element.lastElementChild).userSelect,
+    }));
+  assert(
+    hidden.mask === "none" &&
+      hidden.opacity === "1" &&
+      hidden.selection === "auto",
+    `${prefix} Spin hidden content was not restored`,
+  );
+}
+
 async function browserCheck(url) {
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
@@ -150,6 +237,8 @@ async function browserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
+    await spinStyleCheck(page, "consumer", "rgb(17, 105, 170)");
     const baseline = await page
       .locator(".semi-input-wrapper")
       .evaluate((input) => ({
@@ -184,6 +273,8 @@ async function browserCheck(url) {
     await page
       .locator("body")
       .evaluate((body) => body.setAttribute("theme-mode", "dark"));
+    await spinStyleCheck(page, "semi", "rgb(144, 202, 249)");
+    await spinStyleCheck(page, "consumer", "rgb(144, 202, 249)");
     const dark = await page
       .locator(".semi-input-wrapper")
       .evaluate((input) => ({
@@ -204,6 +295,15 @@ async function browserCheck(url) {
     await page
       .locator("body")
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
+    await spinRtlAndHiddenCheck(page, "semi");
+    await spinRtlAndHiddenCheck(page, "consumer");
+    await page.setViewportSize({ width: 320, height: 540 });
+    assert(
+      await page
+        .locator("body")
+        .evaluate((body) => body.scrollWidth <= window.innerWidth),
+      "Spin style fixture overflowed a narrow viewport",
+    );
     const rtl = await page
       .locator(".semi-input")
       .evaluate((input) => getComputedStyle(input).direction);
@@ -267,6 +367,11 @@ async function plainBrowserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    const lightPrimary = await page
+      .locator(".semi-spin-wrapper")
+      .first()
+      .evaluate((element) => getComputedStyle(element).color);
+    await spinStyleCheck(page, "semi", lightPrimary);
     const input = page.locator(".semi-input-wrapper");
     const light = await input.evaluate((element) => ({
       height: getComputedStyle(element).height,
@@ -279,6 +384,15 @@ async function plainBrowserCheck(url) {
     await page
       .locator("body")
       .evaluate((body) => body.setAttribute("theme-mode", "dark"));
+    const darkPrimary = await page
+      .locator(".semi-spin-wrapper")
+      .first()
+      .evaluate((element) => getComputedStyle(element).color);
+    assert(
+      darkPrimary !== lightPrimary,
+      "Plain Spin dark primary token did not change",
+    );
+    await spinStyleCheck(page, "semi", darkPrimary);
     const darkBackground = await input.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
     );
@@ -289,6 +403,7 @@ async function plainBrowserCheck(url) {
     await page
       .locator("body")
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
+    await spinRtlAndHiddenCheck(page, "semi");
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -373,6 +488,8 @@ try {
   for (const name of [
     "consumer.ts",
     "input-only.scss",
+    "spin-only.scss",
+    "spin-markup.ts",
     "plain.css",
     "main.ts",
     "index.html",
@@ -459,6 +576,10 @@ try {
     .map((path) => readFileSync(path, "utf8"))
     .join("\n");
   assert(
+    directCss.includes(".consumer-spin"),
+    "Direct public Spin SCSS entry did not compile",
+  );
+  assert(
     directCss.includes(".consumer-input"),
     "Direct public SCSS entry did not compile Input",
   );
@@ -495,6 +616,10 @@ try {
     !plainCss.includes(".semi-tooltip"),
     "Plain CSS consumer unexpectedly contains Tooltip selectors",
   );
+  assert(
+    plainCss.includes(".semi-spin"),
+    "Plain CSS consumer did not include Spin",
+  );
   checkGraph("plain-style-graph.json");
   execFileSync(
     process.execPath,
@@ -524,6 +649,10 @@ try {
   assert(
     !css.includes(".semi-tooltip"),
     "Input-only consumer unexpectedly contains Tooltip CSS",
+  );
+  assert(
+    css.includes(".consumer-spin") && css.includes(".semi-spin"),
+    "Default or custom-prefix Spin CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

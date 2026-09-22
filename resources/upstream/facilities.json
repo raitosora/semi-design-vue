@@ -108,5 +108,25 @@
         "website/src/zh-CN/guide/virtualization-pointer.md"
       ]
     }
+  ],
+  "spin": [
+    {
+      "label": "可取消计时与过期任务生命周期设施；公开 Spin 契约与行为验收另见 acceptance",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-animation-vue/src/lifecycle/foundation-scope.ts",
+        "tests/browser/foundation-bridge.test.tsx",
+        "website/src/zh-CN/guide/animation.md"
+      ]
+    },
+    {
+      "label": "实例初始化默认配置解析器；不代表 Spin 已完成行为验收",
+      "kind": "infrastructure",
+      "paths": [
+        "packages/semi-ui-vue/src/context/global-defaults.ts",
+        "tests/browser/context-app.test.tsx",
+        "website/src/zh-CN/guide/context.md"
+      ]
+    }
   ]
 }

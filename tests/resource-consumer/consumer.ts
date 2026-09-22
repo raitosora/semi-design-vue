@@ -364,3 +364,55 @@ void [
   invalidLocaleChildren,
   invalidLocaleSlot,
 ];
+
+import { Spin } from "semi-ui-vue";
+import SpinFromSubpath, {
+  Spin as NamedSpin,
+  type SpinProps,
+  type SpinSlots,
+  type SpinSize,
+} from "semi-ui-vue/spin";
+const spinIdentity: typeof Spin = SpinFromSubpath;
+const spinNamedIdentity: typeof Spin = NamedSpin;
+const spinSize: SpinSize = "large";
+const spinProps: SpinProps = {
+  size: spinSize,
+  delay: undefined,
+  spinning: undefined,
+  tip: 0,
+  wrapperClassName: "packed",
+  childStyle: { minHeight: "50px" },
+  "aria-label": "Loading",
+};
+const spinSlots: SpinSlots = {
+  default: () => [],
+  indicator: () => document.createElement("span"),
+  tip: () => document.createTextNode("Loading"),
+};
+// @ts-expect-error Size follows Spin rather than Icon's size union.
+const wrongSpinSize: SpinSize = "default";
+// @ts-expect-error React indicator props are replaced by native slots.
+const wrongSpinIndicator: SpinProps = { indicator: () => [] };
+// @ts-expect-error A slot cannot return raw strings.
+const wrongSpinText: SpinSlots = { default: () => "text" };
+// @ts-expect-error A slot cannot return raw null.
+const wrongSpinNull: SpinSlots = { indicator: () => null };
+// @ts-expect-error A slot cannot be async.
+const wrongSpinAsync: SpinSlots = { tip: async () => [] };
+// @ts-expect-error There is no click event on Spin.
+const wrongSpinEvent: SpinProps = { onClick: () => {} };
+void [
+  spinIdentity,
+  spinNamedIdentity,
+  spinProps,
+  spinSlots,
+  wrongSpinSize,
+  wrongSpinIndicator,
+  wrongSpinText,
+  wrongSpinNull,
+  wrongSpinAsync,
+  wrongSpinEvent,
+];
+
+const spinMarker: "Spin" = Spin.__SemiComponentName__;
+void spinMarker;

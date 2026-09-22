@@ -40,6 +40,9 @@
       ],
       "semi-ui-vue/locale/interface": [
         "./packages/semi-ui-vue/src/locale/interface.ts"
+      ],
+      "semi-ui-vue/spin": [
+        "./packages/semi-ui-vue/src/components/spin/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

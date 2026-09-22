@@ -1,3 +1,4 @@
+import { spinMarkup } from "./spin-markup";
 import "./plain.css";
 import "virtual:semi-theme.scss";
 import "virtual:semi-theme.css";
@@ -13,4 +14,6 @@ document.body.innerHTML = `
     </label>
     <span class="semi-tooltip-content">tooltip style probe</span>
   </main>
+  ${spinMarkup("semi")}
+  ${spinMarkup("consumer")}
 `;

@@ -4,11 +4,11 @@
 
 文档 shell 为 VitePress 普通 Vue SSR/客户端水合；真实 TSX 示例预编译为 Vapor，在 ClientOnly 中动态导入并使用独立 `createVaporApp` 挂载。示例不复用服务端 DOM，不把客户端挂载称为示例水合。
 
-另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.9、vue-jsx 3.3.0-rc.2、Vite 8.3.0、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。浏览器 Bundler 条件下的 UI 根入口提供 `Icon`、`ConfigProvider`、`ConfigConsumer`、`LocaleProvider` 与 `LocaleConsumer`；纯 Node 条件的根入口只保留静态工具，其声明也按同一条件收窄。
+另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.9、vue-jsx 3.3.0-rc.2、Vite 8.3.0、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。浏览器 Bundler 条件下的 UI 根入口提供 `Spin`、`Icon`、`ConfigProvider`、`ConfigConsumer`、`LocaleProvider` 与 `LocaleConsumer`；纯 Node 条件的根入口只保留静态工具，其声明也按同一条件收窄。
 
 ## 尚未验证的能力
 
-- Icon、ConfigProvider、ConfigConsumer、LocaleProvider 与 LocaleConsumer 已实现客户端 Vapor 路径；组件 SSR、水合、CJS 与全量 Semi 视觉对齐尚未验收。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 同样只在浏览器 Vapor 路径验证。`semi-ui-vue/configProvider` 与 `semi-ui-vue/locale` 同样仅用于浏览器；其余公共组件尚未实现。
+- Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 与 LocaleConsumer 已实现客户端 Vapor 路径；组件 SSR、水合、CJS 与全量 Semi 视觉对齐尚未验收。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 同样只在浏览器 Vapor 路径验证。`semi-ui-vue/spin`、`semi-ui-vue/configProvider` 与 `semi-ui-vue/locale` 同样仅用于浏览器；其余公共组件尚未实现。
 - 先前 SSR 探针存在点击后静态文本丢失的水合问题，本页没有以 ClientOnly 掩盖为已修复。
 - 只在指定 Chromium 验证；Firefox、WebKit、真实移动设备不在当前验收范围。
 - JSX ref 形状检查仍有工具链限制，不能推断公共组件 ref 协议已解决。
@@ -23,6 +23,6 @@
 
 [Foundation 桥接](./foundation.md)验证固定上游输入与浮层状态机的有限路径。补丁只覆盖实际依赖闭包，不表示全套 Foundation 已兼容；资源清理只覆盖状态机自身的 destroy 与显式登记资源。
 
-[本地产物与消费方式](./packages.md)列出实际 ESM / 声明 / 样式入口、依赖和独立安装范围。没有 CJS 入口；Node 静态工具导入不代表组件 SSR / 水合支持，也不能用于导入 Icon、ConfigProvider、ConfigConsumer、LocaleProvider 或 LocaleConsumer。语言字典 `locale/source/*` 与 `locale/interface` 保持纯 Node 可用静态入口。
+[本地产物与消费方式](./packages.md)列出实际 ESM / 声明 / 样式入口、依赖和独立安装范围。没有 CJS 入口；Node 静态工具导入不代表组件 SSR / 水合支持，也不能用于导入 Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 或 LocaleConsumer。语言字典 `locale/source/*` 与 `locale/interface` 保持纯 Node 可用静态入口。
 
 [上游对齐与完成度](./upstream-matrix.md)按固定来源生成模块与导出清单，分别展示同名存在、内部设施、公开交付与行为验收；资源和测试夹具不计为完整公共组件。

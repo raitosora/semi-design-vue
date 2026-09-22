@@ -8,6 +8,7 @@ const entries = {
   base: "semi-ui-vue/styles/base.scss",
   input: "semi-ui-vue/styles/components/input.scss",
   tooltip: "semi-ui-vue/styles/components/tooltip.scss",
+  spin: "semi-ui-vue/styles/components/spin.scss",
 } as const;
 type Values = Readonly<Record<string, string | number>>;
 export interface SemiThemeOptions {

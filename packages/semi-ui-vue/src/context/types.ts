@@ -1,8 +1,20 @@
 import type { InjectionKey, Ref } from "vue";
+import type { SpinProps } from "../components/spin/types.js";
 import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
-export interface SemiComponentProps {}
+export interface SemiComponentProps {
+  Spin: Pick<
+    SpinProps,
+    | "size"
+    | "spinning"
+    | "delay"
+    | "tip"
+    | "wrapperClassName"
+    | "childStyle"
+    | "style"
+  >;
+}
 
 export type DefaultProps<P> = Readonly<{ [K in keyof P]?: P[K] | undefined }>;
 
