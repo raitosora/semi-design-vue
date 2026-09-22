@@ -179,6 +179,9 @@ await writeFile(
           "semi-ui-vue/locale": [
             "../../packages/semi-ui-vue/dist/components/locale/index.d.ts",
           ],
+          "semi-ui-vue/iconButton": [
+            "../../packages/semi-ui-vue/dist/components/iconButton/index.d.ts",
+          ],
           "semi-ui-vue/spin": [
             "../../packages/semi-ui-vue/dist/components/spin/index.d.ts",
           ],

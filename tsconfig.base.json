@@ -43,6 +43,9 @@
       ],
       "semi-ui-vue/spin": [
         "./packages/semi-ui-vue/src/components/spin/index.ts"
+      ],
+      "semi-ui-vue/iconButton": [
+        "./packages/semi-ui-vue/src/components/iconButton/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

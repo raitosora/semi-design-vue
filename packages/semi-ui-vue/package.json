@@ -88,7 +88,17 @@
       "default": "./dist/styles/components/spin.css"
     },
     "./styles/components/spin.css": "./dist/styles/components/spin.css",
-    "./styles/components/spin.scss": "./dist/styles/components/spin.scss"
+    "./styles/components/spin.scss": "./dist/styles/components/spin.scss",
+    "./iconButton": {
+      "types": "./dist/components/iconButton/index.d.ts",
+      "import": "./dist/components/iconButton/index.js"
+    },
+    "./styles/components/iconButton": {
+      "sass": "./dist/styles/components/iconButton.scss",
+      "default": "./dist/styles/components/iconButton.css"
+    },
+    "./styles/components/iconButton.css": "./dist/styles/components/iconButton.css",
+    "./styles/components/iconButton.scss": "./dist/styles/components/iconButton.scss"
   },
   "files": [
     "dist",

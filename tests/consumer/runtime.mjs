@@ -23,6 +23,34 @@ assert(
   !Object.hasOwn(nodeUiRoot, "Icon"),
   "Node's infrastructure-only UI root must not expose Icon",
 );
+for (const name of [
+  "IconButton",
+  "BaseButton",
+  "Button",
+  "ButtonGroup",
+  "SplitButtonGroup",
+])
+  assert(
+    !Object.hasOwn(nodeUiRoot, name),
+    `Node root exposed browser/private component: ${name}`,
+  );
+for (const [subpath, load] of [
+  ["baseButton", () => import("semi-ui-vue/baseButton")],
+  ["button", () => import("semi-ui-vue/button")],
+  ["buttonGroup", () => import("semi-ui-vue/buttonGroup")],
+  ["splitButtonGroup", () => import("semi-ui-vue/splitButtonGroup")],
+]) {
+  let error;
+  try {
+    await load();
+  } catch (caught) {
+    error = caught;
+  }
+  assert(
+    error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED",
+    `Private/future subpath became public: ${subpath}`,
+  );
+}
 let requireError;
 try {
   createRequire(import.meta.url)("semi-ui-vue");

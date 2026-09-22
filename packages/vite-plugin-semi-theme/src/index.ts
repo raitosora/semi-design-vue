@@ -9,6 +9,7 @@ const entries = {
   input: "semi-ui-vue/styles/components/input.scss",
   tooltip: "semi-ui-vue/styles/components/tooltip.scss",
   spin: "semi-ui-vue/styles/components/spin.scss",
+  iconButton: "semi-ui-vue/styles/components/iconButton.scss",
 } as const;
 type Values = Readonly<Record<string, string | number>>;
 export interface SemiThemeOptions {

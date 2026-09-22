@@ -57,7 +57,7 @@ const report = {
       "patched Foundation fixture tarball in pure Vapor and interop",
     ],
     limitation:
-      "Four isolated tarball consumer flows check ESM/declarations, styles, Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
+      "Four isolated tarball consumer flows check ESM/declarations, styles, IconButton/Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

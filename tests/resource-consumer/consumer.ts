@@ -416,3 +416,138 @@ void [
 
 const spinMarker: "Spin" = Spin.__SemiComponentName__;
 void spinMarker;
+
+import {
+  IconButton,
+  type IconButtonProps as RootIconButtonProps,
+} from "semi-ui-vue";
+import IconButtonFromSubpath, {
+  IconButton as NamedIconButton,
+  type IconButtonProps,
+  type IconButtonSlots,
+} from "semi-ui-vue/iconButton";
+const iconButtonIdentity: typeof IconButton = IconButtonFromSubpath;
+const namedIconButtonIdentity: typeof IconButton = NamedIconButton;
+const iconButtonMarker: "IconButton" = IconButton.elementType;
+const iconButtonProps: IconButtonProps = {
+  type: "primary",
+  theme: "borderless",
+  size: "default",
+  htmlType: "submit",
+  text: 0,
+  iconPosition: "right",
+  noHorizontalPadding: ["left", "right"] as const,
+  loading: undefined,
+  disabled: undefined,
+  block: true,
+  circle: true,
+  colorful: true,
+  className: "consumer-icon-button",
+  contentClassName: "consumer-content",
+  prefixCls: undefined,
+  iconSize: "large",
+  iconStyle: { color: "red" },
+  name: "action",
+  value: "save",
+  form: "consumer-form",
+  "aria-label": "Save",
+  onClick(event) {
+    const click: MouseEvent = event;
+    void click;
+  },
+  onMousedown(event) {
+    const mouse: MouseEvent = event;
+    void mouse;
+  },
+  onKeydown(event) {
+    const keyboard: KeyboardEvent = event;
+    void keyboard;
+  },
+};
+const iconButtonSlots: IconButtonSlots = {
+  default: () => document.createTextNode("Save"),
+  icon: (scope) => {
+    const fill: readonly string[] | undefined = scope.fill;
+    // @ts-expect-error The color scope is readonly.
+    scope.fill = ["red"];
+    void fill;
+    return [document.createElement("span")];
+  },
+};
+// @ts-expect-error Native button type belongs to htmlType.
+const wrongIconButtonType: IconButtonProps = { type: "submit" };
+// @ts-expect-error Theme remains a closed upstream union.
+const wrongIconButtonTheme: IconButtonProps = { theme: "ghost" };
+// @ts-expect-error Size remains a closed upstream union.
+const wrongIconButtonSize: IconButtonProps = { size: "mini" };
+// @ts-expect-error Native htmlType rejects application actions.
+const wrongIconButtonHtmlType: IconButtonProps = { htmlType: "save" };
+const wrongIconButtonPadding: IconButtonProps = {
+  // @ts-expect-error Padding accepts physical sides only.
+  noHorizontalPadding: "start",
+};
+// @ts-expect-error Icon placement accepts physical positions only.
+const wrongIconButtonPosition: IconButtonProps = { iconPosition: "top" };
+// @ts-expect-error React icon nodes are replaced by the icon slot.
+const wrongIconButtonIcon: IconButtonProps = { icon: () => [] };
+// @ts-expect-error React children nodes are replaced by text or the default slot.
+const wrongIconButtonChildren: IconButtonProps = { children: "save" };
+// @ts-expect-error A default slot must return a native Vapor render result.
+const wrongIconButtonTextSlot: IconButtonSlots = { default: () => "save" };
+// @ts-expect-error Async rendering is not a native Vapor slot result.
+const wrongIconButtonAsyncSlot: IconButtonSlots = { icon: async () => [] };
+// @ts-expect-error Loading indicators have no customization slot.
+const wrongIconButtonIndicator: IconButtonSlots = { indicator: () => [] };
+const wrongIconButtonEvent: IconButtonProps = {
+  // @ts-expect-error Native click callbacks cannot receive KeyboardEvent.
+  onClick: (event: KeyboardEvent) => event,
+};
+// @ts-expect-error BaseButton remains private.
+import { BaseButton } from "semi-ui-vue";
+// @ts-expect-error Public Button is not delivered by IconButton.
+import { Button } from "semi-ui-vue";
+// @ts-expect-error ButtonGroup remains undelivered.
+import { ButtonGroup } from "semi-ui-vue";
+// @ts-expect-error SplitButtonGroup remains undelivered.
+import { SplitButtonGroup } from "semi-ui-vue";
+// @ts-expect-error Private BaseButton has no public subpath.
+import BaseButtonFromSubpath from "semi-ui-vue/baseButton";
+// @ts-expect-error Future Button has no public subpath.
+import ButtonFromSubpath from "semi-ui-vue/button";
+void [
+  iconButtonIdentity,
+  namedIconButtonIdentity,
+  iconButtonMarker,
+  iconButtonProps,
+  iconButtonSlots,
+  true satisfies Same<RootIconButtonProps, IconButtonProps>,
+  wrongIconButtonType,
+  wrongIconButtonTheme,
+  wrongIconButtonSize,
+  wrongIconButtonHtmlType,
+  wrongIconButtonPadding,
+  wrongIconButtonPosition,
+  wrongIconButtonIcon,
+  wrongIconButtonChildren,
+  wrongIconButtonTextSlot,
+  wrongIconButtonAsyncSlot,
+  wrongIconButtonIndicator,
+  wrongIconButtonEvent,
+  BaseButton,
+  Button,
+  ButtonGroup,
+  SplitButtonGroup,
+  BaseButtonFromSubpath,
+  ButtonFromSubpath,
+];
+
+const iconButtonDisabledValues: IconButtonProps[] = [
+  { disabled: false },
+  { disabled: true },
+  { disabled: undefined },
+];
+// @ts-expect-error Disabled must remain boolean in shipped declarations.
+const iconButtonStringFalse: IconButtonProps = { disabled: "false" };
+// @ts-expect-error Boolean strings are not component disabled values.
+const iconButtonStringTrue: IconButtonProps = { disabled: "true" };
+void [iconButtonDisabledValues, iconButtonStringFalse, iconButtonStringTrue];

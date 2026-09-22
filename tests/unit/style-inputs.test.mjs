@@ -46,7 +46,7 @@ describe("fixed Semi style inputs", () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
-      components: ["input", "tooltip", "spin"],
+      components: ["input", "tooltip", "spin", "iconButton"],
     });
   });
 
@@ -68,6 +68,38 @@ describe("fixed Semi style inputs", () => {
     );
     for (const name of ["animation", "mixin", "rtl", "spin", "variables"]) {
       const source = `foundation/spin/${name}.scss`;
+      expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        await readFile(
+          join(root, "node_modules/@douyinfe/semi-" + source),
+          "utf8",
+        ),
+      ).toBe(snapshot.files[`packages/semi-${source}`]);
+      expect(() =>
+        checkStyleSourceHashes({
+          ...inputs.sourceHashes,
+          [source]: "0".repeat(64),
+        }),
+      ).toThrow(source);
+    }
+  });
+
+  it("locks the complete IconButton and private BaseButton source closure", async () => {
+    const inputs = await checkStyleInputs(root);
+    const snapshot = JSON.parse(
+      await readFile(join(root, "resources/upstream/sources.json"), "utf8"),
+    );
+    for (const file of [
+      "button/animation",
+      "button/button",
+      "button/cssVariables",
+      "button/iconButton",
+      "button/rtl",
+      "button/splitButtonGroup",
+      "button/variables",
+      "keyframes/rotate",
+    ]) {
+      const source = `foundation/${file}.scss`;
       expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
       expect(
         await readFile(
@@ -215,6 +247,31 @@ describe("fixed Semi style inputs", () => {
       expect(prefixedSpin).toContain(".consumer-rtl .consumer-spin");
       expect(prefixedSpin).toContain("consumer-animation-rotate");
       expect(prefixedSpin).not.toContain(".semi-spin");
+      const iconButton = await read("components/iconButton.css");
+      expect(iconButton).toContain(".semi-button.semi-button-with-icon-only");
+      expect(iconButton).toContain(
+        ".semi-button.semi-button-primary:focus-visible",
+      );
+      expect(iconButton).toContain(
+        "outline: 2px solid var(--semi-color-primary-light-active)",
+      );
+      expect(iconButton).toContain("pointer-events: none");
+      expect(iconButton).toContain(
+        "animation: 600ms linear infinite semi-animation-rotate",
+      );
+      expect(iconButton).toContain(".semi-rtl .semi-button-content-left");
+      expect(iconButton).not.toMatch(/\.semi-(?:input|tooltip|spin)/);
+      expect(await read("index.css")).toContain(iconButton.trim());
+      const prefixedButton = sass.compileString(
+        '@use "components/iconButton" with ($semi-prefix: consumer, $height-control-default: 40px);',
+        { loadPaths: [output] },
+      ).css;
+      expect(prefixedButton).toContain(
+        ".consumer-button.consumer-button-with-icon-only",
+      );
+      expect(prefixedButton).toContain("height: 40px");
+      expect(prefixedButton).toContain("consumer-animation-rotate");
+      expect(prefixedButton).not.toContain(".semi-button");
       const provenance = JSON.parse(await read("sources.json"));
       expect(provenance.sources).toEqual(
         (await checkStyleInputs(root)).sourceHashes,

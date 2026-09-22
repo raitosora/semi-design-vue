@@ -8,6 +8,7 @@ import {
 } from "vue";
 import {
   Spin,
+  IconButton,
   ConfigConsumer,
   ConfigProvider,
   LocaleProvider,
@@ -25,8 +26,12 @@ import IllustrationNoContent from "semi-illustrations-vue/IllustrationNoContent"
 import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
+import "semi-ui-vue/styles/components/iconButton.css";
 
 const spinning = ref(true);
+const iconButtonLabel = ref("Save");
+const iconButtonDisabled = ref(false);
+const iconButtonClicks = ref(0);
 const color = ref("rgb(12, 90, 190)");
 const fill = ref<readonly string[]>(["#465fff", "#9caeff"]);
 const size = ref<IconSize>("inherit");
@@ -68,6 +73,35 @@ const app = createApp({
   setup() {
     return () =>
       h("section", { class: "interop-resources" }, [
+        h(
+          IconButton,
+          {
+            loading: spinning.value,
+            disabled: iconButtonDisabled.value,
+            className: "interop-icon-button",
+            "aria-label": "Interop action",
+            onClick: () => iconButtonClicks.value++,
+          },
+          {
+            default: () =>
+              h(
+                "span",
+                { "data-interop-button-label": "" },
+                iconButtonLabel.value,
+              ),
+            icon: () =>
+              h(
+                "span",
+                { "data-interop-button-icon": "", "aria-hidden": true },
+                "*",
+              ),
+          },
+        ),
+        h(
+          "output",
+          { class: "interop-button-clicks" },
+          String(iconButtonClicks.value),
+        ),
         h(
           Spin,
           {
@@ -219,6 +253,7 @@ declare global {
   interface Window {
     interopConsumer: {
       update(): Promise<void>;
+      disableButton(): Promise<void>;
       unmount(): void;
     };
   }
@@ -226,6 +261,7 @@ declare global {
 window.interopConsumer = {
   async update() {
     spinning.value = false;
+    iconButtonLabel.value = "Updated";
     configLocale.value = zhCN;
     standaloneLocale.value = zhCN;
     configDirection.value = "ltr";
@@ -234,6 +270,10 @@ window.interopConsumer = {
     fill.value = ["#994828", "#f4c3aa"];
     size.value = "extra-large";
     rotate.value = 1.5;
+    await nextTick();
+  },
+  async disableButton() {
+    iconButtonDisabled.value = true;
     await nextTick();
   },
   unmount() {

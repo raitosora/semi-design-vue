@@ -161,3 +161,21 @@ test("compiles Spin slots and reactive loading state as native Vapor DOM", async
     /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
   );
 });
+
+for (const file of [
+  "components/iconButton/IconButton",
+  "internal/button/BaseButton",
+]) {
+  test(`compiles ${file} with native Vapor slots and DOM`, async () => {
+    const result = await server.transformRequest(
+      `/packages/semi-ui-vue/src/${file}.tsx`,
+    );
+    expect(result?.code).toMatch(/createSlot/);
+    expect(result?.code).toMatch(
+      /(?:renderEffect|setClass|setStyle|createComponent)\(/,
+    );
+    expect(result?.code).not.toMatch(
+      /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+    );
+  });
+}

@@ -18,8 +18,8 @@ implementations.
 - `acceptance.json`: reviewer-owned acceptance decisions. A cited file path,
   matching export name, generated SVG, or successful gate never changes a family
   from pending. An accepted record needs all evidence categories and a completed
-  verification review identifier. The current `icons` and `configProvider` decisions and their explicit
-  differences are recorded below and in `acceptance.json`.
+  verification review identifier. The current accepted family decisions and their explicit differences are
+  recorded below and in `acceptance.json`.
 
 The fixed official source is Semi Design 2.103.0 at
 `8bed560dd3f36579f85b7a522f19762f2bace756` in
@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale and spin. All other
+accepted public families are icons, configProvider, locale, spin and iconButton. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -84,3 +84,12 @@ React-node conversion and timer races. The five fixed SCSS sources and their
 licenses are verified; strict declarations, live examples and actual tarballs
 exercise pure Vapor and interop separately. Existing Icon rotation and lifecycle
 facilities are reusable evidence only; they do not substitute for Spin behavior.
+
+The `iconButton` record accepts the native button/content structure, layered
+defaults, icon position and horizontal padding, colorful icon scope, loading and
+disabled precedence, native events and form actions. Its BaseButton dependency
+is private and has no public export or group API. Native Vapor slots replace
+React nodes and cloning; iconSize/iconStyle retain their upstream no-op behavior.
+Strict declarations, live examples, animation disposal and isolated tarballs
+cover browser execution; Node static imports do not establish component SSR,
+hydration or CommonJS support.

@@ -19,6 +19,11 @@ import { checkManifest, checkSource } from "./dependency-policy.mjs";
 import { installPackedConsumer } from "./packed-consumer.mjs";
 import { waitForPreview, stopPreview } from "./preview-ready.mjs";
 
+import {
+  iconButtonStyleCheck,
+  iconButtonDirectionCheck,
+} from "../tests/style-consumer/iconButton-check.mjs";
+
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/style-consumer");
 const packages = ["semi-ui-vue", "vite-plugin-semi-theme"];
@@ -96,6 +101,20 @@ function checkStyleMetadata() {
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/spin/${name}.scss`]),
       `Spin style source hash is missing: ${name}`,
+    );
+  for (const file of [
+    "button/animation",
+    "button/button",
+    "button/cssVariables",
+    "button/iconButton",
+    "button/rtl",
+    "button/splitButtonGroup",
+    "button/variables",
+    "keyframes/rotate",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `IconButton source hash is missing: ${file}`,
     );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
@@ -238,6 +257,10 @@ async function browserCheck(url) {
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
     await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
+    for (const prefix of ["semi", "consumer"]) {
+      await iconButtonStyleCheck(page, prefix, "rgb(17, 105, 170)");
+      await iconButtonDirectionCheck(page, prefix, false);
+    }
     await spinStyleCheck(page, "consumer", "rgb(17, 105, 170)");
     const baseline = await page
       .locator(".semi-input-wrapper")
@@ -274,6 +297,8 @@ async function browserCheck(url) {
       .locator("body")
       .evaluate((body) => body.setAttribute("theme-mode", "dark"));
     await spinStyleCheck(page, "semi", "rgb(144, 202, 249)");
+    for (const prefix of ["semi", "consumer"])
+      await iconButtonStyleCheck(page, prefix, "rgb(144, 202, 249)");
     await spinStyleCheck(page, "consumer", "rgb(144, 202, 249)");
     const dark = await page
       .locator(".semi-input-wrapper")
@@ -297,12 +322,14 @@ async function browserCheck(url) {
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
     await spinRtlAndHiddenCheck(page, "semi");
     await spinRtlAndHiddenCheck(page, "consumer");
+    for (const prefix of ["semi", "consumer"])
+      await iconButtonDirectionCheck(page, prefix, true);
     await page.setViewportSize({ width: 320, height: 540 });
     assert(
       await page
         .locator("body")
         .evaluate((body) => body.scrollWidth <= window.innerWidth),
-      "Spin style fixture overflowed a narrow viewport",
+      "Style fixture overflowed a narrow viewport",
     );
     const rtl = await page
       .locator(".semi-input")
@@ -372,6 +399,8 @@ async function plainBrowserCheck(url) {
       .first()
       .evaluate((element) => getComputedStyle(element).color);
     await spinStyleCheck(page, "semi", lightPrimary);
+    await iconButtonStyleCheck(page, "semi", lightPrimary);
+    await iconButtonDirectionCheck(page, "semi", false);
     const input = page.locator(".semi-input-wrapper");
     const light = await input.evaluate((element) => ({
       height: getComputedStyle(element).height,
@@ -393,6 +422,7 @@ async function plainBrowserCheck(url) {
       "Plain Spin dark primary token did not change",
     );
     await spinStyleCheck(page, "semi", darkPrimary);
+    await iconButtonStyleCheck(page, "semi", darkPrimary);
     const darkBackground = await input.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
     );
@@ -404,6 +434,7 @@ async function plainBrowserCheck(url) {
       .locator("body")
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
     await spinRtlAndHiddenCheck(page, "semi");
+    await iconButtonDirectionCheck(page, "semi", true);
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -490,6 +521,8 @@ try {
     "input-only.scss",
     "spin-only.scss",
     "spin-markup.ts",
+    "iconButton-markup.ts",
+    "iconButton-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -603,6 +636,10 @@ try {
     ],
     { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
+  assert(
+    directCss.includes(".consumer-button.consumer-button-with-icon-only"),
+    "Direct IconButton SCSS entry did not compile",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -619,6 +656,10 @@ try {
   assert(
     plainCss.includes(".semi-spin"),
     "Plain CSS consumer did not include Spin",
+  );
+  assert(
+    plainCss.includes(".semi-button.semi-button-with-icon-only"),
+    "Plain IconButton CSS entry is missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -653,6 +694,10 @@ try {
   assert(
     css.includes(".consumer-spin") && css.includes(".semi-spin"),
     "Default or custom-prefix Spin CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-button") && css.includes(".semi-button"),
+    "Default or custom-prefix IconButton CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

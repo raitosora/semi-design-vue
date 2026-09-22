@@ -241,3 +241,100 @@ export function spinDefaultBoundary() {
     overrideDefaultProps: { Spin: { "aria-label": "global" } },
   });
 }
+
+import IconButton, {
+  type IconButtonSlots,
+  type IconButtonIconScope,
+  type IconButtonProps,
+} from "semi-ui-vue/iconButton";
+// @ts-expect-error Public Button is not delivered by the root entry.
+import { Button as UndeliveredButton } from "semi-ui-vue";
+// @ts-expect-error BaseButton is a private implementation, not a root export.
+import { BaseButton as PrivateBaseButton } from "semi-ui-vue";
+// @ts-expect-error The IconButton entry does not export its private BaseButton.
+import { BaseButton as PrivatePathBaseButton } from "semi-ui-vue/iconButton";
+// @ts-expect-error No public Button package subpath exists.
+import UndeliveredButtonPath from "semi-ui-vue/button";
+// @ts-expect-error The private BaseButton does not have a public package subpath.
+import PrivateBaseButtonPath from "semi-ui-vue/BaseButton";
+void [
+  UndeliveredButton,
+  PrivateBaseButton,
+  PrivatePathBaseButton,
+  UndeliveredButtonPath,
+  PrivateBaseButtonPath,
+];
+// @ts-expect-error React event casing is not the native Vue event name.
+export const iconButtonReactMouse = <IconButton onMouseDown={() => {}} />;
+// @ts-expect-error React event casing is not the native Vue event name.
+export const iconButtonReactKey = <IconButton onKeyDown={() => {}} />;
+export const iconButtonWrongClick = (
+  // @ts-expect-error Click receives PointerEvent, not KeyboardEvent.
+  <IconButton onClick={(event: KeyboardEvent) => event.key} />
+);
+export const iconButtonWrongKey = (
+  // @ts-expect-error Keydown receives KeyboardEvent, not MouseEvent.
+  <IconButton onKeydown={(event: MouseEvent) => event.button} />
+);
+// @ts-expect-error Icon nodes use a native icon slot.
+export const iconButtonNode = <IconButton icon={<svg />} />;
+// @ts-expect-error Raw children nodes are unsupported.
+export const iconButtonRawChildren: IconButtonProps = { children: <span /> };
+export const iconButtonStyleArray: IconButtonProps = {
+  // @ts-expect-error iconStyle is a CSSProperties object, not Vue StyleValue arrays.
+  iconStyle: [{ color: "red" }],
+};
+// @ts-expect-error htmlType and visual type have distinct contracts.
+export const iconButtonHtmlType = <IconButton htmlType="primary" />;
+// @ts-expect-error type is the visual kind, not a native submit type.
+export const iconButtonVisualType = <IconButton type="submit" />;
+export const iconButtonIndicator = (
+  // @ts-expect-error A loading indicator slot is not part of IconButton's contract.
+  <IconButton v-slots={{ indicator: () => <svg /> }} />
+);
+export const iconButtonUnknownSlot: IconButtonSlots = {
+  // @ts-expect-error Named suffix slots are not part of IconButton's contract.
+  suffix: () => <span />,
+};
+// @ts-expect-error Slots cannot directly return raw text.
+export const iconButtonString = <IconButton v-slots={{ icon: () => "icon" }} />;
+// @ts-expect-error Slots cannot directly return null.
+export const iconButtonNull = <IconButton v-slots={{ default: () => null }} />;
+// @ts-expect-error Slots cannot directly return undefined.
+export const iconButtonUndefined: IconButtonSlots = { icon: () => undefined };
+// @ts-expect-error Async slot results are unsupported.
+export const iconButtonPromise: IconButtonSlots = { default: async () => [] };
+// @ts-expect-error Shorthand slots must return VaporRenderResult rather than text.
+export const iconButtonShorthandText = <IconButton>{() => "text"}</IconButton>;
+export function iconButtonReadonlyScope(scope: IconButtonIconScope) {
+  // @ts-expect-error Slot scope is readonly.
+  scope.fill = [];
+  // @ts-expect-error Color channels remain readonly.
+  scope.fill?.push("red");
+}
+export const iconButtonTypedScope = (
+  <IconButton
+    v-slots={{
+      icon: (scope) => {
+        // @ts-expect-error Inline JSX slots do not erase scope typing.
+        const wrong: number = scope.fill?.[0];
+        return <span>{wrong}</span>;
+      },
+    }}
+  />
+);
+export function iconButtonGlobalBoundary() {
+  semiGlobal.configure({
+    // @ts-expect-error IconButton has no global default-props integration.
+    overrideDefaultProps: { IconButton: { loading: true } },
+  });
+}
+// @ts-expect-error No public group is attached to IconButton.
+export const iconButtonGroup = <IconButton.Group />;
+// @ts-expect-error IconButton exposes no component-level focus method.
+IconButton.focus();
+
+// @ts-expect-error Disabled follows the upstream boolean contract.
+export const iconButtonStringFalse = <IconButton disabled="false" />;
+// @ts-expect-error Boolean strings are not component disabled values.
+export const iconButtonStringTrue = <IconButton disabled="true" />;

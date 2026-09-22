@@ -1,0 +1,4 @@
+@use "semi-ui-vue/styles/components/iconButton" with (
+  $semi-prefix: "consumer",
+  $height-control-default: 40px
+);
