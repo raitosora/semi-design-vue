@@ -343,3 +343,44 @@ IconButton.focus();
 export const iconButtonStringFalse = <IconButton disabled="false" />;
 // @ts-expect-error Boolean strings are not component disabled values.
 export const iconButtonStringTrue = <IconButton disabled="true" />;
+
+import { Divider } from "semi-ui-vue";
+import type { DividerProps, DividerSlots } from "semi-ui-vue/divider";
+// @ts-expect-error Root preserves the fixed upstream value-only surface.
+import type { DividerProps as RootDividerProps } from "semi-ui-vue";
+// @ts-expect-error Direction uses layout, not invented orientation props.
+export const dividerOrientation = <Divider orientation="vertical" />;
+// @ts-expect-error Only fixed align values are accepted.
+export const dividerAlign = <Divider align="start" />;
+// @ts-expect-error Only fixed layout values are accepted.
+export const dividerLayout = <Divider layout="row" />;
+// @ts-expect-error Margin does not accept arrays.
+export const dividerMargin = <Divider margin={[1, 2]} />;
+// @ts-expect-error Dashed is boolean, not a boolean string.
+export const dividerDashed = <Divider dashed="false" />;
+// @ts-expect-error Native slot replaces React children.
+export const dividerChildren = <Divider children="text" />;
+// @ts-expect-error No scalar text prop is introduced.
+export const dividerText = <Divider text="text" />;
+// @ts-expect-error Raw text is not a native Vapor slot return value.
+export const dividerRawSlot = <Divider>{() => "text"}</Divider>;
+// @ts-expect-error Slots cannot return a Promise.
+export const dividerAsyncSlot: DividerSlots = { default: async () => [] };
+// @ts-expect-error Null is not a native Vapor slot return value.
+export const dividerNullSlot: DividerSlots = { default: () => null };
+// @ts-expect-error DOM replacement cannot overwrite owned slot content.
+export const dividerInnerHTML: DividerProps = { innerHTML: "<b>x</b>" };
+// @ts-expect-error DOM replacement cannot overwrite owned slot content.
+export const dividerTextContent: DividerProps = { textContent: "x" };
+// @ts-expect-error No static Group exists upstream.
+export const dividerGroup = <Divider.Group />;
+// @ts-expect-error No imperative handle exists.
+Divider.focus();
+// @ts-expect-error No upstream component marker exists.
+Divider.__SemiComponentName__;
+export function dividerGlobalBoundary() {
+  semiGlobal.configure({
+    // @ts-expect-error Divider does not read global defaults.
+    overrideDefaultProps: { Divider: { dashed: true } },
+  });
+}

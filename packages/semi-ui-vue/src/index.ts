@@ -71,3 +71,5 @@ export type {
   SplitButtonGroupProps,
   SplitButtonGroupSlots,
 } from "./components/button/index.js";
+
+export { Divider } from "./components/divider/index.js";

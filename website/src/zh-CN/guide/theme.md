@@ -76,13 +76,13 @@ import "virtual:semi-theme.css";
 
 `virtual:semi-theme.scss` 只编译 `styles` 指定的入口；上例没有 Tooltip 样式。插件不改写应用自己的 SCSS，也不修改 Vite 中已有的 `additionalData`、Sass importer 或 source map 配置。只使用 CSS variables 覆盖时，可以仅导入 `virtual:semi-theme.css`。
 
-| 选项             | 作用                                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| `styles`         | 显式选择 `base`、`button`、`input`、`tooltip`、`spin`、`iconButton`；默认只有 `base`，重复项去重 |
-| `prefix`         | SCSS 生成的类名前缀，默认 `semi`；不会改写应用 DOM                                               |
-| `tokens`         | 浅色 CSS variables，键省略 `--semi-`，值为非空 CSS 值或有限数字                                  |
-| `darkTokens`     | `body[theme-mode="dark"]` 的独立覆盖值                                                           |
-| `scss.variables` | 编译期变量；当前公开验证 `height-control-default`，带单位尺寸以字符串传入                        |
+| 选项             | 作用                                                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| `styles`         | 显式选择 `base`、`button`、`divider`、`input`、`tooltip`、`spin`、`iconButton`；默认只有 `base`，重复项去重 |
+| `prefix`         | SCSS 生成的类名前缀，默认 `semi`；不会改写应用 DOM                                                          |
+| `tokens`         | 浅色 CSS variables，键省略 `--semi-`，值为非空 CSS 值或有限数字                                             |
+| `darkTokens`     | `body[theme-mode="dark"]` 的独立覆盖值                                                                      |
+| `scss.variables` | 编译期变量；当前公开验证 `height-control-default`，带单位尺寸以字符串传入                                   |
 
 前缀设为 `acme` 后，DOM 需对应使用 `acme-input`、`acme-input-wrapper`、`acme-rtl` 等类。CSS 变量仍叫 `--semi-*`，局部主题选择器仍沿用 `semi-always-light` / `semi-always-dark`。插件不会替换已经编译好的默认 `.css` 中的类名。公开 Spin 的类名固定为 `semi-*`；此处定制前缀用于自行提供对应 DOM 的样式消费，ConfigProvider 没有 `prefixCls` 属性。
 
@@ -108,10 +108,12 @@ import "virtual:semi-theme.css";
 );
 ```
 
-各入口是独立 Sass 模块；对基础入口的配置不会自动传给另一个组件入口。可以导入 `semi-ui-vue/styles` 完整 SCSS 入口一次统一配置，但它会包含本阶段登记的 Button、Icon、Spin、IconButton、Input 和 Tooltip 样式。
+各入口是独立 Sass 模块；对基础入口的配置不会自动传给另一个组件入口。可以导入 `semi-ui-vue/styles` 完整 SCSS 入口一次统一配置，但它会包含本阶段登记的 Button、Divider、Icon、Spin、IconButton、Input 和 Tooltip 样式。
 
 ## 验证与限制
 
 真实 Vapor 示例验证局部明暗、RTL、动态主色、输入更新和卸载重挂。独立消费者另验证全局 `theme-mode`、自定义前缀、编译期变量和按需产物。截图只证明被检查的视觉结果；尚无 Semi 全组件像素一致性、Firefox/WebKit、真实移动设备或组件 SSR/水合承诺。
 
 [安装与样式入口](./styles.md) · [兼容边界](./compatibility.md)
+
+[Divider](../components/divider.md) 使用 `styles: ["base", "divider"]` 选择分割线样式。组件 DOM 保持 `semi-divider*` 类名；定制前缀需由应用提供对应原生 DOM，不通过 ConfigProvider 或 Divider prop 改写。边框与文字使用各自的颜色 token，跟随局部或全局明暗主题。

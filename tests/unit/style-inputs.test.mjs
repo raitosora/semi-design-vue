@@ -46,7 +46,14 @@ describe("fixed Semi style inputs", () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
-      components: ["input", "tooltip", "spin", "iconButton", "button"],
+      components: [
+        "input",
+        "tooltip",
+        "spin",
+        "iconButton",
+        "button",
+        "divider",
+      ],
     });
   });
 

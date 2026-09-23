@@ -1,3 +1,4 @@
+import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
@@ -119,6 +120,11 @@ function checkStyleMetadata() {
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `IconButton source hash is missing: ${file}`,
+    );
+  for (const file of ["divider/divider", "divider/variables"])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Divider source hash is missing: ${file}`,
     );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
@@ -260,11 +266,13 @@ async function browserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    const dividerLight = await dividerStyleCheck(page, "semi");
     await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(17, 105, 170)");
       await iconButtonDirectionCheck(page, prefix, false);
       await buttonStyleCheck(page, prefix, "rgb(17, 105, 170)");
+      await dividerStyleCheck(page, prefix);
     }
     await spinStyleCheck(page, "consumer", "rgb(17, 105, 170)");
     const baseline = await page
@@ -305,6 +313,7 @@ async function browserCheck(url) {
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(144, 202, 249)");
       await buttonStyleCheck(page, prefix, "rgb(144, 202, 249)");
+      await dividerStyleCheck(page, prefix);
     }
     await spinStyleCheck(page, "consumer", "rgb(144, 202, 249)");
     const dark = await page
@@ -316,6 +325,10 @@ async function browserCheck(url) {
     assert(
       dark.background !== baseline.background || dark.color !== baseline.color,
       "Dark mode did not change a computed Input style",
+    );
+    assert(
+      (await dividerStyleCheck(page, "semi")) !== dividerLight,
+      "Divider dark border token did not change",
     );
     const darkPrimary = await page
       .locator(".primary-swatch")
@@ -332,6 +345,7 @@ async function browserCheck(url) {
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonDirectionCheck(page, prefix, true);
       await buttonDirectionCheck(page, prefix);
+      await dividerStyleCheck(page, prefix, "rtl");
     }
     await page.setViewportSize({ width: 320, height: 540 });
     assert(
@@ -403,6 +417,7 @@ async function plainBrowserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    const dividerLight = await dividerStyleCheck(page, "semi");
     const lightPrimary = await page
       .locator(".semi-spin-wrapper")
       .first()
@@ -434,6 +449,10 @@ async function plainBrowserCheck(url) {
     await spinStyleCheck(page, "semi", darkPrimary);
     await iconButtonStyleCheck(page, "semi", darkPrimary);
     await buttonStyleCheck(page, "semi", darkPrimary);
+    assert(
+      (await dividerStyleCheck(page, "semi")) !== dividerLight,
+      "Plain Divider dark border token did not change",
+    );
     const darkBackground = await input.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
     );
@@ -447,6 +466,7 @@ async function plainBrowserCheck(url) {
     await spinRtlAndHiddenCheck(page, "semi");
     await iconButtonDirectionCheck(page, "semi", true);
     await buttonDirectionCheck(page, "semi");
+    await dividerStyleCheck(page, "semi", "rtl");
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -538,6 +558,8 @@ try {
     "button-markup.ts",
     "button-check.mjs",
     "button-only.scss",
+    "divider-markup.ts",
+    "divider-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -660,6 +682,10 @@ try {
       directCss.includes(".consumer-button-split"),
     "Direct public Button SCSS entry did not compile group/split selectors",
   );
+  assert(
+    directCss.includes(".consumer-divider-with-text"),
+    "Direct public Divider SCSS entry did not compile",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -685,6 +711,10 @@ try {
     plainCss.includes(".semi-button-group") &&
       plainCss.includes(".semi-button-split"),
     "Plain Button CSS entry is missing group/split selectors",
+  );
+  assert(
+    plainCss.includes(".semi-divider-with-text"),
+    "Plain Divider CSS entry is missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(

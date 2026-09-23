@@ -8,10 +8,18 @@ import { buildIconStyles } from "./build-icon-styles.mjs";
 const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
-const components = ["input", "tooltip", "spin", "iconButton", "button"];
+const components = [
+  "input",
+  "tooltip",
+  "spin",
+  "iconButton",
+  "button",
+  "divider",
+];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
+  divider: ["divider/divider.scss", "divider/variables.scss"],
   input: [
     "input/animation.scss",
     "input/input.scss",
@@ -56,6 +64,10 @@ const sourceHashes = {
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
   "foundation/base/base.scss":
     "cd6715d20a972e609a5e60c389dd851b3c11151317f2c3ecc228caa95926f60d",
+  "foundation/divider/divider.scss":
+    "8c5d58cc25063769b6cdbc86cbde8f701bf855c5353d453056e226c7d3c853be",
+  "foundation/divider/variables.scss":
+    "89a1e90f39848bccd5a438c4e41b0744b1403ca68efba1fa5f556d9e983b72c0",
   "foundation/input/animation.scss":
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
@@ -155,6 +167,14 @@ function entrySources() {
       '@import "./vendor/foundation/base/base";',
       "",
     ].join("\n"),
+    "components/divider.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/divider/divider";',
+      "",
+    ].join("\n"),
     "components/input.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -201,6 +221,7 @@ function entrySources() {
       '@import "./components/icons";',
       '@import "./components/spin";',
       '@import "./components/iconButton";',
+      '@import "./components/divider";',
       "",
     ].join("\n"),
   };
@@ -356,6 +377,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin, IconButton and Button CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button and Divider CSS/SCSS style entries.",
   );
 }

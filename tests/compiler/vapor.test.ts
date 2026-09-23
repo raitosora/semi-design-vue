@@ -262,3 +262,38 @@ test("resolves public Button subpaths from source with every dist hidden", () =>
     );
   }
 });
+
+test("Divider compiles native slots and resolves its subpath with every dist hidden", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/divider/Divider.tsx",
+  );
+  expect(result?.code).toMatch(/createSlot/);
+  expect(result?.code).toMatch(/createIf/);
+  expect(result?.code).toMatch(/(?:renderEffect|setClass|setStyle)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+  const config = ts.readConfigFile("tsconfig.base.json", ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const { options, errors } = ts.convertCompilerOptionsFromJson(
+    config.config.compilerOptions,
+    process.cwd(),
+  );
+  expect(errors).toEqual([]);
+  const coldHost = {
+    ...ts.sys,
+    fileExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.fileExists(path),
+    directoryExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
+  };
+  const resolved = ts.resolveModuleName(
+    "semi-ui-vue/divider",
+    resolve("tests/consumer/consumer.ts"),
+    options,
+    coldHost,
+  );
+  expect(resolved.resolvedModule?.resolvedFileName).toBe(
+    resolve("packages/semi-ui-vue/src/components/divider/index.ts"),
+  );
+});

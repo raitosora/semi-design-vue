@@ -4,5 +4,5 @@
     "noEmit": true,
     "skipLibCheck": false
   },
-  "files": ["consumer.ts", "button-browser.ts"]
+  "files": ["consumer.ts", "button-browser.ts", "divider-browser.ts"]
 }

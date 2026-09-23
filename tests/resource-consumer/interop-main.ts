@@ -8,6 +8,7 @@ import {
 } from "vue";
 import {
   Spin,
+  Divider,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -31,7 +32,10 @@ import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
 import "semi-ui-vue/styles/components/iconButton.css";
 import "semi-ui-vue/styles/components/button.css";
+import "semi-ui-vue/styles/components/divider.css";
 
+const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
+const dividerVisible = ref(true);
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -77,6 +81,23 @@ const app = createApp({
   setup() {
     return () =>
       h("section", { class: "interop-resources" }, [
+        h(
+          Divider,
+          {
+            className: "interop-divider",
+            align: spinning.value ? "left" : "right",
+            layout: dividerLayout.value,
+            dashed: true,
+            margin: 10,
+            role: "separator",
+          },
+          {
+            default: () =>
+              dividerVisible.value
+                ? h("span", { "data-divider-label": "" }, iconButtonLabel.value)
+                : [],
+          },
+        ),
         h(
           IconButton,
           {
@@ -325,6 +346,10 @@ declare global {
     interopConsumer: {
       update(): Promise<void>;
       disableButton(): Promise<void>;
+      updateDivider(
+        layout: "horizontal" | "vertical",
+        visible: boolean,
+      ): Promise<void>;
       unmount(): void;
     };
   }
@@ -341,6 +366,13 @@ window.interopConsumer = {
     fill.value = ["#994828", "#f4c3aa"];
     size.value = "extra-large";
     rotate.value = 1.5;
+    await nextTick();
+  },
+  async updateDivider(layout, visible) {
+    dividerLayout.value = layout;
+    dividerVisible.value = visible;
+    await nextTick();
+    await Promise.resolve();
     await nextTick();
   },
   async disableButton() {
