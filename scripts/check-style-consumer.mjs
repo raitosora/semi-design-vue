@@ -23,6 +23,10 @@ import {
   iconButtonStyleCheck,
   iconButtonDirectionCheck,
 } from "../tests/style-consumer/iconButton-check.mjs";
+import {
+  buttonStyleCheck,
+  buttonDirectionCheck,
+} from "../tests/style-consumer/button-check.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = resolve(root, "tests/style-consumer");
@@ -260,6 +264,7 @@ async function browserCheck(url) {
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(17, 105, 170)");
       await iconButtonDirectionCheck(page, prefix, false);
+      await buttonStyleCheck(page, prefix, "rgb(17, 105, 170)");
     }
     await spinStyleCheck(page, "consumer", "rgb(17, 105, 170)");
     const baseline = await page
@@ -297,8 +302,10 @@ async function browserCheck(url) {
       .locator("body")
       .evaluate((body) => body.setAttribute("theme-mode", "dark"));
     await spinStyleCheck(page, "semi", "rgb(144, 202, 249)");
-    for (const prefix of ["semi", "consumer"])
+    for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(144, 202, 249)");
+      await buttonStyleCheck(page, prefix, "rgb(144, 202, 249)");
+    }
     await spinStyleCheck(page, "consumer", "rgb(144, 202, 249)");
     const dark = await page
       .locator(".semi-input-wrapper")
@@ -322,8 +329,10 @@ async function browserCheck(url) {
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
     await spinRtlAndHiddenCheck(page, "semi");
     await spinRtlAndHiddenCheck(page, "consumer");
-    for (const prefix of ["semi", "consumer"])
+    for (const prefix of ["semi", "consumer"]) {
       await iconButtonDirectionCheck(page, prefix, true);
+      await buttonDirectionCheck(page, prefix);
+    }
     await page.setViewportSize({ width: 320, height: 540 });
     assert(
       await page
@@ -401,6 +410,7 @@ async function plainBrowserCheck(url) {
     await spinStyleCheck(page, "semi", lightPrimary);
     await iconButtonStyleCheck(page, "semi", lightPrimary);
     await iconButtonDirectionCheck(page, "semi", false);
+    await buttonStyleCheck(page, "semi", lightPrimary);
     const input = page.locator(".semi-input-wrapper");
     const light = await input.evaluate((element) => ({
       height: getComputedStyle(element).height,
@@ -423,6 +433,7 @@ async function plainBrowserCheck(url) {
     );
     await spinStyleCheck(page, "semi", darkPrimary);
     await iconButtonStyleCheck(page, "semi", darkPrimary);
+    await buttonStyleCheck(page, "semi", darkPrimary);
     const darkBackground = await input.evaluate(
       (element) => getComputedStyle(element).backgroundColor,
     );
@@ -435,6 +446,7 @@ async function plainBrowserCheck(url) {
       .evaluate((body) => body.classList.add("semi-rtl", "consumer-rtl"));
     await spinRtlAndHiddenCheck(page, "semi");
     await iconButtonDirectionCheck(page, "semi", true);
+    await buttonDirectionCheck(page, "semi");
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -523,6 +535,9 @@ try {
     "spin-markup.ts",
     "iconButton-markup.ts",
     "iconButton-only.scss",
+    "button-markup.ts",
+    "button-check.mjs",
+    "button-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -640,6 +655,11 @@ try {
     directCss.includes(".consumer-button.consumer-button-with-icon-only"),
     "Direct IconButton SCSS entry did not compile",
   );
+  assert(
+    directCss.includes(".consumer-button-group") &&
+      directCss.includes(".consumer-button-split"),
+    "Direct public Button SCSS entry did not compile group/split selectors",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -660,6 +680,11 @@ try {
   assert(
     plainCss.includes(".semi-button.semi-button-with-icon-only"),
     "Plain IconButton CSS entry is missing",
+  );
+  assert(
+    plainCss.includes(".semi-button-group") &&
+      plainCss.includes(".semi-button-split"),
+    "Plain Button CSS entry is missing group/split selectors",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -698,6 +723,13 @@ try {
   assert(
     css.includes(".consumer-button") && css.includes(".semi-button"),
     "Default or custom-prefix IconButton CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-button-group") &&
+      css.includes(".semi-button-group") &&
+      css.includes(".consumer-button-split") &&
+      css.includes(".semi-button-split"),
+    "Default or custom-prefix Button group/split CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

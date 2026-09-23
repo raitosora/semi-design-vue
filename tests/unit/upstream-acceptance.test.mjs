@@ -194,6 +194,79 @@ it("rejects automatic acceptance, incomplete evidence, and unknown families", ()
     ).toThrow(new RegExp(kind));
 });
 
+it("validates optional public type targets as an all-or-nothing literal pair", () => {
+  const record = {
+    family: "icons",
+    status: "accepted",
+    reviewedDecision: "A reviewer accepted the complete contract.",
+    verification: {
+      status: "complete",
+      reviewId: "icons-final-review",
+      evidenceHashes: Object.fromEntries(
+        Object.values(evidence)
+          .slice(0, -1)
+          .flat()
+          .map((path) => [path, "a".repeat(64)]),
+      ),
+    },
+    evidence,
+    mappings: {
+      ...mappings,
+      differences: {
+        ...mappings.differences,
+        types: [
+          {
+            name: "IconProps",
+            sourcePath: "packages/semi-icons/src/components/Icon.tsx",
+            currentPackage: "semi-icons-vue",
+            currentSubpath: "./Icon",
+          },
+        ],
+      },
+    },
+  };
+  expect(() =>
+    validateAcceptanceRecords({
+      schema: 1,
+      policy: "reviewed",
+      families: [record],
+    }),
+  ).not.toThrow();
+  const target = record.mappings.differences.types[0];
+  for (const invalid of [
+    { ...target, currentPackage: undefined },
+    { ...target, currentSubpath: undefined },
+    { ...target, currentPackage: "" },
+    { ...target, currentSubpath: "" },
+    { ...target, currentSubpath: "../Icon" },
+    { ...target, currentSubpath: "./Icon/*" },
+    { ...target, extra: "forbidden" },
+  ]) {
+    const value = structuredClone(record);
+    value.mappings.differences.types = [invalid];
+    expect(() =>
+      validateAcceptanceRecords({
+        schema: 1,
+        policy: "reviewed",
+        families: [value],
+      }),
+    ).toThrow();
+  }
+  const duplicate = structuredClone(record);
+  duplicate.mappings.differences.types.push({
+    ...target,
+    currentPackage: "another-package",
+    currentSubpath: "./another",
+  });
+  expect(() =>
+    validateAcceptanceRecords({
+      schema: 1,
+      policy: "reviewed",
+      families: [duplicate],
+    }),
+  ).toThrow(/duplicate types mapping/i);
+});
+
 it("promotes a family only after an explicit completed review record", () => {
   const acceptance = validateAcceptanceRecords({
     schema: 1,

@@ -53,7 +53,7 @@ describe("explicit Semi theme style generation", () => {
   it("rejects invalid entry, prefix, variable, and token input instead of emitting invalid configuration", () => {
     for (const prefix of ["bad prefix", "", 12])
       expect(() => semiTheme({ prefix })).toThrow(/prefix/);
-    expect(() => semiTheme({ styles: ["button"] })).toThrow(/entry/);
+    expect(() => semiTheme({ styles: ["unknown"] })).toThrow(/entry/);
     expect(() =>
       semiTheme({ scss: { variables: { "semi-prefix": "other" } } }),
     ).toThrow(/prefix/);
@@ -98,7 +98,7 @@ describe("explicit Semi theme style generation", () => {
       const css = compile(
         semiTheme({
           prefix: "acme",
-          styles: ["base", "input", "tooltip", "spin", "iconButton"],
+          styles: ["base", "input", "tooltip", "spin", "iconButton", "button"],
           scss: { variables: { "height-control-default": "40px" } },
         }),
       );
@@ -107,6 +107,8 @@ describe("explicit Semi theme style generation", () => {
       expect(css).toContain(".acme-tooltip-wrapper");
       expect(css).toContain(".acme-spin-wrapper");
       expect(css).toContain(".acme-button-with-icon");
+      expect(css).toContain(".acme-button-group");
+      expect(css).toContain(".acme-button-split");
       expect(css).not.toContain(".semi-button");
       expect(css).toContain(".acme-rtl .acme-spin");
       expect(css).not.toContain(".semi-spin");

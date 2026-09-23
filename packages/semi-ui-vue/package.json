@@ -98,7 +98,25 @@
       "default": "./dist/styles/components/iconButton.css"
     },
     "./styles/components/iconButton.css": "./dist/styles/components/iconButton.css",
-    "./styles/components/iconButton.scss": "./dist/styles/components/iconButton.scss"
+    "./styles/components/iconButton.scss": "./dist/styles/components/iconButton.scss",
+    "./button": {
+      "types": "./dist/components/button/index.d.ts",
+      "import": "./dist/components/button/index.js"
+    },
+    "./button/buttonGroup": {
+      "types": "./dist/components/button/buttonGroup.d.ts",
+      "import": "./dist/components/button/buttonGroup.js"
+    },
+    "./button/splitButtonGroup": {
+      "types": "./dist/components/button/splitButtonGroup.d.ts",
+      "import": "./dist/components/button/splitButtonGroup.js"
+    },
+    "./styles/components/button": {
+      "sass": "./dist/styles/components/button.scss",
+      "default": "./dist/styles/components/button.css"
+    },
+    "./styles/components/button.css": "./dist/styles/components/button.css",
+    "./styles/components/button.scss": "./dist/styles/components/button.scss"
   },
   "files": [
     "dist",

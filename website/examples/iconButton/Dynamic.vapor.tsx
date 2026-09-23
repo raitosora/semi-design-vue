@@ -72,6 +72,7 @@ export default defineVaporComponent(() => {
               <span>{updated.value ? "更新后的内容" : "执行操作"}</span>
             ),
           }}
+          x-semi-children-alias={updated.value ? "updatedContent" : "content"}
         />
         <IconButton
           htmlType="submit"

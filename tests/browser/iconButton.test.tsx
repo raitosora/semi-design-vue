@@ -507,3 +507,27 @@ test("IconButton native mouse, keyboard and focus handlers retain event identity
     fixture.unmount();
   }
 });
+
+test("IconButton preserves the native hyphenated content alias across prop updates", async () => {
+  const input = shallowRef<IconButtonProps>({
+    text: "Save",
+    "x-semi-children-alias": "first",
+  });
+  const fixture = mountVapor(
+    defineVaporComponent(() => <IconButton {...input.value} />),
+  );
+  try {
+    const content = () =>
+      fixture.host.querySelector(".semi-button-content-right")!;
+    expect(content().getAttribute("x-semi-prop")).toBe("first");
+    input.value = { text: "Save", "x-semi-children-alias": "second" };
+    await nextTick();
+    expect(content().getAttribute("x-semi-prop")).toBe("second");
+    input.value = { text: "Save", "x-semi-children-alias": undefined };
+    await nextTick();
+    expect(content().getAttribute("x-semi-prop")).toBe("children");
+    expect(fixture.host.querySelectorAll("[x-semi-prop]")).toHaveLength(1);
+  } finally {
+    fixture.unmount();
+  }
+});

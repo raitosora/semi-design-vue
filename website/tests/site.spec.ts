@@ -60,14 +60,21 @@ test("production: search, theme persistence, mobile navigation and screenshots",
   ).toBeVisible();
   await page.getByRole("button", { name: "搜索文档" }).click();
   await page.getByRole("searchbox").fill("兼容");
-  await expect(page.locator(".VPLocalSearchBox .result").first()).toContainText(
-    "兼容",
-  );
+  // Local search matches body text too; additions may change result ordering.
+  const result = page.locator(".VPLocalSearchBox .result").first();
+  await expect(result).toBeVisible();
+  const href = await result.getAttribute("href");
+  expect(href).toMatch(/^\/zh-CN\//);
+  await result.click();
+  await expect(page).toHaveURL(new URL(href!, "http://127.0.0.1:4181").href);
+  await expect(page.locator(".VPDoc")).toContainText("兼容");
+  await page.getByRole("button", { name: "搜索文档" }).click();
   await page.getByRole("searchbox").fill("Vapor");
   await expect(
     page.locator(".VPDocSearch .result, .VPLocalSearchBox .result").first(),
   ).toBeVisible();
   await page.keyboard.press("Escape");
+  await page.goto("http://127.0.0.1:4181/");
   await page.getByRole("switch").click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.reload();
@@ -202,6 +209,61 @@ test("source display matches the actual TSX input byte for byte", async ({
     await readFile("website/examples/fixture/Counter.vapor.tsx", "utf8"),
   );
 });
+
+for (const port of [4180, 4181]) {
+  test(`${port}: Button documentation runs its Vapor examples with keyboard, dynamic groups and ARIA`, async ({
+    checkedPage: page,
+  }) => {
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/components/button.html`);
+    const state = page.locator("[data-button-state-form]");
+    const save = state.getByRole("button", { name: "保存", exact: true });
+    await expect(save).toHaveAttribute("aria-disabled", "false");
+    await state.getByRole("button", { name: "开始加载", exact: true }).click();
+    await expect(save).toHaveClass(/semi-button-loading/);
+    await expect(save).toHaveCSS("pointer-events", "none");
+    await page.keyboard.press("Tab");
+    await save.focus();
+    expect(await save.evaluate((node) => node.matches(":focus-visible"))).toBe(
+      true,
+    );
+    await page.keyboard.press("Space");
+    await expect(state.locator("[data-button-state-result]")).toContainText(
+      "点击 1",
+    );
+
+    const groups = page.locator("[data-button-groups]");
+    const fileGroup = groups.getByRole("group", {
+      name: "文件操作",
+      exact: true,
+    });
+    await expect(fileGroup).toHaveAttribute("role", "group");
+    await expect(fileGroup.locator("[data-semi-button-line]")).toHaveCount(2);
+    await groups
+      .getByRole("button", { name: "添加动态操作", exact: true })
+      .click();
+    await expect(
+      fileGroup.getByRole("button", { name: "动态归档", exact: true }),
+    ).toBeVisible();
+    await expect(fileGroup.locator("[data-semi-button-line]")).toHaveCount(3);
+    const split = groups.getByRole("group", { name: "项目操作", exact: true });
+    await expect(split.locator("button").first()).toHaveClass(
+      /semi-button-first/,
+    );
+    await expect(split.locator("button").last()).toHaveClass(
+      /semi-button-last/,
+    );
+
+    await page.getByRole("switch").click();
+    await expect(page.locator("html")).toHaveClass(/dark/);
+    await expect(save).toHaveClass(/semi-button-loading/);
+    await page.goto(`http://127.0.0.1:${port}/zh-CN/guide/start.html`);
+    await expect(page.locator("[data-button-state-form]")).toHaveCount(0);
+    await page.goBack();
+    await expect(
+      state.getByRole("button", { name: "保存", exact: true }),
+    ).toBeVisible();
+  });
+}
 
 test("route disposal stops fixture timers and listeners without duplicate remounts", async ({
   checkedPage: page,

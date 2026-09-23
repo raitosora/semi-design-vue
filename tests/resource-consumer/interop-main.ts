@@ -8,6 +8,9 @@ import {
 } from "vue";
 import {
   Spin,
+  Button,
+  ButtonGroup,
+  SplitButtonGroup,
   IconButton,
   ConfigConsumer,
   ConfigProvider,
@@ -27,6 +30,7 @@ import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
 import "semi-ui-vue/styles/components/iconButton.css";
+import "semi-ui-vue/styles/components/button.css";
 
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
@@ -95,6 +99,73 @@ const app = createApp({
                 { "data-interop-button-icon": "", "aria-hidden": true },
                 "*",
               ),
+          },
+        ),
+        h(
+          Button,
+          {
+            className: "interop-button",
+            loading: spinning.value,
+            onClick: () => iconButtonClicks.value++,
+          },
+          {
+            default: () =>
+              h(
+                "span",
+                { "data-interop-button-label": "" },
+                iconButtonLabel.value,
+              ),
+            icon: () =>
+              h(
+                "span",
+                { "data-interop-button-icon": "", "aria-hidden": true },
+                "*",
+              ),
+          },
+        ),
+        h(
+          ButtonGroup,
+          {
+            className: "interop-button-group",
+            disabled: true,
+            type: "danger",
+            size: "small",
+          },
+          {
+            default: () => [
+              h(
+                Button,
+                { className: "interop-group-inherited" },
+                { default: () => h("span", "Inherited") },
+              ),
+              h(
+                Button,
+                {
+                  className: "interop-group-own",
+                  disabled: undefined,
+                  type: "warning",
+                },
+                { default: () => h("span", "Own") },
+              ),
+            ],
+          },
+        ),
+        h(
+          SplitButtonGroup,
+          { className: "interop-split-button-group" },
+          {
+            default: () => [
+              h(
+                Button,
+                { className: "interop-split-first" },
+                { default: () => h("span", "First") },
+              ),
+              h(
+                Button,
+                { className: "interop-split-last" },
+                { default: () => h("span", "Last") },
+              ),
+            ],
           },
         ),
         h(

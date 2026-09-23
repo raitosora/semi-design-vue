@@ -247,23 +247,28 @@ import IconButton, {
   type IconButtonIconScope,
   type IconButtonProps,
 } from "semi-ui-vue/iconButton";
-// @ts-expect-error Public Button is not delivered by the root entry.
-import { Button as UndeliveredButton } from "semi-ui-vue";
+import { Button, type ButtonProps } from "semi-ui-vue";
 // @ts-expect-error BaseButton is a private implementation, not a root export.
 import { BaseButton as PrivateBaseButton } from "semi-ui-vue";
 // @ts-expect-error The IconButton entry does not export its private BaseButton.
 import { BaseButton as PrivatePathBaseButton } from "semi-ui-vue/iconButton";
-// @ts-expect-error No public Button package subpath exists.
-import UndeliveredButtonPath from "semi-ui-vue/button";
 // @ts-expect-error The private BaseButton does not have a public package subpath.
 import PrivateBaseButtonPath from "semi-ui-vue/BaseButton";
-void [
-  UndeliveredButton,
-  PrivateBaseButton,
-  PrivatePathBaseButton,
-  UndeliveredButtonPath,
-  PrivateBaseButtonPath,
-];
+void [Button, PrivateBaseButton, PrivatePathBaseButton, PrivateBaseButtonPath];
+// @ts-expect-error Button content is expressed with a native Vapor slot, not children.
+export const buttonRawChildren: ButtonProps = { children: <span /> };
+// @ts-expect-error Button icon content is expressed with a native Vapor icon slot.
+export const buttonNode: ButtonProps = { icon: <svg /> };
+export function buttonGlobalSlotBoundary() {
+  semiGlobal.configure({
+    overrideDefaultProps: {
+      Button: {
+        // @ts-expect-error Global Button defaults exclude native slots.
+        "v-slots": { default: () => <span /> },
+      },
+    },
+  });
+}
 // @ts-expect-error React event casing is not the native Vue event name.
 export const iconButtonReactMouse = <IconButton onMouseDown={() => {}} />;
 // @ts-expect-error React event casing is not the native Vue event name.

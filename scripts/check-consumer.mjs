@@ -314,6 +314,7 @@ try {
   const rejectedLocaleExports = [];
   const rejectedSpinExports = [];
   const rejectedIconButtonExports = [];
+  const rejectedButtonExports = [];
   for (const exportName of [
     "ConfigProvider",
     "ConfigConsumer",
@@ -321,6 +322,9 @@ try {
     "LocaleConsumer",
     "Spin",
     "IconButton",
+    "Button",
+    "ButtonGroup",
+    "SplitButtonGroup",
   ]) {
     // Each export is tested alone: another missing named export cannot make a
     // leaked browser component accidentally pass this gate.
@@ -331,7 +335,7 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
@@ -339,9 +343,15 @@ try {
             ? "IconButton"
             : exportName === "Spin"
               ? "Spin"
-              : exportName.startsWith("Locale")
-                ? "LocaleProvider"
-                : "ConfigProvider",
+              : exportName === "Button"
+                ? "Button"
+                : exportName === "ButtonGroup"
+                  ? "ButtonGroup"
+                  : exportName === "SplitButtonGroup"
+                    ? "SplitButtonGroup"
+                    : exportName.startsWith("Locale")
+                      ? "LocaleProvider"
+                      : "ConfigProvider",
           exportName,
         ),
       );
@@ -376,9 +386,11 @@ try {
       ? rejectedIconButtonExports
       : exportName === "Spin"
         ? rejectedSpinExports
-        : exportName.startsWith("Locale")
-          ? rejectedLocaleExports
-          : rejectedConfigExports
+        : ["Button", "ButtonGroup", "SplitButtonGroup"].includes(exportName)
+          ? rejectedButtonExports
+          : exportName.startsWith("Locale")
+            ? rejectedLocaleExports
+            : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -430,6 +442,7 @@ try {
         rejectedLocaleExports,
         rejectedSpinExports,
         rejectedIconButtonExports,
+        rejectedButtonExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

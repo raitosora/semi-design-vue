@@ -1,5 +1,6 @@
 import type { InjectionKey, Ref } from "vue";
 import type { SpinProps } from "../components/spin/types.js";
+import type { ButtonProps } from "../components/button/types.js";
 import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
@@ -14,6 +15,7 @@ export interface SemiComponentProps {
     | "childStyle"
     | "style"
   >;
+  Button: Omit<ButtonProps, "v-slots" | "icon" | "children">;
 }
 
 export type DefaultProps<P> = Readonly<{ [K in keyof P]?: P[K] | undefined }>;

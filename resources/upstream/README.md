@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin and iconButton. All other
+accepted public families are icons, configProvider, locale, spin, iconButton and button. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -93,3 +93,14 @@ React nodes and cloning; iconSize/iconStyle retain their upstream no-op behavior
 Strict declarations, live examples, animation disposal and isolated tarballs
 cover browser execution; Node static imports do not establish component SSR,
 hydration or CommonJS support.
+
+The `button` record accepts Button, ButtonGroup and SplitButtonGroup. Button
+routes through the existing IconButton and private BaseButton leaf, captures
+global defaults per instance, and preserves native form and activation behavior.
+ButtonGroup uses registered direct DOM children instead of cloning React nodes;
+SplitButtonGroup assigns nested descendants to their nearest split container and
+cleans stale boundary classes. Native slot outlets preserve ownership when a
+VDOM host rerenders through Vue interop. The record cites strict source/generated
+declarations, pure Vapor and separate interop tests, live documentation, themed
+styles, lifecycle cleanup and actual tarball consumers. There are no static
+Button child components, public BaseButton value, or new menu/Divider behavior.

@@ -317,6 +317,33 @@ requiredDefaults.configure({
 createDefaultPropsResolver(requiredDefaults, "Required", {
   count: undefined,
 }).resolve({ count: undefined });
+semiGlobal.configure({
+  overrideDefaultProps: { Button: { type: "primary", loading: false } },
+});
+semiGlobal.configure({
+  overrideDefaultProps: {
+    Button: {
+      // @ts-expect-error Global defaults cannot carry Vapor slots.
+      "v-slots": { default: () => document.createTextNode("Save") },
+    },
+  },
+});
+semiGlobal.configure({
+  overrideDefaultProps: {
+    Button: {
+      // @ts-expect-error Global defaults cannot carry React-style icon nodes.
+      icon: () => [],
+    },
+  },
+});
+semiGlobal.configure({
+  overrideDefaultProps: {
+    Button: {
+      // @ts-expect-error Global defaults cannot carry React-style children.
+      children: "Save",
+    },
+  },
+});
 void [clearedContext, clearedDate];
 
 import {

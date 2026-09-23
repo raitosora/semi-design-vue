@@ -349,6 +349,21 @@ function checkGraph(mode = "vapor") {
     /semi-ui-vue\/dist\/iconButton-[^/\n]+\.js/.test(modules),
     "IconButton implementation missing from consumer graph",
   );
+  assert(
+    /semi-ui-vue\/dist\/button-[^/\n]+\.js/.test(modules),
+    "Button implementation missing from consumer graph",
+  );
+  assert(
+    /semi-ui-vue\/dist\/buttonGroup-[^/\n]+\.js/.test(modules),
+    "ButtonGroup implementation missing from consumer graph",
+  );
+  // This entry contains the implementation directly, unlike the shared chunks
+  // emitted for Button and ButtonGroup. Require its retained module, not a
+  // hypothetical splitButtonGroup hash-named chunk.
+  assert(
+    /semi-ui-vue\/dist\/components\/button\/splitButtonGroup\.js/.test(modules),
+    "SplitButtonGroup implementation missing from consumer graph",
+  );
   if (mode === "vapor")
     assert(
       graph.compilationInputs.some((id) =>
@@ -356,6 +371,23 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public IconButton subpath",
     );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/button\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Button subpath",
+    );
+  if (mode === "vapor")
+    for (const subpath of ["buttonGroup", "splitButtonGroup"])
+      assert(
+        graph.compilationInputs.some((id) =>
+          new RegExp(
+            `semi-ui-vue/dist/components/button/${subpath}\\.js$`,
+          ).test(id),
+        ),
+        `Pure Vapor consumer did not resolve the public ${subpath} subpath`,
+      );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -648,6 +680,11 @@ async function browserCheck(url) {
       "Packed IconButton behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkButton())) ===
+        "button consumer passed",
+      "Packed Button/Group behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -835,6 +872,38 @@ async function interopBrowserCheck(url) {
       "Interop loading click callback duplicated or blocked",
     );
     assert(
+      (await page.locator('.interop-button [data-icon="spin"]').count()) ===
+        1 &&
+        (await page.locator(".interop-button").textContent()).includes(
+          "Save",
+        ) &&
+        (await page.locator(".interop-group-inherited").isDisabled()) &&
+        (await page
+          .locator(".interop-group-inherited")
+          .evaluate(
+            (element) =>
+              element.classList.contains("semi-button-danger-disabled") &&
+              element.classList.contains("semi-button-size-small"),
+          )) &&
+        !(await page.locator(".interop-group-own").isDisabled()) &&
+        (await page
+          .locator(".interop-split-first")
+          .evaluate((element) =>
+            element.classList.contains("semi-button-first"),
+          )) &&
+        (await page
+          .locator(".interop-split-last")
+          .evaluate((element) =>
+            element.classList.contains("semi-button-last"),
+          )),
+      "Interop Button/Group initial native contracts failed",
+    );
+    await page.locator(".interop-button").evaluate((button) => button.click());
+    assert(
+      (await page.locator(".interop-button-clicks").textContent()) === "2",
+      "Interop loading Button native click was duplicated or blocked",
+    );
+    assert(
       (await page.locator(".interop-spin .semi-spin-wrapper").count()) === 1,
       "Interop Spin initial loading failed",
     );
@@ -844,7 +913,7 @@ async function interopBrowserCheck(url) {
       "Interop indicator slot missing",
     );
     assert(
-      (await page.locator(".interop-resources svg").count()) === 6,
+      (await page.locator(".interop-resources svg").count()) === 7,
       "Interop did not mount all precompiled resource families",
     );
     for (const selector of [".interop-config-hook", ".interop-config-slot"])
@@ -904,8 +973,17 @@ async function interopBrowserCheck(url) {
     );
     await page.locator(".interop-icon-button").click();
     assert(
-      (await page.locator(".interop-button-clicks").textContent()) === "2",
+      (await page.locator(".interop-button-clicks").textContent()) === "3",
       "Interop IconButton native click duplicated",
+    );
+    assert(
+      (await page
+        .locator(".interop-button [data-interop-button-icon]")
+        .count()) === 1 &&
+        (await page.locator(".interop-button").textContent()).includes(
+          "Updated",
+        ),
+      "Interop Button reactive slots failed",
     );
     await page.evaluate(() => window.interopConsumer.disableButton());
     await page
@@ -913,7 +991,7 @@ async function interopBrowserCheck(url) {
       .evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-icon-button").isDisabled()) &&
-        (await page.locator(".interop-button-clicks").textContent()) === "2",
+        (await page.locator(".interop-button-clicks").textContent()) === "3",
       "Interop disabled IconButton dispatched click",
     );
     assert(
@@ -1027,6 +1105,10 @@ async function run() {
   assert(
     fixtureCompilation.modules?.includes("fixture:iconButton.tsx"),
     "IconButton fixture was not compiled",
+  );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:button.tsx"),
+    "Button fixture was not compiled",
   );
   assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),

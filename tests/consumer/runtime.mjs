@@ -36,9 +36,6 @@ for (const name of [
   );
 for (const [subpath, load] of [
   ["baseButton", () => import("semi-ui-vue/baseButton")],
-  ["button", () => import("semi-ui-vue/button")],
-  ["buttonGroup", () => import("semi-ui-vue/buttonGroup")],
-  ["splitButtonGroup", () => import("semi-ui-vue/splitButtonGroup")],
 ]) {
   let error;
   try {
@@ -48,7 +45,7 @@ for (const [subpath, load] of [
   }
   assert(
     error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED",
-    `Private/future subpath became public: ${subpath}`,
+    `Private BaseButton subpath became available from the Node condition: ${subpath}`,
   );
 }
 let requireError;
