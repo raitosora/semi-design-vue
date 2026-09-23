@@ -18,12 +18,7 @@ export async function checkIconButtonConsumer() {
     "IconButton entry identities differ",
   );
   assert(IconButton.elementType === "IconButton", "IconButton marker missing");
-  for (const name of [
-    "BaseButton",
-    "Button",
-    "ButtonGroup",
-    "SplitButtonGroup",
-  ])
+  for (const name of ["BaseButton"])
     assert(!Object.hasOwn(ui, name), `Unexpected public component: ${name}`);
   const host = document.createElement("div");
   document.body.append(host);

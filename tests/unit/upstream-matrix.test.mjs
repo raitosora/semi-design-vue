@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   readCurrentExports,
   buildMatrix,
+  resolvePublicTypeSource,
 } from "../../scripts/upstream-matrix.mjs";
 
 describe("existence and delivery are different dimensions", () => {
@@ -294,4 +295,201 @@ it("applies accepted mappings only to exact Icon type, member, and package keys"
     alignment: "accepted-reviewed-mapping",
   });
   expect(result.subpaths[0].alignment).toBe("accepted-reviewed-mapping");
+});
+
+it("resolves a public subpath declaration from source without reading dist", () => {
+  const packageDirectory = "packages/semi-ui-vue";
+  const currentSources = {
+    "packages/semi-ui-vue/src/components/button/index.ts":
+      "export type { HtmlType } from './types.js';\n",
+  };
+  const manifest = {
+    name: "semi-ui-vue",
+    exports: {
+      "./button": {
+        import: {
+          types: "./dist/components/button/index.d.ts",
+          default: "./dist/components/button/index.js",
+        },
+      },
+    },
+  };
+  expect(
+    resolvePublicTypeSource(
+      packageDirectory,
+      manifest,
+      "./button",
+      currentSources,
+    ),
+  ).toEqual({
+    sourcePath: "packages/semi-ui-vue/src/components/button/index.ts",
+    declaration: "./dist/components/button/index.d.ts",
+  });
+  expect(
+    resolvePublicTypeSource(
+      packageDirectory,
+      {
+        ...manifest,
+        exports: {
+          "./button": { types: "./dist/components/button/index.d.ts" },
+        },
+      },
+      "./button",
+      {
+        "packages/semi-ui-vue/src/components/button/index.ts": "",
+      },
+    ),
+  ).toEqual({
+    sourcePath: "packages/semi-ui-vue/src/components/button/index.ts",
+    declaration: "./dist/components/button/index.d.ts",
+  });
+  expect(() =>
+    resolvePublicTypeSource(
+      packageDirectory,
+      undefined,
+      "./button",
+      currentSources,
+    ),
+  ).toThrow();
+  expect(() =>
+    resolvePublicTypeSource(
+      packageDirectory,
+      { name: "semi-ui-vue", exports: {} },
+      "./button",
+      currentSources,
+    ),
+  ).toThrow();
+  expect(() =>
+    resolvePublicTypeSource(
+      packageDirectory,
+      { name: "semi-ui-vue", exports: { "./button": { import: {} } } },
+      "./button",
+      currentSources,
+    ),
+  ).toThrow();
+  for (const subpath of ["", ".", "../button", "./../button", "./button/*"])
+    expect(() =>
+      resolvePublicTypeSource(
+        packageDirectory,
+        manifest,
+        subpath,
+        currentSources,
+      ),
+    ).toThrow();
+  expect(() =>
+    resolvePublicTypeSource(packageDirectory, manifest, "./button", {}),
+  ).toThrow();
+  expect(() =>
+    resolvePublicTypeSource(packageDirectory, manifest, "./button", {
+      ...currentSources,
+      "packages/semi-ui-vue/src/components/button/index.tsx":
+        "export type HtmlType = string;",
+    }),
+  ).toThrow();
+});
+
+it("accepts only exact public subpath type targets and never falls back to root types", async () => {
+  const { buildSurfaceDifferences } =
+    await import("../../scripts/upstream-matrix.mjs");
+  const sourcePath = "packages/semi-ui/src/components/button/types.ts";
+  const privateSourcePath = "packages/semi-ui/src/components/button/private.ts";
+  const inventory = {
+    typeDeclarations: [
+      { name: "HtmlType", sourcePath },
+      { name: "PrivateType", sourcePath: privateSourcePath },
+    ],
+    staticApis: {},
+    packageSurfaces: [],
+    resources: [],
+  };
+  const currentPackage = {
+    name: "semi-ui-vue",
+    exports: { ".": {}, "./button": {} },
+    typeEntries: {
+      "./button": {
+        sourcePath: "packages/semi-ui-vue/src/components/button/index.ts",
+        declaration: "./dist/components/button/index.d.ts",
+        types: ["HtmlType"],
+      },
+    },
+  };
+  const accepted = (type) => ({
+    families: [
+      {
+        family: "button",
+        status: "accepted",
+        mappings: {
+          differences: { types: [type], staticMembers: [], subpaths: [] },
+        },
+      },
+    ],
+  });
+  const mapped = {
+    name: "HtmlType",
+    sourcePath,
+    currentPackage: "semi-ui-vue",
+    currentSubpath: "./button",
+  };
+  expect(
+    buildSurfaceDifferences(
+      inventory,
+      { types: [] },
+      [currentPackage],
+      {},
+      accepted(mapped),
+    ).types[0],
+  ).toMatchObject({
+    sameNameRootType: false,
+    currentTypeTarget: {
+      package: "semi-ui-vue",
+      subpath: "./button",
+      name: "HtmlType",
+    },
+    alignment: "accepted-reviewed-mapping",
+  });
+  for (const bad of [
+    { ...mapped, currentPackage: "missing-vue" },
+    { ...mapped, currentSubpath: "./missing" },
+    { ...mapped, name: "PrivateType", sourcePath: privateSourcePath },
+    { ...mapped, sourcePath: "packages/semi-ui/src/private.ts" },
+  ])
+    expect(() =>
+      buildSurfaceDifferences(
+        inventory,
+        { types: [] },
+        [currentPackage],
+        {},
+        accepted(bad),
+      ),
+    ).toThrow();
+  expect(() =>
+    buildSurfaceDifferences(
+      inventory,
+      { types: [] },
+      [currentPackage],
+      {},
+      accepted({ name: "HtmlType", sourcePath }),
+    ),
+  ).toThrow();
+  const hidden = structuredClone(currentPackage);
+  hidden.typeEntries["./button"].types = [];
+  expect(() =>
+    buildSurfaceDifferences(
+      inventory,
+      { types: [] },
+      [hidden],
+      {},
+      accepted(mapped),
+    ),
+  ).toThrow();
+});
+
+it("parses public TSX subpath type exports without treating JSX as invalid TypeScript", () => {
+  expect(
+    readCurrentExports(
+      'export type Theme = "light"; export const Group = () => <div />;',
+      undefined,
+      "buttonGroup.tsx",
+    ),
+  ).toEqual({ types: ["Theme"], values: ["Group"] });
 });

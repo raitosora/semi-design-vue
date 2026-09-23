@@ -8,7 +8,7 @@ import { buildIconStyles } from "./build-icon-styles.mjs";
 const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
-const components = ["input", "tooltip", "spin", "iconButton"];
+const components = ["input", "tooltip", "spin", "iconButton", "button"];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
@@ -188,6 +188,9 @@ function entrySources() {
       '@import "../vendor/foundation/button/iconButton";',
       "",
     ].join("\n"),
+    // Button and IconButton share the same fixed upstream SCSS closure.
+    // The aggregate imports it once through iconButton.
+    "components/button.scss": ['@import "./iconButton";', ""].join("\n"),
     "components/icons.scss": ['@import "../icons/index";', ""].join("\n"),
     "index.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -353,6 +356,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin and IconButton CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin, IconButton and Button CSS/SCSS style entries.",
   );
 }

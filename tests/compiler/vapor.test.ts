@@ -209,12 +209,19 @@ test("compiles Spin slots and reactive loading state as native Vapor DOM", async
 for (const file of [
   "components/iconButton/IconButton",
   "internal/button/BaseButton",
+  "components/button/Button",
+  "components/button/buttonGroup",
+  "components/button/splitButtonGroup",
 ]) {
   test(`compiles ${file} with native Vapor slots and DOM`, async () => {
     const result = await server.transformRequest(
       `/packages/semi-ui-vue/src/${file}.tsx`,
     );
-    expect(result?.code).toMatch(/createSlot/);
+    if (file === "components/button/Button") {
+      // Routing must live in a reactive Vapor block, not a setup-time ternary.
+      expect(result?.code).toMatch(/createIf\(/);
+      expect(result?.code).toMatch(/(?:createSlot|normalizeVaporSlots)/);
+    } else expect(result?.code).toMatch(/createSlot/);
     expect(result?.code).toMatch(
       /(?:renderEffect|setClass|setStyle|createComponent)\(/,
     );
@@ -223,3 +230,35 @@ for (const file of [
     );
   });
 }
+
+test("resolves public Button subpaths from source with every dist hidden", () => {
+  const config = ts.readConfigFile("tsconfig.base.json", ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const { options, errors } = ts.convertCompilerOptionsFromJson(
+    config.config.compilerOptions,
+    process.cwd(),
+  );
+  expect(errors).toEqual([]);
+  const isBuilt = (path: string) => /\/dist(?:\/|$)/.test(path);
+  const coldHost = {
+    ...ts.sys,
+    fileExists: (path: string) => !isBuilt(path) && ts.sys.fileExists(path),
+    directoryExists: (path: string) =>
+      !isBuilt(path) && ts.sys.directoryExists(path),
+  };
+  for (const [specifier, target] of [
+    ["semi-ui-vue/button", "index.ts"],
+    ["semi-ui-vue/button/buttonGroup", "buttonGroup.tsx"],
+    ["semi-ui-vue/button/splitButtonGroup", "splitButtonGroup.tsx"],
+  ]) {
+    const result = ts.resolveModuleName(
+      specifier!,
+      resolve("tests/consumer/consumer.ts"),
+      options,
+      coldHost,
+    );
+    expect(result.resolvedModule?.resolvedFileName).toBe(
+      resolve(`packages/semi-ui-vue/src/components/button/${target}`),
+    );
+  }
+});

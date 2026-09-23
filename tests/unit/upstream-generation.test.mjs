@@ -135,7 +135,54 @@ it("checks formal inputs alone and fails on real source, generated output and in
       "dir",
     );
     expect(JSON.parse(run()).sourceInputs).toBeGreaterThan(0);
+    // A cold checkout has source only: accepted subpath types must not require dist.
+    await expect(
+      readFile(
+        join(root, "packages/semi-ui-vue/dist/components/button/index.d.ts"),
+      ),
+    ).rejects.toThrow(/ENOENT/);
+    const generated = JSON.parse(
+      await readFile(join(root, "resources/upstream/matrix.json"), "utf8"),
+    );
+    expect(
+      generated.differences.types.find(
+        (entry) =>
+          entry.name === "HtmlType" &&
+          entry.sourcePath === "packages/semi-ui/button/Button.tsx",
+      ),
+    ).toMatchObject({
+      sameNameRootType: false,
+      alignment: "accepted-reviewed-mapping",
+      currentTypeTarget: {
+        package: "semi-ui-vue",
+        subpath: "./button",
+        name: "HtmlType",
+      },
+    });
+    for (const subpath of ["./button/splitButtonGroup", "./baseButton"]) {
+      const wrongTarget = structuredClone(acceptance);
+      const button = wrongTarget.families.find(
+        (record) => record.family === "button",
+      );
+      const target = button.mappings.differences.types.find(
+        (entry) => entry.name === "HtmlType",
+      );
+      target.currentSubpath = subpath;
+      await writeFile(
+        join(root, "resources/upstream/acceptance.json"),
+        JSON.stringify(wrongTarget),
+      );
+      expect(() => run(["--write"])).toThrow(
+        /(?:Accepted type mapping|Public type)/,
+      );
+    }
+    await writeFile(
+      join(root, "resources/upstream/acceptance.json"),
+      JSON.stringify(acceptance),
+    );
     const evidence = join(root, ".vitest/attachments/g16-upstream.json");
+    // Failed target checks clear stale evidence; the valid run recreates it.
+    expect(JSON.parse(run()).sourceInputs).toBeGreaterThan(0);
     expect(
       JSON.parse(await readFile(evidence, "utf8")).summary.upstreamFamilies,
     ).toBeGreaterThan(0);

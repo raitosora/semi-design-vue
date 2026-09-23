@@ -57,3 +57,17 @@ export type {
   IconButtonIconScope,
   HorizontalPaddingType,
 } from "./components/iconButton/index.js";
+
+export {
+  Button,
+  ButtonGroup,
+  SplitButtonGroup,
+} from "./components/button/index.js";
+export type {
+  ButtonProps,
+  ButtonSlots,
+  ButtonGroupProps,
+  ButtonGroupSlots,
+  SplitButtonGroupProps,
+  SplitButtonGroupSlots,
+} from "./components/button/index.js";

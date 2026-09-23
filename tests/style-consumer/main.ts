@@ -1,4 +1,5 @@
 import { iconButtonMarkup } from "./iconButton-markup";
+import { buttonMarkup } from "./button-markup";
 import { spinMarkup } from "./spin-markup";
 import "./plain.css";
 import "virtual:semi-theme.scss";
@@ -17,6 +18,8 @@ document.body.innerHTML = `
   </main>
   ${spinMarkup("semi")}
   ${iconButtonMarkup("semi")}
+  ${buttonMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
+  ${buttonMarkup("consumer")}
 `;

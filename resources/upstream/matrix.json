@@ -3,9 +3,9 @@
   "summary": {
     "upstreamFamilies": 83,
     "upstreamRootExports": 130,
-    "sameNameRootExports": 8,
-    "publiclyDeliveredFamilies": 5,
-    "behaviorAcceptedFamilies": 5,
+    "sameNameRootExports": 11,
+    "publiclyDeliveredFamilies": 6,
+    "behaviorAcceptedFamilies": 6,
     "pendingAcceptanceFamilies": 0
   },
   "families": [
@@ -164,15 +164,229 @@
       "sourcePath": "packages/semi-ui/button/buttonGroup.tsx",
       "exports": ["ButtonGroup", "Button", "SplitButtonGroup"],
       "upstreamExists": true,
-      "currentExports": [],
+      "currentExports": ["ButtonGroup", "Button", "SplitButtonGroup"],
       "infrastructure": [],
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
-      "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
-      "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
-      "acceptanceStatus": "unrecorded"
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "apiDifference": "Native button/reset/submit, visual type/theme/size/block/circle/colorful, icon position and padding, loading/disabled precedence and native event identity are mapped through Button → IconButton/private BaseButton. Global defaults and group own-key ordering follow the fixed React defaultProps/clone behavior. Group cooperation uses direct DOM registration; Split tracks native descendants with nested ownership and cleanup, with the exact migration differences recorded in limitations.",
+      "typeDifference": "ButtonProps and mapped BaseButtonProps use Vue button attributes, native event parameters, scalar text and VaporRenderResult slots. HtmlType/Size/Theme/Type/HorizontalPaddingType are button-subpath types, and each group subpath exports its Props/Slots (ButtonGroup also Theme). Runtime BaseButton stays private. React children/icon node props, arbitrary Group events, static Button.Group and global slot configuration are rejected.",
+      "staticDifference": "Button preserves elementType=\"Button\" and __SemiComponentName__=\"Button\". No static Group or SplitButtonGroup exists upstream or in this implementation; framework defaultProps/propTypes metadata is replaced by native typed resolution.",
+      "subpathDifference": "Vue exposes the browser root plus explicit button, button/buttonGroup and button/splitButtonGroup entries and button CSS/SCSS; upstream lib/es and lib/cjs paths remain unsupported.",
+      "acceptanceStatus": "accepted",
+      "acceptance": {
+        "family": "button",
+        "status": "accepted",
+        "reviewedDecision": "The native Vapor Button, ButtonGroup and SplitButtonGroup browser contracts are accepted against the fixed upstream source with explicit DOM child registration, slot forwarding and nested split ownership differences. Source and generated declarations, pure Vapor and separate Vue interop behavior, lifecycle cleanup, live Chinese documentation, themed styles and four isolated tarball consumer flows passed verification and independent review. BaseButton remains a private runtime leaf, and acceptance does not extend to other public families.",
+        "evidence": {
+          "contract": [
+            "packages/semi-ui-vue/src/components/button/types.ts",
+            "website/src/zh-CN/components/button.md"
+          ],
+          "implementation": [
+            "packages/semi-ui-vue/src/components/button/Button.tsx",
+            "packages/semi-ui-vue/src/components/button/buttonGroup.tsx",
+            "packages/semi-ui-vue/src/components/button/group-context.ts",
+            "packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx",
+            "packages/semi-ui-vue/src/internal/button/BaseButton.tsx",
+            "scripts/style-inputs.mjs"
+          ],
+          "sourceAndDeclarations": [
+            "packages/semi-ui-vue/src/index.ts",
+            "packages/semi-ui-vue/src/components/button/index.ts",
+            "packages/semi-ui-vue/package.json",
+            "tests/compiler/vapor.test.ts",
+            "tests/consumer/consumer.ts",
+            "tests/resource-consumer/consumer.ts",
+            "tests/consumer/button-browser.ts",
+            "tests/consumer/node-button-negative.ts",
+            "tests/consumer/node-buttonGroup-negative.ts",
+            "tests/consumer/node-splitButtonGroup-negative.ts"
+          ],
+          "browser": [
+            "tests/browser/button.test.tsx",
+            "tests/browser/button-interop.test.ts",
+            "tests/browser/button-contract.test.tsx",
+            "tests/browser/buttonGroup.test.tsx",
+            "tests/browser/buttonSplitGroup.test.tsx",
+            "tests/browser/splitButtonGroup.test.tsx",
+            "tests/e2e/button.spec.ts",
+            "tests/compiler/vapor.test.ts"
+          ],
+          "documentation": [
+            "website/src/zh-CN/components/button.md",
+            "website/src/zh-CN/guide/start.md",
+            "website/src/zh-CN/guide/styles.md",
+            "website/src/zh-CN/guide/theme.md",
+            "website/examples/button/Basic.vapor.tsx",
+            "website/examples/button/Groups.vapor.tsx",
+            "website/examples/button/StateForm.vapor.tsx",
+            "website/tests/site.spec.ts"
+          ],
+          "consumer": [
+            "scripts/check-consumer.mjs",
+            "scripts/check-resource-consumer.mjs",
+            "scripts/check-style-consumer.mjs",
+            "tests/consumer/runtime.mjs",
+            "tests/consumer/node-button-negative.mjs",
+            "tests/resource-consumer/button.tsx",
+            "tests/resource-consumer/interop-main.ts",
+            "tests/style-consumer/button-check.mjs",
+            "tests/style-consumer/button-markup.ts",
+            "tests/resource-consumer/consumer.ts"
+          ],
+          "limitations": [
+            "Public components are browser-native Vapor ESM; the Node root exposes static infrastructure only. Component SSR, hydration and CJS are not supported. Vue 3.6.0-rc.9 and vue-jsx 3.3.0-rc.2 remain locked; the compiler ^3 peer rejects strict independent RC installs, and precompiled consumers do not resolve that limitation.",
+            "Button uses scalar text and native default/icon slots in place of React nodes. Icon slot presence selects the route without executing the slot. Decorative SVG attributes and colorful fill are supplied by the caller. iconSize/iconStyle retain upstream no-op behavior.",
+            "Global Button defaults are captured per instance before child and group resolution. Own undefined falls back to a captured global own key, otherwise it blocks disabled/size/type group inheritance before Base defaults. Group own theme/colorful override the child, with undefined falling back to the captured global value.",
+            "ButtonGroup coordinates only registered public Button roots that are direct DOM children, settling after the mount/update flush. A wrapper DOM node prevents inheritance; a custom component returning a direct Button root participates. Standalone IconButton, native buttons and other components are not cloned or injected. Nested groups own their registered children.",
+            "Group separator boundaries use rendered element/nonempty text siblings, ignoring Vapor anchors and empty branches instead of counting React raw child array entries. A following real non-Button node still causes a separator; outline suppresses it. Native-root replacement and removal dispose owned separators without deleting caller-owned nodes.",
+            "SplitButtonGroup queries native button descendants and gives nested split containers nearest ownership, unlike the upstream all-descendant traversal. Removed and unmounted buttons lose stale first/last markers, and subtree insertion/removal is reconciled. No Dropdown, Divider or menu behavior is included.",
+            "BaseButton is a private runtime leaf; the button subpath provides only its mapped BaseButtonProps type. Button has elementType and __SemiComponentName__, with no Button.Group or other static child API. Legacy upstream lib/es and lib/cjs subpaths are not Vue public entries.",
+            "Loading prevents pointer interaction through fixed upstream CSS while native keyboard and programmatic click remain enabled. Native disabled blocks activation. Browser evidence is Chromium-only, with local cached Chromium differing from CI; screenshots do not establish full pixel parity."
+          ]
+        },
+        "mappings": {
+          "api": "Native button/reset/submit, visual type/theme/size/block/circle/colorful, icon position and padding, loading/disabled precedence and native event identity are mapped through Button → IconButton/private BaseButton. Global defaults and group own-key ordering follow the fixed React defaultProps/clone behavior. Group cooperation uses direct DOM registration; Split tracks native descendants with nested ownership and cleanup, with the exact migration differences recorded in limitations.",
+          "types": "ButtonProps and mapped BaseButtonProps use Vue button attributes, native event parameters, scalar text and VaporRenderResult slots. HtmlType/Size/Theme/Type/HorizontalPaddingType are button-subpath types, and each group subpath exports its Props/Slots (ButtonGroup also Theme). Runtime BaseButton stays private. React children/icon node props, arbitrary Group events, static Button.Group and global slot configuration are rejected.",
+          "statics": "Button preserves elementType=\"Button\" and __SemiComponentName__=\"Button\". No static Group or SplitButtonGroup exists upstream or in this implementation; framework defaultProps/propTypes metadata is replaced by native typed resolution.",
+          "subpaths": "Vue exposes the browser root plus explicit button, button/buttonGroup and button/splitButtonGroup entries and button CSS/SCSS; upstream lib/es and lib/cjs paths remain unsupported.",
+          "differences": {
+            "types": [
+              {
+                "name": "ButtonProps",
+                "sourcePath": "packages/semi-ui/button/Button.tsx"
+              },
+              {
+                "name": "HtmlType",
+                "sourcePath": "packages/semi-ui/button/Button.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./button"
+              },
+              {
+                "name": "Size",
+                "sourcePath": "packages/semi-ui/button/Button.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./button"
+              },
+              {
+                "name": "Theme",
+                "sourcePath": "packages/semi-ui/button/Button.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./button"
+              },
+              {
+                "name": "Type",
+                "sourcePath": "packages/semi-ui/button/Button.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./button"
+              },
+              {
+                "name": "ButtonGroupProps",
+                "sourcePath": "packages/semi-ui/button/buttonGroup.tsx"
+              },
+              {
+                "name": "Theme",
+                "sourcePath": "packages/semi-ui/button/buttonGroup.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./button/buttonGroup"
+              },
+              {
+                "name": "ButtonProps",
+                "sourcePath": "packages/semi-ui/button/index.tsx"
+              },
+              {
+                "name": "SplitButtonGroupProps",
+                "sourcePath": "packages/semi-ui/button/splitButtonGroup.tsx"
+              }
+            ],
+            "staticMembers": [
+              { "rootExport": "Button", "name": "__SemiComponentName__" },
+              { "rootExport": "Button", "name": "elementType" }
+            ],
+            "subpaths": [
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/Button"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/Button.js"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/buttonGroup"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/buttonGroup.js"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/index"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/index.js"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/splitButtonGroup"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/button/splitButtonGroup.js"
+              }
+            ]
+          }
+        },
+        "verification": {
+          "status": "complete",
+          "reviewId": "button-native-vapor-contract-review-20260922",
+          "evidenceHashes": {
+            "packages/semi-ui-vue/src/components/button/types.ts": "9fe7270c06da7f8065569365826e28c43d0d3d185ee026267aae5811f729648b",
+            "website/src/zh-CN/components/button.md": "d21a137d7110ae05bad1bcc9552b91a99bab0743e3a30c079e36ca028fc8e6d9",
+            "packages/semi-ui-vue/src/components/button/Button.tsx": "7041b38ec6288878151576d9ae87626663a81360df6fa1588ee098864492546b",
+            "packages/semi-ui-vue/src/components/button/buttonGroup.tsx": "6c415121b3beac1f0c56bc7ffb0278a5e17dea0395c9af94eb23eb780dc269e9",
+            "packages/semi-ui-vue/src/components/button/group-context.ts": "86f75c2d0a5e1694a6943fa069c2cb7f8966849de7cc0e271d9c1bfc93e6c280",
+            "packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx": "c4cfff2b4ba85e6168cae5b27c08b1f1a70f47f190b9cbefb0df0c38a034f07e",
+            "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
+            "scripts/style-inputs.mjs": "d89279086766f7dfa4705d5a9d0b9791e138498a1b44825216ae9e15ab396386",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
+            "packages/semi-ui-vue/src/components/button/index.ts": "d52353178284eb3204d134f438b9a1be500fcba5db947207b63f85ffe82dcac4",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
+            "tests/compiler/vapor.test.ts": "775881bf48409e605635888ecde6c3f3f381f93cbaa7c3df911a877b755de49e",
+            "tests/consumer/consumer.ts": "75a9a7058acd4e906c3af23899dcc2387d2d41840b5bb465254fe8c139c3f75e",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
+            "tests/consumer/button-browser.ts": "9a924ced265f45e460380a62ab8dde70e25d721fe6aef5b1569f72a922c29701",
+            "tests/consumer/node-button-negative.ts": "f721335c1a5e74abf6fb594f62937f2392646f2b19cf9fc8ba3839689ac21065",
+            "tests/consumer/node-buttonGroup-negative.ts": "c64707bb86346e5273d00d6b9a0390ac228c0017a2655d2e41f59a45199b13c4",
+            "tests/consumer/node-splitButtonGroup-negative.ts": "913681c98e10fc49b86ca426da9b09a9c68fb7ceed1a43869f1d225d1128a6a9",
+            "tests/browser/button.test.tsx": "794dd14ae4c12a4fd2add3aeac715f6b1d4727a231bcbf91517c4335e65c8215",
+            "tests/browser/button-interop.test.ts": "85e24d9bbdc6309e4c72e68f917c672cde2b8f54b0056ceb62716a9a8d4dc5bb",
+            "tests/browser/button-contract.test.tsx": "b384eb63842cf3e2a9e48d85863925654a09c25d1aefc05c0571a67b4421a7c3",
+            "tests/browser/buttonGroup.test.tsx": "76706dc91281860851be639dc5ff95497faa193724f98f0b1b13b25e19971e06",
+            "tests/browser/buttonSplitGroup.test.tsx": "4d0e0bbbd2881bb1975accafb741ce5b33aadc9296d0edf1a2d72a5ef048e86b",
+            "tests/browser/splitButtonGroup.test.tsx": "0074da561b9eb6992c9dc28a13103d457eae99c9b80de50d6f75fd19181a3a59",
+            "tests/e2e/button.spec.ts": "7d63389e9435b80653f7dd1f3c8aedf9f3f1da35bed758aab80ad1235f741916",
+            "website/src/zh-CN/guide/start.md": "eadc6f59476044472736e415872e7d776a29a02a5d6e2e4e4b59ab472f94ef63",
+            "website/src/zh-CN/guide/styles.md": "9ae33569a45eb83bc1f224ef347aeb5047b98f43081eb76a0d95dcf7be2c0515",
+            "website/src/zh-CN/guide/theme.md": "adbc94830ad38e9617a194c5e4169d14e9d2a55b3d4f1bf7f5cb45c4b4338acc",
+            "website/examples/button/Basic.vapor.tsx": "c05a785b5c2bd4add373154a507937c46685d8f40e9da2aa37dd0776053ba790",
+            "website/examples/button/Groups.vapor.tsx": "a5670aa48c66f93feb931d743d072c35d59faec5b01f59d636444c942ae2ca0b",
+            "website/examples/button/StateForm.vapor.tsx": "17b7f7ae183bce6ad3d3db34465bbf3dc4f82401d9b10a90813e079525e38f96",
+            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
+            "scripts/check-style-consumer.mjs": "483a7189fb89e6abaec4243151934df8afbec52780c1c2aa769868dfb859b683",
+            "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
+            "tests/consumer/node-button-negative.mjs": "f721335c1a5e74abf6fb594f62937f2392646f2b19cf9fc8ba3839689ac21065",
+            "tests/resource-consumer/button.tsx": "35ca4258dd0b4907a6fdd2d47ef3f0b84765c5fe4971489e6b611c0b2d94f63a",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb",
+            "tests/style-consumer/button-check.mjs": "8bef5e4527465e7a4cc6bc29536b0d761577f6ca54946c5b753b4bd7ff4af905",
+            "tests/style-consumer/button-markup.ts": "3ade11d8f73c726af9a0061523ab0c012dff4d9fb28c2042090c6fe1f011552f"
+          }
+        }
+      }
     },
     {
       "name": "calendar",
@@ -422,7 +636,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "configProvider-iconButton-cold-source-review-20260922",
+          "reviewId": "configProvider-c-button-shared-evidence-review-20260922",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
             "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
@@ -430,26 +644,26 @@
             "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
             "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
             "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
-            "packages/semi-ui-vue/package.json": "0a0f41f770d5724ae657d454028c66bd41eab706d0b969cc69dbcb9185fc3e27",
-            "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
             "packages/semi-ui-vue/src/components/configProvider/index.ts": "9b8476194cb63fd9d206db194c22f4b29079287c88ec593ed848319197ca5f8a",
             "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
             "website/tests/contracts-positive.tsx": "e5249dcc3b81c892b32115201e433e1120f64c6523065b3e059fa7412dd73d8a",
-            "website/tests/contracts-negative.tsx": "fe9275de5085a65734ac50a7c8f0a9ad51fe8a371267ebebaca77cab6b7c3cc6",
-            "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
+            "website/tests/contracts-negative.tsx": "d11c8f51d95d6c210ed8ba9ab141d5f95ffb134f47eea21a68819b0fb570228e",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/browser/configProvider.test.tsx": "78344078b2928ec7d624b45c908d72bb0fee28ac583fc642451e55329fa62770",
             "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
             "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
             "tests/e2e/configProvider.spec.ts": "f31548ba05b7d35302c9b6b2781e004c2a1fdbbdf55b152d877d804c03bb3f6c",
-            "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
+            "tests/compiler/vapor.test.ts": "775881bf48409e605635888ecde6c3f3f381f93cbaa7c3df911a877b755de49e",
             "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
             "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
             "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
-            "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
+            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
             "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
-            "tests/resource-consumer/interop-main.ts": "79d27d0f6b7b649fa1d386ec0c4202ef161f0fca22d67deb6287613606bbcb63",
-            "scripts/check-resource-consumer.mjs": "194c5cf65f4b604c28b94ffa75a92ef1403f33c4ea312b1dbab55d0406e4fbb2",
-            "scripts/check-consumer.mjs": "09820237377fac5c9a938e4593ef2ec41b3b1aa07e49190a0c27e8aa32cdbbb3",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
             "tests/consumer/node-configProvider-negative.ts": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
             "tests/consumer/node-configProvider-negative.mjs": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd"
           }
@@ -698,7 +912,7 @@
       "apiDifference": "原生 button/content 结构、图标位置、padding、尺寸/theme/type/block/circle/colorful、loading与disabled优先级、原生表单和事件；children以text/default slot映射，icon以readonly fill作用域slot映射。保留iconSize/iconStyle no-op和分层默认值及prefix限制。",
       "typeDifference": "IconButtonProps继承Vue原生button属性并区分视觉type/htmlType；IconButtonSlots、IconButtonIconScope和HorizontalPaddingType支持原生Vapor块、只读fill与明确undefined。BaseButton内部声明依赖不是公开出口。",
       "staticDifference": "仅保留elementType = IconButton；无静态子组件、公开实例方法或全局defaults入口。",
-      "subpathDifference": "浏览器根具名IconButton与./iconButton默认/具名同一实现；CSS/SCSS为styles/components/iconButton。固定上游lib/es及lib/cjs旧路径不提供；Node根排除组件和私有BaseButton/未来Button组。",
+      "subpathDifference": "浏览器根具名IconButton与./iconButton默认/具名同一实现；CSS/SCSS为styles/components/iconButton。固定上游lib/es及lib/cjs旧路径不提供；Node根排除组件和私有BaseButton/Button组。",
       "acceptanceStatus": "accepted",
       "acceptance": {
         "family": "iconButton",
@@ -753,7 +967,7 @@
           ],
           "limitations": [
             "原生 icon/default slots 与 text 标量替代 React 节点；colorful 通过只读 fill scope 显式绑定，不克隆 VNode。空 slot 仍保留文本容器；动态条件使用原生 v-if，顶层数组/JSX三元混合不列为已验证用法。",
-            "保留固定上游 iconSize/iconStyle no-op、原始 theme/type 分支及 prefixCls 只影响装饰类的行为。BaseButton 私有且不注册全局默认；没有公开 Button 或组合按钮。",
+            "保留固定上游 iconSize/iconStyle no-op、原始 theme/type 分支及 prefixCls 只影响装饰类的行为。BaseButton 私有且不注册全局默认；公开 Button 和组合按钮由 button 族独立验收。",
             "loading CSS仅阻断指针，不禁键盘或程序click；disabled为原生禁用且优先保留普通图标。回调为Vue命名的原生事件，不提供React合成事件或新增回调别名。",
             "复用现有SpinIcon和CSS动画，不创建JS计时器。全局Spin.indicator ReactNode路径沿用不支持边界；无自定义loading indicator slot。",
             "公开浏览器根与./iconButton支持原生Vapor；普通Vue interop单独验收。Node根只静态工具，无组件SSR/水合/CJS承诺。",
@@ -764,7 +978,7 @@
           "api": "原生 button/content 结构、图标位置、padding、尺寸/theme/type/block/circle/colorful、loading与disabled优先级、原生表单和事件；children以text/default slot映射，icon以readonly fill作用域slot映射。保留iconSize/iconStyle no-op和分层默认值及prefix限制。",
           "types": "IconButtonProps继承Vue原生button属性并区分视觉type/htmlType；IconButtonSlots、IconButtonIconScope和HorizontalPaddingType支持原生Vapor块、只读fill与明确undefined。BaseButton内部声明依赖不是公开出口。",
           "statics": "仅保留elementType = IconButton；无静态子组件、公开实例方法或全局defaults入口。",
-          "subpaths": "浏览器根具名IconButton与./iconButton默认/具名同一实现；CSS/SCSS为styles/components/iconButton。固定上游lib/es及lib/cjs旧路径不提供；Node根排除组件和私有BaseButton/未来Button组。",
+          "subpaths": "浏览器根具名IconButton与./iconButton默认/具名同一实现；CSS/SCSS为styles/components/iconButton。固定上游lib/es及lib/cjs旧路径不提供；Node根排除组件和私有BaseButton/Button组。",
           "differences": {
             "types": [
               {
@@ -797,41 +1011,41 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "iconButton-iconButton-cold-source-review-20260922",
+          "reviewId": "iconButton-c-button-shared-evidence-review-20260922",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/iconButton/types.ts": "0f98bd9b93ffd09c4a8dc1b8514944445999c1a2874f22bb14f8a0cb59fd5bd7",
-            "website/src/zh-CN/components/iconButton.md": "2a496974bb7ee45eee65b692d4087cd0a0fc5f0ad3a58e89c23c714cd2508de7",
-            "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx": "df1f42e5f8b01aa67cfddedeb715d19dda9d5f66b3d0f9b04a2513b8cea5cd11",
-            "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "e46047847815b4c1b2737e079fd5831769e88b951a7aec62f8c51870c028258f",
-            "packages/semi-ui-vue/src/internal/button/types.ts": "7561b17ce1ec476aa93809236b1bd0941a6ed5ee7dc832d0399581c44b23c0ef",
-            "scripts/style-inputs.mjs": "88827ecfec8d31ef309db0a53d9dc987573f45cf8d8766b86a54ac39f5403dd2",
-            "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+            "website/src/zh-CN/components/iconButton.md": "2534fe0d5d868e7c8e4e6bb1aa519e3faa9e88bb15ec292f1a6996284a8b0caa",
+            "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx": "b4953b9967f3c8d819fbf3ee705a0356b7ef783a9c017edb4f69a9cef8e7da6b",
+            "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
+            "packages/semi-ui-vue/src/internal/button/types.ts": "3cc134e7195e49aa5b2ad2c69081c9f84c2e5f567e1440217d7f33f44fa4f8df",
+            "scripts/style-inputs.mjs": "d89279086766f7dfa4705d5a9d0b9791e138498a1b44825216ae9e15ab396386",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
             "packages/semi-ui-vue/src/components/iconButton/index.ts": "8c6a57ff579c4603d5b250b8393fc78cd79b4136b817d16c18dc6c506d5235a3",
-            "packages/semi-ui-vue/package.json": "0a0f41f770d5724ae657d454028c66bd41eab706d0b969cc69dbcb9185fc3e27",
-            "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "website/tests/contracts-positive.tsx": "e5249dcc3b81c892b32115201e433e1120f64c6523065b3e059fa7412dd73d8a",
-            "website/tests/contracts-negative.tsx": "fe9275de5085a65734ac50a7c8f0a9ad51fe8a371267ebebaca77cab6b7c3cc6",
+            "website/tests/contracts-negative.tsx": "d11c8f51d95d6c210ed8ba9ab141d5f95ffb134f47eea21a68819b0fb570228e",
             "tests/consumer/node-iconButton-negative.ts": "7282af173f6604f94b54b96bcb763eb45e257c04f22e84d25299bb9e3f7e2aa0",
             "website/tsconfig.examples.json": "d47d1cbbcaf29402f238be8b135ebd49e3e306133401f1b8880c1d7494051330",
-            "tests/browser/iconButton.test.tsx": "23c86b941b52ca11f24720869b24331f417562394f801b05a7524d7a402f38f1",
-            "tests/e2e/iconButton.spec.ts": "36edb616f132027c96e4e589623651faf34a52e838f06dde45ea4b81f2066a08",
-            "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
-            "tests/unit/style-inputs.test.mjs": "ef2ece31acaa99fa8e55dada770a3c6490e11bc202cfd9a2379083d4e68110a6",
+            "tests/browser/iconButton.test.tsx": "46759c326ccb907aa11189b83359ae1e68e30c73effc48c4ce72e04841b7fb8f",
+            "tests/e2e/iconButton.spec.ts": "942dead55863f98d8db1245edead3a4065bb5876827e987e76f5fc268c396c6d",
+            "tests/compiler/vapor.test.ts": "775881bf48409e605635888ecde6c3f3f381f93cbaa7c3df911a877b755de49e",
+            "tests/unit/style-inputs.test.mjs": "1c72a64de064bd67d051b4300e35810c9635c83541d2422287d4a2da6219e9c6",
             "tests/style-consumer/iconButton-check.mjs": "8050728a7175c39ec2b576c20f02fe73a19a2b029d27125b5c12cd2929f81313",
             "website/examples/iconButton/Basic.vapor.tsx": "c6493309c01b417105ff63d62d8896e960c1773301893b09d480825eb1b13ed8",
             "website/examples/iconButton/Position.vapor.tsx": "eace92ac2d0405959ecd3ca4686d9a035df9a490e08020681401a24dc005404a",
-            "website/examples/iconButton/Dynamic.vapor.tsx": "30013d60fb8c8a8fd070217cb6438c4317d2e4e8ace6cbcdd934f8e5475bf2af",
+            "website/examples/iconButton/Dynamic.vapor.tsx": "d9f0a56563c5c46a1cfa4c674ed0e73ad8e1de500382ce12181fed43aefaa139",
             "website/examples/iconButton/Style.vapor.tsx": "3fd5213ba8db57c27c6ac750a6c4aa4c3deb5a533a6a30790012369630826ea5",
             "website/tests/iconButton.spec.ts": "980424497007ede3bf876c5e2f494b5bcd0f03a5d1a6cfbf36eda297d7bcda1b",
-            "website/src/zh-CN/guide/packages.md": "cf108aeb106a656a03bcfce36a62a985b8b119e0c808c07b825c87e3bf17472d",
-            "website/src/zh-CN/guide/compatibility.md": "d4aaba2c0fa9a988860adc3c16be50f3758d0a967da6d4df0e34e351fd778e40",
-            "scripts/check-consumer.mjs": "09820237377fac5c9a938e4593ef2ec41b3b1aa07e49190a0c27e8aa32cdbbb3",
-            "scripts/check-resource-consumer.mjs": "194c5cf65f4b604c28b94ffa75a92ef1403f33c4ea312b1dbab55d0406e4fbb2",
-            "scripts/check-style-consumer.mjs": "c44fdd652f920ae037576e35f903671d975a8fe1e08cbcf9da2148761db4696a",
-            "tests/consumer/runtime.mjs": "3c6b16bea34b8190b8a21a31c56de76dea4cfc0d941c5801108eecb41d3ae819",
+            "website/src/zh-CN/guide/packages.md": "a753e4624851915a0a92408497ecef00074ac90255bf008df7df44e4dbbb7220",
+            "website/src/zh-CN/guide/compatibility.md": "c4b5727a971472f08224c111d83a6aa1375a6a4bdcadb950e2327264bdc394e6",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
+            "scripts/check-style-consumer.mjs": "483a7189fb89e6abaec4243151934df8afbec52780c1c2aa769868dfb859b683",
+            "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
             "tests/consumer/node-iconButton-negative.mjs": "7282af173f6604f94b54b96bcb763eb45e257c04f22e84d25299bb9e3f7e2aa0",
-            "tests/resource-consumer/iconButton.tsx": "a506211a347e7ad9e058e99daaa563b97825057c9e0edb7216683c5af5884ee1",
-            "tests/resource-consumer/interop-main.ts": "79d27d0f6b7b649fa1d386ec0c4202ef161f0fca22d67deb6287613606bbcb63"
+            "tests/resource-consumer/iconButton.tsx": "c5ef7c413a5b7f784100e75535ae6f7fc8ca31c6364347e86e7fcbc7c28e986f",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb"
           }
         }
       }
@@ -939,7 +1153,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "icons-iconButton-disabled-rereview-20260922",
+          "reviewId": "icons-c-button-shared-evidence-review-20260922",
           "evidenceHashes": {
             "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
             "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
@@ -949,10 +1163,10 @@
             "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3",
             "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
             "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
-            "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
             "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
-            "packages/semi-ui-vue/package.json": "0a0f41f770d5724ae657d454028c66bd41eab706d0b969cc69dbcb9185fc3e27",
-            "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/consumer/node-icon-negative.ts": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
             "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
             "tests/browser/icons-interop.test.ts": "b0382f418a97d5da98b5a3558b0fa6c02da8cf3ef2809b305723743c5fbd551f",
@@ -960,19 +1174,19 @@
             "tests/e2e/icons.spec.ts": "320263dfcfb6ed27d3cb659c400425761beff99a7497bb27465362a42525b33b",
             "tests/unit/icons-style.test.mjs": "0eacfc4f3ee23cfab89748e06d0756458df69d9324760876ff787fe4ff4a2396",
             "website/src/zh-CN/components/icons.md": "145ceddda105d465af19ecb87a35c3f26018d00ef0449b393ccbe312d511f065",
-            "website/src/zh-CN/guide/packages.md": "cf108aeb106a656a03bcfce36a62a985b8b119e0c808c07b825c87e3bf17472d",
-            "website/src/zh-CN/guide/compatibility.md": "d4aaba2c0fa9a988860adc3c16be50f3758d0a967da6d4df0e34e351fd778e40",
+            "website/src/zh-CN/guide/packages.md": "a753e4624851915a0a92408497ecef00074ac90255bf008df7df44e4dbbb7220",
+            "website/src/zh-CN/guide/compatibility.md": "c4b5727a971472f08224c111d83a6aa1375a6a4bdcadb950e2327264bdc394e6",
             "website/examples/icons/Basic.vapor.tsx": "8a92410dd6a6e4b0ed76808dfc2f3698c1a67b26f6c1914fb3eb360c1d6f54a3",
             "website/examples/icons/CustomSvg.vapor.tsx": "07b899b4709b6b7f2a245ae1d47ce85aeec2c2f1628e1a712949cf57e6840612",
             "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
             "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
-            "website/tests/site.spec.ts": "65191548401311ba693c9db956f899fbb0be6853aabc1bd029e4fbba4b6fdf85",
-            "scripts/check-consumer.mjs": "09820237377fac5c9a938e4593ef2ec41b3b1aa07e49190a0c27e8aa32cdbbb3",
-            "scripts/check-resource-consumer.mjs": "194c5cf65f4b604c28b94ffa75a92ef1403f33c4ea312b1dbab55d0406e4fbb2",
-            "tests/consumer/runtime.mjs": "3c6b16bea34b8190b8a21a31c56de76dea4cfc0d941c5801108eecb41d3ae819",
+            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
+            "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
             "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
-            "tests/resource-consumer/main.tsx": "56dcc75c52cdcd2a6f79561f08fab1bc1e29ad8344cbf8721698a4791f0cc1a5",
-            "tests/resource-consumer/interop-main.ts": "79d27d0f6b7b649fa1d386ec0c4202ef161f0fca22d67deb6287613606bbcb63",
+            "tests/resource-consumer/main.tsx": "729a2333a4d5f5b98a1445eb92411aafc5d6d6b8779376ea6a62716bb2936a0b",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb",
             "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831"
           }
         }
@@ -1181,23 +1395,23 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "locale-iconButton-cold-source-review-20260922",
+          "reviewId": "locale-c-button-shared-evidence-review-20260922",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
             "website/src/zh-CN/components/locale.md": "af7e7a8d43de026dd8907db5a4dcfd16eada3fed832dcfc0d159ac7f175fbf31",
             "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx": "6f5f381fe26f2fee87cfcc47b02453078ebd2e27e4ac6707f8a9868fcbe940c9",
             "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx": "220fa47b137918087d8c012f976e66983f4bcdfed860a96d3c7411ad9bc33a64",
             "packages/semi-ui-vue/src/components/locale/context.ts": "fc97a18235107fe6c6ac24fb7fb7f6c4b196fa9cbf3ac863a1a53bce64deba23",
-            "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
             "packages/semi-ui-vue/src/components/locale/index.ts": "a09e4c3b03b238e178125963b98a71a5f05011b6bed50444d30e4c8c148bf2fc",
-            "packages/semi-ui-vue/package.json": "0a0f41f770d5724ae657d454028c66bd41eab706d0b969cc69dbcb9185fc3e27",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
             "website/tests/contracts-positive.tsx": "e5249dcc3b81c892b32115201e433e1120f64c6523065b3e059fa7412dd73d8a",
-            "website/tests/contracts-negative.tsx": "fe9275de5085a65734ac50a7c8f0a9ad51fe8a371267ebebaca77cab6b7c3cc6",
+            "website/tests/contracts-negative.tsx": "d11c8f51d95d6c210ed8ba9ab141d5f95ffb134f47eea21a68819b0fb570228e",
             "website/build.mjs": "6d2083a442e065a2b92e71bff909b47b16575211d7bfea6d34b65e3e5a1718eb",
             "website/tsconfig.examples.json": "d47d1cbbcaf29402f238be8b135ebd49e3e306133401f1b8880c1d7494051330",
-            "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/browser/locale.test.tsx": "0cd3d059ee70e9b93b4dcf2ac34d037f8356ac4388b55870cb943fedea01c304",
-            "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
+            "tests/compiler/vapor.test.ts": "775881bf48409e605635888ecde6c3f3f381f93cbaa7c3df911a877b755de49e",
             "tests/e2e/locale.spec.ts": "95a3ff04385d47fce5bd410ff096ea21eb06b2834488d8c622173f0d7be42a19",
             "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
             "website/src/zh-CN/guide/internationalization.md": "953940c2ac129297a248165ec19a76c06768a80b2e3cf0e9c6fb6b74d4e85283",
@@ -1206,10 +1420,10 @@
             "website/examples/locale/Nested.vapor.tsx": "c616d4297f91b05733976089d7e214b52dbfa4a6bf9e2fe7d5c19314479e7ccd",
             "website/examples/locale/DateBoundary.vapor.tsx": "c2da1e505ae535db36343576828ec288e550988f2d7cec36b3c4f23f86bcd22c",
             "website/tests/locale.spec.ts": "8109f1112749628bdcc98c36acc6622ca01a7fda7a1c8dd33578c019a9ce19fc",
-            "scripts/check-consumer.mjs": "09820237377fac5c9a938e4593ef2ec41b3b1aa07e49190a0c27e8aa32cdbbb3",
-            "scripts/check-resource-consumer.mjs": "194c5cf65f4b604c28b94ffa75a92ef1403f33c4ea312b1dbab55d0406e4fbb2",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
             "tests/resource-consumer/locale.tsx": "9d483bbca9d4bbd96ff954a3a53b42416eeee3964958606773dc6b17b02aa459",
-            "tests/resource-consumer/interop-main.ts": "79d27d0f6b7b649fa1d386ec0c4202ef161f0fca22d67deb6287613606bbcb63",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb",
             "tests/consumer/node-locale-negative.ts": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
             "tests/consumer/node-locale-negative.mjs": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
             "tests/unit/locale-inputs.test.mjs": "1d4180303e7c56bade94c1ec184b8140c48ef01061f11ebd0ae1c0a68c56a328"
@@ -1657,35 +1871,35 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "spin-iconButton-cold-source-review-20260922",
+          "reviewId": "spin-c-button-shared-evidence-review-20260922",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/spin/types.ts": "c4f6683132ba0f90b1c1c5dccee210cd7b3a7eae497de09694e36395ae1e59aa",
             "website/src/zh-CN/components/spin.md": "f97975a8c22164d661f06b5f7a8de3051edbb5bea9a0b84c74987e23be8d265a",
             "packages/semi-ui-vue/src/components/spin/Spin.tsx": "bb673c012ce14c5baf6058ea862323ddf71c2489fbb935440cabd03673e9a027",
             "packages/semi-ui-vue/src/components/spin/icon.tsx": "48aa282336d39dc3d0fe5a96d3d7fc54b5c2f5a053d93342b80404cd77c82f66",
-            "scripts/style-inputs.mjs": "88827ecfec8d31ef309db0a53d9dc987573f45cf8d8766b86a54ac39f5403dd2",
-            "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+            "scripts/style-inputs.mjs": "d89279086766f7dfa4705d5a9d0b9791e138498a1b44825216ae9e15ab396386",
+            "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
             "packages/semi-ui-vue/src/components/spin/index.ts": "b251f07dc1c879ffc3735884ae678da1fdfbcf5aea1a658fbba4ba99fdb856f4",
-            "packages/semi-ui-vue/package.json": "0a0f41f770d5724ae657d454028c66bd41eab706d0b969cc69dbcb9185fc3e27",
+            "packages/semi-ui-vue/package.json": "38e1d37653195d4701244510ce68392ff65f9a403b168a744ae318e1f109b4e2",
             "website/tests/contracts-positive.tsx": "e5249dcc3b81c892b32115201e433e1120f64c6523065b3e059fa7412dd73d8a",
-            "website/tests/contracts-negative.tsx": "fe9275de5085a65734ac50a7c8f0a9ad51fe8a371267ebebaca77cab6b7c3cc6",
+            "website/tests/contracts-negative.tsx": "d11c8f51d95d6c210ed8ba9ab141d5f95ffb134f47eea21a68819b0fb570228e",
             "website/build.mjs": "6d2083a442e065a2b92e71bff909b47b16575211d7bfea6d34b65e3e5a1718eb",
             "website/tsconfig.examples.json": "d47d1cbbcaf29402f238be8b135ebd49e3e306133401f1b8880c1d7494051330",
-            "tests/resource-consumer/consumer.ts": "0353c0296d4b55017a43750bd7850069ee299e1b38cdecb972fbc001850a0a37",
+            "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/consumer/node-spin-negative.ts": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
             "tests/browser/spin.test.tsx": "3b38b79d84736406b9ec9176a97b144ce4b4c949399b9e5467ae5d705b26bfbf",
-            "tests/compiler/vapor.test.ts": "a2a4e42d6343da2618a9ba74ee6a1f96b67c6f8140430c38b44a91f4dc4700ab",
+            "tests/compiler/vapor.test.ts": "775881bf48409e605635888ecde6c3f3f381f93cbaa7c3df911a877b755de49e",
             "tests/e2e/spin.spec.ts": "e0c7e57ca56ebff591c2fc6d1486488a04df7eab847d58076bf4a8539e86b394",
-            "tests/unit/style-inputs.test.mjs": "ef2ece31acaa99fa8e55dada770a3c6490e11bc202cfd9a2379083d4e68110a6",
+            "tests/unit/style-inputs.test.mjs": "1c72a64de064bd67d051b4300e35810c9635c83541d2422287d4a2da6219e9c6",
             "website/examples/spin/Basic.vapor.tsx": "b9f4acd818ce88fe7142f13dde2d6cb9e9c539898d0a94d3584effeda485cb2f",
             "website/examples/spin/Dynamic.vapor.tsx": "c902c0a3303a0dad2871f6e76e77fafe782bd300d0c75045b492427689a38079",
             "website/examples/spin/Custom.vapor.tsx": "10b3f6829ae45c1b4957faeb7304fc38b31f874d7f1ef14f4e55cf88a1642bd8",
             "website/tests/spin.spec.ts": "be7acc358688dac05238684ea3a10cd00a266defac436eda72be8d8e8e89802f",
-            "scripts/check-consumer.mjs": "09820237377fac5c9a938e4593ef2ec41b3b1aa07e49190a0c27e8aa32cdbbb3",
-            "scripts/check-resource-consumer.mjs": "194c5cf65f4b604c28b94ffa75a92ef1403f33c4ea312b1dbab55d0406e4fbb2",
-            "scripts/check-style-consumer.mjs": "c44fdd652f920ae037576e35f903671d975a8fe1e08cbcf9da2148761db4696a",
+            "scripts/check-consumer.mjs": "171351fe5a6a8cee19e6810fdd16601c93f09c8f370650c86b6c91f90d99f873",
+            "scripts/check-resource-consumer.mjs": "0c5994f77f025291c5c0485a06ddb80a26175f1f3b5f913f48d3ba572c32cfed",
+            "scripts/check-style-consumer.mjs": "483a7189fb89e6abaec4243151934df8afbec52780c1c2aa769868dfb859b683",
             "tests/resource-consumer/spin.tsx": "624ba3d48b37bc59639b3fd0f144793768cbb6d8cc5bbe557cd1d6d7a9cf3f70",
-            "tests/resource-consumer/interop-main.ts": "79d27d0f6b7b649fa1d386ec0c4202ef161f0fca22d67deb6287613606bbcb63",
+            "tests/resource-consumer/interop-main.ts": "78970476925dfe4bbac6577cc270fcfd98e1254e0e036e03c294ae39fe0a0ceb",
             "tests/consumer/node-spin-negative.mjs": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
             "tests/style-consumer/spin-markup.ts": "755ba8576c24a632d1baf541bcb8606109cc1f288455fc67cd2dd53d58237581",
             "tests/style-consumer/spin-only.scss": "d9d34c5d4085fc17ba1b44cc2c6b96c954a92f98415437453387f29b3a5554d9"
@@ -2292,13 +2506,13 @@
       "fingerprint": "b56fce887787d4b06970a3188754fb9394256282fc79cc09421861c46c91b37b",
       "family": "button",
       "upstreamExists": true,
-      "currentExportExists": false,
-      "classification": "absent",
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
-      "acceptanceStatus": "unrecorded"
+      "currentExportExists": true,
+      "classification": "public-component",
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "alignment": "accepted-reviewed-contract",
+      "difference": "Native button/reset/submit, visual type/theme/size/block/circle/colorful, icon position and padding, loading/disabled precedence and native event identity are mapped through Button → IconButton/private BaseButton. Global defaults and group own-key ordering follow the fixed React defaultProps/clone behavior. Group cooperation uses direct DOM registration; Split tracks native descendants with nested ownership and cleanup, with the exact migration differences recorded in limitations.",
+      "acceptanceStatus": "accepted"
     },
     {
       "name": "Button",
@@ -2312,13 +2526,13 @@
       "fingerprint": "fe347e46e79a52f49413782a10f2ee0160ebbe6befadb9d89aef5c97e149d990",
       "family": "button",
       "upstreamExists": true,
-      "currentExportExists": false,
-      "classification": "absent",
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
-      "acceptanceStatus": "unrecorded"
+      "currentExportExists": true,
+      "classification": "public-component",
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "alignment": "accepted-reviewed-contract",
+      "difference": "Native button/reset/submit, visual type/theme/size/block/circle/colorful, icon position and padding, loading/disabled precedence and native event identity are mapped through Button → IconButton/private BaseButton. Global defaults and group own-key ordering follow the fixed React defaultProps/clone behavior. Group cooperation uses direct DOM registration; Split tracks native descendants with nested ownership and cleanup, with the exact migration differences recorded in limitations.",
+      "acceptanceStatus": "accepted"
     },
     {
       "name": "Calendar",
@@ -3912,13 +4126,13 @@
       "fingerprint": "393b437dbe473f622279fa6e157bf4fc31f63ddbd1afc08118dab11cb7164d20",
       "family": "button",
       "upstreamExists": true,
-      "currentExportExists": false,
-      "classification": "absent",
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
-      "acceptanceStatus": "unrecorded"
+      "currentExportExists": true,
+      "classification": "public-component",
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "alignment": "accepted-reviewed-contract",
+      "difference": "Native button/reset/submit, visual type/theme/size/block/circle/colorful, icon position and padding, loading/disabled precedence and native event identity are mapped through Button → IconButton/private BaseButton. Global defaults and group own-key ordering follow the fixed React defaultProps/clone behavior. Group cooperation uses direct DOM registration; Split tracks native descendants with nested ownership and cleanup, with the exact migration differences recorded in limitations.",
+      "acceptanceStatus": "accepted"
     },
     {
       "name": "SplitTagGroup",
@@ -4583,6 +4797,8 @@
   ],
   "current": {
     "values": [
+      "Button",
+      "ButtonGroup",
       "ConfigConsumer",
       "ConfigProvider",
       "Icon",
@@ -4590,6 +4806,7 @@
       "LocaleConsumer",
       "LocaleProvider",
       "Spin",
+      "SplitButtonGroup",
       "ariaIdScopeKey",
       "clampDragOffset",
       "createAriaIdScope",
@@ -4632,6 +4849,10 @@
       "AriaIdScope",
       "Breakpoint",
       "BreakpointScreens",
+      "ButtonGroupProps",
+      "ButtonGroupSlots",
+      "ButtonProps",
+      "ButtonSlots",
       "ChangeCallback",
       "ConfigConsumerProps",
       "ConfigConsumerSlots",
@@ -4708,6 +4929,8 @@
       "SpinProps",
       "SpinSize",
       "SpinSlots",
+      "SplitButtonGroupProps",
+      "SplitButtonGroupSlots",
       "StaticContext",
       "TextDirection",
       "TriggerBinding",
@@ -5481,6 +5704,8 @@
       "private": true,
       "entry": {
         "values": [
+          "Button",
+          "ButtonGroup",
           "ConfigConsumer",
           "ConfigProvider",
           "Icon",
@@ -5488,6 +5713,7 @@
           "LocaleConsumer",
           "LocaleProvider",
           "Spin",
+          "SplitButtonGroup",
           "ariaIdScopeKey",
           "clampDragOffset",
           "createAriaIdScope",
@@ -5530,6 +5756,10 @@
           "AriaIdScope",
           "Breakpoint",
           "BreakpointScreens",
+          "ButtonGroupProps",
+          "ButtonGroupSlots",
+          "ButtonProps",
+          "ButtonSlots",
           "ChangeCallback",
           "ConfigConsumerProps",
           "ConfigConsumerSlots",
@@ -5606,6 +5836,8 @@
           "SpinProps",
           "SpinSize",
           "SpinSlots",
+          "SplitButtonGroupProps",
+          "SplitButtonGroupSlots",
           "StaticContext",
           "TextDirection",
           "TriggerBinding",
@@ -5712,7 +5944,50 @@
           "default": "./dist/styles/components/iconButton.css"
         },
         "./styles/components/iconButton.css": "./dist/styles/components/iconButton.css",
-        "./styles/components/iconButton.scss": "./dist/styles/components/iconButton.scss"
+        "./styles/components/iconButton.scss": "./dist/styles/components/iconButton.scss",
+        "./button": {
+          "types": "./dist/components/button/index.d.ts",
+          "import": "./dist/components/button/index.js"
+        },
+        "./button/buttonGroup": {
+          "types": "./dist/components/button/buttonGroup.d.ts",
+          "import": "./dist/components/button/buttonGroup.js"
+        },
+        "./button/splitButtonGroup": {
+          "types": "./dist/components/button/splitButtonGroup.d.ts",
+          "import": "./dist/components/button/splitButtonGroup.js"
+        },
+        "./styles/components/button": {
+          "sass": "./dist/styles/components/button.scss",
+          "default": "./dist/styles/components/button.css"
+        },
+        "./styles/components/button.css": "./dist/styles/components/button.css",
+        "./styles/components/button.scss": "./dist/styles/components/button.scss"
+      },
+      "typeEntries": {
+        "./button": {
+          "sourcePath": "packages/semi-ui-vue/src/components/button/index.ts",
+          "declaration": "./dist/components/button/index.d.ts",
+          "types": [
+            "BaseButtonProps",
+            "ButtonGroupProps",
+            "ButtonGroupSlots",
+            "ButtonProps",
+            "ButtonSlots",
+            "HorizontalPaddingType",
+            "HtmlType",
+            "Size",
+            "SplitButtonGroupProps",
+            "SplitButtonGroupSlots",
+            "Theme",
+            "Type"
+          ]
+        },
+        "./button/buttonGroup": {
+          "sourcePath": "packages/semi-ui-vue/src/components/button/buttonGroup.tsx",
+          "declaration": "./dist/components/button/buttonGroup.d.ts",
+          "types": ["ButtonGroupProps", "ButtonGroupSlots", "Theme"]
+        }
       }
     },
     {
@@ -5747,7 +6022,7 @@
     },
     "styles": {
       "generators": {
-        "scripts/style-inputs.mjs": "88827ecfec8d31ef309db0a53d9dc987573f45cf8d8766b86a54ac39f5403dd2",
+        "scripts/style-inputs.mjs": "d89279086766f7dfa4705d5a9d0b9791e138498a1b44825216ae9e15ab396386",
         "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3"
       },
       "iconSources": {
@@ -12634,8 +12909,8 @@
         "sourcePath": "packages/semi-ui/button/Button.tsx",
         "line": 18,
         "fingerprint": "5078281fd73ce6a1452826d26315a5d35ab0917555996bac1dbae6fa6d0241ca",
-        "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "sameNameRootType": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "HtmlType",
@@ -12644,8 +12919,13 @@
         "sourcePath": "packages/semi-ui/button/Button.tsx",
         "line": 13,
         "fingerprint": "59ab25385d1b543c4f12413109fb2a3194ed9dbcbe24a1754e873e00a79093a4",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./button",
+          "name": "HtmlType"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Size",
@@ -12654,8 +12934,13 @@
         "sourcePath": "packages/semi-ui/button/Button.tsx",
         "line": 14,
         "fingerprint": "fdeeb8431432cf0f894c17dcbe0f84fd0891fa9fbe1e2c44a77038011202f510",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./button",
+          "name": "Size"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Theme",
@@ -12664,8 +12949,13 @@
         "sourcePath": "packages/semi-ui/button/Button.tsx",
         "line": 15,
         "fingerprint": "1e5ebabd7131d3436f73cee3aeaac88f6bfde1d0b89bc5a6034f7d58f08b3498",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./button",
+          "name": "Theme"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Type",
@@ -12674,8 +12964,13 @@
         "sourcePath": "packages/semi-ui/button/Button.tsx",
         "line": 16,
         "fingerprint": "927df508124f2ebe5f6b291520f69bd20d0ace8c6238a027799e01a5f29eb6cb",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./button",
+          "name": "Type"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "ButtonGroupProps",
@@ -12684,8 +12979,8 @@
         "sourcePath": "packages/semi-ui/button/buttonGroup.tsx",
         "line": 13,
         "fingerprint": "aeedf6e559808a1bd4dae7e8111abd8963285a460bce30cd06e33a943d1526fe",
-        "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "sameNameRootType": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Theme",
@@ -12694,8 +12989,13 @@
         "sourcePath": "packages/semi-ui/button/buttonGroup.tsx",
         "line": 11,
         "fingerprint": "1e5ebabd7131d3436f73cee3aeaac88f6bfde1d0b89bc5a6034f7d58f08b3498",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./button/buttonGroup",
+          "name": "Theme"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "ButtonProps",
@@ -12704,8 +13004,8 @@
         "sourcePath": "packages/semi-ui/button/index.tsx",
         "line": 15,
         "fingerprint": "6ebbe5432fa0dd4bc39caf970fe2e63d48468ccc5696868ce3f832f1c983a0f3",
-        "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "sameNameRootType": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "SplitButtonGroupProps",
@@ -12714,8 +13014,8 @@
         "sourcePath": "packages/semi-ui/button/splitButtonGroup.tsx",
         "line": 10,
         "fingerprint": "b253f31a9b8cabebce538855bae6263fe83f2e8c58c4096a53e5874df50e8691",
-        "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "sameNameRootType": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "DayCalendarState",
@@ -19836,8 +20136,8 @@
         "line": 17,
         "evidence": "\"Button\"",
         "rootExport": "Button",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "elementType",
@@ -19848,8 +20148,8 @@
         "line": 41,
         "evidence": "'Button'",
         "rootExport": "Button",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Meta",
@@ -127065,7 +127365,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127107,7 +127407,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127149,7 +127449,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127191,7 +127491,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127233,7 +127533,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127275,7 +127575,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127317,7 +127617,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -127359,7 +127659,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -171670,6 +171970,12 @@
     "packages/semi-illustrations-vue/src/illustrations/index.ts": "8cf82338e904d93e942ebee98ec5c3fb5d6279c450124c412490a318223b9d27",
     "packages/semi-illustrations-vue/src/index.ts": "a73c7b000a654c2171deedf0906640d3cca0551bf2eed5bd85d4d4ada06ee1ff",
     "packages/semi-illustrations-vue/src/runtime.ts": "daaa133a9de197a847ccc43b782dfc68c562f4afa137717f8de4c508cca66e18",
+    "packages/semi-ui-vue/src/components/button/Button.tsx": "7041b38ec6288878151576d9ae87626663a81360df6fa1588ee098864492546b",
+    "packages/semi-ui-vue/src/components/button/buttonGroup.tsx": "6c415121b3beac1f0c56bc7ffb0278a5e17dea0395c9af94eb23eb780dc269e9",
+    "packages/semi-ui-vue/src/components/button/group-context.ts": "86f75c2d0a5e1694a6943fa069c2cb7f8966849de7cc0e271d9c1bfc93e6c280",
+    "packages/semi-ui-vue/src/components/button/index.ts": "d52353178284eb3204d134f438b9a1be500fcba5db947207b63f85ffe82dcac4",
+    "packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx": "c4cfff2b4ba85e6168cae5b27c08b1f1a70f47f190b9cbefb0df0c38a034f07e",
+    "packages/semi-ui-vue/src/components/button/types.ts": "9fe7270c06da7f8065569365826e28c43d0d3d185ee026267aae5811f729648b",
     "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
     "packages/semi-ui-vue/src/components/configProvider/ConfigProvider.tsx": "e62df856abb35c7d61561c6e72d924139a74d76d16d6378ebc490a680e85ea97",
     "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
@@ -171677,7 +171983,7 @@
     "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
     "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
     "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
-    "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx": "df1f42e5f8b01aa67cfddedeb715d19dda9d5f66b3d0f9b04a2513b8cea5cd11",
+    "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx": "b4953b9967f3c8d819fbf3ee705a0356b7ef783a9c017edb4f69a9cef8e7da6b",
     "packages/semi-ui-vue/src/components/iconButton/index.ts": "8c6a57ff579c4603d5b250b8393fc78cd79b4136b817d16c18dc6c506d5235a3",
     "packages/semi-ui-vue/src/components/iconButton/types.ts": "0f98bd9b93ffd09c4a8dc1b8514944445999c1a2874f22bb14f8a0cb59fd5bd7",
     "packages/semi-ui-vue/src/components/icons/index.ts": "97dec056a7f3162ba77e3ad5b1cccc3f32ff54f779d27d8cb73b2be5964304de",
@@ -171696,7 +172002,7 @@
     "packages/semi-ui-vue/src/context/context.ts": "ce84e0e99736adee320157f946cc1cd691c32aef27a52ce8eed2a15d541ec9e2",
     "packages/semi-ui-vue/src/context/global-defaults.ts": "c06c45f7b5d5b026b6f8d2a9843540fd04d5cc6569a8bab5331746aaf29e8dc4",
     "packages/semi-ui-vue/src/context/index.ts": "7644a14a29c3a2be79d2e3e5e609ba45d76bff23a636376fdb2c5a58ecd4757d",
-    "packages/semi-ui-vue/src/context/types.ts": "458c47fddac1de14ff5046f9924c930ff1da4506790b428269757e6b7e3993c6",
+    "packages/semi-ui-vue/src/context/types.ts": "30ed0876dce3c3e5d926d4bc7857b71a31074919d30f74913c7c0f386d7c61d3",
     "packages/semi-ui-vue/src/contracts/events.ts": "0abfb645214423a4c68495c17b8d5c82a8755d2f2a05ec857bd86fdcf164e848",
     "packages/semi-ui-vue/src/contracts/field.ts": "32ccbd4883be07be633423affccc9583c3ae4221f8f2a7a8562eedf1e20925bf",
     "packages/semi-ui-vue/src/contracts/props.ts": "00134a7c04bb38cff66e80564fd2235d2e0c90bfa98149e0c3387551c67dba0d",
@@ -171706,10 +172012,10 @@
     "packages/semi-ui-vue/src/dom/keyboard.ts": "e74e69634df12cbb070845913ed25fa9f3b86a23a0bc0f75dc15f02d87557fe0",
     "packages/semi-ui-vue/src/dom/resources.ts": "7122740e4cfbce84d9c643d173318bbf44d0445dca33e444d0fbefa2bcbbf15d",
     "packages/semi-ui-vue/src/dom/scheduling.ts": "101d1fe62b8610ba8828fdbbec11b79f456dd9a39132f77239e0d9693ec6dd0d",
-    "packages/semi-ui-vue/src/index.ts": "dc9c23489406dfa766ed4d4c1e960e2c0b680ba7074e542896c3f908381a0633",
+    "packages/semi-ui-vue/src/index.ts": "b41ffdc8f31ecaea43df2dad3f37e790da2c87f8db3710789d713dd25d6a6c85",
     "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
-    "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "e46047847815b4c1b2737e079fd5831769e88b951a7aec62f8c51870c028258f",
-    "packages/semi-ui-vue/src/internal/button/types.ts": "7561b17ce1ec476aa93809236b1bd0941a6ed5ee7dc832d0399581c44b23c0ef",
+    "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
+    "packages/semi-ui-vue/src/internal/button/types.ts": "3cc134e7195e49aa5b2ad2c69081c9f84c2e5f567e1440217d7f33f44fa4f8df",
     "packages/semi-ui-vue/src/internal/overlay/focus.ts": "fb5880e2fe30563b2e5cafd1419e50be649e4b904c1bee48118b495ee65e05d9",
     "packages/semi-ui-vue/src/internal/overlay/host.ts": "b886b27b161ce9a431128f9906e3d402de95d617b445f52d6ff6f7a78fd3f4da",
     "packages/semi-ui-vue/src/internal/overlay/portal.ts": "e69c1c6c9830f288faa2efea6d06d4767cd258f207fad952ef55f076dffb19c7",
@@ -171777,6 +172083,6 @@
     "packages/semi-ui-vue/src/locale/source/vi_VN.ts": "7753d4b42e455ba8958d7f39c62ea7c2b2cb30c58a8834649c5f6a4308b6586a",
     "packages/semi-ui-vue/src/locale/source/zh_CN.ts": "19eec8d677d3e750c5436d6737655ed3f35f5e58d9d07d2fd819cbe4d5031fd0",
     "packages/semi-ui-vue/src/locale/source/zh_TW.ts": "35abff16ac7be677edb3b8ad01268338d602c09fd42bdad585f985bc58ce82b0",
-    "packages/vite-plugin-semi-theme/src/index.ts": "cc58163518b1ee4f3de457e847697cb785cebff85635931ef24f2ec8c326ab19"
+    "packages/vite-plugin-semi-theme/src/index.ts": "8aad3ada41202cb8c55599245a67ebc6a5da08694e49d20927654b975e66dba7"
   }
 }

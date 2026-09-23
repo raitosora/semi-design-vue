@@ -1,8 +1,8 @@
 import ts from "typescript";
 
-export function readCurrentExports(text, resolveStar) {
+export function readCurrentExports(text, resolveStar, fileName = "entry.ts") {
   const source = ts.createSourceFile(
-    "entry.ts",
+    fileName,
     text,
     ts.ScriptTarget.Latest,
     true,
@@ -64,6 +64,45 @@ export function readCurrentExports(text, resolveStar) {
   )
     throw new Error("Duplicate current exports.");
   return { values: values.sort(), types: types.sort() };
+}
+
+export function resolvePublicTypeSource(
+  packageDirectory,
+  manifest,
+  subpath,
+  currentSources,
+) {
+  const literalPath = /^\.\/[A-Za-z0-9_-]+(?:\/[A-Za-z0-9_.-]+)*$/;
+  const validPath = (value) =>
+    typeof value === "string" &&
+    literalPath.test(value) &&
+    !value
+      .split("/")
+      .slice(1)
+      .some((part) => part === "." || part === "..");
+  if (
+    !validPath(subpath) ||
+    !manifest?.exports ||
+    !Object.hasOwn(manifest.exports, subpath)
+  )
+    throw new Error(`Public type subpath is not exported: ${subpath}`);
+  const conditions = manifest.exports[subpath];
+  const declaration = conditions?.types ?? conditions?.import?.types;
+  if (
+    !validPath(declaration) ||
+    !declaration.startsWith("./dist/") ||
+    !declaration.endsWith(".d.ts")
+  )
+    throw new Error(
+      `Public type declaration is missing or invalid: ${subpath}`,
+    );
+  const stem = `${packageDirectory}/src/${declaration.slice("./dist/".length, -".d.ts".length)}`;
+  const sources = [".ts", ".tsx"]
+    .map((extension) => stem + extension)
+    .filter((path) => Object.hasOwn(currentSources, path));
+  if (sources.length !== 1)
+    throw new Error(`Public type source is missing or ambiguous: ${subpath}`);
+  return { sourcePath: sources[0], declaration };
 }
 
 export function buildMatrix(upstream, current, facilities = {}) {
@@ -228,15 +267,31 @@ export function buildSurfaceDifferences(
       .map((record) => [record.family, record.mappings.differences ?? {}]),
   );
   for (const mappings of accepted.values()) {
-    for (const entry of mappings.types ?? [])
+    for (const entry of mappings.types ?? []) {
+      const surface = packageSurfaces.find(
+        (item) => item.name === entry.currentPackage,
+      );
+      const present =
+        entry.currentPackage || entry.currentSubpath
+          ? Boolean(
+              entry.currentPackage &&
+              entry.currentSubpath &&
+              surface &&
+              Object.hasOwn(surface.exports, entry.currentSubpath) &&
+              surface.typeEntries?.[entry.currentSubpath]?.types.includes(
+                entry.name,
+              ),
+            )
+          : current.types.includes(entry.name);
       if (
-        !current.types.includes(entry.name) ||
+        !present ||
         !inventory.typeDeclarations.some(
           (item) =>
             item.name === entry.name && item.sourcePath === entry.sourcePath,
         )
       )
         throw new Error(`Accepted type mapping is not present: ${entry.name}`);
+    }
     for (const entry of mappings.staticMembers ?? [])
       if (
         !inventory.staticApis[entry.rootExport]?.members.some(
@@ -261,12 +316,35 @@ export function buildSurfaceDifferences(
   const has = (kind, entry) =>
     [...accepted.values()].some((mappings) =>
       mappings[kind]?.some((mapping) =>
-        Object.entries(mapping).every(([key, value]) => entry[key] === value),
+        (kind === "types"
+          ? ["name", "sourcePath"]
+          : Object.keys(mapping)
+        ).every((key) => entry[key] === mapping[key]),
       ),
     );
+  const typeTarget = (entry) => {
+    const mapping = [...accepted.values()]
+      .flatMap((item) => item.types ?? [])
+      .find(
+        (item) =>
+          item.name === entry.name &&
+          item.sourcePath === entry.sourcePath &&
+          item.currentPackage,
+      );
+    return mapping
+      ? {
+          currentTypeTarget: {
+            package: mapping.currentPackage,
+            subpath: mapping.currentSubpath,
+            name: mapping.name,
+          },
+        }
+      : {};
+  };
   return {
     types: inventory.typeDeclarations.map((entry) => ({
       ...entry,
+      ...typeTarget(entry),
       sameNameRootType: current.types.includes(entry.name),
       alignment: has("types", entry)
         ? "accepted-reviewed-mapping"

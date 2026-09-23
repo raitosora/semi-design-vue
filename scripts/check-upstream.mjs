@@ -13,6 +13,7 @@ import {
   buildMatrix,
   buildSurfaceDifferences,
   readCurrentExports,
+  resolvePublicTypeSource,
   renderMatrix,
 } from "./upstream-matrix.mjs";
 import {
@@ -95,16 +96,20 @@ const currentSources = Object.fromEntries(
 );
 function packageEntry(path, seen = new Set()) {
   if (seen.has(path)) throw new Error(`Cyclic current export-star: ${path}`);
-  return readCurrentExports(currentSources[path], (specifier) => {
-    if (!specifier.startsWith("."))
-      throw new Error(`External current export-star: ${specifier}`);
-    const target = posix.normalize(
-      posix.join(posix.dirname(path), specifier.replace(/\.js$/, ".ts")),
-    );
-    if (!Object.hasOwn(currentSources, target))
-      throw new Error(`Unresolved current export-star: ${target}`);
-    return packageEntry(target, new Set([...seen, path]));
-  });
+  return readCurrentExports(
+    currentSources[path],
+    (specifier) => {
+      if (!specifier.startsWith("."))
+        throw new Error(`External current export-star: ${specifier}`);
+      const target = posix.normalize(
+        posix.join(posix.dirname(path), specifier.replace(/\.js$/, ".ts")),
+      );
+      if (!Object.hasOwn(currentSources, target))
+        throw new Error(`Unresolved current export-star: ${target}`);
+      return packageEntry(target, new Set([...seen, path]));
+    },
+    path,
+  );
 }
 const current = packageEntry("packages/semi-ui-vue/src/index.ts");
 const rootExports = inventory.root.namedExports.map((entry) => {
@@ -135,11 +140,35 @@ const matrix = applyAcceptance(
 const packageSurfaces = await Promise.all(
   packages.map(async (name) => {
     const manifest = await readJson(`packages/${name}/package.json`);
+    const subpaths = [
+      ...new Set(
+        acceptance.families
+          .filter((record) => record.status === "accepted")
+          .flatMap((record) => record.mappings.differences.types)
+          .filter((entry) => entry.currentPackage === manifest.name)
+          .map((entry) => entry.currentSubpath),
+      ),
+    ];
+    const typeEntries = Object.fromEntries(
+      subpaths.map((subpath) => {
+        const resolved = resolvePublicTypeSource(
+          `packages/${name}`,
+          manifest,
+          subpath,
+          currentSources,
+        );
+        return [
+          subpath,
+          { ...resolved, types: packageEntry(resolved.sourcePath).types },
+        ];
+      }),
+    );
     return {
       name: manifest.name,
       private: manifest.private,
       entry: packageEntry(`packages/${name}/src/index.ts`),
       exports: manifest.exports,
+      ...(subpaths.length ? { typeEntries } : {}),
     };
   }),
 );

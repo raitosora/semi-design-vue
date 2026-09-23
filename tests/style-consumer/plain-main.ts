@@ -1,4 +1,5 @@
 import { iconButtonMarkup } from "./iconButton-markup";
+import { buttonMarkup } from "./button-markup";
 import { spinMarkup } from "./spin-markup";
 import "./plain.css";
 
@@ -8,4 +9,5 @@ document.body.innerHTML = `
   </label>
   ${spinMarkup("semi")}
   ${iconButtonMarkup("semi")}
+  ${buttonMarkup("semi")}
 `;

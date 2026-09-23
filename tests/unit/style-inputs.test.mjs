@@ -46,7 +46,7 @@ describe("fixed Semi style inputs", () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
-      components: ["input", "tooltip", "spin", "iconButton"],
+      components: ["input", "tooltip", "spin", "iconButton", "button"],
     });
   });
 
@@ -272,6 +272,24 @@ describe("fixed Semi style inputs", () => {
       expect(prefixedButton).toContain("height: 40px");
       expect(prefixedButton).toContain("consumer-animation-rotate");
       expect(prefixedButton).not.toContain(".semi-button");
+      const button = await read("components/button.css");
+      expect(button).toBe(iconButton);
+      for (const selector of [
+        ".semi-button-group",
+        ".semi-button-group-line",
+        ".semi-button-split",
+        ".semi-button-first",
+        ".semi-button-last",
+      ])
+        expect(button).toContain(selector);
+      expect(button).not.toMatch(/\.semi-(?:divider|input|tooltip|spin)/);
+      const groupCss = sass.compileString(
+        '@use "components/button" with ($semi-prefix: consumer);',
+        { loadPaths: [output] },
+      ).css;
+      expect(groupCss).toContain(".consumer-button-group");
+      expect(groupCss).toContain(".consumer-button-split");
+      expect(groupCss).not.toContain(".semi-button");
       const provenance = JSON.parse(await read("sources.json"));
       expect(provenance.sources).toEqual(
         (await checkStyleInputs(root)).sourceHashes,

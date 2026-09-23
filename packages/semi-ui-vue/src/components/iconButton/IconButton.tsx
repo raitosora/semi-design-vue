@@ -12,6 +12,12 @@ const IconButtonComponent = defineVaporComponent<
 >(
   (props: IconButtonProps) => {
     const attrs = useAttrs();
+    // Runtime props normalize the public hyphenated attribute name.
+    const contentAlias = computed(
+      () =>
+        (props as IconButtonProps & { xSemiChildrenAlias?: string })
+          .xSemiChildrenAlias || "children",
+    );
     const slots = useSlots();
     const prefix = computed(() =>
       props.prefixCls === undefined ? "semi-button" : props.prefixCls,
@@ -113,7 +119,7 @@ const IconButtonComponent = defineVaporComponent<
                     ? `${prefix.value}-content-left`
                     : `${prefix.value}-content-right`
                 }
-                x-semi-prop={props["x-semi-children-alias"] || "children"}
+                x-semi-prop={contentAlias.value}
               >
                 <slot>{props.text}</slot>
               </span>

@@ -101,9 +101,31 @@ function validateDifferenceMappings(record) {
       throw new Error(`Accepted ${record.family} requires ${kind} mappings.`);
     const seen = new Set();
     for (const entry of entries) {
+      const scoped =
+        kind === "types" &&
+        entry &&
+        (Object.hasOwn(entry, "currentPackage") ||
+          Object.hasOwn(entry, "currentSubpath"));
+      const allowed = scoped
+        ? [...keys, "currentPackage", "currentSubpath"]
+        : keys;
+      const validTarget =
+        !scoped ||
+        (typeof entry.currentPackage === "string" &&
+          /^(?:@[a-z0-9_-]+\/)?[a-z0-9_-]+$/.test(entry.currentPackage) &&
+          typeof entry.currentSubpath === "string" &&
+          /^\.\/[A-Za-z0-9_-]+(?:\/[A-Za-z0-9_.-]+)*$/.test(
+            entry.currentSubpath,
+          ) &&
+          !entry.currentSubpath
+            .split("/")
+            .slice(1)
+            .some((part) => part === "." || part === ".."));
       if (
         !entry ||
-        Object.keys(entry).length !== keys.length ||
+        !validTarget ||
+        Object.keys(entry).length !== allowed.length ||
+        Object.keys(entry).some((key) => !allowed.includes(key)) ||
         !keys.every((key) => typeof entry[key] === "string" && entry[key])
       )
         throw new Error(
@@ -199,6 +221,7 @@ export async function validateAcceptedEvidence(root, acceptance) {
         /^(?:docs|experiments)\//.test(path) ||
         path
           .split("/")
+          .slice(1)
           .some(
             (segment) =>
               segment === "node_modules" ||

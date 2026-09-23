@@ -12,7 +12,7 @@ import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/iconButton.css";
 ```
 
-也可使用完整 `semi-ui-vue/styles.css`。图标按钮样式入口包含必要的基础按钮和图标按钮 SCSS 闭包，不代表公开 Button、ButtonGroup 或 SplitButtonGroup 已实现。内部 BaseButton 仅服务 IconButton，不提供包入口或公开类型。固定 SCSS 闭包中保留的 group / split 规则同样不表示公开组合组件已交付。直接使用生成 SVG 图标不需要 Icon 包装样式；使用公开 Icon 包装时另引入 `styles/components/icons.css`。
+也可使用完整 `semi-ui-vue/styles.css`。图标按钮样式入口包含必要的基础按钮和图标按钮 SCSS 闭包；公开 Button、ButtonGroup 与 SplitButtonGroup 通过独立 `button` 入口交付，见 [Button](./button.md)。内部 BaseButton 仍不提供包入口或公开类型。直接使用生成 SVG 图标不需要 Icon 包装样式；使用公开 Icon 包装时另引入 `styles/components/icons.css`。
 
 根与 IconButton 子路径是浏览器原生 Vapor 入口。纯 Node 根入口不导出 IconButton，不能据此声明组件 SSR、水合或 CJS 支持。当前包保持 private，未来发布使用 `@raitosora` scope，见[本地产物与消费](../guide/packages.md)。
 
@@ -54,24 +54,25 @@ colorful 保留固定上游的分支：根据调用点原始 theme / type 计算
 
 ## API
 
-| 属性                 | 类型                                                              | 默认值          | 说明                                                                       |
-| -------------------- | ----------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------- |
-| text                 | `string \| number \| null \| undefined`                           | 无              | 标量内容；default slot 优先                                                |
-| iconPosition         | `'left' \| 'right'`                                               | `'left'`        | 图标和文本的 DOM 顺序                                                      |
-| size                 | `'default' \| 'small' \| 'large'`                                 | `'default'`     | 按钮尺寸                                                                   |
-| theme                | `'solid' \| 'light' \| 'borderless' \| 'outline'`                 | `'light'`       | 基础按钮主题                                                               |
-| type                 | `'primary' \| 'secondary' \| 'tertiary' \| 'warning' \| 'danger'` | `'primary'`     | 视觉语义                                                                   |
-| htmlType             | `'button' \| 'reset' \| 'submit'`                                 | `'button'`      | 原生 button type                                                           |
-| loading / disabled   | `boolean`                                                         | `false`         | 加载样式 / 原生禁用                                                        |
-| block / colorful     | `boolean`                                                         | `false`         | 整行 / 彩色模式                                                            |
-| circle               | `boolean`                                                         | 无              | 圆形按钮类                                                                 |
-| noHorizontalPadding  | `boolean \| 'left' \| 'right' \| readonly ('left' \| 'right')[]`  | `false`         | 移除指定物理侧内边距                                                       |
-| class / className    | Vue class / `string`                                              | 无              | 根 button class 合并                                                       |
-| style                | `StyleValue`                                                      | 无              | 根样式，指定 padding 可被覆盖                                              |
-| contentClassName     | `string`                                                          | 无              | 内部内容 span 的 class                                                     |
-| prefixCls            | `string`                                                          | `'semi-button'` | 仅 IconButton 装饰类前缀，见上述限制                                       |
-| iconSize / iconStyle | 图标尺寸类型 / `CSSProperties`                                    | 无              | 兼容上游声明，当前不生效；请在 icon slot 内配置                            |
-| 原生 button 属性     | Vue `ButtonHTMLAttributes`，排除冲突字段                          | 无              | id、name、value、form、tabindex、title、ARIA 与 data 属性等转发到根 button |
+| 属性                  | 类型                                                              | 默认值          | 说明                                                                       |
+| --------------------- | ----------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------- |
+| text                  | `string \| number \| null \| undefined`                           | 无              | 标量内容；default slot 优先                                                |
+| iconPosition          | `'left' \| 'right'`                                               | `'left'`        | 图标和文本的 DOM 顺序                                                      |
+| size                  | `'default' \| 'small' \| 'large'`                                 | `'default'`     | 按钮尺寸                                                                   |
+| theme                 | `'solid' \| 'light' \| 'borderless' \| 'outline'`                 | `'light'`       | 基础按钮主题                                                               |
+| type                  | `'primary' \| 'secondary' \| 'tertiary' \| 'warning' \| 'danger'` | `'primary'`     | 视觉语义                                                                   |
+| htmlType              | `'button' \| 'reset' \| 'submit'`                                 | `'button'`      | 原生 button type                                                           |
+| loading / disabled    | `boolean`                                                         | `false`         | 加载样式 / 原生禁用                                                        |
+| block / colorful      | `boolean`                                                         | `false`         | 整行 / 彩色模式                                                            |
+| circle                | `boolean`                                                         | 无              | 圆形按钮类                                                                 |
+| noHorizontalPadding   | `boolean \| 'left' \| 'right' \| readonly ('left' \| 'right')[]`  | `false`         | 移除指定物理侧内边距                                                       |
+| class / className     | Vue class / `string`                                              | 无              | 根 button class 合并                                                       |
+| style                 | `StyleValue`                                                      | 无              | 根样式，指定 padding 可被覆盖                                              |
+| x-semi-children-alias | `string`                                                          | `children`      | 内容 span 的标记名，支持响应式更新                                         |
+| contentClassName      | `string`                                                          | 无              | 内部内容 span 的 class                                                     |
+| prefixCls             | `string`                                                          | `'semi-button'` | 仅 IconButton 装饰类前缀，见上述限制                                       |
+| iconSize / iconStyle  | 图标尺寸类型 / `CSSProperties`                                    | 无              | 兼容上游声明，当前不生效；请在 icon slot 内配置                            |
+| 原生 button 属性      | Vue `ButtonHTMLAttributes`，排除冲突字段                          | 无              | id、name、value、form、tabindex、title、ARIA 与 data 属性等转发到根 button |
 
 省略或显式 undefined 均回到对应内置默认值；text 的 undefined 表示无文本。disabled 由原生属性控制，组件生成的 aria-disabled 与它保持一致。
 
@@ -94,7 +95,7 @@ slots 使用原生 Vapor 块。文本包在元素中，空内容用空片段或 
 
 原生事件使用 Vue 命名，例如 onClick 接收 PointerEvent（继承 MouseEvent），onMousedown / onMouseenter / onMouseleave 接收 MouseEvent，onKeydown / onKeyup 接收 KeyboardEvent，onFocus / onBlur 接收 FocusEvent。事件返回值不改变行为；需要取消默认行为时调用 event.preventDefault()。不支持 React 大写复合命名 onMouseDown / onKeyDown，也不新增事件回调别名。
 
-根与 `semi-ui-vue/iconButton` 子路径提供 `IconButton`、`IconButtonProps`、`IconButtonSlots`、`IconButtonIconScope`、`HorizontalPaddingType`；子路径另有 default 导出。静态只读标识为 `IconButton.elementType = "IconButton"`。没有公开 ref 方法、静态子组件、v-model、自定义 loading indicator 或公开 BaseButton / Button。
+根与 `semi-ui-vue/iconButton` 子路径提供 `IconButton`、`IconButtonProps`、`IconButtonSlots`、`IconButtonIconScope`、`HorizontalPaddingType`；子路径另有 default 导出。静态只读标识为 `IconButton.elementType = "IconButton"`。没有公开 ref 方法、静态子组件、v-model、自定义 loading indicator 或公开 BaseButton；公开 Button 与组合组件由独立 `button` 入口提供。
 
 ## 无障碍、生命周期与验证边界
 

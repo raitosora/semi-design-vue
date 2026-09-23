@@ -49,6 +49,15 @@
       ],
       "semi-ui-vue/iconButton": [
         "./packages/semi-ui-vue/src/components/iconButton/index.ts"
+      ],
+      "semi-ui-vue/button": [
+        "./packages/semi-ui-vue/src/components/button/index.ts"
+      ],
+      "semi-ui-vue/button/buttonGroup": [
+        "./packages/semi-ui-vue/src/components/button/buttonGroup.tsx"
+      ],
+      "semi-ui-vue/button/splitButtonGroup": [
+        "./packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx"
       ]
     },
     "allowImportingTsExtensions": true

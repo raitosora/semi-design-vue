@@ -94,6 +94,10 @@ for (const mode of ["dev", "production"] as const) {
       .getByRole("button", { name: "更新内容", exact: true })
       .click();
     await expect(action).toContainText("更新后的内容");
+    await expect(action.locator("[x-semi-prop]")).toHaveAttribute(
+      "x-semi-prop",
+      "updatedContent",
+    );
     await dynamic
       .getByRole("button", { name: "开始加载", exact: true })
       .click();

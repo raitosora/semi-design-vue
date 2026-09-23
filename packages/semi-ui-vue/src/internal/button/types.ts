@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from "vue";
 
-/** Internal native-button surface used only by IconButton. */
+/** Internal native-button surface shared by Button and IconButton. */
 export interface BaseButtonProps extends Omit<ButtonHTMLAttributes, "type"> {
   type?:
     | "primary"

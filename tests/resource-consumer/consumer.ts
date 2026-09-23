@@ -504,16 +504,8 @@ const wrongIconButtonEvent: IconButtonProps = {
 };
 // @ts-expect-error BaseButton remains private.
 import { BaseButton } from "semi-ui-vue";
-// @ts-expect-error Public Button is not delivered by IconButton.
-import { Button } from "semi-ui-vue";
-// @ts-expect-error ButtonGroup remains undelivered.
-import { ButtonGroup } from "semi-ui-vue";
-// @ts-expect-error SplitButtonGroup remains undelivered.
-import { SplitButtonGroup } from "semi-ui-vue";
 // @ts-expect-error Private BaseButton has no public subpath.
 import BaseButtonFromSubpath from "semi-ui-vue/baseButton";
-// @ts-expect-error Future Button has no public subpath.
-import ButtonFromSubpath from "semi-ui-vue/button";
 void [
   iconButtonIdentity,
   namedIconButtonIdentity,
@@ -534,11 +526,7 @@ void [
   wrongIconButtonIndicator,
   wrongIconButtonEvent,
   BaseButton,
-  Button,
-  ButtonGroup,
-  SplitButtonGroup,
   BaseButtonFromSubpath,
-  ButtonFromSubpath,
 ];
 
 const iconButtonDisabledValues: IconButtonProps[] = [
@@ -551,3 +539,127 @@ const iconButtonStringFalse: IconButtonProps = { disabled: "false" };
 // @ts-expect-error Boolean strings are not component disabled values.
 const iconButtonStringTrue: IconButtonProps = { disabled: "true" };
 void [iconButtonDisabledValues, iconButtonStringFalse, iconButtonStringTrue];
+
+import {
+  Button,
+  ButtonGroup,
+  SplitButtonGroup,
+  type ButtonProps as RootButtonProps,
+} from "semi-ui-vue";
+import ButtonFromSubpath, {
+  Button as NamedButton,
+  ButtonGroup as GroupFromButtonEntry,
+  SplitButtonGroup as SplitFromButtonEntry,
+  type ButtonGroupProps,
+  type BaseButtonProps,
+  type ButtonProps,
+  type ButtonSlots,
+  type HorizontalPaddingType,
+  type SplitButtonGroupProps,
+} from "semi-ui-vue/button";
+import ButtonGroupFromSubpath, {
+  type ButtonGroupProps as ButtonGroupSubpathProps,
+  type ButtonGroupSlots,
+  type Theme as ThemeFromButtonGroup,
+} from "semi-ui-vue/button/buttonGroup";
+import SplitButtonGroupFromSubpath, {
+  type SplitButtonGroupProps as SplitButtonGroupSubpathProps,
+  type SplitButtonGroupSlots,
+} from "semi-ui-vue/button/splitButtonGroup";
+// @ts-expect-error Button helper aliases remain subpath-only type exports.
+import type { Theme } from "semi-ui-vue";
+const buttonIdentity: typeof Button = ButtonFromSubpath;
+const namedButtonIdentity: typeof Button = NamedButton;
+const groupIdentity: typeof ButtonGroup = GroupFromButtonEntry;
+const groupSubpathIdentity: typeof ButtonGroup = ButtonGroupFromSubpath;
+const splitIdentity: typeof SplitButtonGroup = SplitFromButtonEntry;
+const splitSubpathIdentity: typeof SplitButtonGroup =
+  SplitButtonGroupFromSubpath;
+const baseButtonProps: BaseButtonProps = {
+  type: "primary",
+  htmlType: "button",
+  prefixCls: "consumer-button",
+  onClick(event) {
+    const click: MouseEvent = event;
+    void click;
+  },
+};
+const horizontalPadding: HorizontalPaddingType = "right";
+const groupTheme: ThemeFromButtonGroup = "solid";
+const buttonProps: ButtonProps = {
+  type: "primary",
+  htmlType: "submit",
+  text: 0,
+  loading: undefined,
+};
+const publicChildrenAlias: ButtonProps = {
+  "x-semi-children-alias": "children",
+};
+const buttonSlots: ButtonSlots = {
+  default: () => document.createTextNode("Save"),
+  icon: (scope) => {
+    const fill: readonly string[] | undefined = scope.fill;
+    void fill;
+    return document.createTextNode("*");
+  },
+};
+const groupProps: ButtonGroupProps = {
+  disabled: true,
+  type: "danger",
+  size: "small",
+  theme: "solid",
+};
+const groupSlots: ButtonGroupSlots = {
+  default: () => document.createTextNode("Grouped"),
+};
+const splitProps: SplitButtonGroupProps = { className: "consumer-split" };
+const splitSlots: SplitButtonGroupSlots = {
+  default: () => document.createTextNode("Split"),
+};
+// @ts-expect-error Public BaseButtonProps retain slot-only icon rendering.
+const wrongBaseButtonIcon: BaseButtonProps = { icon: () => [] };
+// @ts-expect-error Public BaseButtonProps retain slot-only children.
+const wrongBaseButtonChildren: BaseButtonProps = { children: "Save" };
+// @ts-expect-error Button keeps React-style children private.
+const wrongButtonChildren: ButtonProps = { children: "Save" };
+// @ts-expect-error Internal content annotation is not public Button API.
+const wrongButtonAnnotateContent: ButtonProps = { annotateContent: true };
+// @ts-expect-error Internal native-element callback is not public Button API.
+const wrongButtonElementCallback: ButtonProps = { onButtonElement: () => {} };
+// @ts-expect-error Internal root prefix is not public Button API.
+const wrongButtonRootPrefix: ButtonProps = { rootPrefixCls: "consumer" };
+const wrongButtonNormalizedAlias: ButtonProps = {
+  // @ts-expect-error Vue-normalized internal alias is not public Button API.
+  xSemiChildrenAlias: "children",
+};
+// @ts-expect-error Button has no static Group member.
+const staticButtonGroup = Button.Group;
+void [
+  buttonIdentity,
+  namedButtonIdentity,
+  groupIdentity,
+  groupSubpathIdentity,
+  splitIdentity,
+  splitSubpathIdentity,
+  baseButtonProps,
+  horizontalPadding,
+  groupTheme,
+  buttonProps,
+  publicChildrenAlias,
+  buttonSlots,
+  groupProps,
+  groupSlots,
+  splitProps,
+  splitSlots,
+  true satisfies Same<RootButtonProps, ButtonProps>,
+  true satisfies Same<ButtonGroupProps, ButtonGroupSubpathProps>,
+  true satisfies Same<SplitButtonGroupProps, SplitButtonGroupSubpathProps>,
+  wrongBaseButtonIcon,
+  wrongBaseButtonChildren,
+  wrongButtonChildren,
+  wrongButtonAnnotateContent,
+  wrongButtonElementCallback,
+  wrongButtonRootPrefix,
+  wrongButtonNormalizedAlias,
+  staticButtonGroup,
+];

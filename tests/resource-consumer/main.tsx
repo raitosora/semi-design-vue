@@ -1,4 +1,5 @@
 import { checkIconButtonConsumer } from "./iconButton.js";
+import { checkButtonConsumer } from "./button.js";
 import { checkSpinConsumer } from "./spin.js";
 import { checkLocaleConsumer } from "./locale.js";
 import { checkConfigProviderConsumer } from "./configProvider.js";
@@ -45,6 +46,7 @@ declare global {
   interface Window {
     resourceConsumer: {
       checkIconButton(): Promise<string>;
+      checkButton(): Promise<string>;
       checkSpin(): Promise<string>;
       checkLocale(): Promise<string>;
       checkConfigProvider(): Promise<string>;
@@ -289,6 +291,7 @@ const virtualPointer = mountVirtualPointerConsumer();
 
 window.resourceConsumer = {
   checkIconButton: checkIconButtonConsumer,
+  checkButton: checkButtonConsumer,
   checkSpin: checkSpinConsumer,
   checkLocale: checkLocaleConsumer,
   checkConfigProvider: checkConfigProviderConsumer,
