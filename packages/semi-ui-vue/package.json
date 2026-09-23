@@ -116,7 +116,17 @@
       "default": "./dist/styles/components/button.css"
     },
     "./styles/components/button.css": "./dist/styles/components/button.css",
-    "./styles/components/button.scss": "./dist/styles/components/button.scss"
+    "./styles/components/button.scss": "./dist/styles/components/button.scss",
+    "./divider": {
+      "types": "./dist/components/divider/index.d.ts",
+      "import": "./dist/components/divider/index.js"
+    },
+    "./styles/components/divider": {
+      "sass": "./dist/styles/components/divider.scss",
+      "default": "./dist/styles/components/divider.css"
+    },
+    "./styles/components/divider.css": "./dist/styles/components/divider.css",
+    "./styles/components/divider.scss": "./dist/styles/components/divider.scss"
   },
   "files": [
     "dist",

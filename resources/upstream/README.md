@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton and button. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button and divider. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -104,3 +104,16 @@ VDOM host rerenders through Vue interop. The record cites strict source/generate
 declarations, pure Vapor and separate interop tests, live documentation, themed
 styles, lifecycle cleanup and actual tarball consumers. There are no static
 Button child components, public BaseButton value, or new menu/Divider behavior.
+
+The `divider` record accepts horizontal/vertical layout, text alignment, dashed
+lines, margins and native class/style/attribute forwarding against the fixed
+upstream component and its two SCSS sources. It creates no Foundation instance
+or component-specific global defaults; direction and theme inherit from DOM/CSS.
+A stable horizontal slot outlet classifies mounted DOM without invoking slots
+for inspection; empty/conditional content, numeric zero and mixed nodes have
+explicit Vue differences. Vertical layout does not mount content, and observer
+cleanup is verified on unmount. The root exports the component only; DividerProps
+and DividerSlots are subpath types. Strict declarations, live examples, dark/RTL
+geometry, lifecycle tests and actual tarballs cover pure Vapor and interop
+separately. Browser screenshots do not establish pixel equivalence or component
+SSR, hydration or CJS support. ButtonGroup's private line remains independent.

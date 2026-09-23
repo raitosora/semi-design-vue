@@ -285,3 +285,38 @@ export const iconButtonConditionalSlot = (
 export const iconButtonDisabledFalse = <IconButton disabled={false} />;
 export const iconButtonDisabledTrue = <IconButton disabled={true} />;
 export const iconButtonDisabledUndefined = <IconButton disabled={undefined} />;
+
+import DividerFromPath, {
+  type DividerProps,
+  type DividerSlots,
+} from "semi-ui-vue/divider";
+import { Divider } from "semi-ui-vue";
+const dividerIdentity: typeof Divider = DividerFromPath;
+const dividerProps: DividerProps = {
+  align: "left",
+  layout: "horizontal",
+  margin: 0,
+  dashed: false,
+  className: "extra",
+  class: ["base", { active: true }],
+  style: [{ marginTop: "2rem" }, "color: red"],
+  role: "separator",
+  "aria-orientation": "horizontal",
+  onClick: (event) => event.preventDefault(),
+};
+const dividerSlots: DividerSlots = { default: () => <>章节</> };
+export const dividerContracts = (
+  <div>
+    <Divider {...dividerProps} v-slots={dividerSlots} />
+    <DividerFromPath
+      align={undefined}
+      dashed={undefined}
+      layout={undefined}
+      margin={undefined}
+    >
+      {() => <strong>标题</strong>}
+    </DividerFromPath>
+    <Divider v-slots={{ default: () => [] }} />
+  </div>
+);
+void dividerIdentity;

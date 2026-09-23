@@ -388,6 +388,17 @@ function checkGraph(mode = "vapor") {
         ),
         `Pure Vapor consumer did not resolve the public ${subpath} subpath`,
       );
+  assert(
+    /semi-ui-vue\/dist\/divider-[^/\n]+\.js/.test(modules),
+    "Divider implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/divider\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Divider subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -685,6 +696,11 @@ async function browserCheck(url) {
       "Packed Button/Group behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkDivider())) ===
+        "divider consumer passed",
+      "Packed Divider behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -898,6 +914,15 @@ async function interopBrowserCheck(url) {
           )),
       "Interop Button/Group initial native contracts failed",
     );
+    assert(
+      (await page.locator(".interop-divider").getAttribute("class")).includes(
+        "semi-divider-with-text-left",
+      ) &&
+        (await page
+          .locator(".interop-divider [data-divider-label]")
+          .textContent()) === "Save",
+      "Interop Divider native element slot/alignment failed",
+    );
     await page.locator(".interop-button").evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "2",
@@ -984,6 +1009,44 @@ async function interopBrowserCheck(url) {
           "Updated",
         ),
       "Interop Button reactive slots failed",
+    );
+    assert(
+      (await page.locator(".interop-divider").getAttribute("class")).includes(
+        "semi-divider-with-text-right",
+      ) &&
+        (await page
+          .locator(".interop-divider [data-divider-label]")
+          .textContent()) === "Updated",
+      "Interop Divider reactive slot/alignment failed",
+    );
+    await page.evaluate(() =>
+      window.interopConsumer.updateDivider("vertical", true),
+    );
+    assert(
+      !(await page.locator(".interop-divider").textContent()) &&
+        (await page
+          .locator(".interop-divider")
+          .evaluate((element) => getComputedStyle(element).borderLeftStyle)) ===
+          "dashed",
+      "Interop vertical Divider rendered content or lost its border",
+    );
+    await page.evaluate(() =>
+      window.interopConsumer.updateDivider("horizontal", false),
+    );
+    assert(
+      !(await page.locator(".interop-divider").getAttribute("class")).includes(
+        "semi-divider-with-text",
+      ),
+      "Interop empty Divider retained text styling",
+    );
+    await page.evaluate(() =>
+      window.interopConsumer.updateDivider("horizontal", true),
+    );
+    assert(
+      (await page
+        .locator(".interop-divider [data-divider-label]")
+        .textContent()) === "Updated",
+      "Interop Divider slot did not remount",
     );
     await page.evaluate(() => window.interopConsumer.disableButton());
     await page
@@ -1111,6 +1174,10 @@ async function run() {
     "Button fixture was not compiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:divider.tsx"),
+    "Divider fixture was not compiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),
     "Spin fixture was not compiled",
   );
@@ -1135,12 +1202,18 @@ async function run() {
     "graph-plugin.ts",
     "index.html",
     "consumer.ts",
+    "divider-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
   ])
-    copyFileSync(join(fixture, name), join(consumer, name));
+    copyFileSync(
+      name === "divider-browser.ts"
+        ? join(root, "tests/consumer/divider-browser.ts")
+        : join(fixture, name),
+      join(consumer, name),
+    );
   writeFileSync(
     join(consumer, "tsconfig.json"),
     JSON.stringify(
@@ -1152,7 +1225,7 @@ async function run() {
           strict: true,
           skipLibCheck: false,
         },
-        files: ["consumer.ts", "interop-main.ts"],
+        files: ["consumer.ts", "divider-browser.ts", "interop-main.ts"],
       },
       null,
       2,

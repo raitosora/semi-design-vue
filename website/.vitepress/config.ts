@@ -45,6 +45,7 @@ export default defineConfig({
           { text: "Spin 加载中", link: "/zh-CN/components/spin" },
           { text: "IconButton 图标按钮", link: "/zh-CN/components/iconButton" },
           { text: "Button 按钮", link: "/zh-CN/components/button" },
+          { text: "Divider 分割线", link: "/zh-CN/components/divider" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

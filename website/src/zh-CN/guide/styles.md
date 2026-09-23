@@ -9,17 +9,18 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Button、Icon、Spin、IconButton、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
+UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Button、Divider、Icon、Spin、IconButton、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
 import "semi-ui-vue/styles/components/button.css";
+import "semi-ui-vue/styles/components/divider.css";
 import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
 import "semi-ui-vue/styles/components/iconButton.css";
 ```
 
-按需路径只加载基础、按钮、图标、加载和图标按钮样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
+按需路径只加载基础、按钮、分割线、图标、加载和图标按钮样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
 
 ```ts
 import "semi-ui-vue/styles/index.css";
@@ -31,7 +32,7 @@ import "semi-ui-vue/styles/index.css";
 
 样式来源固定为 Foundation / Theme `2.103.0`。构建只提取登记的 SCSS 闭包，随包提供必要源码、许可证及来源摘要；消费者无需安装官方 Foundation，也不需要 patch、override 或源码 alias。
 
-SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/button.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
+SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
 
 CSS variables 使用上游 `--semi-*` 名称。例如：
 
@@ -52,3 +53,5 @@ Button 样式入口复用固定的基础按钮与图标按钮 SCSS 闭包，供 
 ## 验证范围
 
 四条独立临时消费者通过 `pnpm pack` 生成的真实 tarball 安装，不读取库源码、仓库 patch 或 workspace 链接；验证 CSS、SCSS、主题插件、按需生产构建和浏览器执行。当前仍是 private 本地包，未进行 npm 发布；浏览器、SSR/水合和截图限制见[兼容边界](./compatibility.md)。
+
+Divider 使用固定上游 divider.scss / variables.scss 和共享主题闭包，CSS 与 SCSS 分项入口均为 `styles/components/divider`。文字、水平/垂直与虚线规则见 [Divider](../components/divider.md)；它没有 Foundation 状态机或运行时自动样式导入。

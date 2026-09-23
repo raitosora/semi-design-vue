@@ -58,6 +58,9 @@
       ],
       "semi-ui-vue/button/splitButtonGroup": [
         "./packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx"
+      ],
+      "semi-ui-vue/divider": [
+        "./packages/semi-ui-vue/src/components/divider/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

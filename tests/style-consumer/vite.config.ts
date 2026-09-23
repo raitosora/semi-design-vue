@@ -10,7 +10,7 @@ export default defineConfig({
       tokens: { "color-primary": "rgb(17, 105, 170)" },
       darkTokens: { "color-primary": "rgb(144, 202, 249)" },
       scss: { variables: { "height-control-default": "40px" } },
-      styles: ["base", "input", "spin", "iconButton", "button"],
+      styles: ["base", "input", "spin", "iconButton", "button", "divider"],
     }),
   ],
   build: {

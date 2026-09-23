@@ -182,6 +182,9 @@ await writeFile(
           "semi-ui-vue/iconButton": [
             "../../packages/semi-ui-vue/dist/components/iconButton/index.d.ts",
           ],
+          "semi-ui-vue/divider": [
+            "../../packages/semi-ui-vue/dist/components/divider/index.d.ts",
+          ],
           "semi-ui-vue/spin": [
             "../../packages/semi-ui-vue/dist/components/spin/index.d.ts",
           ],

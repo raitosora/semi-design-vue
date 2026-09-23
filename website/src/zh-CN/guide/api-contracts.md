@@ -99,3 +99,9 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Spin 的原生内容
 
 [Spin](../components/spin.md) 的 children、indicator 与富文本 tip 使用 default、indicator、tip 原生插槽，返回 VaporRenderResult；字符串需包在元素中，条件空内容可返回空数组。tip 文本属性仅接受 string/number，不接受 React 节点或异步回调。组件只按 slot 键存在性决定包装布局，不调用 slot 检测内容，也不缓存或克隆渲染结果。size、spinning、delay 的显式 undefined 与缺省采用有效默认值；这个组件的默认值规则不等同于 context 字段的显式清空规则。
+
+## Divider 的内容与原生属性
+
+[Divider](../components/divider.md) 仅有函数形式的 default slot；文本放在 fragment 内，原始字符串、VNode 与异步结果不属于 Vapor slot 返回值。水平布局根据已挂载 DOM 分类纯文本、复杂节点与空内容，忽略注释/零长度文本但保留空格和数字 0；不预执行 slot，不遍历或克隆 VNode。垂直布局不挂载 slot，恢复水平时新建内容实例。
+
+其安全 HTML attrs 与原生事件转发到根 div，`innerHTML` / `textContent` 被类型与运行时同时排除，避免覆盖 slot 所有权；role/ARIA 由调用方显式指定。`align` / `layout` 显式 undefined 恢复有效默认值，不适用受控字段的清空协议。根入口只导出组件值，Props/Slots 类型由 divider 子路径提供；没有全局默认配置、静态成员或公开 ref API。
