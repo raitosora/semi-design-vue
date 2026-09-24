@@ -341,7 +341,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "button-c-grid-shared-evidence-review-20260924",
+          "reviewId": "button-c-grid-ci-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/button/types.ts": "9fe7270c06da7f8065569365826e28c43d0d3d185ee026267aae5811f729648b",
             "website/src/zh-CN/components/button.md": "d21a137d7110ae05bad1bcc9552b91a99bab0743e3a30c079e36ca028fc8e6d9",
@@ -374,7 +374,7 @@
             "website/examples/button/Basic.vapor.tsx": "c05a785b5c2bd4add373154a507937c46685d8f40e9da2aa37dd0776053ba790",
             "website/examples/button/Groups.vapor.tsx": "a5670aa48c66f93feb931d743d072c35d59faec5b01f59d636444c942ae2ca0b",
             "website/examples/button/StateForm.vapor.tsx": "17b7f7ae183bce6ad3d3db34465bbf3dc4f82401d9b10a90813e079525e38f96",
-            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
+            "website/tests/site.spec.ts": "e8ef374fb6ad455cf18b956b9e54df959f23a4e36c201ca6bc850c7afe4b702b",
             "scripts/check-consumer.mjs": "e27085bc872856fd2d22ae75f78f305ec8b6efb0697f13b231348662a8bdd3b1",
             "scripts/check-resource-consumer.mjs": "ad2746a28465adc632474076e93208ea6849e715f7895ca188c9a808f5018731",
             "scripts/check-style-consumer.mjs": "a30c1cecaa3e6daa9a1e13b16e2e3be02dd7209569c167011f2f2b3ee412614e",
@@ -636,7 +636,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "configProvider-c-grid-shared-evidence-review-20260924",
+          "reviewId": "configProvider-c-grid-ci-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
             "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
@@ -659,7 +659,7 @@
             "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
             "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
             "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
-            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
+            "website/tests/site.spec.ts": "e8ef374fb6ad455cf18b956b9e54df959f23a4e36c201ca6bc850c7afe4b702b",
             "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
             "tests/resource-consumer/interop-main.ts": "5568e8b4b2d123c83fb8e9ba55328496e7dbc5891f7cef2c857daf4e356b33d2",
             "scripts/check-resource-consumer.mjs": "ad2746a28465adc632474076e93208ea6849e715f7895ca188c9a808f5018731",
@@ -1399,7 +1399,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "icons-c-grid-shared-evidence-review-20260924",
+          "reviewId": "icons-c-grid-ci-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
             "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
@@ -1426,7 +1426,7 @@
             "website/examples/icons/CustomSvg.vapor.tsx": "07b899b4709b6b7f2a245ae1d47ce85aeec2c2f1628e1a712949cf57e6840612",
             "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
             "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
-            "website/tests/site.spec.ts": "8bc20ed7ec863d2dd1a8528d39667e4251464c39914ed71da0d9f7d4c6aa1d85",
+            "website/tests/site.spec.ts": "e8ef374fb6ad455cf18b956b9e54df959f23a4e36c201ca6bc850c7afe4b702b",
             "scripts/check-consumer.mjs": "e27085bc872856fd2d22ae75f78f305ec8b6efb0697f13b231348662a8bdd3b1",
             "scripts/check-resource-consumer.mjs": "ad2746a28465adc632474076e93208ea6849e715f7895ca188c9a808f5018731",
             "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",

@@ -160,9 +160,21 @@ test("production: prerendered pages, all internal links and anchors", async ({
     const response = await page.goto("http://127.0.0.1:4181" + path);
     expect(response?.status()).toBe(200);
     await expect(page.locator("h1")).toBeVisible();
-    await page.waitForLoadState("networkidle");
+    // Read the authored count so a slow hydration cannot make the loop below
+    // silently skip demos. Fenced snippets are documentation, not mounted demos.
+    const markdown =
+      path === "/pure/index.html"
+        ? ""
+        : await readFile(
+            `website/src${path.replace(/\.html$/, ".md")}`,
+            "utf8",
+          );
+    const expectedDemos = (
+      markdown.replace(/```[\s\S]*?```/g, "").match(/<VaporDemo\b/g) ?? []
+    ).length;
     const demos = page.getByRole("region", { name: "独立 Vapor 示例" });
-    for (let i = 0; i < (await demos.count()); i++) {
+    await expect(demos).toHaveCount(expectedDemos);
+    for (let i = 0; i < expectedDemos; i++) {
       await expect(
         demos.nth(i).getByRole("button", { name: "卸载示例" }),
       ).toBeVisible();
