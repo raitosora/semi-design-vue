@@ -1,4 +1,5 @@
 import { defineVaporComponent, ref } from "vue";
+import { Space } from "semi-ui-vue";
 import { FoundationInput } from "../../website/examples/foundation/Input.vapor";
 import { FoundationTooltip } from "../../website/examples/foundation/Tooltip.vapor";
 import { Model } from "../fixtures/Model.vapor";
@@ -20,6 +21,21 @@ export const FoundationHarness = defineVaporComponent(() => {
     <section>
       {alive.value && (
         <div>
+          <Space
+            align="baseline"
+            aria-label="Foundation actions"
+            className="foundation-space"
+            role="group"
+            spacing={[8, "medium"]}
+            wrap
+          >
+            {() => (
+              <>
+                <button type="button">First action</button>
+                <button type="button">Second action</button>
+              </>
+            )}
+          </Space>
           <FoundationInput
             onUpdate:value={(value) => {
               input.value = value;

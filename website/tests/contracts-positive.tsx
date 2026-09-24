@@ -320,3 +320,48 @@ export const dividerContracts = (
   </div>
 );
 void dividerIdentity;
+
+import SpaceFromPath, {
+  type Align,
+  type SpaceProps,
+  type SpaceSlots,
+  type Spacing,
+} from "semi-ui-vue/space";
+import { Space } from "semi-ui-vue";
+const spaceIdentity: typeof Space = SpaceFromPath;
+const spaceAlign: Align = "baseline";
+const spaceSpacing: Spacing = "loose";
+const spaceProps: SpaceProps = {
+  align: spaceAlign,
+  spacing: [12, spaceSpacing],
+  vertical: false,
+  wrap: true,
+  className: "custom",
+  class: ["base", { active: true }],
+  style: [{ color: "red" }, "column-gap: 2px"],
+};
+const spaceSlots: SpaceSlots = {
+  default: () => (
+    <>
+      <span>左</span>
+      <span>右</span>
+    </>
+  ),
+};
+export const spaceContracts = (
+  <div>
+    <Space {...spaceProps} v-slots={spaceSlots} />
+    <SpaceFromPath
+      align={undefined}
+      data-space-contract="present"
+      spacing={undefined}
+      vertical={undefined}
+      wrap={undefined}
+    >
+      {() => <button type="button">操作</button>}
+    </SpaceFromPath>
+    <Space v-slots={{ default: () => [] }} />
+    <Space spacing={[1, 2, 3]} />
+  </div>
+);
+void spaceIdentity;

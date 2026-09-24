@@ -61,6 +61,9 @@
       ],
       "semi-ui-vue/divider": [
         "./packages/semi-ui-vue/src/components/divider/index.ts"
+      ],
+      "semi-ui-vue/space": [
+        "./packages/semi-ui-vue/src/components/space/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

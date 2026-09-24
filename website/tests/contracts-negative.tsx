@@ -384,3 +384,36 @@ export function dividerGlobalBoundary() {
     overrideDefaultProps: { Divider: { dashed: true } },
   });
 }
+
+import { Space } from "semi-ui-vue";
+import type { SpaceProps, SpaceSlots } from "semi-ui-vue/space";
+// @ts-expect-error Root preserves the fixed upstream value-only surface.
+import type { SpaceProps as RootSpaceProps } from "semi-ui-vue";
+// @ts-expect-error Align has four fixed values.
+export const spaceAlign = <Space align="left" />;
+// @ts-expect-error Spacing presets are fixed.
+export const spaceSpacing = <Space spacing="compact" />;
+// @ts-expect-error Vertical is boolean.
+export const spaceVertical = <Space vertical="true" />;
+// @ts-expect-error Native slot replaces React children.
+export const spaceChildren = <Space children={<span />} />;
+// @ts-expect-error No invented direction prop.
+export const spaceDirection = <Space direction="vertical" />;
+// @ts-expect-error Raw text cannot be a native Vapor slot result.
+export const spaceRawSlot = <Space>{() => "text"}</Space>;
+// @ts-expect-error Async slots are unsupported.
+export const spaceAsyncSlot: SpaceSlots = { default: async () => [] };
+// @ts-expect-error Null is not a native Vapor slot result.
+export const spaceNullSlot: SpaceSlots = { default: () => null };
+// @ts-expect-error DOM replacement cannot overwrite slot ownership.
+export const spaceInnerHTML: SpaceProps = { innerHTML: "<b>x</b>" };
+// @ts-expect-error No static Group is exported.
+export const spaceGroup = <Space.Group />;
+// @ts-expect-error No imperative focus method is exported.
+Space.focus();
+export function spaceGlobalBoundary() {
+  semiGlobal.configure({
+    // @ts-expect-error Space does not read global defaults.
+    overrideDefaultProps: { Space: { spacing: "loose" } },
+  });
+}

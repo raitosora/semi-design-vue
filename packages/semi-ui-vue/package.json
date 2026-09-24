@@ -121,12 +121,22 @@
       "types": "./dist/components/divider/index.d.ts",
       "import": "./dist/components/divider/index.js"
     },
+    "./space": {
+      "types": "./dist/components/space/index.d.ts",
+      "import": "./dist/components/space/index.js"
+    },
     "./styles/components/divider": {
       "sass": "./dist/styles/components/divider.scss",
       "default": "./dist/styles/components/divider.css"
     },
     "./styles/components/divider.css": "./dist/styles/components/divider.css",
-    "./styles/components/divider.scss": "./dist/styles/components/divider.scss"
+    "./styles/components/divider.scss": "./dist/styles/components/divider.scss",
+    "./styles/components/space": {
+      "sass": "./dist/styles/components/space.scss",
+      "default": "./dist/styles/components/space.css"
+    },
+    "./styles/components/space.css": "./dist/styles/components/space.css",
+    "./styles/components/space.scss": "./dist/styles/components/space.scss"
   },
   "files": [
     "dist",

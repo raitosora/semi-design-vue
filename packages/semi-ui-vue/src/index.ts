@@ -73,3 +73,5 @@ export type {
 } from "./components/button/index.js";
 
 export { Divider } from "./components/divider/index.js";
+
+export { Space } from "./components/space/index.js";

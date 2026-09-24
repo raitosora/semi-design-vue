@@ -15,11 +15,13 @@ const components = [
   "iconButton",
   "button",
   "divider",
+  "space",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
   divider: ["divider/divider.scss", "divider/variables.scss"],
+  space: ["space/space.scss", "space/rtl.scss", "space/variables.scss"],
   input: [
     "input/animation.scss",
     "input/input.scss",
@@ -68,6 +70,12 @@ const sourceHashes = {
     "8c5d58cc25063769b6cdbc86cbde8f701bf855c5353d453056e226c7d3c853be",
   "foundation/divider/variables.scss":
     "89a1e90f39848bccd5a438c4e41b0744b1403ca68efba1fa5f556d9e983b72c0",
+  "foundation/space/space.scss":
+    "fa8a521abd382a2849c45b4a3f2ff1ce90d59afe2821855082c0a8cfdf8ebc36",
+  "foundation/space/rtl.scss":
+    "0891a3bfe7e832f78c659f394546dc2ac21847eec53e8e858eea772571d11a43",
+  "foundation/space/variables.scss":
+    "091aada346ab99db417ec558add95acd4e00d0dfa93d4935ca4b68eff4500bb6",
   "foundation/input/animation.scss":
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
@@ -175,6 +183,14 @@ function entrySources() {
       '@import "../vendor/foundation/divider/divider";',
       "",
     ].join("\n"),
+    "components/space.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/space/space";',
+      "",
+    ].join("\n"),
     "components/input.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -222,6 +238,7 @@ function entrySources() {
       '@import "./components/spin";',
       '@import "./components/iconButton";',
       '@import "./components/divider";',
+      '@import "./components/space";',
       "",
     ].join("\n"),
   };
@@ -377,6 +394,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button and Divider CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider and Space CSS/SCSS style entries.",
   );
 }

@@ -1,4 +1,5 @@
 import { dividerMarkup } from "./divider-markup";
+import { spaceMarkup } from "./space-markup";
 import { iconButtonMarkup } from "./iconButton-markup";
 import { buttonMarkup } from "./button-markup";
 import { spinMarkup } from "./spin-markup";
@@ -12,4 +13,5 @@ document.body.innerHTML = `
   ${iconButtonMarkup("semi")}
   ${buttonMarkup("semi")}
   ${dividerMarkup("semi")}
+  ${spaceMarkup("semi")}
 `;

@@ -117,3 +117,15 @@ and DividerSlots are subpath types. Strict declarations, live examples, dark/RTL
 geometry, lifecycle tests and actual tarballs cover pure Vapor and interop
 separately. Browser screenshots do not establish pixel equivalence or component
 SSR, hydration or CJS support. ButtonGroup's private line remains independent.
+
+The `space` record accepts the fixed inline-flex root, alignment, direction,
+horizontal-only wrap and named/numeric two-axis gaps. It creates no Foundation
+state machine or new ConfigProvider defaults. React children become one native
+Vapor default slot with no item wrappers or VNode inspection; the browser
+determines flex items, including text and whitespace behavior. Source/emitted
+types, live Chinese examples, dynamic keyed content and focus, dark/RTL/narrow
+geometry, and four real tarball consumers are checked separately from ordinary
+Vue interop. The exact Vue RC/vue-jsx peer combination still rejects an
+independent strict TSX compiler installation; precompiled consumers do not
+remove that limit. Root exposes the Space value and ./space exposes its types;
+screenshots do not establish pixel equivalence or SSR, hydration or CJS.

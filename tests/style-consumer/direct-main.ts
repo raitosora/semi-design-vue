@@ -1,5 +1,7 @@
 import "./divider-only.scss";
+import "./space-only.scss";
 import { dividerMarkup } from "./divider-markup";
+import { spaceMarkup } from "./space-markup";
 import "./input-only.scss";
 import "./spin-only.scss";
 import "./iconButton-only.scss";
@@ -24,8 +26,10 @@ document.body.innerHTML = `
   ${iconButtonMarkup("semi")}
   ${buttonMarkup("semi")}
   ${dividerMarkup("semi")}
+  ${spaceMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
   ${dividerMarkup("consumer")}
+  ${spaceMarkup("consumer")}
 `;

@@ -1,4 +1,5 @@
 import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
+import { spaceStyleCheck } from "../tests/style-consumer/space-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
@@ -125,6 +126,11 @@ function checkStyleMetadata() {
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Divider source hash is missing: ${file}`,
+    );
+  for (const file of ["space/space", "space/rtl", "space/variables"])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Space source hash is missing: ${file}`,
     );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
@@ -267,12 +273,14 @@ async function browserCheck(url) {
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
     const dividerLight = await dividerStyleCheck(page, "semi");
+    await spaceStyleCheck(page, "semi");
     await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(17, 105, 170)");
       await iconButtonDirectionCheck(page, prefix, false);
       await buttonStyleCheck(page, prefix, "rgb(17, 105, 170)");
       await dividerStyleCheck(page, prefix);
+      await spaceStyleCheck(page, prefix);
     }
     await spinStyleCheck(page, "consumer", "rgb(17, 105, 170)");
     const baseline = await page
@@ -346,6 +354,7 @@ async function browserCheck(url) {
       await iconButtonDirectionCheck(page, prefix, true);
       await buttonDirectionCheck(page, prefix);
       await dividerStyleCheck(page, prefix, "rtl");
+      await spaceStyleCheck(page, prefix, true);
     }
     await page.setViewportSize({ width: 320, height: 540 });
     assert(
@@ -418,6 +427,7 @@ async function plainBrowserCheck(url) {
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
     const dividerLight = await dividerStyleCheck(page, "semi");
+    await spaceStyleCheck(page, "semi");
     const lightPrimary = await page
       .locator(".semi-spin-wrapper")
       .first()
@@ -467,6 +477,7 @@ async function plainBrowserCheck(url) {
     await iconButtonDirectionCheck(page, "semi", true);
     await buttonDirectionCheck(page, "semi");
     await dividerStyleCheck(page, "semi", "rtl");
+    await spaceStyleCheck(page, "semi", true);
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -560,6 +571,8 @@ try {
     "button-only.scss",
     "divider-markup.ts",
     "divider-only.scss",
+    "space-markup.ts",
+    "space-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -686,6 +699,10 @@ try {
     directCss.includes(".consumer-divider-with-text"),
     "Direct public Divider SCSS entry did not compile",
   );
+  assert(
+    directCss.includes(".consumer-space-medium-horizontal"),
+    "Direct public Space SCSS entry did not compile",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -715,6 +732,10 @@ try {
   assert(
     plainCss.includes(".semi-divider-with-text"),
     "Plain Divider CSS entry is missing",
+  );
+  assert(
+    plainCss.includes(".semi-space-medium-horizontal"),
+    "Plain Space CSS entry is missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -760,6 +781,11 @@ try {
       css.includes(".consumer-button-split") &&
       css.includes(".semi-button-split"),
     "Default or custom-prefix Button group/split CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-space-medium-horizontal") &&
+      css.includes(".semi-space-medium-horizontal"),
+    "Default or custom-prefix Space CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");
