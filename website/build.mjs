@@ -185,6 +185,9 @@ await writeFile(
           "semi-ui-vue/divider": [
             "../../packages/semi-ui-vue/dist/components/divider/index.d.ts",
           ],
+          "semi-ui-vue/space": [
+            "../../packages/semi-ui-vue/dist/components/space/index.d.ts",
+          ],
           "semi-ui-vue/spin": [
             "../../packages/semi-ui-vue/dist/components/spin/index.d.ts",
           ],

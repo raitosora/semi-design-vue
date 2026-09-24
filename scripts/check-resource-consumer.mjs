@@ -40,6 +40,64 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function checkIndependentCompilerInstall(evidenceDirectory) {
+  const directory = join(work, "strict-tsx-compiler-install");
+  mkdirSync(directory);
+  writeFileSync(
+    join(directory, "package.json"),
+    JSON.stringify({
+      name: "semi-strict-tsx-compiler-check",
+      version: "0.0.0",
+      private: true,
+      dependencies: { vue: "3.6.0-rc.9" },
+      devDependencies: { "vue-jsx": "3.3.0-rc.2" },
+    }),
+  );
+  const args = [
+    "install",
+    "--strict-peer-deps",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+  ];
+  let output;
+  try {
+    execFileSync("npm", args, {
+      cwd: directory,
+      env: consumerEnv,
+      encoding: "utf8",
+      stdio: "pipe",
+    });
+    throw new Error(
+      "Pinned Vue RC/vue-jsx strict install unexpectedly succeeded",
+    );
+  } catch (error) {
+    output = `${error.stdout ?? ""}\n${error.stderr ?? ""}`;
+    assert(
+      /ERESOLVE/.test(output) &&
+        /vue@3\.6\.0-rc\.9/.test(output) &&
+        /vue-jsx@3\.3\.0-rc\.2/.test(output) &&
+        /peer vue@"\^3"/.test(output),
+      `Independent TSX compiler install failed for an unexpected reason:\n${output}`,
+    );
+  }
+  writeFileSync(
+    join(evidenceDirectory, "strict-tsx-compiler-install.json"),
+    JSON.stringify(
+      {
+        command: `npm ${args.join(" ")}`,
+        dependencies: { vue: "3.6.0-rc.9", "vue-jsx": "3.3.0-rc.2" },
+        result: "rejected by npm strict peer resolution",
+        peer: "vue-jsx@3.3.0-rc.2 declares vue@^3; npm excludes the locked Vue prerelease",
+        output: output.replaceAll(work, "<temporary>"),
+        independentTsxCompilation: "unavailable under locked strict install",
+      },
+      null,
+      2,
+    ),
+  );
+}
+
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
@@ -399,6 +457,17 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Divider subpath",
     );
+  assert(
+    /semi-ui-vue\/dist\/space-[^/\n]+\.js/.test(modules),
+    "Space implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/space\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Space subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -701,6 +770,11 @@ async function browserCheck(url) {
       "Packed Divider behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkSpace())) ===
+        "space consumer passed",
+      "Packed Space behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -923,6 +997,23 @@ async function interopBrowserCheck(url) {
           .textContent()) === "Save",
       "Interop Divider native element slot/alignment failed",
     );
+    assert(
+      (await page.locator(".interop-space").getAttribute("class")).includes(
+        "semi-space-align-start",
+      ) &&
+        (await page.locator(".interop-space").getAttribute("class")).includes(
+          "semi-space-wrap",
+        ) &&
+        (await page.locator(".interop-space [data-space-action]").count()) ===
+          2 &&
+        (await page.locator(".interop-space").getAttribute("role")) ===
+          "group" &&
+        (await page
+          .locator(".interop-space")
+          .evaluate((element) => getComputedStyle(element).display)) ===
+          "inline-flex",
+      "Interop Space initial layout, slot or semantics failed",
+    );
     await page.locator(".interop-button").evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "2",
@@ -1018,6 +1109,30 @@ async function interopBrowserCheck(url) {
           .locator(".interop-divider [data-divider-label]")
           .textContent()) === "Updated",
       "Interop Divider reactive slot/alignment failed",
+    );
+    assert(
+      (await page.locator(".interop-space").getAttribute("class")).includes(
+        "semi-space-align-end",
+      ) &&
+        (await page
+          .locator('.interop-space [data-space-action="first"]')
+          .textContent()) === "Updated",
+      "Interop Space reactive alignment or slot failed",
+    );
+    await page.evaluate(() =>
+      window.interopConsumer.updateSpace(true, true, 9),
+    );
+    assert(
+      (await page.locator(".interop-space").getAttribute("class")).includes(
+        "semi-space-vertical",
+      ) &&
+        !(await page.locator(".interop-space").getAttribute("class")).includes(
+          "semi-space-wrap",
+        ) &&
+        (await page
+          .locator(".interop-space")
+          .evaluate((element) => element.style.columnGap)) === "9px",
+      "Interop Space vertical spacing or wrap suppression failed",
     );
     await page.evaluate(() =>
       window.interopConsumer.updateDivider("vertical", true),
@@ -1178,6 +1293,10 @@ async function run() {
     "Divider fixture was not compiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:space.tsx"),
+    "Space fixture was not compiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),
     "Spin fixture was not compiled",
   );
@@ -1203,14 +1322,15 @@ async function run() {
     "index.html",
     "consumer.ts",
     "divider-browser.ts",
+    "space-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
   ])
     copyFileSync(
-      name === "divider-browser.ts"
-        ? join(root, "tests/consumer/divider-browser.ts")
+      name === "divider-browser.ts" || name === "space-browser.ts"
+        ? join(root, `tests/consumer/${name}`)
         : join(fixture, name),
       join(consumer, name),
     );
@@ -1225,7 +1345,12 @@ async function run() {
           strict: true,
           skipLibCheck: false,
         },
-        files: ["consumer.ts", "divider-browser.ts", "interop-main.ts"],
+        files: [
+          "consumer.ts",
+          "divider-browser.ts",
+          "space-browser.ts",
+          "interop-main.ts",
+        ],
       },
       null,
       2,
@@ -1301,8 +1426,9 @@ async function run() {
   checkGraph("interop");
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);
+  checkIndependentCompilerInstall(installation.evidenceDirectory);
   console.log(
-    "Tarball resource consumers passed strict declarations, precompiled-application pure Vapor and separate interop production builds, provenance, and browser checks.",
+    "Tarball resource consumers passed strict declarations, precompiled-application pure Vapor and separate interop production builds, provenance, and browser checks; independent pinned TSX strict install remains peer-rejected.",
   );
 }
 

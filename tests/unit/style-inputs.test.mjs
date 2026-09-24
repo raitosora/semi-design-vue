@@ -53,6 +53,7 @@ describe("fixed Semi style inputs", () => {
         "iconButton",
         "button",
         "divider",
+        "space",
       ],
     });
   });

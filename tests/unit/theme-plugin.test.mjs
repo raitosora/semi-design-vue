@@ -106,6 +106,7 @@ describe("explicit Semi theme style generation", () => {
             "iconButton",
             "button",
             "divider",
+            "space",
           ],
           scss: { variables: { "height-control-default": "40px" } },
         }),
@@ -118,6 +119,9 @@ describe("explicit Semi theme style generation", () => {
       expect(css).toContain(".acme-button-group");
       expect(css).toContain(".acme-button-split");
       expect(css).toContain(".acme-divider-vertical");
+      expect(css).toContain(".acme-space-medium-horizontal");
+      expect(css).toContain(".acme-rtl .acme-space");
+      expect(css).not.toContain(".semi-space");
       expect(css).not.toContain(".semi-divider");
       expect(css).not.toContain(".semi-button");
       expect(css).toContain(".acme-rtl .acme-spin");

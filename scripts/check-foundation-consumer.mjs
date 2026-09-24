@@ -48,7 +48,11 @@ async function serve(directory) {
     try {
       response.setHeader(
         "Content-Type",
-        path.endsWith(".js") ? "text/javascript" : "text/html",
+        path.endsWith(".js")
+          ? "text/javascript"
+          : path.endsWith(".css")
+            ? "text/css"
+            : "text/html",
       );
       response.end(await readFile(path));
     } catch {
@@ -77,6 +81,19 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const space = page.locator(".foundation-space");
+    await expect(space).toHaveAttribute("role", "group");
+    await expect(space.locator(":scope > button")).toHaveCount(2);
+    assert.equal(
+      await space.evaluate((element) => getComputedStyle(element).display),
+      "inline-flex",
+      `${mode} Space stylesheet was not delivered`,
+    );
+    assert.equal(
+      await space.evaluate((element) => element.style.columnGap),
+      "8px",
+      `${mode} Space numeric spacing was not delivered`,
+    );
     const input = page.getByRole("textbox", {
       name: "Foundation input",
       exact: true,
@@ -212,6 +229,13 @@ try {
           id.includes(`${packed.name}/dist/index.js`) && renderedLength > 0,
       ),
       "Packed Foundation implementation is absent from consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          /semi-ui-vue\/dist\/space-[^/]+\.js$/.test(id) && renderedLength > 0,
+      ),
+      "Packed Space implementation is absent from Foundation consumer bundle",
     );
     assert(
       graph.modules.every(

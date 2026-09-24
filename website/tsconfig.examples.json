@@ -37,6 +37,9 @@
       ],
       "semi-ui-vue/iconButton": [
         "../packages/semi-ui-vue/dist/components/iconButton/index.d.ts"
+      ],
+      "semi-ui-vue/space": [
+        "../packages/semi-ui-vue/dist/components/space/index.d.ts"
       ]
     }
   },

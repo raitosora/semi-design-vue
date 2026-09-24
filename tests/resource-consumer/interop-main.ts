@@ -9,6 +9,7 @@ import {
 import {
   Spin,
   Divider,
+  Space,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -33,9 +34,13 @@ import "semi-ui-vue/styles/components/spin.css";
 import "semi-ui-vue/styles/components/iconButton.css";
 import "semi-ui-vue/styles/components/button.css";
 import "semi-ui-vue/styles/components/divider.css";
+import "semi-ui-vue/styles/components/space.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
+const spaceVertical = ref(false);
+const spaceWrap = ref(true);
+const spaceSpacing = ref<number | "medium">("medium");
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -96,6 +101,28 @@ const app = createApp({
               dividerVisible.value
                 ? h("span", { "data-divider-label": "" }, iconButtonLabel.value)
                 : [],
+          },
+        ),
+        h(
+          Space,
+          {
+            className: "interop-space",
+            align: spinning.value ? "start" : "end",
+            vertical: spaceVertical.value,
+            wrap: spaceWrap.value,
+            spacing: spaceSpacing.value,
+            role: "group",
+            "aria-label": "Interop actions",
+          },
+          {
+            default: () => [
+              h(
+                "button",
+                { "data-space-action": "first" },
+                iconButtonLabel.value,
+              ),
+              h("button", { "data-space-action": "second" }, "second"),
+            ],
           },
         ),
         h(
@@ -350,6 +377,11 @@ declare global {
         layout: "horizontal" | "vertical",
         visible: boolean,
       ): Promise<void>;
+      updateSpace(
+        vertical: boolean,
+        wrap: boolean,
+        spacing: number | "medium",
+      ): Promise<void>;
       unmount(): void;
     };
   }
@@ -371,6 +403,14 @@ window.interopConsumer = {
   async updateDivider(layout, visible) {
     dividerLayout.value = layout;
     dividerVisible.value = visible;
+    await nextTick();
+    await Promise.resolve();
+    await nextTick();
+  },
+  async updateSpace(vertical, wrap, spacing) {
+    spaceVertical.value = vertical;
+    spaceWrap.value = wrap;
+    spaceSpacing.value = spacing;
     await nextTick();
     await Promise.resolve();
     await nextTick();
