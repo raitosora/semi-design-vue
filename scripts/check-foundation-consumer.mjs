@@ -94,6 +94,25 @@ async function browserCheck(directory, mode) {
       "8px",
       `${mode} Space numeric spacing was not delivered`,
     );
+    const grid = page.locator("[data-foundation-grid]");
+    await expect(grid).toHaveCSS("margin-left", "-4px");
+    await expect(grid.locator(":scope > .semi-col")).toHaveCount(2);
+    await expect(grid.locator(":scope > .semi-col").first()).toHaveCSS(
+      "padding-left",
+      "4px",
+    );
+    const gridRatio = await grid
+      .locator(":scope > .semi-col")
+      .first()
+      .evaluate(
+        (element) =>
+          element.getBoundingClientRect().width /
+          element.parentElement.getBoundingClientRect().width,
+      );
+    assert(
+      Math.abs(gridRatio - 0.5) < 0.01,
+      `${mode} Grid stylesheet was not delivered`,
+    );
     const input = page.getByRole("textbox", {
       name: "Foundation input",
       exact: true,
@@ -236,6 +255,13 @@ try {
           /semi-ui-vue\/dist\/space-[^/]+\.js$/.test(id) && renderedLength > 0,
       ),
       "Packed Space implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          /semi-ui-vue\/dist\/grid-[^/]+\.js$/.test(id) && renderedLength > 0,
+      ),
+      "Packed Grid implementation is absent from Foundation consumer bundle",
     );
     assert(
       graph.modules.every(

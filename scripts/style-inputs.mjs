@@ -16,12 +16,19 @@ const components = [
   "button",
   "divider",
   "space",
+  "grid",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
   base: ["base/base.scss"],
   divider: ["divider/divider.scss", "divider/variables.scss"],
   space: ["space/space.scss", "space/rtl.scss", "space/variables.scss"],
+  grid: [
+    "grid/grid.scss",
+    "grid/mixin.scss",
+    "grid/rtl.scss",
+    "grid/variables.scss",
+  ],
   input: [
     "input/animation.scss",
     "input/input.scss",
@@ -76,6 +83,14 @@ const sourceHashes = {
     "0891a3bfe7e832f78c659f394546dc2ac21847eec53e8e858eea772571d11a43",
   "foundation/space/variables.scss":
     "091aada346ab99db417ec558add95acd4e00d0dfa93d4935ca4b68eff4500bb6",
+  "foundation/grid/grid.scss":
+    "290eeea0c270c5846e88f217058477ad1b4325ad78b5fedb619b74fd718a3ccf",
+  "foundation/grid/mixin.scss":
+    "664fb66212f63951f8b4c1ec83379ba384d59c7c6e3ec2d3ca727315e3010aea",
+  "foundation/grid/rtl.scss":
+    "785cf73d6eacbebbde849e69688f8d60443375880d7c2e0f953fe50b71702a1a",
+  "foundation/grid/variables.scss":
+    "62835b5777172d00ac468248082e347b924cafa1049ecafbd0b43cc54aaa9db9",
   "foundation/input/animation.scss":
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
@@ -191,6 +206,14 @@ function entrySources() {
       '@import "../vendor/foundation/space/space";',
       "",
     ].join("\n"),
+    "components/grid.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/grid/grid";',
+      "",
+    ].join("\n"),
     "components/input.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -239,6 +262,7 @@ function entrySources() {
       '@import "./components/iconButton";',
       '@import "./components/divider";',
       '@import "./components/space";',
+      '@import "./components/grid";',
       "",
     ].join("\n"),
   };
@@ -394,6 +418,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider and Space CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider, Space and Grid CSS/SCSS style entries.",
   );
 }

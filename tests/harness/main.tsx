@@ -8,6 +8,9 @@ import DividerTheme from "../../website/examples/divider/Theme.vapor";
 import SpaceBasic from "../../website/examples/space/Basic.vapor";
 import SpaceDynamic from "../../website/examples/space/Dynamic.vapor";
 import SpaceResponsive from "../../website/examples/space/Responsive.vapor";
+import GridBasic from "../../website/examples/grid/Basic.vapor";
+import GridResponsive from "../../website/examples/grid/Responsive.vapor";
+import GridDynamic from "../../website/examples/grid/Dynamic.vapor";
 import ButtonBasic from "../../website/examples/button/Basic.vapor";
 import ButtonStateForm from "../../website/examples/button/StateForm.vapor";
 import ButtonGroups from "../../website/examples/button/Groups.vapor";
@@ -44,6 +47,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/iconButton.css";
 import "../../packages/semi-ui-vue/dist/styles/components/button.css";
 import "../../packages/semi-ui-vue/dist/styles/components/divider.css";
 import "../../packages/semi-ui-vue/dist/styles/components/space.css";
+import "../../packages/semi-ui-vue/dist/styles/components/grid.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -56,14 +60,26 @@ const overlayMode = new URLSearchParams(location.search).has("overlay");
 const domMode = new URLSearchParams(location.search).has("dom");
 const iconsMode = new URLSearchParams(location.search).has("icons");
 const spaceMode = new URLSearchParams(location.search).has("space");
+const gridMode = new URLSearchParams(location.search).has("grid");
 const app = createVaporApp(
-  spaceMode
+  spaceMode || gridMode
     ? defineVaporComponent(() => (
         <main>
-          <h1>Space examples</h1>
-          <SpaceBasic />
-          <SpaceDynamic />
-          <SpaceResponsive />
+          {gridMode ? (
+            <>
+              <h1>Grid examples</h1>
+              <GridBasic />
+              <GridResponsive />
+              <GridDynamic />
+            </>
+          ) : (
+            <>
+              <h1>Space examples</h1>
+              <SpaceBasic />
+              <SpaceDynamic />
+              <SpaceResponsive />
+            </>
+          )}
         </main>
       ))
     : new URLSearchParams(location.search).has("divider")

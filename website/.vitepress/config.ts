@@ -47,6 +47,7 @@ export default defineConfig({
           { text: "Button 按钮", link: "/zh-CN/components/button" },
           { text: "Divider 分割线", link: "/zh-CN/components/divider" },
           { text: "Space 间距", link: "/zh-CN/components/space" },
+          { text: "Grid 栅格", link: "/zh-CN/components/grid" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

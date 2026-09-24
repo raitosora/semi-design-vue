@@ -10,6 +10,8 @@ import {
   Spin,
   Divider,
   Space,
+  Row,
+  Col,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -35,12 +37,14 @@ import "semi-ui-vue/styles/components/iconButton.css";
 import "semi-ui-vue/styles/components/button.css";
 import "semi-ui-vue/styles/components/divider.css";
 import "semi-ui-vue/styles/components/space.css";
+import "semi-ui-vue/styles/components/grid.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
 const spaceVertical = ref(false);
 const spaceWrap = ref(true);
 const spaceSpacing = ref<number | "medium">("medium");
+const gridSpan = ref(12);
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -123,6 +127,26 @@ const app = createApp({
               ),
               h("button", { "data-space-action": "second" }, "second"),
             ],
+          },
+        ),
+        h(
+          Row,
+          {
+            type: "flex",
+            gutter: 16,
+            className: "interop-grid-row",
+            style: { width: "240px" },
+          },
+          {
+            default: () =>
+              h(
+                Col,
+                { span: gridSpan.value, className: "interop-grid-col" },
+                {
+                  default: () =>
+                    h("span", { "data-grid-label": "" }, iconButtonLabel.value),
+                },
+              ),
           },
         ),
         h(
@@ -382,6 +406,7 @@ declare global {
         wrap: boolean,
         spacing: number | "medium",
       ): Promise<void>;
+      updateGrid(span: number): Promise<void>;
       unmount(): void;
     };
   }
@@ -413,6 +438,10 @@ window.interopConsumer = {
     spaceSpacing.value = spacing;
     await nextTick();
     await Promise.resolve();
+    await nextTick();
+  },
+  async updateGrid(span) {
+    gridSpan.value = span;
     await nextTick();
   },
   async disableButton() {

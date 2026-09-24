@@ -13,6 +13,7 @@ const entries = {
   button: "semi-ui-vue/styles/components/button.scss",
   divider: "semi-ui-vue/styles/components/divider.scss",
   space: "semi-ui-vue/styles/components/space.scss",
+  grid: "semi-ui-vue/styles/components/grid.scss",
 } as const;
 type Values = Readonly<Record<string, string | number>>;
 export interface SemiThemeOptions {

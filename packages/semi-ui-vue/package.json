@@ -125,6 +125,10 @@
       "types": "./dist/components/space/index.d.ts",
       "import": "./dist/components/space/index.js"
     },
+    "./grid": {
+      "types": "./dist/components/grid/index.d.ts",
+      "import": "./dist/components/grid/index.js"
+    },
     "./styles/components/divider": {
       "sass": "./dist/styles/components/divider.scss",
       "default": "./dist/styles/components/divider.css"
@@ -136,7 +140,13 @@
       "default": "./dist/styles/components/space.css"
     },
     "./styles/components/space.css": "./dist/styles/components/space.css",
-    "./styles/components/space.scss": "./dist/styles/components/space.scss"
+    "./styles/components/space.scss": "./dist/styles/components/space.scss",
+    "./styles/components/grid": {
+      "sass": "./dist/styles/components/grid.scss",
+      "default": "./dist/styles/components/grid.css"
+    },
+    "./styles/components/grid.css": "./dist/styles/components/grid.css",
+    "./styles/components/grid.scss": "./dist/styles/components/grid.scss"
   },
   "files": [
     "dist",

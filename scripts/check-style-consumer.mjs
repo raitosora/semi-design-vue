@@ -1,5 +1,6 @@
 import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
 import { spaceStyleCheck } from "../tests/style-consumer/space-check.mjs";
+import { gridStyleCheck } from "../tests/style-consumer/grid-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
@@ -131,6 +132,11 @@ function checkStyleMetadata() {
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Space source hash is missing: ${file}`,
+    );
+  for (const file of ["grid/grid", "grid/mixin", "grid/rtl", "grid/variables"])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Grid source hash is missing: ${file}`,
     );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
@@ -274,6 +280,9 @@ async function browserCheck(url) {
     await page.goto(url, { waitUntil: "networkidle" });
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
+    for (const prefix of ["semi", "consumer"])
+      await gridStyleCheck(page, prefix);
+    await page.setViewportSize({ width: 960, height: 540 });
     await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
     for (const prefix of ["semi", "consumer"]) {
       await iconButtonStyleCheck(page, prefix, "rgb(17, 105, 170)");
@@ -367,6 +376,8 @@ async function browserCheck(url) {
       .locator(".semi-input")
       .evaluate((input) => getComputedStyle(input).direction);
     assert(rtl === "rtl", "RTL selector did not affect the consumer Input");
+    for (const prefix of ["semi", "consumer"])
+      await gridStyleCheck(page, prefix, true);
     const prefixed = await page
       .locator(".consumer-input-wrapper")
       .evaluate((input) => ({
@@ -428,6 +439,8 @@ async function plainBrowserCheck(url) {
     await page.goto(url, { waitUntil: "networkidle" });
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
+    await gridStyleCheck(page, "semi");
+    await page.setViewportSize({ width: 960, height: 540 });
     const lightPrimary = await page
       .locator(".semi-spin-wrapper")
       .first()
@@ -478,6 +491,7 @@ async function plainBrowserCheck(url) {
     await buttonDirectionCheck(page, "semi");
     await dividerStyleCheck(page, "semi", "rtl");
     await spaceStyleCheck(page, "semi", true);
+    await gridStyleCheck(page, "semi", true);
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -573,6 +587,8 @@ try {
     "divider-only.scss",
     "space-markup.ts",
     "space-only.scss",
+    "grid-markup.ts",
+    "grid-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -703,6 +719,11 @@ try {
     directCss.includes(".consumer-space-medium-horizontal"),
     "Direct public Space SCSS entry did not compile",
   );
+  assert(
+    directCss.includes(".consumer-row-flex") &&
+      directCss.includes(".consumer-col-sm-12"),
+    "Direct public Grid SCSS entry did not compile",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -736,6 +757,10 @@ try {
   assert(
     plainCss.includes(".semi-space-medium-horizontal"),
     "Plain Space CSS entry is missing",
+  );
+  assert(
+    plainCss.includes(".semi-row-flex") && plainCss.includes(".semi-col-sm-12"),
+    "Plain Grid CSS entry is missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -786,6 +811,10 @@ try {
     css.includes(".consumer-space-medium-horizontal") &&
       css.includes(".semi-space-medium-horizontal"),
     "Default or custom-prefix Space CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-row-flex") && css.includes(".semi-row-flex"),
+    "Default or custom-prefix Grid CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");
