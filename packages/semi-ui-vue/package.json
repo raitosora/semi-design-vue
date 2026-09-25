@@ -129,6 +129,10 @@
       "types": "./dist/components/grid/index.d.ts",
       "import": "./dist/components/grid/index.js"
     },
+    "./layout": {
+      "types": "./dist/components/layout/index.d.ts",
+      "import": "./dist/components/layout/index.js"
+    },
     "./styles/components/divider": {
       "sass": "./dist/styles/components/divider.scss",
       "default": "./dist/styles/components/divider.css"
@@ -146,7 +150,13 @@
       "default": "./dist/styles/components/grid.css"
     },
     "./styles/components/grid.css": "./dist/styles/components/grid.css",
-    "./styles/components/grid.scss": "./dist/styles/components/grid.scss"
+    "./styles/components/grid.scss": "./dist/styles/components/grid.scss",
+    "./styles/components/layout": {
+      "sass": "./dist/styles/components/layout.scss",
+      "default": "./dist/styles/components/layout.css"
+    },
+    "./styles/components/layout.css": "./dist/styles/components/layout.css",
+    "./styles/components/layout.scss": "./dist/styles/components/layout.scss"
   },
   "files": [
     "dist",

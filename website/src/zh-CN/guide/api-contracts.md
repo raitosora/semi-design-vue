@@ -18,6 +18,8 @@ Semi Design Vue 使用原生 Vapor 模式。下面规定公共 API 的实现与�
 | 泛型数据与回调                                       | 同一个 `T` 关联 items/value/event，必要时显式 `<T>`                       | 用 `NoInfer<T>` 防止 value 扩大数据类型；不以 `any` / 断言恢复已丢失的关联              |
 | Form 包装 / children 注入                            | 可选 `FieldContext<T>` 与控件注册协议                                     | 基础控件可独立使用，不导入完整 Form；未实现表单引擎                                     |
 
+静态子组件是否另有根具名导出以固定上游为准。[Layout](../components/layout.md) 仅在根入口导出 `Layout` 值，四个子组件通过 `Layout.Header`、`Layout.Footer`、`Layout.Content`、`Layout.Sider` 使用；`semi-ui-vue/layout` 导出 Layout 与上游命名类型。不能从通用协议夹具推断 `Header` 等是根具名导出。
+
 ## 属性存在性与默认值
 
 包根入口提供 `hasProvidedProp(source, key)`，实现为 `Object.hasOwn`。它接收调用方尚未归一化的属性对象，或 Vue 公开的 `useAttrs()` 结果。**不能把已声明的 props 对象传给它当作调用方存在性证据**：锁定的 Vapor 版本会让声明键始终存在。
@@ -109,3 +111,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Grid 的上下文与响应式属性
 
 [Grid](../components/grid.md) 的 Row 与 Col 均只接受函数形式的默认 Vapor slot；Col 需处于 Row 的上下文中。Row 的 gutter 可为数字、固定断点对象或横纵两项数组，Col 的六个响应式尺寸可为数字或含 span/order/offset/push/pull 的对象。缺省与显式 undefined gutter 使用相同默认值；动态更新时内层 Row 的 gutter 不受外层改变影响。根入口只提供 Row/Col 组件值，类型由 grid 子路径提供；无静态子组件或公开命令式 ref。
+
+## Layout 的静态子组件与侧栏协作
+
+[Layout](../components/layout.md) 与 Header/Footer/Content/Sider 都使用无参数默认 Vapor slot。Sider 挂载后向最近 Layout 按实例身份注册，条件移除和多侧栏不会互相误注销；`hasSider={true}` 可显式要求横向，`false` 不压过已注册 Sider。没有受控字段、v-model、自定义折叠事件或公开命令式 ref。当前 Vapor 编译器下，`tagName` 更新更换根元素并重挂 slot 子树，子组件状态与旧焦点会重置，Sider 重新注册；其余类名、样式和侧栏变化保留未移除的节点。当前 vue-jsx Vapor RC2 中，默认 slot 唯一根为裸 `visible && <Layout.Sider>` 的写法有未卸载风险，条件侧栏用 `v-if={visible}`；动态 Sider 列表用 `<For getKey>`，避免注册触发的父级更新与裸 `.map()` 列表互相递归。Sider 的断点仅通知媒体匹配，不自动折叠。

@@ -67,6 +67,9 @@
       ],
       "semi-ui-vue/grid": [
         "./packages/semi-ui-vue/src/components/grid/index.ts"
+      ],
+      "semi-ui-vue/layout": [
+        "./packages/semi-ui-vue/src/components/layout/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

@@ -17,6 +17,7 @@ const components = [
   "divider",
   "space",
   "grid",
+  "layout",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
@@ -29,6 +30,7 @@ const foundationFiles = {
     "grid/rtl.scss",
     "grid/variables.scss",
   ],
+  layout: ["layout/layout.scss", "layout/rtl.scss"],
   input: [
     "input/animation.scss",
     "input/input.scss",
@@ -91,6 +93,10 @@ const sourceHashes = {
     "785cf73d6eacbebbde849e69688f8d60443375880d7c2e0f953fe50b71702a1a",
   "foundation/grid/variables.scss":
     "62835b5777172d00ac468248082e347b924cafa1049ecafbd0b43cc54aaa9db9",
+  "foundation/layout/layout.scss":
+    "496fc03e73491af6b042db2062cc4f9d781f3f05bf56195a394a4d41f640c127",
+  "foundation/layout/rtl.scss":
+    "e231f88f5ea57b1bdf0737bdb440c2cfeeac232888a1ed00fcd1a6e5371eaa8c",
   "foundation/input/animation.scss":
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
@@ -214,6 +220,14 @@ function entrySources() {
       '@import "../vendor/foundation/grid/grid";',
       "",
     ].join("\n"),
+    "components/layout.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/layout/layout";',
+      "",
+    ].join("\n"),
     "components/input.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -263,6 +277,7 @@ function entrySources() {
       '@import "./components/divider";',
       '@import "./components/space";',
       '@import "./components/grid";',
+      '@import "./components/layout";',
       "",
     ].join("\n"),
   };
@@ -418,6 +433,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider, Space and Grid CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider, Space, Grid and Layout CSS/SCSS style entries.",
   );
 }

@@ -113,6 +113,26 @@ async function browserCheck(directory, mode) {
       Math.abs(gridRatio - 0.5) < 0.01,
       `${mode} Grid stylesheet was not delivered`,
     );
+    const layout = page.locator("[data-foundation-layout]");
+    await expect(layout).toHaveClass(/semi-layout-has-sider/);
+    await expect(layout.locator(":scope > .semi-layout-sider")).toHaveCount(1);
+    await expect(layout.locator(":scope > .semi-layout-content")).toHaveCount(
+      1,
+    );
+    assert.equal(
+      await layout.evaluate(
+        (element) => getComputedStyle(element).flexDirection,
+      ),
+      "row",
+      `${mode} Layout stylesheet was not delivered`,
+    );
+    assert.equal(
+      await layout
+        .locator(":scope > .semi-layout-sider")
+        .evaluate((element) => element.getBoundingClientRect().width),
+      60,
+      `${mode} Layout Sider width changed`,
+    );
     const input = page.getByRole("textbox", {
       name: "Foundation input",
       exact: true,
@@ -262,6 +282,13 @@ try {
           /semi-ui-vue\/dist\/grid-[^/]+\.js$/.test(id) && renderedLength > 0,
       ),
       "Packed Grid implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          /semi-ui-vue\/dist\/layout-[^/]+\.js$/.test(id) && renderedLength > 0,
+      ),
+      "Packed Layout implementation is absent from Foundation consumer bundle",
     );
     assert(
       graph.modules.every(

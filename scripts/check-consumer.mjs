@@ -318,6 +318,7 @@ try {
   const rejectedDividerExports = [];
   const rejectedSpaceExports = [];
   const rejectedGridExports = [];
+  const rejectedLayoutExports = [];
   for (const exportName of [
     "ConfigProvider",
     "ConfigConsumer",
@@ -332,6 +333,7 @@ try {
     "Space",
     "Row",
     "Col",
+    "Layout",
   ]) {
     // Each export is tested alone: another missing named export cannot make a
     // leaked browser component accidentally pass this gate.
@@ -342,29 +344,31 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "Layout" ? "layout" : ["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
-          ["Row", "Col"].includes(exportName)
-            ? "Row"
-            : exportName === "Space"
-              ? "Space"
-              : exportName === "Divider"
-                ? "Divider"
-                : exportName === "IconButton"
-                  ? "IconButton"
-                  : exportName === "Spin"
-                    ? "Spin"
-                    : exportName === "Button"
-                      ? "Button"
-                      : exportName === "ButtonGroup"
-                        ? "ButtonGroup"
-                        : exportName === "SplitButtonGroup"
-                          ? "SplitButtonGroup"
-                          : exportName.startsWith("Locale")
-                            ? "LocaleProvider"
-                            : "ConfigProvider",
+          exportName === "Layout"
+            ? "Layout"
+            : ["Row", "Col"].includes(exportName)
+              ? "Row"
+              : exportName === "Space"
+                ? "Space"
+                : exportName === "Divider"
+                  ? "Divider"
+                  : exportName === "IconButton"
+                    ? "IconButton"
+                    : exportName === "Spin"
+                      ? "Spin"
+                      : exportName === "Button"
+                        ? "Button"
+                        : exportName === "ButtonGroup"
+                          ? "ButtonGroup"
+                          : exportName === "SplitButtonGroup"
+                            ? "SplitButtonGroup"
+                            : exportName.startsWith("Locale")
+                              ? "LocaleProvider"
+                              : "ConfigProvider",
           exportName,
         ),
       );
@@ -395,23 +399,25 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    (["Row", "Col"].includes(exportName)
-      ? rejectedGridExports
-      : exportName === "Space"
-        ? rejectedSpaceExports
-        : exportName === "Divider"
-          ? rejectedDividerExports
-          : exportName === "IconButton"
-            ? rejectedIconButtonExports
-            : exportName === "Spin"
-              ? rejectedSpinExports
-              : ["Button", "ButtonGroup", "SplitButtonGroup"].includes(
-                    exportName,
-                  )
-                ? rejectedButtonExports
-                : exportName.startsWith("Locale")
-                  ? rejectedLocaleExports
-                  : rejectedConfigExports
+    (exportName === "Layout"
+      ? rejectedLayoutExports
+      : ["Row", "Col"].includes(exportName)
+        ? rejectedGridExports
+        : exportName === "Space"
+          ? rejectedSpaceExports
+          : exportName === "Divider"
+            ? rejectedDividerExports
+            : exportName === "IconButton"
+              ? rejectedIconButtonExports
+              : exportName === "Spin"
+                ? rejectedSpinExports
+                : ["Button", "ButtonGroup", "SplitButtonGroup"].includes(
+                      exportName,
+                    )
+                  ? rejectedButtonExports
+                  : exportName.startsWith("Locale")
+                    ? rejectedLocaleExports
+                    : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -467,6 +473,7 @@ try {
         rejectedDividerExports,
         rejectedSpaceExports,
         rejectedGridExports,
+        rejectedLayoutExports,
         resolvedEntries: runtimeEntries,
         runtime:
           "Static ESM and empty-target lifecycle checks; no component SSR or hydration claim",

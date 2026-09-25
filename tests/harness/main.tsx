@@ -11,6 +11,9 @@ import SpaceResponsive from "../../website/examples/space/Responsive.vapor";
 import GridBasic from "../../website/examples/grid/Basic.vapor";
 import GridResponsive from "../../website/examples/grid/Responsive.vapor";
 import GridDynamic from "../../website/examples/grid/Dynamic.vapor";
+import LayoutBasic from "../../website/examples/layout/Basic.vapor";
+import LayoutDynamic from "../../website/examples/layout/Dynamic.vapor";
+import LayoutBreakpoint from "../../website/examples/layout/Breakpoint.vapor";
 import ButtonBasic from "../../website/examples/button/Basic.vapor";
 import ButtonStateForm from "../../website/examples/button/StateForm.vapor";
 import ButtonGroups from "../../website/examples/button/Groups.vapor";
@@ -48,6 +51,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/button.css";
 import "../../packages/semi-ui-vue/dist/styles/components/divider.css";
 import "../../packages/semi-ui-vue/dist/styles/components/space.css";
 import "../../packages/semi-ui-vue/dist/styles/components/grid.css";
+import "../../packages/semi-ui-vue/dist/styles/components/layout.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -61,11 +65,19 @@ const domMode = new URLSearchParams(location.search).has("dom");
 const iconsMode = new URLSearchParams(location.search).has("icons");
 const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
+const layoutMode = new URLSearchParams(location.search).has("layout");
 const app = createVaporApp(
-  spaceMode || gridMode
+  spaceMode || gridMode || layoutMode
     ? defineVaporComponent(() => (
         <main>
-          {gridMode ? (
+          {layoutMode ? (
+            <>
+              <h1>Layout examples</h1>
+              <LayoutBasic />
+              <LayoutDynamic />
+              <LayoutBreakpoint />
+            </>
+          ) : gridMode ? (
             <>
               <h1>Grid examples</h1>
               <GridBasic />

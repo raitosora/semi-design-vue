@@ -1,9 +1,11 @@
 import "./divider-only.scss";
 import "./space-only.scss";
 import "./grid-only.scss";
+import "./layout-only.scss";
 import { dividerMarkup } from "./divider-markup";
 import { spaceMarkup } from "./space-markup";
 import { gridMarkup } from "./grid-markup";
+import { layoutMarkup } from "./layout-markup";
 import "./input-only.scss";
 import "./spin-only.scss";
 import "./iconButton-only.scss";
@@ -30,10 +32,12 @@ document.body.innerHTML = `
   ${dividerMarkup("semi")}
   ${spaceMarkup("semi")}
   ${gridMarkup("semi")}
+  ${layoutMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
   ${dividerMarkup("consumer")}
   ${spaceMarkup("consumer")}
   ${gridMarkup("consumer")}
+  ${layoutMarkup("consumer")}
 `;
