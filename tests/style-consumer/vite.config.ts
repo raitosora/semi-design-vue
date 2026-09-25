@@ -19,6 +19,7 @@ export default defineConfig({
         "divider",
         "space",
         "grid",
+        "layout",
       ],
     }),
   ],

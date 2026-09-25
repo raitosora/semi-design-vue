@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space and grid. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid and layout. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -140,3 +140,16 @@ with aggregate and standalone grid styles. Real browser resizing, dynamic
 children, strict declarations, documentation and four tarball consumers are
 cited separately from ordinary Vue interop. The existing TSX peer, Chromium,
 pixel-parity and SSR/hydration/CJS limits remain in force.
+
+The `layout` record accepts Layout and its static Header, Footer, Content and
+Sider against the fixed source and two Foundation SCSS files. Root exposes only
+the Layout value; ./layout exposes its public types. Each Sider registers with
+the nearest Layout by instance identity, so dynamic, multiple and nested
+sidebars update direction without VNode inspection or slot probing. Native
+Vapor slots preserve ownership, while changing tagName replaces the root and
+remounts its children. Sider breakpoints report media matches without automatic
+collapse; the Vapor adapter also resubscribes when breakpoint props change.
+The fixed Sider declares role but does not render it. Strict declarations,
+browser semantics and geometry, live Chinese examples and four isolated
+tarball consumers passed local verification and independent review. The
+existing TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.

@@ -5,6 +5,7 @@
 @import "semi-ui-vue/styles/components/divider";
 @import "semi-ui-vue/styles/components/space";
 @import "semi-ui-vue/styles/components/grid";
+@import "semi-ui-vue/styles/components/layout";
 @import "semi-ui-vue/styles/components/iconButton";
 
 .primary-swatch {

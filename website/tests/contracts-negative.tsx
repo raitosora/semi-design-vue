@@ -461,3 +461,54 @@ export const gridBadTextContent: ColProps = { textContent: "x" };
 export const gridBadStatic = <Row.Col />;
 // @ts-expect-error Col has no imperative focus API.
 Col.focus();
+
+import { Layout } from "semi-ui-vue";
+import type {
+  BasicLayoutProps,
+  BasicProps,
+  SiderProps,
+  LayoutSlots,
+  SiderSlots,
+} from "semi-ui-vue/layout";
+// @ts-expect-error The root publishes the Layout value only, not its subcomponent value.
+import { Header } from "semi-ui-vue";
+// @ts-expect-error Public layout types are available from the layout subpath.
+import type { BasicLayoutProps as RootBasicLayoutProps } from "semi-ui-vue";
+// @ts-expect-error hasSider uses a boolean, not a string.
+export const layoutStringHasSider = <Layout hasSider="false" />;
+export const layoutUnknownTag: BasicLayoutProps = {
+  // @ts-expect-error tagName is a native HTML tag.
+  tagName: "unknown-layout-tag",
+};
+// @ts-expect-error No collapse state is part of the fixed upstream Layout contract.
+export const layoutCollapsed = <Layout collapsed />;
+// @ts-expect-error Native slot replaces React children.
+export const layoutRawChildren = <Layout children={<span />} />;
+// @ts-expect-error DOM replacement must not overwrite owned slot content.
+export const layoutInnerHTML: BasicLayoutProps = { innerHTML: "<b>bad</b>" };
+// @ts-expect-error DOM replacement must not overwrite owned slot content.
+export const layoutTextContent: BasicProps = { textContent: "bad" };
+// @ts-expect-error Native slots cannot return plain strings.
+export const layoutTextSlot: LayoutSlots = { default: () => "body" };
+// @ts-expect-error Native slots cannot return null.
+export const layoutNullSlot: SiderSlots = { default: () => null };
+// @ts-expect-error Native slots cannot return promises.
+export const layoutAsyncSlot: LayoutSlots = { default: async () => [] };
+// @ts-expect-error Unknown breakpoint names are rejected.
+export const siderBadBreakpoint: SiderProps = { breakpoint: ["tablet"] };
+// @ts-expect-error No collapsible trigger is part of the fixed upstream Sider contract.
+export const siderTrigger = <Layout.Sider trigger="menu" />;
+// @ts-expect-error Native slot replaces React children.
+export const siderRawChildren = <Layout.Sider children={<span />} />;
+export const siderBadCallback: SiderProps = {
+  // @ts-expect-error Callback matches flag is boolean.
+  onBreakpoint: (_screen, matches: string) => {
+    void matches;
+  },
+};
+// @ts-expect-error Sider filters native id at runtime rather than forwarding it.
+export const siderNativeId: SiderProps = { id: "not-forwarded" };
+// @ts-expect-error Sider filters native title at runtime rather than forwarding it.
+export const siderNativeTitle: SiderProps = { title: "not-forwarded" };
+// @ts-expect-error Sider filters native click listeners at runtime.
+export const siderNativeClick: SiderProps = { onClick: () => {} };

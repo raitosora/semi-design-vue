@@ -1,5 +1,5 @@
 import { defineVaporComponent, ref } from "vue";
-import { Col, Row, Space } from "semi-ui-vue";
+import { Col, Layout, Row, Space } from "semi-ui-vue";
 import { FoundationInput } from "../../website/examples/foundation/Input.vapor";
 import { FoundationTooltip } from "../../website/examples/foundation/Tooltip.vapor";
 import { Model } from "../fixtures/Model.vapor";
@@ -44,6 +44,24 @@ export const FoundationHarness = defineVaporComponent(() => {
               </>
             )}
           </Row>
+          <Layout
+            className="foundation-layout"
+            data-foundation-layout=""
+            style={{ width: "240px", height: "80px" }}
+            v-slots={{
+              default: () => (
+                <>
+                  <Layout.Sider
+                    style={{ width: "60px", flex: "0 0 60px" }}
+                    v-slots={{ default: () => <span>Navigation</span> }}
+                  />
+                  <Layout.Content
+                    v-slots={{ default: () => <span>Foundation content</span> }}
+                  />
+                </>
+              ),
+            }}
+          />
           <FoundationInput
             onUpdate:value={(value) => {
               input.value = value;

@@ -14,6 +14,7 @@ const entries = {
   divider: "semi-ui-vue/styles/components/divider.scss",
   space: "semi-ui-vue/styles/components/space.scss",
   grid: "semi-ui-vue/styles/components/grid.scss",
+  layout: "semi-ui-vue/styles/components/layout.scss",
 } as const;
 type Values = Readonly<Record<string, string | number>>;
 export interface SemiThemeOptions {

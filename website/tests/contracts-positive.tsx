@@ -420,3 +420,66 @@ export const gridValuesAndTypes = (
   </>
 );
 void gridBreakpoint;
+
+import LayoutFromPath, {
+  Layout as NamedLayoutFromPath,
+  type BasicLayoutProps,
+  type BasicProps,
+  type SiderProps,
+  type LayoutSlots,
+  type SiderSlots,
+  type ResponsiveMap,
+} from "semi-ui-vue/layout";
+import { Layout } from "semi-ui-vue";
+const layoutIdentity: typeof Layout = LayoutFromPath;
+const namedLayoutIdentity: typeof Layout = NamedLayoutFromPath;
+const layoutProps: BasicLayoutProps = {
+  hasSider: false,
+  prefixCls: "semi-layout",
+  tagName: "article",
+  className: "example",
+  class: ["native", { active: true }],
+  style: [{ width: "100%" }, "color: red"],
+  "aria-label": "Application layout",
+};
+const headerProps: BasicProps = { tagName: "header", role: "banner" };
+const contentProps: BasicProps = { tagName: "main", role: "main" };
+const footerProps: BasicProps = { tagName: "footer", role: "contentinfo" };
+const siderProps: SiderProps = {
+  breakpoint: ["xs", "md"],
+  onBreakpoint: (screen, matches) => {
+    const knownScreen: keyof ResponsiveMap = screen;
+    const knownMatch: boolean = matches;
+    void knownScreen;
+    void knownMatch;
+  },
+  "aria-label": "Navigation",
+  role: "navigation",
+};
+const layoutSlots: LayoutSlots = {
+  default: () => <Layout.Header>{() => <span>heading</span>}</Layout.Header>,
+};
+const siderSlots: SiderSlots = { default: () => <button>item</button> };
+export const layoutContracts = (
+  <>
+    <Layout {...layoutProps} v-slots={layoutSlots} />
+    <LayoutFromPath hasSider={undefined} tagName={undefined}>
+      {() => (
+        <>
+          <Layout.Header {...headerProps} />
+          <Layout.Sider
+            {...siderProps}
+            data-sider="contract"
+            v-slots={siderSlots}
+          />
+          <Layout.Content {...contentProps}>
+            {() => <span>main</span>}
+          </Layout.Content>
+          <Layout.Footer {...footerProps} />
+        </>
+      )}
+    </LayoutFromPath>
+  </>
+);
+void layoutIdentity;
+void namedLayoutIdentity;

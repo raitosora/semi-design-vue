@@ -479,6 +479,17 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Grid subpath",
     );
+  assert(
+    /semi-ui-vue\/dist\/layout-[^/\n]+\.js/.test(modules),
+    "Layout implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/layout\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Layout subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -791,6 +802,11 @@ async function browserCheck(url) {
       "Packed Grid behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkLayout())) ===
+        "layout consumer passed",
+      "Packed Layout behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -1042,6 +1058,18 @@ async function interopBrowserCheck(url) {
           .evaluate((element) => element.style.paddingLeft)) === "8px",
       "Interop Grid initial context or style failed",
     );
+    assert(
+      (await page.locator(".interop-layout").getAttribute("class")).includes(
+        "semi-layout-has-sider",
+      ) &&
+        (await page.locator(".interop-layout-sider").count()) === 1 &&
+        (await page.locator(".interop-layout-content").count()) === 1 &&
+        (await page
+          .locator(".interop-layout")
+          .evaluate((element) => getComputedStyle(element).flexDirection)) ===
+          "row",
+      "Interop Layout initial Sider registry or stylesheet failed",
+    );
     await page.locator(".interop-button").evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "2",
@@ -1156,6 +1184,17 @@ async function interopBrowserCheck(url) {
           .locator(".interop-grid-col [data-grid-label]")
           .textContent()) === "Updated",
       "Interop Grid reactive span or slot failed",
+    );
+    await page.evaluate(() => window.interopConsumer.updateLayout(false));
+    assert(
+      !(await page.locator(".interop-layout").getAttribute("class")).includes(
+        "semi-layout-has-sider",
+      ) &&
+        (await page.locator(".interop-layout-sider").count()) === 0 &&
+        (await page
+          .locator(".interop-layout [data-layout-label]")
+          .textContent()) === "Updated",
+      "Interop Layout failed to unregister Sider or update Content slot",
     );
     await page.evaluate(() =>
       window.interopConsumer.updateSpace(true, true, 9),
@@ -1339,6 +1378,10 @@ async function run() {
     "Grid fixture was not compiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:layout.tsx"),
+    "Layout fixture was not compiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),
     "Spin fixture was not compiled",
   );
@@ -1366,6 +1409,7 @@ async function run() {
     "divider-browser.ts",
     "space-browser.ts",
     "grid-browser.ts",
+    "layout-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
@@ -1374,7 +1418,8 @@ async function run() {
     copyFileSync(
       name === "divider-browser.ts" ||
         name === "space-browser.ts" ||
-        name === "grid-browser.ts"
+        name === "grid-browser.ts" ||
+        name === "layout-browser.ts"
         ? join(root, `tests/consumer/${name}`)
         : join(fixture, name),
       join(consumer, name),
@@ -1395,6 +1440,7 @@ async function run() {
           "divider-browser.ts",
           "space-browser.ts",
           "grid-browser.ts",
+          "layout-browser.ts",
           "interop-main.ts",
         ],
       },

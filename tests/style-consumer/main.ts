@@ -1,6 +1,7 @@
 import { dividerMarkup } from "./divider-markup";
 import { spaceMarkup } from "./space-markup";
 import { gridMarkup } from "./grid-markup";
+import { layoutMarkup } from "./layout-markup";
 import { iconButtonMarkup } from "./iconButton-markup";
 import { buttonMarkup } from "./button-markup";
 import { spinMarkup } from "./spin-markup";
@@ -25,10 +26,12 @@ document.body.innerHTML = `
   ${dividerMarkup("semi")}
   ${spaceMarkup("semi")}
   ${gridMarkup("semi")}
+  ${layoutMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
   ${dividerMarkup("consumer")}
   ${spaceMarkup("consumer")}
   ${gridMarkup("consumer")}
+  ${layoutMarkup("consumer")}
 `;

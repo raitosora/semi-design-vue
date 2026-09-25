@@ -149,6 +149,10 @@ test("production: prerendered pages, all internal links and anchors", async ({
     files.push(file);
   expect(files.length).toBeGreaterThanOrEqual(6);
   let checkedLinks = 0;
+  const linkedPages = new Map<
+    string,
+    Promise<{ status: number; markup: string }>
+  >();
   for (const file of files.filter((file) => !file.endsWith("/404.html"))) {
     const path = file.replace("website/.vitepress/dist", "");
     const html = await readFile(file, "utf8");
@@ -188,8 +192,17 @@ test("production: prerendered pages, all internal links and anchors", async ({
     for (const link of new Set(links)) {
       const url = new URL(link);
       if (url.origin !== "http://127.0.0.1:4181") continue;
-      const linked = await request.get(url.href.split("#")[0]);
-      expect(linked.status(), link).toBe(200);
+      const href = url.href.split("#")[0];
+      let linked = linkedPages.get(href);
+      if (!linked) {
+        linked = request.get(href).then(async (response) => ({
+          status: response.status(),
+          markup: await response.text(),
+        }));
+        linkedPages.set(href, linked);
+      }
+      const { status, markup } = await linked;
+      expect(status, link).toBe(200);
       if (url.hash) {
         expect(
           await page.evaluate(
@@ -198,7 +211,7 @@ test("production: prerendered pages, all internal links and anchors", async ({
                 .parseFromString(markup, "text/html")
                 .getElementById(id) !== null,
             {
-              markup: await linked.text(),
+              markup,
               id: decodeURIComponent(url.hash.slice(1)),
             },
           ),

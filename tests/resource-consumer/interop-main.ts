@@ -12,6 +12,7 @@ import {
   Space,
   Row,
   Col,
+  Layout,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -38,6 +39,7 @@ import "semi-ui-vue/styles/components/button.css";
 import "semi-ui-vue/styles/components/divider.css";
 import "semi-ui-vue/styles/components/space.css";
 import "semi-ui-vue/styles/components/grid.css";
+import "semi-ui-vue/styles/components/layout.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -45,6 +47,7 @@ const spaceVertical = ref(false);
 const spaceWrap = ref(true);
 const spaceSpacing = ref<number | "medium">("medium");
 const gridSpan = ref(12);
+const layoutSiderVisible = ref(true);
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -147,6 +150,39 @@ const app = createApp({
                     h("span", { "data-grid-label": "" }, iconButtonLabel.value),
                 },
               ),
+          },
+        ),
+        h(
+          Layout,
+          {
+            className: "interop-layout",
+            style: { width: "240px", height: "80px" },
+          },
+          {
+            default: () => [
+              layoutSiderVisible.value
+                ? h(
+                    Layout.Sider,
+                    {
+                      className: "interop-layout-sider",
+                      style: { width: "40px", flex: "0 0 40px" },
+                    },
+                    { default: () => h("span", "Navigation") },
+                  )
+                : null,
+              h(
+                Layout.Content,
+                { className: "interop-layout-content" },
+                {
+                  default: () =>
+                    h(
+                      "output",
+                      { "data-layout-label": "" },
+                      iconButtonLabel.value,
+                    ),
+                },
+              ),
+            ],
           },
         ),
         h(
@@ -407,6 +443,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      updateLayout(visible: boolean): Promise<void>;
       unmount(): void;
     };
   }
@@ -442,6 +479,12 @@ window.interopConsumer = {
   },
   async updateGrid(span) {
     gridSpan.value = span;
+    await nextTick();
+  },
+  async updateLayout(visible) {
+    layoutSiderVisible.value = visible;
+    await nextTick();
+    await Promise.resolve();
     await nextTick();
   },
   async disableButton() {
