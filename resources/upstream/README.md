@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button and divider. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space and grid. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -129,3 +129,14 @@ Vue interop. The exact Vue RC/vue-jsx peer combination still rejects an
 independent strict TSX compiler installation; precompiled consumers do not
 remove that limit. Root exposes the Space value and ./space exposes its types;
 screenshots do not establish pixel equivalence or SSR, hydration or CJS.
+
+The `grid` record accepts Row and Col against the fixed component source and
+Foundation SCSS: 24 columns, the fixed viewport breakpoints, both gutter axes,
+responsive column classes, alignment, nesting and RTL. Row provides reactive
+gutter context to its nearest descendant Col instances; native Vapor slots keep
+their owners and state. Grid does not adopt ConfigProvider's custom responsive
+map. Root exports Row and Col values; ./grid exposes values and public types,
+with aggregate and standalone grid styles. Real browser resizing, dynamic
+children, strict declarations, documentation and four tarball consumers are
+cited separately from ordinary Vue interop. The existing TSX peer, Chromium,
+pixel-parity and SSR/hydration/CJS limits remain in force.

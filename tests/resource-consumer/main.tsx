@@ -1,6 +1,7 @@
 import "semi-ui-vue/styles/base.css";
 import { checkDividerConsumer } from "./divider.js";
 import { checkSpaceConsumer } from "./space.js";
+import { checkGridConsumer } from "./grid.js";
 import { checkIconButtonConsumer } from "./iconButton.js";
 import { checkButtonConsumer } from "./button.js";
 import { checkSpinConsumer } from "./spin.js";
@@ -52,6 +53,7 @@ declare global {
       checkButton(): Promise<string>;
       checkDivider(): Promise<string>;
       checkSpace(): Promise<string>;
+      checkGrid(): Promise<string>;
       checkSpin(): Promise<string>;
       checkLocale(): Promise<string>;
       checkConfigProvider(): Promise<string>;
@@ -299,6 +301,7 @@ window.resourceConsumer = {
   checkButton: checkButtonConsumer,
   checkDivider: checkDividerConsumer,
   checkSpace: checkSpaceConsumer,
+  checkGrid: checkGridConsumer,
   checkSpin: checkSpinConsumer,
   checkLocale: checkLocaleConsumer,
   checkConfigProvider: checkConfigProviderConsumer,

@@ -417,3 +417,47 @@ export function spaceGlobalBoundary() {
     overrideDefaultProps: { Space: { spacing: "loose" } },
   });
 }
+import { Row, Col } from "semi-ui-vue";
+import type {
+  RowProps,
+  RowSlots,
+  ColProps,
+  ColSlots,
+  ColSize,
+} from "semi-ui-vue/grid";
+// @ts-expect-error Root exports component values, with types on the grid subpath.
+import type { RowProps as RootRowProps } from "semi-ui-vue";
+// @ts-expect-error Grid has no custom layout mode.
+export const gridBadType = <Row type="inline" />;
+// @ts-expect-error Align uses top/middle/bottom.
+export const gridBadAlign = <Row align="center" />;
+// @ts-expect-error Justify has the fixed upstream choices.
+export const gridBadJustify = <Row justify="stretch" />;
+// @ts-expect-error Gutter numbers and breakpoint maps cannot include CSS strings.
+export const gridBadGutter = <Row gutter="16px" />;
+// @ts-expect-error Gutter breakpoint keys are fixed.
+export const gridBadBreakpoint: RowProps = { gutter: { tablet: 16 } };
+// @ts-expect-error Span is numeric.
+export const gridBadSpan = <Col span="12" />;
+// @ts-expect-error Responsive Col objects use only the supported fields.
+export const gridBadColSize: ColSize = { width: 12 };
+// @ts-expect-error A responsive size is a number or ColSize.
+export const gridBadResponsive = <Col sm="12" />;
+// @ts-expect-error No generic columns API exists.
+export const gridBadColumns = <Row columns={12} />;
+// @ts-expect-error Native slot replaces React children.
+export const gridBadChildren = <Row children={<div />} />;
+// @ts-expect-error Raw text cannot be a native Vapor slot result.
+export const gridBadRawSlot = <Col>{() => "text"}</Col>;
+// @ts-expect-error Promise slots are unsupported.
+export const gridBadAsyncSlot: RowSlots = { default: async () => [] };
+// @ts-expect-error Null cannot be a native Vapor slot result.
+export const gridBadNullSlot: ColSlots = { default: () => null };
+// @ts-expect-error HTML replacement cannot overwrite owned slot content.
+export const gridBadInnerHTML: RowProps = { innerHTML: "<b>x</b>" };
+// @ts-expect-error HTML replacement cannot overwrite owned slot content.
+export const gridBadTextContent: ColProps = { textContent: "x" };
+// @ts-expect-error Row has no static Col API.
+export const gridBadStatic = <Row.Col />;
+// @ts-expect-error Col has no imperative focus API.
+Col.focus();

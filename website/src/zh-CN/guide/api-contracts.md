@@ -105,3 +105,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 [Divider](../components/divider.md) 仅有函数形式的 default slot；文本放在 fragment 内，原始字符串、VNode 与异步结果不属于 Vapor slot 返回值。水平布局根据已挂载 DOM 分类纯文本、复杂节点与空内容，忽略注释/零长度文本但保留空格和数字 0；不预执行 slot，不遍历或克隆 VNode。垂直布局不挂载 slot，恢复水平时新建内容实例。
 
 其安全 HTML attrs 与原生事件转发到根 div，`innerHTML` / `textContent` 被类型与运行时同时排除，避免覆盖 slot 所有权；role/ARIA 由调用方显式指定。`align` / `layout` 显式 undefined 恢复有效默认值，不适用受控字段的清空协议。根入口只导出组件值，Props/Slots 类型由 divider 子路径提供；没有全局默认配置、静态成员或公开 ref API。
+
+## Grid 的上下文与响应式属性
+
+[Grid](../components/grid.md) 的 Row 与 Col 均只接受函数形式的默认 Vapor slot；Col 需处于 Row 的上下文中。Row 的 gutter 可为数字、固定断点对象或横纵两项数组，Col 的六个响应式尺寸可为数字或含 span/order/offset/push/pull 的对象。缺省与显式 undefined gutter 使用相同默认值；动态更新时内层 Row 的 gutter 不受外层改变影响。根入口只提供 Row/Col 组件值，类型由 grid 子路径提供；无静态子组件或公开命令式 ref。

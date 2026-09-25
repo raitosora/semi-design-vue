@@ -188,6 +188,9 @@ await writeFile(
           "semi-ui-vue/space": [
             "../../packages/semi-ui-vue/dist/components/space/index.d.ts",
           ],
+          "semi-ui-vue/grid": [
+            "../../packages/semi-ui-vue/dist/components/grid/index.d.ts",
+          ],
           "semi-ui-vue/spin": [
             "../../packages/semi-ui-vue/dist/components/spin/index.d.ts",
           ],

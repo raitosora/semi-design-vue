@@ -365,3 +365,58 @@ export const spaceContracts = (
   </div>
 );
 void spaceIdentity;
+import { Row, Col } from "semi-ui-vue";
+import {
+  Row as RowFromGrid,
+  Col as ColFromGrid,
+  type Breakpoint,
+  type Gutter,
+  type RowProps,
+  type RowSlots,
+  type ColProps,
+  type ColSize,
+  type ColSlots,
+} from "semi-ui-vue/grid";
+const gridBreakpoint: Breakpoint = "xxl";
+const gridGutter: Gutter = { xs: 0, sm: 8, md: 16, lg: 24 };
+const gridRowProps: RowProps = {
+  type: "flex",
+  align: "middle",
+  justify: "space-between",
+  gutter: [gridGutter, { xs: 0, md: 12 }],
+  prefixCls: "semi",
+  className: "grid-example",
+  "aria-label": "示例栅格",
+  id: "grid-contract-row",
+};
+const gridColSize: ColSize = { span: 8, order: 0, offset: 0, push: 1, pull: 0 };
+const gridColProps: ColProps = {
+  span: 12,
+  order: 0,
+  offset: 0,
+  push: 0,
+  pull: 0,
+  xs: 24,
+  sm: gridColSize,
+  md: { span: 6, offset: 2 },
+  lg: 4,
+  xl: 3,
+  xxl: 2,
+  prefixCls: "semi",
+  id: "grid-contract-col",
+};
+const gridRowSlots: RowSlots = {
+  default: () => <Col {...gridColProps}>{() => <span>列内容</span>}</Col>,
+};
+const gridColSlots: ColSlots = {
+  default: () => <button type="button">操作</button>,
+};
+export const gridValuesAndTypes = (
+  <>
+    <Row {...gridRowProps} v-slots={gridRowSlots} />
+    <RowFromGrid gutter={0}>
+      {() => <ColFromGrid span={24} v-slots={gridColSlots} />}
+    </RowFromGrid>
+  </>
+);
+void gridBreakpoint;

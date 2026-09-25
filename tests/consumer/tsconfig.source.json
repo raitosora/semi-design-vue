@@ -8,6 +8,7 @@
     "consumer.ts",
     "button-browser.ts",
     "divider-browser.ts",
-    "space-browser.ts"
+    "space-browser.ts",
+    "grid-browser.ts"
   ]
 }

@@ -42,7 +42,7 @@ async function copyInputs(destination) {
 }
 
 describe("fixed Semi style inputs", () => {
-  it("locks the 2.103.0 Theme source and registers the base, Input, Tooltip and Spin SCSS closures", async () => {
+  it("locks the 2.103.0 Theme source and registers delivered component SCSS closures", async () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
@@ -54,6 +54,7 @@ describe("fixed Semi style inputs", () => {
         "button",
         "divider",
         "space",
+        "grid",
       ],
     });
   });

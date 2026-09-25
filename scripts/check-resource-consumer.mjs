@@ -468,6 +468,17 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Space subpath",
     );
+  assert(
+    /semi-ui-vue\/dist\/grid-[^/\n]+\.js/.test(modules),
+    "Grid implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/grid\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Grid subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -775,6 +786,11 @@ async function browserCheck(url) {
       "Packed Space behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkGrid())) ===
+        "grid consumer passed",
+      "Packed Grid behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -1014,6 +1030,18 @@ async function interopBrowserCheck(url) {
           "inline-flex",
       "Interop Space initial layout, slot or semantics failed",
     );
+    assert(
+      (await page.locator(".interop-grid-row").getAttribute("class")).includes(
+        "semi-row-flex",
+      ) &&
+        (
+          await page.locator(".interop-grid-col").getAttribute("class")
+        ).includes("semi-col-12") &&
+        (await page
+          .locator(".interop-grid-col")
+          .evaluate((element) => element.style.paddingLeft)) === "8px",
+      "Interop Grid initial context or style failed",
+    );
     await page.locator(".interop-button").evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "2",
@@ -1118,6 +1146,16 @@ async function interopBrowserCheck(url) {
           .locator('.interop-space [data-space-action="first"]')
           .textContent()) === "Updated",
       "Interop Space reactive alignment or slot failed",
+    );
+    await page.evaluate(() => window.interopConsumer.updateGrid(8));
+    assert(
+      (await page.locator(".interop-grid-col").getAttribute("class")).includes(
+        "semi-col-8",
+      ) &&
+        (await page
+          .locator(".interop-grid-col [data-grid-label]")
+          .textContent()) === "Updated",
+      "Interop Grid reactive span or slot failed",
     );
     await page.evaluate(() =>
       window.interopConsumer.updateSpace(true, true, 9),
@@ -1297,6 +1335,10 @@ async function run() {
     "Space fixture was not compiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:grid.tsx"),
+    "Grid fixture was not compiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),
     "Spin fixture was not compiled",
   );
@@ -1323,13 +1365,16 @@ async function run() {
     "consumer.ts",
     "divider-browser.ts",
     "space-browser.ts",
+    "grid-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
   ])
     copyFileSync(
-      name === "divider-browser.ts" || name === "space-browser.ts"
+      name === "divider-browser.ts" ||
+        name === "space-browser.ts" ||
+        name === "grid-browser.ts"
         ? join(root, `tests/consumer/${name}`)
         : join(fixture, name),
       join(consumer, name),
@@ -1349,6 +1394,7 @@ async function run() {
           "consumer.ts",
           "divider-browser.ts",
           "space-browser.ts",
+          "grid-browser.ts",
           "interop-main.ts",
         ],
       },
