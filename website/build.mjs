@@ -194,6 +194,9 @@ await writeFile(
           "semi-ui-vue/layout": [
             "../../packages/semi-ui-vue/dist/components/layout/index.d.ts",
           ],
+          "semi-ui-vue/skeleton": [
+            "../../packages/semi-ui-vue/dist/components/skeleton/index.d.ts",
+          ],
           "semi-ui-vue/spin": [
             "../../packages/semi-ui-vue/dist/components/spin/index.d.ts",
           ],

@@ -490,6 +490,17 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Layout subpath",
     );
+  assert(
+    /semi-ui-vue\/dist\/skeleton-[^/\n]+\.js/.test(modules),
+    "Skeleton implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/skeleton\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Skeleton subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -807,6 +818,11 @@ async function browserCheck(url) {
       "Packed Layout behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkSkeleton())) ===
+        "skeleton consumer passed",
+      "Packed Skeleton behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSpin())) ===
         "spin consumer passed",
       "Packed Spin behavior failed",
@@ -1070,6 +1086,18 @@ async function interopBrowserCheck(url) {
           "row",
       "Interop Layout initial Sider registry or stylesheet failed",
     );
+    assert(
+      (await page.locator(".interop-skeleton.semi-skeleton-active").count()) ===
+        1 &&
+        (await page
+          .locator(".interop-skeleton .semi-skeleton-avatar-small")
+          .count()) === 1 &&
+        (await page
+          .locator(".interop-skeleton .semi-skeleton-paragraph li")
+          .count()) === 2 &&
+        (await page.locator("[data-skeleton-label]").count()) === 0,
+      "Interop Skeleton initial placeholder failed",
+    );
     await page.locator(".interop-button").evaluate((button) => button.click());
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "2",
@@ -1254,6 +1282,12 @@ async function interopBrowserCheck(url) {
       "Interop Spin did not stop",
     );
     assert(
+      (await page.locator(".interop-skeleton").count()) === 0 &&
+        (await page.locator("[data-skeleton-label]").textContent()) ===
+          "Updated",
+      "Interop Skeleton did not reveal updated content",
+    );
+    assert(
       (await page.locator(".interop-spin input").inputValue()) === "retained",
       "Interop Spin replaced content",
     );
@@ -1382,6 +1416,10 @@ async function run() {
     "Layout fixture was not compiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:skeleton.tsx"),
+    "Skeleton fixture was not compiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:spin.tsx"),
     "Spin fixture was not compiled",
   );
@@ -1410,6 +1448,7 @@ async function run() {
     "space-browser.ts",
     "grid-browser.ts",
     "layout-browser.ts",
+    "skeleton-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
@@ -1419,7 +1458,8 @@ async function run() {
       name === "divider-browser.ts" ||
         name === "space-browser.ts" ||
         name === "grid-browser.ts" ||
-        name === "layout-browser.ts"
+        name === "layout-browser.ts" ||
+        name === "skeleton-browser.ts"
         ? join(root, `tests/consumer/${name}`)
         : join(fixture, name),
       join(consumer, name),
@@ -1441,6 +1481,7 @@ async function run() {
           "space-browser.ts",
           "grid-browser.ts",
           "layout-browser.ts",
+          "skeleton-browser.ts",
           "interop-main.ts",
         ],
       },

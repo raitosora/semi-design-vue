@@ -1,5 +1,11 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": { "noEmit": true },
-  "files": ["StrictFixture.tsx", "positive.tsx", "negative.tsx"]
+  "files": [
+    "StrictFixture.tsx",
+    "positive.tsx",
+    "negative.tsx",
+    "skeleton-positive.tsx",
+    "skeleton-negative.tsx"
+  ]
 }

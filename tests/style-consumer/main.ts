@@ -2,6 +2,7 @@ import { dividerMarkup } from "./divider-markup";
 import { spaceMarkup } from "./space-markup";
 import { gridMarkup } from "./grid-markup";
 import { layoutMarkup } from "./layout-markup";
+import { skeletonMarkup } from "./skeleton-markup";
 import { iconButtonMarkup } from "./iconButton-markup";
 import { buttonMarkup } from "./button-markup";
 import { spinMarkup } from "./spin-markup";
@@ -27,6 +28,7 @@ document.body.innerHTML = `
   ${spaceMarkup("semi")}
   ${gridMarkup("semi")}
   ${layoutMarkup("semi")}
+  ${skeletonMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -34,4 +36,5 @@ document.body.innerHTML = `
   ${spaceMarkup("consumer")}
   ${gridMarkup("consumer")}
   ${layoutMarkup("consumer")}
+  ${skeletonMarkup("consumer")}
 `;

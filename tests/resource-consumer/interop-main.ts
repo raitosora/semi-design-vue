@@ -13,6 +13,7 @@ import {
   Row,
   Col,
   Layout,
+  Skeleton,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -40,6 +41,7 @@ import "semi-ui-vue/styles/components/divider.css";
 import "semi-ui-vue/styles/components/space.css";
 import "semi-ui-vue/styles/components/grid.css";
 import "semi-ui-vue/styles/components/layout.css";
+import "semi-ui-vue/styles/components/skeleton.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -48,6 +50,7 @@ const spaceWrap = ref(true);
 const spaceSpacing = ref<number | "medium">("medium");
 const gridSpan = ref(12);
 const layoutSiderVisible = ref(true);
+const skeletonLoading = ref(true);
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -183,6 +186,23 @@ const app = createApp({
                 },
               ),
             ],
+          },
+        ),
+        h(
+          Skeleton,
+          {
+            className: "interop-skeleton",
+            loading: skeletonLoading.value,
+            active: true,
+            role: "status",
+          },
+          {
+            placeholder: () => [
+              h(Skeleton.Avatar, { size: "small" }),
+              h(Skeleton.Paragraph, { rows: 2 }),
+            ],
+            default: () =>
+              h("output", { "data-skeleton-label": "" }, iconButtonLabel.value),
           },
         ),
         h(
@@ -451,6 +471,7 @@ declare global {
 window.interopConsumer = {
   async update() {
     spinning.value = false;
+    skeletonLoading.value = false;
     iconButtonLabel.value = "Updated";
     configLocale.value = zhCN;
     standaloneLocale.value = zhCN;

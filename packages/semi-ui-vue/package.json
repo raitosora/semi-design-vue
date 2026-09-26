@@ -133,6 +133,10 @@
       "types": "./dist/components/layout/index.d.ts",
       "import": "./dist/components/layout/index.js"
     },
+    "./skeleton": {
+      "types": "./dist/components/skeleton/index.d.ts",
+      "import": "./dist/components/skeleton/index.js"
+    },
     "./styles/components/divider": {
       "sass": "./dist/styles/components/divider.scss",
       "default": "./dist/styles/components/divider.css"
@@ -156,7 +160,13 @@
       "default": "./dist/styles/components/layout.css"
     },
     "./styles/components/layout.css": "./dist/styles/components/layout.css",
-    "./styles/components/layout.scss": "./dist/styles/components/layout.scss"
+    "./styles/components/layout.scss": "./dist/styles/components/layout.scss",
+    "./styles/components/skeleton": {
+      "sass": "./dist/styles/components/skeleton.scss",
+      "default": "./dist/styles/components/skeleton.css"
+    },
+    "./styles/components/skeleton.css": "./dist/styles/components/skeleton.css",
+    "./styles/components/skeleton.scss": "./dist/styles/components/skeleton.scss"
   },
   "files": [
     "dist",

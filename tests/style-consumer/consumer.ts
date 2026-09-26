@@ -17,6 +17,7 @@ const options: SemiThemeOptions = {
     "space",
     "grid",
     "layout",
+    "skeleton",
   ],
 };
 

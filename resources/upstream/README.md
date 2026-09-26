@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid and layout. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout and skeleton. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -153,3 +153,18 @@ The fixed Sider declares role but does not render it. Strict declarations,
 browser semantics and geometry, live Chinese examples and four isolated
 tarball consumers passed local verification and independent review. The
 existing TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.
+
+The `skeleton` record accepts Skeleton and its static Avatar, Title, Button,
+Paragraph and Image placeholders against the fixed source, Chinese docs and
+four Foundation SCSS files. The browser root exports only Skeleton; ./skeleton
+exports its default/named value and public types. Native Vapor named/default
+slots replace ReactNode placeholder/children inputs. Switching loading
+branches remounts their contents, so local state and focus do not persist
+across transitions. CSS drives the active animation without JS handles.
+Strict declarations, Chromium behavior, Chinese examples and three direct
+Skeleton tarball consumer surfaces passed; the separate patched Foundation
+tarball remains a regression flow. Explicit differences include the upstream
+generator's undefined type crash, Paragraph native-attribute forwarding and
+the fixed SCSS missing a dimension rule for Avatar size `default`. Independent
+Avatar, Typography and Image public families remain unaccepted. The existing
+TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.

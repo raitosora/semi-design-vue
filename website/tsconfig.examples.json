@@ -46,6 +46,9 @@
       ],
       "semi-ui-vue/layout": [
         "../packages/semi-ui-vue/dist/components/layout/index.d.ts"
+      ],
+      "semi-ui-vue/skeleton": [
+        "../packages/semi-ui-vue/dist/components/skeleton/index.d.ts"
       ]
     }
   },

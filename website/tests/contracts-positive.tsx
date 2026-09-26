@@ -483,3 +483,63 @@ export const layoutContracts = (
 );
 void layoutIdentity;
 void namedLayoutIdentity;
+
+import SkeletonFromPath, {
+  Skeleton as NamedSkeletonFromPath,
+  type AvatarProps as SkeletonAvatarProps,
+  type BasicProps as SkeletonBasicProps,
+  type GenericProps as SkeletonGenericProps,
+  type ParagraphProps as SkeletonParagraphProps,
+  type SkeletonAvatarSize,
+  type SkeletonProps,
+  type SkeletonSlots,
+} from "semi-ui-vue/skeleton";
+import { Skeleton } from "semi-ui-vue";
+const skeletonIdentity: typeof Skeleton = SkeletonFromPath;
+const namedSkeletonIdentity: typeof Skeleton = NamedSkeletonFromPath;
+const skeletonProps: SkeletonProps = {
+  loading: undefined,
+  active: true,
+  className: "loading-card",
+  class: ["custom", { narrow: true }],
+  style: [{ width: "100%" }, "max-width: 20rem"],
+  "aria-label": "Loading card",
+  "aria-busy": true,
+  role: "status",
+  id: "loading-card",
+};
+const skeletonSlots: SkeletonSlots = {
+  placeholder: () => <Skeleton.Paragraph rows={2} />,
+  default: () => <article>Loaded</article>,
+};
+const skeletonSize: SkeletonAvatarSize = "default";
+const skeletonAvatarProps: SkeletonAvatarProps = {
+  size: "extra-extra-small",
+  shape: "square",
+  prefixCls: "custom-skeleton",
+  className: "avatar-block",
+  style: { width: 20, height: 20 },
+};
+const skeletonParagraphProps: SkeletonParagraphProps = {
+  rows: 0,
+  className: "zero-rows",
+};
+const skeletonGenericProps: SkeletonGenericProps = { shape: "circle" };
+const skeletonBasicProps: SkeletonBasicProps = { type: "title" };
+export const skeletonContracts = (
+  <>
+    <Skeleton {...skeletonProps} v-slots={skeletonSlots} />
+    <SkeletonFromPath loading={false}>
+      {() => <span>Content</span>}
+    </SkeletonFromPath>
+    <Skeleton.Avatar {...skeletonAvatarProps} />
+    <Skeleton.Title {...skeletonBasicProps} />
+    <Skeleton.Button />
+    <Skeleton.Image />
+    <Skeleton.Paragraph {...skeletonParagraphProps} />
+  </>
+);
+void skeletonIdentity;
+void namedSkeletonIdentity;
+void skeletonSize;
+void skeletonGenericProps;

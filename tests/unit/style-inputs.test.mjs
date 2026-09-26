@@ -56,6 +56,7 @@ describe("fixed Semi style inputs", () => {
         "space",
         "grid",
         "layout",
+        "skeleton",
       ],
     });
   });
@@ -84,6 +85,32 @@ describe("fixed Semi style inputs", () => {
           join(
             root,
             `node_modules/@douyinfe/semi-foundation/layout/${name}.scss`,
+          ),
+          "utf8",
+        ),
+      ).toBe(snapshot.files[`packages/semi-${source}`]);
+      expect(() =>
+        checkStyleSourceHashes({
+          ...inputs.sourceHashes,
+          [source]: "0".repeat(64),
+        }),
+      ).toThrow(source);
+    }
+  });
+
+  it("locks all Skeleton SCSS sources and rejects drift", async () => {
+    const inputs = await checkStyleInputs(root);
+    const snapshot = JSON.parse(
+      await readFile(join(root, "resources/upstream/sources.json"), "utf8"),
+    );
+    for (const name of ["animation", "rtl", "skeleton", "variables"]) {
+      const source = `foundation/skeleton/${name}.scss`;
+      expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        await readFile(
+          join(
+            root,
+            `node_modules/@douyinfe/semi-foundation/skeleton/${name}.scss`,
           ),
           "utf8",
         ),
