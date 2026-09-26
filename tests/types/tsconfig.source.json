@@ -1,6 +1,6 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": { "noEmit": true },
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "skipLibCheck": false },
   "files": [
     "StrictFixture.tsx",
     "positive.tsx",
