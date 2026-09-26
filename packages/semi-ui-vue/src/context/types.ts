@@ -1,10 +1,12 @@
 import type { InjectionKey, Ref } from "vue";
+import type { ProgressProps } from "../components/progress/types.js";
 import type { SpinProps } from "../components/spin/types.js";
 import type { ButtonProps } from "../components/button/types.js";
 import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
 export interface SemiComponentProps {
+  Progress: Omit<ProgressProps, "v-slots" | "children" | "class">;
   Spin: Pick<
     SpinProps,
     | "size"

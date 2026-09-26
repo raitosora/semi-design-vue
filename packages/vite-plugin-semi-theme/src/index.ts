@@ -16,6 +16,7 @@ const entries = {
   grid: "semi-ui-vue/styles/components/grid.scss",
   layout: "semi-ui-vue/styles/components/layout.scss",
   highlight: "semi-ui-vue/styles/components/highlight.scss",
+  progress: "semi-ui-vue/styles/components/progress.scss",
   skeleton: "semi-ui-vue/styles/components/skeleton.scss",
 } as const;
 type Values = Readonly<Record<string, string | number>>;

@@ -614,3 +614,41 @@ function virtualPointerTypes(element: HTMLElement) {
   void [item, start, found];
 }
 void virtualPointerTypes;
+
+import ProgressFromSubpath, {
+  Progress as NamedProgress,
+  type ProgressProps,
+  type ProgressSlots,
+} from "semi-ui-vue/progress";
+const progressIdentity: typeof ProgressFromSubpath = NamedProgress;
+const progressProps: ProgressProps = {
+  percent: 12.5,
+  motion: false,
+  type: "circle",
+  showInfo: true,
+  format: (value) => `${value}%`,
+};
+const progressSlots: ProgressSlots = {
+  format: ({ percent }) => {
+    const value: number = percent.value;
+    // @ts-expect-error Format percent scope is readonly.
+    percent.value = value;
+    return [];
+  },
+};
+// @ts-expect-error Numeric percent does not accept numeric strings.
+const invalidProgressPercent: ProgressProps = { percent: "50" };
+// @ts-expect-error No success/error status API exists upstream.
+const invalidProgressStatus: ProgressProps = { status: "success" };
+const invalidProgressFormat: ProgressProps = {
+  // @ts-expect-error Structured format output uses a native format slot.
+  format: () => ({ text: "50%" }),
+};
+void [
+  progressIdentity,
+  progressProps,
+  progressSlots,
+  invalidProgressPercent,
+  invalidProgressStatus,
+  invalidProgressFormat,
+];

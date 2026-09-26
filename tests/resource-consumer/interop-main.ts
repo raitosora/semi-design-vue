@@ -15,6 +15,7 @@ import {
   Layout,
   Skeleton,
   Highlight,
+  Progress,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -27,6 +28,7 @@ import {
   useConfigContext,
   type ConfigContextSource,
 } from "semi-ui-vue";
+import type { ProgressSlots } from "semi-ui-vue/progress";
 import enUS from "semi-ui-vue/locale/source/en_US";
 import zhCN from "semi-ui-vue/locale/source/zh_CN";
 import Icon, { type IconSize, type IconSvgScope } from "semi-icons-vue";
@@ -44,6 +46,7 @@ import "semi-ui-vue/styles/components/grid.css";
 import "semi-ui-vue/styles/components/layout.css";
 import "semi-ui-vue/styles/components/skeleton.css";
 import "semi-ui-vue/styles/components/highlight.css";
+import "semi-ui-vue/styles/components/progress.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -55,6 +58,8 @@ const layoutSiderVisible = ref(true);
 const skeletonLoading = ref(true);
 const highlightText = ref("Before Semi after SEMI.");
 const highlightTag = ref("mark");
+const progressPercent = ref(25);
+const progressType = ref<"line" | "circle">("line");
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -189,6 +194,25 @@ const app = createApp({
                     ),
                 },
               ),
+            ],
+          },
+        ),
+        h(
+          Progress,
+          {
+            className: "interop-progress",
+            percent: progressPercent.value,
+            type: progressType.value,
+            showInfo: true,
+            motion: false,
+            "aria-label": "Interop upload",
+          },
+          {
+            format: ({
+              percent,
+            }: Parameters<NonNullable<ProgressSlots["format"]>>[0]) => [
+              h("b", { "data-interop-percent": "" }, percent.value),
+              h("i", " complete"),
             ],
           },
         ),
@@ -496,6 +520,8 @@ window.interopConsumer = {
     skeletonLoading.value = false;
     highlightText.value = "Updated Semi <b> &amp; +";
     highlightTag.value = "em";
+    progressPercent.value = 42.5;
+    progressType.value = "circle";
     iconButtonLabel.value = "Updated";
     configLocale.value = zhCN;
     standaloneLocale.value = zhCN;

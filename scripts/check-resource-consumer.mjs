@@ -505,6 +505,17 @@ function checkGraph(mode = "vapor") {
     /semi-ui-vue\/dist\/highlight-[^/\n]+\.js/.test(modules),
     "Highlight implementation missing from consumer graph",
   );
+  assert(
+    /semi-ui-vue\/dist\/progress-[^/\n]+\.js/.test(modules),
+    "Progress implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/progress\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Progress subpath",
+    );
   if (mode === "vapor")
     assert(
       graph.compilationInputs.some((id) =>
@@ -618,6 +629,88 @@ function checkHighlightTreeShaking() {
         assert(
           !source.includes("semi-highlight-tag"),
           "Unused Highlight marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkProgressTreeShaking() {
+  for (const mode of [
+    "progress-only",
+    "progress-root-only",
+    "progress-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.progress.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasProgress = /semi-ui-vue\/dist\/progress-[^/\n]+\.js/.test(modules);
+    assert(
+      hasProgress === (mode !== "progress-unused"),
+      `${mode}: Progress implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "progress-only"
+        ? "/semi-ui-vue/dist/components/progress/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "progress-unused")
+        assert(
+          !source.includes("semi-progress-track"),
+          "Unused Progress marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -912,6 +1005,11 @@ async function browserCheck(url) {
       "Packed Layout behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkProgress())) ===
+        "progress consumer passed",
+      "Packed Progress behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkHighlight())) ===
         "highlight consumer passed",
       "Packed Highlight behavior failed",
@@ -1186,6 +1284,16 @@ async function interopBrowserCheck(url) {
       "Interop Layout initial Sider registry or stylesheet failed",
     );
     assert(
+      (await page
+        .locator(".interop-progress")
+        .getAttribute("aria-valuenow")) === "25" &&
+        (await page.locator("[data-interop-percent]").textContent()) === "25" &&
+        (await page
+          .locator(".interop-progress .semi-progress-track-inner")
+          .count()) === 1,
+      "Interop Progress initial geometry and format slot failed",
+    );
+    assert(
       (await page.locator("[data-interop-highlight]").textContent()) ===
         "Before Semi after SEMI." &&
         (await page
@@ -1402,6 +1510,17 @@ async function interopBrowserCheck(url) {
       "Interop Spin did not stop",
     );
     assert(
+      (await page
+        .locator(".interop-progress")
+        .getAttribute("aria-valuenow")) === "42.5" &&
+        (await page.locator("[data-interop-percent]").textContent()) ===
+          "42.5" &&
+        (await page.locator(".interop-progress circle").count()) === 2 &&
+        (await page.locator(".interop-progress svg").getAttribute("width")) ===
+          "72",
+      "Interop Progress update and circle geometry failed",
+    );
+    assert(
       (await page.locator("[data-interop-highlight]").textContent()) ===
         "Updated Semi <b> &amp; +" &&
         (await page
@@ -1573,6 +1692,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:highlight.tsx"),
     "Highlight fixture was not compiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:progress.tsx"),
+    "Progress fixture was not compiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -1596,11 +1719,16 @@ async function run() {
     "layout-browser.ts",
     "skeleton-browser.ts",
     "highlight-browser.ts",
+    "progress-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
+    "vite.progress.config.ts",
+    "progress-only.ts",
+    "progress-root-only.ts",
+    "progress-unused.ts",
     "highlight-only.ts",
     "highlight-root-only.ts",
     "highlight-unused.ts",
@@ -1634,6 +1762,10 @@ async function run() {
           "layout-browser.ts",
           "skeleton-browser.ts",
           "highlight-browser.ts",
+          "progress-browser.ts",
+          "progress-only.ts",
+          "progress-root-only.ts",
+          "progress-unused.ts",
           "highlight-only.ts",
           "highlight-root-only.ts",
           "highlight-unused.ts",
@@ -1713,6 +1845,7 @@ async function run() {
   );
   checkGraph("interop");
   checkHighlightTreeShaking();
+  checkProgressTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);
   checkIndependentCompilerInstall(installation.evidenceDirectory);

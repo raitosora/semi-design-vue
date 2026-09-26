@@ -6,6 +6,7 @@ import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
 import { spaceStyleCheck } from "../tests/style-consumer/space-check.mjs";
 import { gridStyleCheck } from "../tests/style-consumer/grid-check.mjs";
 import { layoutStyleCheck } from "../tests/style-consumer/layout-check.mjs";
+import { progressStyleCheck } from "../tests/style-consumer/progress-check.mjs";
 import { skeletonStyleCheck } from "../tests/style-consumer/skeleton-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import {
@@ -159,6 +160,15 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Skeleton source hash is missing: ${file}`,
     );
+  for (const file of [
+    "progress/progress",
+    "progress/variables",
+    "progress/rtl",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Progress source hash is missing: ${file}`,
+    );
   for (const file of ["highlight/highlight", "highlight/variables"])
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
@@ -310,6 +320,14 @@ async function browserCheck(url) {
       await gridStyleCheck(page, prefix);
     for (const prefix of ["semi", "consumer"])
       await layoutStyleCheck(page, prefix);
+    const progressLight = Object.fromEntries(
+      await Promise.all(
+        ["semi", "consumer"].map(async (prefix) => [
+          prefix,
+          await progressStyleCheck(page, prefix),
+        ]),
+      ),
+    );
     const highlightLight = Object.fromEntries(
       await Promise.all(
         ["semi", "consumer"].map(async (prefix) => [
@@ -385,6 +403,11 @@ async function browserCheck(url) {
       );
     for (const prefix of ["semi", "consumer"])
       assert(
+        (await progressStyleCheck(page, prefix)) !== progressLight[prefix],
+        `${prefix} Progress dark orbit token unchanged`,
+      );
+    for (const prefix of ["semi", "consumer"])
+      assert(
         (await highlightStyleCheck(page, prefix)) !== highlightLight[prefix],
         `${prefix} Highlight dark token unchanged`,
       );
@@ -437,6 +460,8 @@ async function browserCheck(url) {
       await layoutStyleCheck(page, prefix, true);
     for (const prefix of ["semi", "consumer"])
       await skeletonStyleCheck(page, prefix, true);
+    for (const prefix of ["semi", "consumer"])
+      await progressStyleCheck(page, prefix, true);
     await highlightDirectionCheck(page, ["semi", "consumer"]);
     const prefixed = await page
       .locator(".consumer-input-wrapper")
@@ -501,6 +526,7 @@ async function plainBrowserCheck(url) {
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
     await layoutStyleCheck(page, "semi");
+    const progressLight = await progressStyleCheck(page, "semi");
     const highlightLight = await highlightStyleCheck(page, "semi");
     const skeletonLight = await skeletonStyleCheck(page, "semi");
     await page.setViewportSize({ width: 960, height: 540 });
@@ -531,6 +557,10 @@ async function plainBrowserCheck(url) {
     assert(
       darkPrimary !== lightPrimary,
       "Plain Spin dark primary token did not change",
+    );
+    assert(
+      (await progressStyleCheck(page, "semi")) !== progressLight,
+      "Plain Progress dark orbit token unchanged",
     );
     assert(
       (await highlightStyleCheck(page, "semi")) !== highlightLight,
@@ -566,6 +596,7 @@ async function plainBrowserCheck(url) {
     await gridStyleCheck(page, "semi", true);
     await layoutStyleCheck(page, "semi", true);
     await skeletonStyleCheck(page, "semi", true);
+    await progressStyleCheck(page, "semi", true);
     await highlightDirectionCheck(page, ["semi"]);
     const direction = await page
       .locator(".semi-input")
@@ -666,6 +697,9 @@ try {
     "grid-only.scss",
     "layout-markup.ts",
     "layout-only.scss",
+    "progress-markup.ts",
+    "progress-check.mjs",
+    "progress-only.scss",
     "highlight-markup.ts",
     "highlight-check.mjs",
     "highlight-only.scss",
@@ -817,6 +851,11 @@ try {
       directCss.includes(".consumer-skeleton-active"),
     "Direct public Skeleton SCSS entry did not compile",
   );
+  assert(
+    directCss.includes(".consumer-progress-circle") &&
+      directCss.includes(".consumer-progress-track-inner"),
+    "Direct public Progress SCSS entry missing",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   assert(
     directCss.includes(".consumer-highlight-tag"),
@@ -868,6 +907,11 @@ try {
     plainCss.includes(".semi-skeleton-avatar") &&
       plainCss.includes(".semi-skeleton-active"),
     "Plain Skeleton CSS entry is missing",
+  );
+  assert(
+    plainCss.includes(".semi-progress-circle") &&
+      plainCss.includes(".semi-progress-track-inner"),
+    "Plain Progress CSS entry missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -932,6 +976,11 @@ try {
     css.includes(".consumer-skeleton-avatar") &&
       css.includes(".semi-skeleton-avatar"),
     "Default or custom-prefix Skeleton CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-progress-circle") &&
+      css.includes(".semi-progress-circle"),
+    "Default or custom-prefix Progress CSS missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

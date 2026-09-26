@@ -543,3 +543,35 @@ void skeletonIdentity;
 void namedSkeletonIdentity;
 void skeletonSize;
 void skeletonGenericProps;
+
+import ProgressFromPath, {
+  type ProgressProps,
+  type ProgressSlots,
+  type ProgressFormat,
+} from "semi-ui-vue/progress";
+import { Progress } from "semi-ui-vue";
+const progressIdentity: typeof Progress = ProgressFromPath;
+const progressFormat: ProgressFormat = (percent) =>
+  percent === 0 ? null : `${percent}%`;
+const progressProps: ProgressProps = {
+  percent: undefined,
+  motion: {},
+  type: "circle",
+  size: "large",
+  stroke: [{ percent: 100, color: "red" }],
+  width: 0,
+  showInfo: true,
+  format: progressFormat,
+};
+const progressSlots: ProgressSlots = {
+  format: ({ percent }) => (
+    <>
+      <strong>{percent.value}</strong>
+      <span>完成</span>
+    </>
+  ),
+};
+export const progressContracts = (
+  <ProgressFromPath {...progressProps} v-slots={progressSlots} />
+);
+void progressIdentity;

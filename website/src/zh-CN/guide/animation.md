@@ -68,3 +68,7 @@ return (
 真实 Vapor 编译、严格源码/声明类型、浏览器 CSS 动画、尺寸观察、反转/取消/卸载与独立产物消费者共同验证这些工具。当前不提供 React Animation/Transition 的兼容包装，也不导出官方数值 spring 引擎的 API。没有 Tooltip、Modal 等公共组件。
 
 静态导入安全及文档 ClientOnly 不代表组件 SSR / 水合支持。沿用锁定 Vue RC9 的 JSX ref、动态 slot 属性读取和额外 exact 调用点检查边界，见[兼容说明](./compatibility.md)。截图仅证明展示状态，不代表完整像素一致性或全部浏览器验收。
+
+## Progress 的数字与 CSS 动画
+
+[Progress](../components/progress.md) 更新时以固定 300ms 线性动画驱动格式数字，复用既有生命周期取消/卸载清理；快速更新替换旧任务，motion=false 立即同步目标并取消数字任务。线形 aria-valuenow 使用目标值，环形 aria-valuenow 跟随数字。其宽高、SVG 描边过渡和不确定状态 CSS 循环来自固定上游样式，独立于 motion，且没有自动 reduced-motion 分支；应用需自行设置 motion=false 并覆盖 CSS。size/width/strokeWidth 更新保留当前 SVG 节点并更新几何，区别于上游按 size key 重建 SVG 的行为。

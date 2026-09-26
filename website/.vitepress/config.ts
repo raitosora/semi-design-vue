@@ -51,6 +51,7 @@ export default defineConfig({
           { text: "Layout 布局", link: "/zh-CN/components/layout" },
           { text: "Skeleton 骨架屏", link: "/zh-CN/components/skeleton" },
           { text: "Highlight 高亮文本", link: "/zh-CN/components/highlight" },
+          { text: "Progress 进度条", link: "/zh-CN/components/progress" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

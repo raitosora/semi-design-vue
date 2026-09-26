@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout and skeleton. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight and progress. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -168,3 +168,16 @@ generator's undefined type crash, Paragraph native-attribute forwarding and
 the fixed SCSS missing a dimension rule for Avatar size `default`. Independent
 Avatar, Typography and Image public families remain unaccepted. The existing
 TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.
+
+The `progress` record accepts the fixed line/circle, indeterminate, direction,
+size, SVG geometry, color and accessible-value contract. It reuses the existing
+animation lifecycle scope and three pinned Foundation SCSS files without a new
+Foundation class or patch. Complex formatting uses an owned native `format`
+slot with a readonly percentage ref; scalar callbacks run only when visible.
+The opaque motion object/function type controls truthiness only and has explicit
+bidirectional differences from the upstream type. Nonfinite input handling,
+animation cancellation, stable SVG identity and body-level color-token lookup
+are documented separately. Host reduced-motion CSS is distinct from component
+behavior. Strict declarations, real browser updates, Chinese examples and four
+tarball consumer stages passed independent review. No status API, state icons,
+default slot, imperative method or additional public family is introduced.

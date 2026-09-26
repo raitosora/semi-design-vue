@@ -20,6 +20,7 @@ const components = [
   "layout",
   "skeleton",
   "highlight",
+  "progress",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
@@ -33,6 +34,11 @@ const foundationFiles = {
     "grid/variables.scss",
   ],
   layout: ["layout/layout.scss", "layout/rtl.scss"],
+  progress: [
+    "progress/progress.scss",
+    "progress/rtl.scss",
+    "progress/variables.scss",
+  ],
   highlight: ["highlight/highlight.scss", "highlight/variables.scss"],
   skeleton: [
     "skeleton/animation.scss",
@@ -106,6 +112,13 @@ const sourceHashes = {
     "496fc03e73491af6b042db2062cc4f9d781f3f05bf56195a394a4d41f640c127",
   "foundation/layout/rtl.scss":
     "e231f88f5ea57b1bdf0737bdb440c2cfeeac232888a1ed00fcd1a6e5371eaa8c",
+  "foundation/progress/progress.scss":
+    "f56d2789ace6f8b7f8f9f0cb1ef7ddd4a4ef4a01f17f7d49c4f89b9712872542",
+  "foundation/progress/rtl.scss":
+    "2fd54628e416575112488d1232ae4b651ba54c0f87cc537ad6a41a4ec0ef0437",
+  "foundation/progress/variables.scss":
+    "85196c5beb82793a6ad47d418cb9e6d46d8efad71bb1c72469a10e9d33d51ebe",
+
   "foundation/highlight/highlight.scss":
     "fa382d417efc1c47854ce964f528f6ddb0ba1ab6286957f1fd5fafc52decb878",
   "foundation/highlight/variables.scss":
@@ -249,6 +262,12 @@ function entrySources() {
       '@import "../vendor/foundation/layout/layout";',
       "",
     ].join("\n"),
+    "components/progress.scss": [
+      '$semi-prefix: "semi" !default;',
+      '@import "../theme/variables";',
+      '@import "../vendor/foundation/progress/progress";',
+      "",
+    ].join("\n"),
     "components/highlight.scss": [
       '$semi-prefix: "semi" !default;',
       '@import "../theme/variables";',
@@ -315,6 +334,7 @@ function entrySources() {
       '@import "./components/layout";',
       '@import "./components/skeleton";',
       '@import "./components/highlight";',
+      '@import "./components/progress";',
       "",
     ].join("\n"),
   };

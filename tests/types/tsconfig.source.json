@@ -11,6 +11,8 @@
     "skeleton-positive.tsx",
     "skeleton-negative.tsx",
     "highlight-positive.tsx",
-    "highlight-negative.tsx"
+    "highlight-negative.tsx",
+    "progress-positive.tsx",
+    "progress-negative.tsx"
   ]
 }

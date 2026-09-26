@@ -125,3 +125,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Highlight 的文本片段
 
 [Highlight](../components/highlight.md) 仅接受七个上游文本/匹配属性。原文与非命中部分为文本节点，命中部分默认 `mark`；`component` 改的是命中标签。无 slots、render callback、事件、ref 或属性透传；容器属性由调用方所有，片段样式由 highlightClassName/highlightStyle 与关键词对象合并。缺省和显式 undefined 恢复默认值，关键词数组中的 undefined 则保留上游 TypeError 边界。私有匹配器按固定 Foundation 的 UTF-16、正则和相邻区间合并规则实现。
+
+## Progress 的格式内容
+
+[Progress](../components/progress.md) 的 format prop 保留同步标量返回；复杂 ReactNode 内容映射到同名原生 scoped slot。slot 的 percent 是只读 Ref，在 TSX 中读取 `.value`；slot 优先且仅在信息可见时渲染。没有 default slot、children、status、事件或 ref API。根为 div，仅接受已声明 id、ARIA、data 和 Vue class / CSSProperties style；role 与数值 ARIA 由组件所有。NaN 与无穷输入、数字动画取消及 SVG 节点复用差异以组件页面为准。ProgressMotion 的对象/函数分支仅提供 opaque 真值迁移，不保留上游 MotionObject 已知键校验，且与上游存在双向类型差异；建议使用 boolean，确切签名及反例见组件页面。

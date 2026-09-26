@@ -552,3 +552,35 @@ export const skeletonBadRows: SkeletonParagraphProps = { rows: "3" };
 export const skeletonParagraphLoading = <Skeleton.Paragraph loading />;
 // @ts-expect-error Skeleton does not provide a progress percentage.
 export const skeletonProgress = <Skeleton percent={20} />;
+
+import { Progress } from "semi-ui-vue";
+import type { ProgressProps, ProgressSlots } from "semi-ui-vue/progress";
+// @ts-expect-error Root preserves the value-only upstream export.
+import type { ProgressProps as RootProgressProps } from "semi-ui-vue";
+// @ts-expect-error No upstream status API exists.
+export const progressStatus = <Progress status="success" />;
+// @ts-expect-error Type is line or circle.
+export const progressType = <Progress type="dashboard" />;
+export const progressNodeFormat = (
+  // @ts-expect-error Scalar format does not take ownership of JSX content.
+  <Progress format={() => <strong>完成</strong>} />
+);
+// @ts-expect-error Progress has no default slot.
+export const progressDefaultSlot = <Progress>{() => <span />}</Progress>;
+// @ts-expect-error Slot results must be native Vapor blocks.
+export const progressTextSlot: ProgressSlots = { format: () => "完成" };
+// @ts-expect-error Async format slots are unsupported.
+export const progressAsyncSlot: ProgressSlots = { format: async () => [] };
+// @ts-expect-error Root content replacement is prohibited.
+export const progressHTML: ProgressProps = { innerHTML: "<b>x</b>" };
+export const progressReadonly = (
+  <Progress
+    v-slots={{
+      format: ({ percent }) => {
+        // @ts-expect-error The displayed percentage is readonly.
+        percent.value = 30;
+        return <span>{percent.value}</span>;
+      },
+    }}
+  />
+);
