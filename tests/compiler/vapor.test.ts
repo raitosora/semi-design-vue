@@ -20,6 +20,50 @@ beforeAll(async () => {
 afterAll(async () => {
   await server?.close();
 });
+test("source type fixtures resolve transitive workspace imports without built declarations", () => {
+  const configPath = resolve("tests/types/tsconfig.source.json");
+  const config = ts.readConfigFile(configPath, ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const { options, errors } = ts.parseJsonConfigFileContent(
+    config.config,
+    ts.sys,
+    resolve("tests/types"),
+    undefined,
+    configPath,
+  );
+  expect(errors).toEqual([]);
+  expect(options.strict).toBe(true);
+  expect(options.skipLibCheck).toBe(false);
+  expect(options.noEmit).toBe(true);
+  const coldHost = {
+    ...ts.sys,
+    fileExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.fileExists(path),
+    directoryExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
+  };
+  const imports = {
+    "semi-ui-vue/skeleton":
+      "packages/semi-ui-vue/src/components/skeleton/index.ts",
+    "semi-icons-vue": "packages/semi-icons-vue/src/index.ts",
+    "semi-icons-vue/Icon": "packages/semi-icons-vue/src/components/index.ts",
+    "semi-icons-vue/IconAILoading":
+      "packages/semi-icons-vue/src/icons/IconAILoading.tsx",
+    "semi-animation-vue/lifecycle":
+      "packages/semi-animation-vue/src/lifecycle/index.ts",
+  };
+  for (const [specifier, source] of Object.entries(imports)) {
+    const result = ts.resolveModuleName(
+      specifier,
+      resolve("packages/semi-ui-vue/src/components/iconButton/IconButton.tsx"),
+      options,
+      coldHost,
+    );
+    expect(result.resolvedModule?.resolvedFileName, specifier).toBe(
+      resolve(source),
+    );
+  }
+});
 test("resolves IconButton icon imports without built package declarations", () => {
   const file = resolve(
     "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx",
@@ -295,5 +339,47 @@ test("Divider compiles native slots and resolves its subpath with every dist hid
   );
   expect(resolved.resolvedModule?.resolvedFileName).toBe(
     resolve("packages/semi-ui-vue/src/components/divider/index.ts"),
+  );
+});
+
+test("Skeleton compiles loading branches and slots as native Vapor and resolves cold subpath", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/skeleton/Skeleton.tsx",
+  );
+  expect(result?.code).toMatch(/createIf\(/);
+  expect(result?.code).toMatch(/createSlot\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+  const item = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/skeleton/item.tsx",
+  );
+  expect(item?.code).toMatch(/(?:setClass|setStyle|renderEffect)\(/);
+  expect(item?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|h)\(/,
+  );
+
+  const config = ts.readConfigFile("tsconfig.base.json", ts.sys.readFile);
+  expect(config.error).toBeUndefined();
+  const { options, errors } = ts.convertCompilerOptionsFromJson(
+    config.config.compilerOptions,
+    process.cwd(),
+  );
+  expect(errors).toEqual([]);
+  const coldHost = {
+    ...ts.sys,
+    fileExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.fileExists(path),
+    directoryExists: (path: string) =>
+      !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
+  };
+  const resolved = ts.resolveModuleName(
+    "semi-ui-vue/skeleton",
+    resolve("tests/consumer/consumer.ts"),
+    options,
+    coldHost,
+  );
+  expect(resolved.resolvedModule?.resolvedFileName).toBe(
+    resolve("packages/semi-ui-vue/src/components/skeleton/index.ts"),
   );
 });

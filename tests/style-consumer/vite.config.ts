@@ -20,6 +20,7 @@ export default defineConfig({
         "space",
         "grid",
         "layout",
+        "skeleton",
       ],
     }),
   ],

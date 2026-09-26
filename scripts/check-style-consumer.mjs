@@ -2,6 +2,7 @@ import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
 import { spaceStyleCheck } from "../tests/style-consumer/space-check.mjs";
 import { gridStyleCheck } from "../tests/style-consumer/grid-check.mjs";
 import { layoutStyleCheck } from "../tests/style-consumer/layout-check.mjs";
+import { skeletonStyleCheck } from "../tests/style-consumer/skeleton-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import {
   copyFileSync,
@@ -143,6 +144,16 @@ function checkStyleMetadata() {
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Layout source hash is missing: ${file}`,
+    );
+  for (const file of [
+    "skeleton/animation",
+    "skeleton/rtl",
+    "skeleton/skeleton",
+    "skeleton/variables",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Skeleton source hash is missing: ${file}`,
     );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
@@ -290,6 +301,14 @@ async function browserCheck(url) {
       await gridStyleCheck(page, prefix);
     for (const prefix of ["semi", "consumer"])
       await layoutStyleCheck(page, prefix);
+    const skeletonLight = Object.fromEntries(
+      await Promise.all(
+        ["semi", "consumer"].map(async (prefix) => [
+          prefix,
+          await skeletonStyleCheck(page, prefix),
+        ]),
+      ),
+    );
     await page.setViewportSize({ width: 960, height: 540 });
     await spinStyleCheck(page, "semi", "rgb(17, 105, 170)");
     for (const prefix of ["semi", "consumer"]) {
@@ -341,6 +360,12 @@ async function browserCheck(url) {
       await dividerStyleCheck(page, prefix);
     }
     await spinStyleCheck(page, "consumer", "rgb(144, 202, 249)");
+    for (const prefix of ["semi", "consumer"])
+      assert(
+        (await skeletonStyleCheck(page, prefix)).titleBackground !==
+          skeletonLight[prefix].titleBackground,
+        `${prefix} Skeleton gradient did not change with dark theme`,
+      );
     const dark = await page
       .locator(".semi-input-wrapper")
       .evaluate((input) => ({
@@ -388,6 +413,8 @@ async function browserCheck(url) {
       await gridStyleCheck(page, prefix, true);
     for (const prefix of ["semi", "consumer"])
       await layoutStyleCheck(page, prefix, true);
+    for (const prefix of ["semi", "consumer"])
+      await skeletonStyleCheck(page, prefix, true);
     const prefixed = await page
       .locator(".consumer-input-wrapper")
       .evaluate((input) => ({
@@ -451,6 +478,7 @@ async function plainBrowserCheck(url) {
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
     await layoutStyleCheck(page, "semi");
+    const skeletonLight = await skeletonStyleCheck(page, "semi");
     await page.setViewportSize({ width: 960, height: 540 });
     const lightPrimary = await page
       .locator(".semi-spin-wrapper")
@@ -484,6 +512,11 @@ async function plainBrowserCheck(url) {
     await iconButtonStyleCheck(page, "semi", darkPrimary);
     await buttonStyleCheck(page, "semi", darkPrimary);
     assert(
+      (await skeletonStyleCheck(page, "semi")).titleBackground !==
+        skeletonLight.titleBackground,
+      "Plain Skeleton gradient did not change with dark theme",
+    );
+    assert(
       (await dividerStyleCheck(page, "semi")) !== dividerLight,
       "Plain Divider dark border token did not change",
     );
@@ -504,6 +537,7 @@ async function plainBrowserCheck(url) {
     await spaceStyleCheck(page, "semi", true);
     await gridStyleCheck(page, "semi", true);
     await layoutStyleCheck(page, "semi", true);
+    await skeletonStyleCheck(page, "semi", true);
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -603,6 +637,9 @@ try {
     "grid-only.scss",
     "layout-markup.ts",
     "layout-only.scss",
+    "skeleton-markup.ts",
+    "skeleton-check.mjs",
+    "skeleton-only.scss",
     "plain.css",
     "main.ts",
     "index.html",
@@ -743,6 +780,11 @@ try {
       directCss.includes(".consumer-layout-sider-children"),
     "Direct public Layout SCSS entry did not compile",
   );
+  assert(
+    directCss.includes(".consumer-skeleton-avatar") &&
+      directCss.includes(".consumer-skeleton-active"),
+    "Direct public Skeleton SCSS entry did not compile",
+  );
   const plainOutput = files(join(consumer, "plain-dist"));
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
@@ -785,6 +827,11 @@ try {
     plainCss.includes(".semi-layout-has-sider") &&
       plainCss.includes(".semi-layout-sider-children"),
     "Plain Layout CSS entry is missing",
+  );
+  assert(
+    plainCss.includes(".semi-skeleton-avatar") &&
+      plainCss.includes(".semi-skeleton-active"),
+    "Plain Skeleton CSS entry is missing",
   );
   checkGraph("plain-style-graph.json");
   execFileSync(
@@ -844,6 +891,11 @@ try {
     css.includes(".consumer-layout-has-sider") &&
       css.includes(".semi-layout-has-sider"),
     "Default or custom-prefix Layout CSS is missing",
+  );
+  assert(
+    css.includes(".consumer-skeleton-avatar") &&
+      css.includes(".semi-skeleton-avatar"),
+    "Default or custom-prefix Skeleton CSS is missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

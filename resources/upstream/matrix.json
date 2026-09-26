@@ -3,9 +3,9 @@
   "summary": {
     "upstreamFamilies": 83,
     "upstreamRootExports": 130,
-    "sameNameRootExports": 16,
-    "publiclyDeliveredFamilies": 10,
-    "behaviorAcceptedFamilies": 10,
+    "sameNameRootExports": 17,
+    "publiclyDeliveredFamilies": 11,
+    "behaviorAcceptedFamilies": 11,
     "pendingAcceptanceFamilies": 0
   },
   "families": [
@@ -341,7 +341,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "button-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "button-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/button/types.ts": "9fe7270c06da7f8065569365826e28c43d0d3d185ee026267aae5811f729648b",
             "website/src/zh-CN/components/button.md": "d21a137d7110ae05bad1bcc9552b91a99bab0743e3a30c079e36ca028fc8e6d9",
@@ -350,12 +350,12 @@
             "packages/semi-ui-vue/src/components/button/group-context.ts": "86f75c2d0a5e1694a6943fa069c2cb7f8966849de7cc0e271d9c1bfc93e6c280",
             "packages/semi-ui-vue/src/components/button/splitButtonGroup.tsx": "c4cfff2b4ba85e6168cae5b27c08b1f1a70f47f190b9cbefb0df0c38a034f07e",
             "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/button/index.ts": "d52353178284eb3204d134f438b9a1be500fcba5db947207b63f85ffe82dcac4",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
-            "tests/consumer/consumer.ts": "75a9a7058acd4e906c3af23899dcc2387d2d41840b5bb465254fe8c139c3f75e",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
+            "tests/consumer/consumer.ts": "89077dd2ae590de3bb0066fda5ba4cd274c0acacbaf5a8e303164884097190fd",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/consumer/button-browser.ts": "9a924ced265f45e460380a62ab8dde70e25d721fe6aef5b1569f72a922c29701",
             "tests/consumer/node-button-negative.ts": "f721335c1a5e74abf6fb594f62937f2392646f2b19cf9fc8ba3839689ac21065",
@@ -369,19 +369,19 @@
             "tests/browser/splitButtonGroup.test.tsx": "0074da561b9eb6992c9dc28a13103d457eae99c9b80de50d6f75fd19181a3a59",
             "tests/e2e/button.spec.ts": "7d63389e9435b80653f7dd1f3c8aedf9f3f1da35bed758aab80ad1235f741916",
             "website/src/zh-CN/guide/start.md": "01e2c1791f13c153827268d05ba2074677cd0aa2f18bfb94337fdec44804967d",
-            "website/src/zh-CN/guide/styles.md": "a4e17123c1d2fc3aa168e4c55decf2c02a188a20be8a5f2dc15329c1cc71e7f5",
+            "website/src/zh-CN/guide/styles.md": "816897168de003142365f670eb4a8cf7dad197db11e69dc2abb2405e7c8e5e4e",
             "website/src/zh-CN/guide/theme.md": "096c96f701ee99aa85d9a8397254b92bbf46234bba8c5869777cc237ef50cc32",
             "website/examples/button/Basic.vapor.tsx": "c05a785b5c2bd4add373154a507937c46685d8f40e9da2aa37dd0776053ba790",
             "website/examples/button/Groups.vapor.tsx": "a5670aa48c66f93feb931d743d072c35d59faec5b01f59d636444c942ae2ca0b",
             "website/examples/button/StateForm.vapor.tsx": "17b7f7ae183bce6ad3d3db34465bbf3dc4f82401d9b10a90813e079525e38f96",
             "website/tests/site.spec.ts": "508d167675492185d1f511cc43087081811f4ba1bc92fbc7037759beebc72992",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
             "tests/consumer/node-button-negative.mjs": "f721335c1a5e74abf6fb594f62937f2392646f2b19cf9fc8ba3839689ac21065",
             "tests/resource-consumer/button.tsx": "35ca4258dd0b4907a6fdd2d47ef3f0b84765c5fe4971489e6b611c0b2d94f63a",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/style-consumer/button-check.mjs": "8bef5e4527465e7a4cc6bc29536b0d761577f6ca54946c5b753b4bd7ff4af905",
             "tests/style-consumer/button-markup.ts": "3ade11d8f73c726af9a0061523ab0c012dff4d9fb28c2042090c6fe1f011552f"
           }
@@ -636,7 +636,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "configProvider-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "configProvider-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/configProvider/types.ts": "970c10d62bbb01f7351fd18632c34355d80fb4f3297ca2a0d0a93dd919c6768c",
             "website/src/zh-CN/components/configProvider.md": "92edb4e308fbf5eaa19455ed53d5fd62ea71ee0350aee45270cdb54584830360",
@@ -644,26 +644,26 @@
             "packages/semi-ui-vue/src/components/configProvider/ConfigConsumer.tsx": "ef77ae047f8dcbd9843ffa17c8bb3894df13fb0203766c77eb7ab85e5713112d",
             "packages/semi-ui-vue/src/components/configProvider/context.ts": "8db32c3d687d630a7fe63080fb02c50ad3a1b3c1b2d1dcbdbebad9edad4ebaa4",
             "packages/semi-ui-vue/src/components/configProvider/responsive.ts": "2da60bb806238a15f7064c06f950b6c574c664f8020d0bbfb1c2f09791e5b95a",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/configProvider/index.ts": "9b8476194cb63fd9d206db194c22f4b29079287c88ec593ed848319197ca5f8a",
             "packages/semi-ui-vue/src/components/configProvider/responsiveTypes.ts": "f409541e19d20b2d0eddcf2c09d64a7ee4044fe615644d9f0b1f21b847b16791",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/browser/configProvider.test.tsx": "78344078b2928ec7d624b45c908d72bb0fee28ac583fc642451e55329fa62770",
             "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
             "tests/browser/configProvider-overlay.test.tsx": "5a1c7e9d624ae6bd1295739c19b7f235d7becc0ebaeaf4b13f1ace951fc75909",
             "tests/e2e/configProvider.spec.ts": "f31548ba05b7d35302c9b6b2781e004c2a1fdbbdf55b152d877d804c03bb3f6c",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
             "website/examples/configProvider/Nested.vapor.tsx": "d305a4fd2e9dcc617c21c3bf7a52f4f5298d38ff274631668714ed5aa3ec1745",
             "website/examples/configProvider/Responsive.vapor.tsx": "26a6774b94b93a853b47cabcca015f3553b5a809e8d8d54464c0cc00dae80da5",
             "website/examples/configProvider/Overlay.vapor.tsx": "ed0e989c480e363b9910008870d0d1ec557b186a4f020018ed16c53556b2eed0",
             "website/tests/site.spec.ts": "508d167675492185d1f511cc43087081811f4ba1bc92fbc7037759beebc72992",
             "tests/resource-consumer/configProvider.tsx": "1ef27824a93ed4de634da47e18082e6f82653de1d94bc6029afe82404165a4a5",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
             "tests/consumer/node-configProvider-negative.ts": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd",
             "tests/consumer/node-configProvider-negative.mjs": "e52e06ff31e9f725cbfd84c071a4704ffd057266e9c7adadbe2ade32799a96fd"
           }
@@ -811,20 +811,20 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "divider-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "divider-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/divider/types.ts": "696a2db999d53f80bd0d0c7a7fc8bce8dbc432dd96de14ff62a652943d411280",
             "website/src/zh-CN/components/divider.md": "b150ca8e7423973be2fcb6e5224fb2070174c0c79861f1ddbf8b9cb258a0540f",
             "packages/semi-ui-vue/src/components/divider/Divider.tsx": "090fcae9ab46691c5d2c40264f8ff034fd1c2af67ce2f88280fe84f2306fa6c2",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/divider/index.ts": "588e762ea172f14f9ef0c4c56db8ada4ec9aaf1d794ed58b26f22c56132b5eb3",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
             "tests/consumer/divider-browser.ts": "9821566940c9c18622fad3330d1515a18b459e76662040104a4148327fd1c11f",
             "tests/consumer/node-divider-negative.ts": "3343c73d0a532542a3dce0108f4951667c817342a0331f6f659baa8167decd2b",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
             "tests/browser/divider.test.tsx": "805b8442524258e46bb39dcce9c2a9847a810cffb2b456f1e2077040e7933236",
             "tests/browser/divider-lifecycle.test.tsx": "946aa32b38b6ddf91acab1667cc80fbd4399e9c1378bfc3d04ff36291660d5f6",
             "tests/browser/divider-interop.test.ts": "65b259835fd6305bb342e63f070ff83013a937692771280994370cf40653b181",
@@ -833,11 +833,11 @@
             "website/examples/divider/Content.vapor.tsx": "4707a5963e6d425a9022ba32cc942f8a2bc8d78709edd8ba24ae78f056713d94",
             "website/examples/divider/Theme.vapor.tsx": "8ece9fbc1027100ac8de243153c8b25f4f5725321eeb893d23cd1372820793e1",
             "website/tests/divider.spec.ts": "96cf5149415314ea4f388c6eeea93042fed66a1d64f909e172e8afe573129cba",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "tests/resource-consumer/divider.tsx": "33433346cbc9ba97b4869b4d53252c6e8af55dad263d1bcc4458f029bd9c0b44",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/style-consumer/divider-check.mjs": "b503f13166d87a7cab141f928bc09b4769522e6d50500c12e59448e243d1e5e6",
             "tests/consumer/node-divider-negative.mjs": "3343c73d0a532542a3dce0108f4951667c817342a0331f6f659baa8167decd2b"
           }
@@ -1082,31 +1082,31 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "grid-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "grid-c-skeleton-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/grid/types.ts": "7ce31756ae2e0e1542e44c40776aa383733cecba82805bb9f4e43f61560e8241",
             "website/src/zh-CN/components/grid.md": "e31574ce6a69e812d3ecc7654bc137dc8b1f7982ee637e4889d2a283cbdf932d",
             "packages/semi-ui-vue/src/components/grid/Row.tsx": "90f057fe88d8d1b1ab424f8d85f0f900335194cf942b1ddb9b382a6590a58374",
             "packages/semi-ui-vue/src/components/grid/Col.tsx": "daaddab1a3e2c5262479ce94ab3d05d2fc4142ba2dbc9fdbf2f48b8a8b590431",
             "packages/semi-ui-vue/src/components/grid/context.ts": "a2aa1373d40e068bf6403de753f04e564ecc7a6a65987b5ddf029dccb406678e",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/grid/index.ts": "a66b237e0d45475dca094796f6df93a8c2949b79a7f2d3ffc4c866b5dbab564c",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
             "tests/consumer/grid-browser.ts": "3633feb91da6d0c15f62ae1f0d6ce836b0772d4363fe8965ca52c1f08b38c796",
             "tests/consumer/node-grid-negative.ts": "591d6407a92bb88ffa7e68c4d50dc7d98022695fbf02d09b3d293c33e6104a68",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
             "tests/browser/grid.test.tsx": "53e9b8d4067ad92cf28b6096f5e3de0acf0c0addc1b367a0e97ac4f88b335ef1",
             "tests/e2e/grid.spec.ts": "ec228e95d0fcbb943d900738a061e0ab9f76a66dc052daf303efe80815fe986a",
             "website/tests/grid.spec.ts": "cd3c07f1560045ab29acb0385d833c1457474ad010d4337ab15434e24d306e12",
-            "tests/unit/style-inputs.test.mjs": "89eb5e149ef2cd156adc9316908b82f735cee578dbb078e2cdfe4db37f317d1f",
+            "tests/unit/style-inputs.test.mjs": "028c07ddc6428fdaab1b9ba1cce22388ead3509e3377e910e49d0940cbfff0f9",
             "website/examples/grid/Basic.vapor.tsx": "99bb58ee5b816634676b5aff2ac21156a80c89bb852e3effda2bf164198b3537",
             "website/examples/grid/Responsive.vapor.tsx": "20a63ea0255d858612630d00971f7f21bc69db7374d210d44afa7acbd525e027",
             "website/examples/grid/Dynamic.vapor.tsx": "ae5ca020e6af44dc8caa6975eb5491828ec713186e2c40764ab25e12b48eea37",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "scripts/check-foundation-consumer.mjs": "fa0736d39e8f929a600fe8948eb4abb5d6dd0c68817e6dadf500d0bc34389765",
             "tests/resource-consumer/grid.tsx": "b27b69b28dbbc2aab7419ba381376fd790ae4b27f02bd6754b1229a937c9b8c6",
             "tests/style-consumer/grid-check.mjs": "cfde71b91438750364dfeb8dc173f58a7b3647a76f658c5e937d935cab4c8549",
@@ -1257,26 +1257,26 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "iconButton-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "iconButton-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/iconButton/types.ts": "0f98bd9b93ffd09c4a8dc1b8514944445999c1a2874f22bb14f8a0cb59fd5bd7",
             "website/src/zh-CN/components/iconButton.md": "2534fe0d5d868e7c8e4e6bb1aa519e3faa9e88bb15ec292f1a6996284a8b0caa",
             "packages/semi-ui-vue/src/components/iconButton/IconButton.tsx": "b4953b9967f3c8d819fbf3ee705a0356b7ef783a9c017edb4f69a9cef8e7da6b",
             "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
             "packages/semi-ui-vue/src/internal/button/types.ts": "3cc134e7195e49aa5b2ad2c69081c9f84c2e5f567e1440217d7f33f44fa4f8df",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/iconButton/index.ts": "8c6a57ff579c4603d5b250b8393fc78cd79b4136b817d16c18dc6c506d5235a3",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
             "tests/consumer/node-iconButton-negative.ts": "7282af173f6604f94b54b96bcb763eb45e257c04f22e84d25299bb9e3f7e2aa0",
-            "website/tsconfig.examples.json": "e1f49629d272af392c083637b7dfb7c5e189f12f829cfd717a2d43dc5127d9e4",
+            "website/tsconfig.examples.json": "398ed646662de90a831ea0ffedf200f60c05c525ec223fed5ba9d1775a0f66a2",
             "tests/browser/iconButton.test.tsx": "46759c326ccb907aa11189b83359ae1e68e30c73effc48c4ce72e04841b7fb8f",
             "tests/e2e/iconButton.spec.ts": "942dead55863f98d8db1245edead3a4065bb5876827e987e76f5fc268c396c6d",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
-            "tests/unit/style-inputs.test.mjs": "89eb5e149ef2cd156adc9316908b82f735cee578dbb078e2cdfe4db37f317d1f",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
+            "tests/unit/style-inputs.test.mjs": "028c07ddc6428fdaab1b9ba1cce22388ead3509e3377e910e49d0940cbfff0f9",
             "tests/style-consumer/iconButton-check.mjs": "8050728a7175c39ec2b576c20f02fe73a19a2b029d27125b5c12cd2929f81313",
             "website/examples/iconButton/Basic.vapor.tsx": "c6493309c01b417105ff63d62d8896e960c1773301893b09d480825eb1b13ed8",
             "website/examples/iconButton/Position.vapor.tsx": "eace92ac2d0405959ecd3ca4686d9a035df9a490e08020681401a24dc005404a",
@@ -1285,13 +1285,13 @@
             "website/tests/iconButton.spec.ts": "980424497007ede3bf876c5e2f494b5bcd0f03a5d1a6cfbf36eda297d7bcda1b",
             "website/src/zh-CN/guide/packages.md": "94b52199a203bf3d592f4465d778b187196dc83e2f746dc297353c9f58ba9a9d",
             "website/src/zh-CN/guide/compatibility.md": "2565cca99e5ee9bde859cfaa225b92ce82cb859435e37cfe4b27fc188c956992",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
             "tests/consumer/node-iconButton-negative.mjs": "7282af173f6604f94b54b96bcb763eb45e257c04f22e84d25299bb9e3f7e2aa0",
             "tests/resource-consumer/iconButton.tsx": "c5ef7c413a5b7f784100e75535ae6f7fc8ca31c6364347e86e7fcbc7c28e986f",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6"
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1"
           }
         }
       }
@@ -1399,7 +1399,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "icons-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "icons-c-skeleton-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-icons-vue/src/components/Icon.tsx": "94eaaeb33378d823bf0313b71bd7e52275cf9aa4f394174d2770b072d0214ab9",
             "packages/semi-icons-vue/src/components/types.ts": "53124f22e1861f1c9d36a1ddd79084d9ff4eb68967a98d899b354052f9ea3380",
@@ -1409,9 +1409,9 @@
             "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3",
             "packages/semi-icons-vue/src/index.ts": "99759bacc9ed50d5b95c310b4049490877209af7cc71bd0698af127d83c83c83",
             "packages/semi-icons-vue/package.json": "5888f6cc87636375f50179d40df5bbccd24909f0b7c66e46d0bfe593b851fa87",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/consumer/node-icon-negative.ts": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
             "tests/browser/icons.test.tsx": "9cdd5af808ee8d66a7e90d98da15be1b7f6e6bab87fb11f2fcd77ff4f733ddd9",
@@ -1427,12 +1427,12 @@
             "website/examples/icons/States.vapor.tsx": "edf13fd7dbfa013b51d7c50837d7496d1609a020a467177ed7d2b862b37b07d5",
             "website/examples/icons/Catalog.vapor.tsx": "1008d3c52c246d65d0677840cd09b1c1d32d155200e70eeeb7366797f1c6990f",
             "website/tests/site.spec.ts": "508d167675492185d1f511cc43087081811f4ba1bc92fbc7037759beebc72992",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
             "tests/consumer/runtime.mjs": "07e199c2f80a682b6e8483e82817265510853777f27573f5e1640fbe576723b3",
             "tests/consumer/node-icon-negative.mjs": "2e162d2dc12fac64e32defdd498f9c07ce58e63522fde722953293bcfe3cf807",
-            "tests/resource-consumer/main.tsx": "425a7f16d0a31edd3ef11ea954a095053487889d892286341597aea7dd869091",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/main.tsx": "ecd1ed8ad82395db6f5e53581392f66ddb0307c4355d057e83572c11ea00d00c",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/resource-consumer/precompile.mjs": "3d87b0be60fd29cf5a4e0828eb405fcadd0f05c626db08171a2675e4d8a45831"
           }
         }
@@ -1644,7 +1644,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "layout-c-layout-independent-review-stage2-full-verify-20260925",
+          "reviewId": "layout-c-skeleton-shared-evidence-review-20260925",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/layout/types.ts": "611da390952d9063d3fea8e65984c81d81b202d84d4f7a3463ca0d428eaec153",
             "website/src/zh-CN/components/layout.md": "1f8f4b393345077ad14d66e434d261e498b8d791673addb7ae02de58947e2a0c",
@@ -1652,28 +1652,28 @@
             "packages/semi-ui-vue/src/components/layout/Basic.tsx": "28819a5ae281296a0887229e6c6c515fd2264ee077e6afd3078e98a5d571e7b5",
             "packages/semi-ui-vue/src/components/layout/Sider.tsx": "3e3954067455923c051bb0a480ef6d2087d66832940c60d84b989b92da87b38c",
             "packages/semi-ui-vue/src/components/layout/context.ts": "a50714c81a616e7dcda7821efca5ced4e483ca961a9db6ff37b58c10b5566b0b",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/layout/index.ts": "3a32fa9942241b2705fc78c3063dcfbb5b90b85d9e7187b70219eef7984eae43",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
             "tests/consumer/layout-browser.ts": "d9aadcd48e382adbe2cce8586b3d8910cf1cb9bd1f227bafce803c32f7a0116f",
             "tests/consumer/node-layout-negative.ts": "b6597bef23fc7e7bcf8b2a771729d81187c374aba067d8e5e24181107669dcd1",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
             "tests/browser/layout.test.tsx": "d713010dffd67dd0071fa7567864ad0dc92d93706212b5ae67527a56c522eeae",
             "tests/e2e/layout.spec.ts": "442f849841ba5a0ba58bc395a123f32c23ca6a259107c6f1ecc8c1081afab922",
             "website/tests/layout.spec.ts": "a1e0c3af6ce39e676d774651e7e4aabae390df1106616462f5dd93bc004b86c3",
-            "tests/unit/style-inputs.test.mjs": "89eb5e149ef2cd156adc9316908b82f735cee578dbb078e2cdfe4db37f317d1f",
+            "tests/unit/style-inputs.test.mjs": "028c07ddc6428fdaab1b9ba1cce22388ead3509e3377e910e49d0940cbfff0f9",
             "website/examples/layout/Basic.vapor.tsx": "af633150748fb3c860089990cc16aa00b253e47e579c8d0b090062005c1d1f09",
             "website/examples/layout/Dynamic.vapor.tsx": "976a90ea3787aa31fb346b3b0130447db2f465c2cad0dabc3bef240034629575",
             "website/examples/layout/Breakpoint.vapor.tsx": "7f131a6f463bfdc9258283b615cc6daed4efa9581b171475af2885eaed9b700f",
             "website/examples/layout/RTL.vapor.tsx": "2908eeee34a8e994c4eefa1364715d2f9b22fea6a19623283ae72f8d0e195ead",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "scripts/check-foundation-consumer.mjs": "fa0736d39e8f929a600fe8948eb4abb5d6dd0c68817e6dadf500d0bc34389765",
             "tests/resource-consumer/layout.tsx": "595dee5b02e5e243e0d07c6540a13035588127bc1fbe18d07dff5aa3f91cc103",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/style-consumer/layout-check.mjs": "eb61eb261718202dc36d354e994646d809def5c4b7d90b4f83f34f81b9060a47",
             "tests/package-consumer/FoundationHarness.vapor.tsx": "c8005754b27ac6e800e26835795c57da8ed68732d16b908eb9298d29d5c1e676",
             "tests/consumer/node-layout-negative.mjs": "b6597bef23fc7e7bcf8b2a771729d81187c374aba067d8e5e24181107669dcd1"
@@ -1799,23 +1799,23 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "locale-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "locale-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
             "website/src/zh-CN/components/locale.md": "af7e7a8d43de026dd8907db5a4dcfd16eada3fed832dcfc0d159ac7f175fbf31",
             "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx": "6f5f381fe26f2fee87cfcc47b02453078ebd2e27e4ac6707f8a9868fcbe940c9",
             "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx": "220fa47b137918087d8c012f976e66983f4bcdfed860a96d3c7411ad9bc33a64",
             "packages/semi-ui-vue/src/components/locale/context.ts": "fc97a18235107fe6c6ac24fb7fb7f6c4b196fa9cbf3ac863a1a53bce64deba23",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/locale/index.ts": "a09e4c3b03b238e178125963b98a71a5f05011b6bed50444d30e4c8c148bf2fc",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
-            "website/build.mjs": "33db23b3a2ad4d5047a4e2c5646509be186104e9daddf82d908bcb29dc99879f",
-            "website/tsconfig.examples.json": "e1f49629d272af392c083637b7dfb7c5e189f12f829cfd717a2d43dc5127d9e4",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
+            "website/build.mjs": "ff75ba839fbae460075fb8f5b62d9c4b9301cf9ef00ad243693aaaaf1296e149",
+            "website/tsconfig.examples.json": "398ed646662de90a831ea0ffedf200f60c05c525ec223fed5ba9d1775a0f66a2",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/browser/locale.test.tsx": "0cd3d059ee70e9b93b4dcf2ac34d037f8356ac4388b55870cb943fedea01c304",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
             "tests/e2e/locale.spec.ts": "95a3ff04385d47fce5bd410ff096ea21eb06b2834488d8c622173f0d7be42a19",
             "tests/browser/configProvider-responsive.test.tsx": "083faff5558b9754a6fd582dc56161ed4d67ad74f681192c790f1a44486b378d",
             "website/src/zh-CN/guide/internationalization.md": "953940c2ac129297a248165ec19a76c06768a80b2e3cf0e9c6fb6b74d4e85283",
@@ -1824,10 +1824,10 @@
             "website/examples/locale/Nested.vapor.tsx": "c616d4297f91b05733976089d7e214b52dbfa4a6bf9e2fe7d5c19314479e7ccd",
             "website/examples/locale/DateBoundary.vapor.tsx": "c2da1e505ae535db36343576828ec288e550988f2d7cec36b3c4f23f86bcd22c",
             "website/tests/locale.spec.ts": "8109f1112749628bdcc98c36acc6622ca01a7fda7a1c8dd33578c019a9ce19fc",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
             "tests/resource-consumer/locale.tsx": "9d483bbca9d4bbd96ff954a3a53b42416eeee3964958606773dc6b17b02aa459",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/consumer/node-locale-negative.ts": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
             "tests/consumer/node-locale-negative.mjs": "3e5fb733a4c156435c2c619e813f84dee4e75f43c8ed15f9ac859a655d64b69f",
             "tests/unit/locale-inputs.test.mjs": "1d4180303e7c56bade94c1ec184b8140c48ef01061f11ebd0ae1c0a68c56a328"
@@ -2120,15 +2120,181 @@
       "sourcePath": "packages/semi-ui/skeleton/index.tsx",
       "exports": ["Skeleton"],
       "upstreamExists": true,
-      "currentExports": [],
+      "currentExports": ["Skeleton"],
       "infrastructure": [],
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "apiDifference": "Public props/events/slots/ref API has not been delivered or behaviorally accepted.",
-      "typeDifference": "Upstream syntax fingerprints are an audit inventory, not compatible Vue declarations.",
-      "staticDifference": "Upstream static members are inventoried; no public Vue static-subcomponent contract is accepted.",
-      "subpathDifference": "Upstream React lib/es and lib/cjs paths are not Vue public component entries.",
-      "acceptanceStatus": "unrecorded"
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "apiDifference": "Skeleton loading defaults true, active adds the animation class, placeholder and children become named/default native Vapor slots, and only the loading branch has a semi-skeleton div with x-semi-prop=placeholder. Avatar, Title, Button, Paragraph and Image are static placeholder members. Root class/style/native attributes apply to the loading div, while real content is returned without a wrapper. Standalone item defaults, dynamic rows and CSS geometry follow the fixed source.",
+      "typeDifference": "SkeletonProps, AvatarProps, ParagraphProps, GenericProps and source item BasicProps map to ./skeleton with Vue HTML attributes and native Vapor slots; SkeletonSlots and SkeletonAvatarSize are explicit Vue types. ReactNode props are rejected, and root only exports the Skeleton value.",
+      "staticDifference": "The fixed Skeleton class exposes Avatar, Title, Button, Paragraph and Image static subcomponents. No independent root values for these placeholder pieces are added.",
+      "subpathDifference": "Browser root exports Skeleton; ./skeleton exports default/named Skeleton and public types. Aggregate and standalone CSS/SCSS use the pinned four-source Foundation closure. Fixed React lib/es and lib/cjs deep paths are not Vue entries; Node root remains infrastructure-only.",
+      "acceptanceStatus": "accepted",
+      "acceptance": {
+        "family": "skeleton",
+        "status": "accepted",
+        "reviewedDecision": "The native Vapor Skeleton and five static placeholder subcomponents are accepted against fixed Semi Design 2.103.0 source, Chinese documentation and Foundation styles. Loading branch ownership, dynamic slots and props, standalone items, CSS animation, strict source and emitted declarations, live examples, Chromium behavior and three direct Skeleton tarball consumer surfaces plus a fourth Foundation regression flow passed local verification and independent review. React-to-Vapor differences and browser-only limits remain explicit; this decision does not accept independent Avatar, Typography, Image or other public families.",
+        "mappings": {
+          "api": "Skeleton loading defaults true, active adds the animation class, placeholder and children become named/default native Vapor slots, and only the loading branch has a semi-skeleton div with x-semi-prop=placeholder. Avatar, Title, Button, Paragraph and Image are static placeholder members. Root class/style/native attributes apply to the loading div, while real content is returned without a wrapper. Standalone item defaults, dynamic rows and CSS geometry follow the fixed source.",
+          "types": "SkeletonProps, AvatarProps, ParagraphProps, GenericProps and source item BasicProps map to ./skeleton with Vue HTML attributes and native Vapor slots; SkeletonSlots and SkeletonAvatarSize are explicit Vue types. ReactNode props are rejected, and root only exports the Skeleton value.",
+          "statics": "The fixed Skeleton class exposes Avatar, Title, Button, Paragraph and Image static subcomponents. No independent root values for these placeholder pieces are added.",
+          "subpaths": "Browser root exports Skeleton; ./skeleton exports default/named Skeleton and public types. Aggregate and standalone CSS/SCSS use the pinned four-source Foundation closure. Fixed React lib/es and lib/cjs deep paths are not Vue entries; Node root remains infrastructure-only.",
+          "differences": {
+            "types": [
+              {
+                "name": "SkeletonProps",
+                "sourcePath": "packages/semi-ui/skeleton/index.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./skeleton"
+              },
+              {
+                "name": "AvatarProps",
+                "sourcePath": "packages/semi-ui/skeleton/item.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./skeleton"
+              },
+              {
+                "name": "BasicProps",
+                "sourcePath": "packages/semi-ui/skeleton/item.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./skeleton"
+              },
+              {
+                "name": "GenericProps",
+                "sourcePath": "packages/semi-ui/skeleton/item.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./skeleton"
+              },
+              {
+                "name": "ParagraphProps",
+                "sourcePath": "packages/semi-ui/skeleton/item.tsx",
+                "currentPackage": "semi-ui-vue",
+                "currentSubpath": "./skeleton"
+              }
+            ],
+            "staticMembers": [
+              { "rootExport": "Skeleton", "name": "Avatar" },
+              { "rootExport": "Skeleton", "name": "Title" },
+              { "rootExport": "Skeleton", "name": "Button" },
+              { "rootExport": "Skeleton", "name": "Paragraph" },
+              { "rootExport": "Skeleton", "name": "Image" }
+            ],
+            "subpaths": [
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/skeleton"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/skeleton/index"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/skeleton/index.js"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/skeleton/item"
+              },
+              {
+                "upstreamPackage": "@douyinfe/semi-ui",
+                "subpath": "./lib/es/skeleton/item.js"
+              }
+            ]
+          }
+        },
+        "evidence": {
+          "contract": [
+            "packages/semi-ui-vue/src/components/skeleton/types.ts",
+            "website/src/zh-CN/components/skeleton.md"
+          ],
+          "implementation": [
+            "packages/semi-ui-vue/src/components/skeleton/Skeleton.tsx",
+            "packages/semi-ui-vue/src/components/skeleton/item.tsx",
+            "scripts/style-inputs.mjs"
+          ],
+          "sourceAndDeclarations": [
+            "packages/semi-ui-vue/src/index.ts",
+            "packages/semi-ui-vue/src/components/skeleton/index.ts",
+            "packages/semi-ui-vue/package.json",
+            "tests/types/skeleton-positive.tsx",
+            "tests/types/skeleton-negative.tsx",
+            "tests/compiler/vapor.test.ts",
+            "website/tests/contracts-positive.tsx",
+            "website/tests/contracts-negative.tsx"
+          ],
+          "browser": [
+            "tests/browser/skeleton.test.tsx",
+            "tests/e2e/skeleton.spec.ts",
+            "website/tests/skeleton.spec.ts",
+            "tests/unit/style-inputs.test.mjs"
+          ],
+          "documentation": [
+            "website/src/zh-CN/components/skeleton.md",
+            "website/examples/skeleton/Basic.vapor.tsx",
+            "website/examples/skeleton/Dynamic.vapor.tsx",
+            "website/examples/skeleton/Theme.vapor.tsx",
+            "website/tests/site.spec.ts"
+          ],
+          "consumer": [
+            "scripts/check-consumer.mjs",
+            "scripts/check-resource-consumer.mjs",
+            "scripts/check-style-consumer.mjs",
+            "scripts/check-foundation-consumer.mjs",
+            "tests/consumer/skeleton-browser.ts",
+            "tests/consumer/node-skeleton-negative.mjs",
+            "tests/resource-consumer/skeleton.tsx",
+            "tests/resource-consumer/main.tsx",
+            "tests/style-consumer/skeleton-check.mjs",
+            "tests/package-consumer/FoundationHarness.vapor.tsx"
+          ],
+          "limitations": [
+            "Native Vapor browser ESM only; Node root remains infrastructure-only. CJS, component SSR and hydration are not delivered. Vue RC9 and vue-jsx RC2 exact pins retain the strict independent TSX compiler peer-installation constraint.",
+            "React placeholder/children nodes become native named/default Vapor slots. The branches are mutually exclusive and remount contents on every loading transition, so local state and focus do not persist across transitions. No slot pre-execution, VNode inspection or cloning is used.",
+            "Skeleton without a placeholder slot renders an empty loading div. Root attributes are not forwarded when loading=false; standalone subcomponents use their own DOM roots. Paragraph rows=0 is empty, while negative or fractional array lengths retain the source error boundary.",
+            "The source Avatar size set includes default but pinned Skeleton SCSS has no default-size dimension rule. Paragraph forwards native attributes as a Vue extension where React only forwards className/style. Custom prefix/type classes need caller CSS.",
+            "Animation is fixed CSS under an active ancestor, with no JS timer, listener or Foundation instance. Theme and RTL inherit from CSS. Screenshots cover selected Chromium states, not complete pixel parity or other browsers.",
+            "Fixed React item generator places its default type before caller props, so explicit type=undefined overrides the value and Generic.render throws; the Vapor adaptation restores the built-in kind for undefined and dynamic removal, with a browser assertion.",
+            "Skeleton is directly exercised by declaration/runtime, style, and pure/interop resource tarball consumers. The separate patched Foundation tarball flow is a preserved regression gate and does not directly exercise Skeleton."
+          ]
+        },
+        "verification": {
+          "status": "complete",
+          "reviewId": "skeleton-c-skeleton-cold-source-types-review-20260926",
+          "evidenceHashes": {
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "packages/semi-ui-vue/src/components/skeleton/Skeleton.tsx": "4f81b824b4a56a4ec105f41d9b7cb5df360ee6fe5b503bd933e8f280e9f7f442",
+            "packages/semi-ui-vue/src/components/skeleton/index.ts": "8de6bbc98029da42586419ccac865de1bdea3c4909b59c24dd289bd374bc8ff2",
+            "packages/semi-ui-vue/src/components/skeleton/item.tsx": "ad9050b357fc62a7844ae973c494ab893e37fd94f4cb98a8a430a385d13b0504",
+            "packages/semi-ui-vue/src/components/skeleton/types.ts": "c947344125d43de515f26a31fd3266a23bb0e8678762f48ec17ee5ec3a05a859",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-foundation-consumer.mjs": "fa0736d39e8f929a600fe8948eb4abb5d6dd0c68817e6dadf500d0bc34389765",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "tests/browser/skeleton.test.tsx": "115beaf0be67bab0bf465481bd329db3102924cb1d77ee0683601adbd23c2e79",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
+            "tests/consumer/node-skeleton-negative.mjs": "44681f9e60a6e2c98ef8cf8cef7db1f2d17588d05979f54d0bbf05a9e1ca32a8",
+            "tests/consumer/skeleton-browser.ts": "4baeefba46961d3dda091d6aba7128998d90a840d441b5c616f074f6899282a2",
+            "tests/e2e/skeleton.spec.ts": "b68932ee83c92f54b437a0fa3febe67a58fc065f4ac98df53765c4109708fb34",
+            "tests/package-consumer/FoundationHarness.vapor.tsx": "c8005754b27ac6e800e26835795c57da8ed68732d16b908eb9298d29d5c1e676",
+            "tests/resource-consumer/main.tsx": "ecd1ed8ad82395db6f5e53581392f66ddb0307c4355d057e83572c11ea00d00c",
+            "tests/resource-consumer/skeleton.tsx": "347cb9adca59295c160f966a5c026f3fc30ea3f871d70c53e50d97320fb73f97",
+            "tests/style-consumer/skeleton-check.mjs": "b91943f0c0b5bf6f0bce4ad2debbdb50d1989bdbf7ca81e65244e14c88558e45",
+            "tests/types/skeleton-negative.tsx": "b2e0219747e830ff729d339467ccf21e2d0072d8e593a9affc85c5e274e87d13",
+            "tests/types/skeleton-positive.tsx": "5cfd7f689ab4ff34ab284f93fbb4c53a30c52779cf2b411990dfefd5ee9ee73c",
+            "tests/unit/style-inputs.test.mjs": "028c07ddc6428fdaab1b9ba1cce22388ead3509e3377e910e49d0940cbfff0f9",
+            "website/examples/skeleton/Basic.vapor.tsx": "4fe15bf57f5d59c41a4990be2d60b91e1720345c069d2de3b7f7753afcb8c559",
+            "website/examples/skeleton/Dynamic.vapor.tsx": "b71c128e3bb4f230025f442d924eaeeb6fcd63e25a53697aa6e5209ed54f1956",
+            "website/examples/skeleton/Theme.vapor.tsx": "ee7296a62201df54b69007110b483a8fa656308339358dbed16b57b3e1f890da",
+            "website/src/zh-CN/components/skeleton.md": "7796990c3745116d8bc3f98d53fa39f3fe8dfba5da4dd59c7e213a634053f691",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/site.spec.ts": "508d167675492185d1f511cc43087081811f4ba1bc92fbc7037759beebc72992",
+            "website/tests/skeleton.spec.ts": "d0ea8cc695417afe972b6a194d72713175e8665aa5ad0b8d7ac40e0d72caf6ed"
+          }
+        }
+      }
     },
     {
       "name": "slider",
@@ -2253,18 +2419,18 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "space-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "space-c-skeleton-shared-evidence-review-20260925",
           "evidenceHashes": {
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
             "packages/semi-ui-vue/src/components/space/Space.tsx": "fc40df7185857dc7d770ca3bfcc2595d8450e6c767eb0c797d0bbddecb6d32bd",
             "packages/semi-ui-vue/src/components/space/index.ts": "d8d778acca81a6e3856fe178465dafe9e4851eaa0221c41a0e1ec7898473c78e",
             "packages/semi-ui-vue/src/components/space/types.ts": "5173086856b0b1996276421d64854f5a014fa8a9834cfde808a344551cdd33f8",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
             "scripts/check-foundation-consumer.mjs": "fa0736d39e8f929a600fe8948eb4abb5d6dd0c68817e6dadf500d0bc34389765",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
             "tests/browser/space-interop.test.ts": "9e759e6fe5e2c6bd0fb10c2b4dae71144d7fd197ba0611c0ff0de56cf0e6fe93",
             "tests/browser/space.test.tsx": "ab2a661c465fecc0de0535011d83f9f59b94ce1dc238a7f84bd0f107512c8aa1",
             "tests/consumer/node-space-negative.mjs": "cf7d6b9ea051d866500db6434b80f90fef691ec5b935e9a65ad4748c97fe1cb1",
@@ -2279,8 +2445,8 @@
             "website/examples/space/Dynamic.vapor.tsx": "e27e38ae34c70454191699a59be8e769a0fdb9fa7ac7586fcf2eb3f6041909cd",
             "website/examples/space/Responsive.vapor.tsx": "a49b2dd977377174cfe7eb750de95e5b05baaab8ea0755ff73670964946f7b1c",
             "website/src/zh-CN/components/space.md": "66f1e150820f26bdd4ce25a853a0039aad20556e9f4b343e0238006029b9479b",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
             "website/tests/space.spec.ts": "e5cf10a8c799601bf33bf53970744e6a77a8603d1c62e184d694f30df2716358"
           }
         }
@@ -2401,35 +2567,35 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "spin-c-layout-shared-evidence-review-stage2-20260925",
+          "reviewId": "spin-c-skeleton-cold-source-types-review-20260926",
           "evidenceHashes": {
             "packages/semi-ui-vue/src/components/spin/types.ts": "c4f6683132ba0f90b1c1c5dccee210cd7b3a7eae497de09694e36395ae1e59aa",
             "website/src/zh-CN/components/spin.md": "f97975a8c22164d661f06b5f7a8de3051edbb5bea9a0b84c74987e23be8d265a",
             "packages/semi-ui-vue/src/components/spin/Spin.tsx": "bb673c012ce14c5baf6058ea862323ddf71c2489fbb935440cabd03673e9a027",
             "packages/semi-ui-vue/src/components/spin/icon.tsx": "48aa282336d39dc3d0fe5a96d3d7fc54b5c2f5a053d93342b80404cd77c82f66",
-            "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
-            "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+            "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
+            "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
             "packages/semi-ui-vue/src/components/spin/index.ts": "b251f07dc1c879ffc3735884ae678da1fdfbcf5aea1a658fbba4ba99fdb856f4",
-            "packages/semi-ui-vue/package.json": "393ede09162559c6981e2266696bfb6a89beb61b93e998ac90608843c5aaa753",
-            "website/tests/contracts-positive.tsx": "8eeba668ec3bca5b6a2f236e3842a9f771eacc5279b0f7481d19f3f07c6e5095",
-            "website/tests/contracts-negative.tsx": "0e1c7c12acf452cac995c6d2a54b11647dbef468af2829f6438d0a039c5d2f6e",
-            "website/build.mjs": "33db23b3a2ad4d5047a4e2c5646509be186104e9daddf82d908bcb29dc99879f",
-            "website/tsconfig.examples.json": "e1f49629d272af392c083637b7dfb7c5e189f12f829cfd717a2d43dc5127d9e4",
+            "packages/semi-ui-vue/package.json": "e920724f9562093182bfcf9fb61cf65d679e233d77b93d821e9b69dd5708b422",
+            "website/tests/contracts-positive.tsx": "c7365eabcf11d4507147e5865f105b4359305ac9d927823070318a00fd5ba611",
+            "website/tests/contracts-negative.tsx": "8c80ad7e1f75cfc0a1ce9d97c40636629d274214158b25234a0b49a3e7a0149d",
+            "website/build.mjs": "ff75ba839fbae460075fb8f5b62d9c4b9301cf9ef00ad243693aaaaf1296e149",
+            "website/tsconfig.examples.json": "398ed646662de90a831ea0ffedf200f60c05c525ec223fed5ba9d1775a0f66a2",
             "tests/resource-consumer/consumer.ts": "7bab814916eb0e93ef4a767438fc19718e0fefeeb14cf6f55612611f7a815c7f",
             "tests/consumer/node-spin-negative.ts": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
             "tests/browser/spin.test.tsx": "3b38b79d84736406b9ec9176a97b144ce4b4c949399b9e5467ae5d705b26bfbf",
-            "tests/compiler/vapor.test.ts": "72c84c7a818e599dc1cba684ced010c6b8715c200af4ed91c0b9416277120cfd",
+            "tests/compiler/vapor.test.ts": "72f8c7039c04ed20aba76fbca516fb965c126b30302643ee85f6c5ab04e500ff",
             "tests/e2e/spin.spec.ts": "e0c7e57ca56ebff591c2fc6d1486488a04df7eab847d58076bf4a8539e86b394",
-            "tests/unit/style-inputs.test.mjs": "89eb5e149ef2cd156adc9316908b82f735cee578dbb078e2cdfe4db37f317d1f",
+            "tests/unit/style-inputs.test.mjs": "028c07ddc6428fdaab1b9ba1cce22388ead3509e3377e910e49d0940cbfff0f9",
             "website/examples/spin/Basic.vapor.tsx": "b9f4acd818ce88fe7142f13dde2d6cb9e9c539898d0a94d3584effeda485cb2f",
             "website/examples/spin/Dynamic.vapor.tsx": "c902c0a3303a0dad2871f6e76e77fafe782bd300d0c75045b492427689a38079",
             "website/examples/spin/Custom.vapor.tsx": "10b3f6829ae45c1b4957faeb7304fc38b31f874d7f1ef14f4e55cf88a1642bd8",
             "website/tests/spin.spec.ts": "be7acc358688dac05238684ea3a10cd00a266defac436eda72be8d8e8e89802f",
-            "scripts/check-consumer.mjs": "240f4675132663e0b03390e815678df7fa465705bc624af6029b752b15885a21",
-            "scripts/check-resource-consumer.mjs": "9cdbb9caeea373bb39eafc5aa8d5e7fbc62824df554dabab12cc47f9e4435022",
-            "scripts/check-style-consumer.mjs": "8a6d601685939fc2b74648531f432c5b3fced0609250420750bcc4713dec86ef",
+            "scripts/check-consumer.mjs": "e99cb0fddfcd6d93705d4d73845cf565e63a521906ec9175b9a85b4f3ee83021",
+            "scripts/check-resource-consumer.mjs": "7781e8028930f87d4918600a88d9a3b8471c9a775b7927d942ba50e9363067f5",
+            "scripts/check-style-consumer.mjs": "486c0a177495b277ed4052538f8f13f66bcb306d458fb08f378418aaa14e53f7",
             "tests/resource-consumer/spin.tsx": "624ba3d48b37bc59639b3fd0f144793768cbb6d8cc5bbe557cd1d6d7a9cf3f70",
-            "tests/resource-consumer/interop-main.ts": "aa7c5afa3920c4ddcd99a345dd296073da9dd1e9c232bfa2e973b64165c6d9f6",
+            "tests/resource-consumer/interop-main.ts": "0e1a7d8dd355c87ee915f8a8007ca1e7893485f60fa80292cb8d2cf752d49ab1",
             "tests/consumer/node-spin-negative.mjs": "4e01499b4cc1d53123b856df2086ea3233f4e08af7af927137ef598f961ea5cd",
             "tests/style-consumer/spin-markup.ts": "755ba8576c24a632d1baf541bcb8606109cc1f288455fc67cd2dd53d58237581",
             "tests/style-consumer/spin-only.scss": "d9d34c5d4085fc17ba1b44cc2c6b96c954a92f98415437453387f29b3a5554d9"
@@ -4576,13 +4742,13 @@
       "fingerprint": "784d4c72cec0c7585854068e117012e3b5faae18d2977594d42e6e46a1d9c24c",
       "family": "skeleton",
       "upstreamExists": true,
-      "currentExportExists": false,
-      "classification": "absent",
-      "publicDelivery": "not-delivered",
-      "behaviorAcceptance": "not-accepted",
-      "alignment": "missing",
-      "difference": "No accepted public implementation, API/type mapping or static-member compatibility contract.",
-      "acceptanceStatus": "unrecorded"
+      "currentExportExists": true,
+      "classification": "public-component",
+      "publicDelivery": "delivered",
+      "behaviorAcceptance": "accepted",
+      "alignment": "accepted-reviewed-contract",
+      "difference": "Skeleton loading defaults true, active adds the animation class, placeholder and children become named/default native Vapor slots, and only the loading branch has a semi-skeleton div with x-semi-prop=placeholder. Avatar, Title, Button, Paragraph and Image are static placeholder members. Root class/style/native attributes apply to the loading div, while real content is returned without a wrapper. Standalone item defaults, dynamic rows and CSS geometry follow the fixed source.",
+      "acceptanceStatus": "accepted"
     },
     {
       "name": "Slider",
@@ -5339,6 +5505,7 @@
       "LocaleConsumer",
       "LocaleProvider",
       "Row",
+      "Skeleton",
       "Space",
       "Spin",
       "SplitButtonGroup",
@@ -6251,6 +6418,7 @@
           "LocaleConsumer",
           "LocaleProvider",
           "Row",
+          "Skeleton",
           "Space",
           "Spin",
           "SplitButtonGroup",
@@ -6519,6 +6687,10 @@
           "types": "./dist/components/layout/index.d.ts",
           "import": "./dist/components/layout/index.js"
         },
+        "./skeleton": {
+          "types": "./dist/components/skeleton/index.d.ts",
+          "import": "./dist/components/skeleton/index.js"
+        },
         "./styles/components/divider": {
           "sass": "./dist/styles/components/divider.scss",
           "default": "./dist/styles/components/divider.css"
@@ -6542,7 +6714,13 @@
           "default": "./dist/styles/components/layout.css"
         },
         "./styles/components/layout.css": "./dist/styles/components/layout.css",
-        "./styles/components/layout.scss": "./dist/styles/components/layout.scss"
+        "./styles/components/layout.scss": "./dist/styles/components/layout.scss",
+        "./styles/components/skeleton": {
+          "sass": "./dist/styles/components/skeleton.scss",
+          "default": "./dist/styles/components/skeleton.css"
+        },
+        "./styles/components/skeleton.css": "./dist/styles/components/skeleton.css",
+        "./styles/components/skeleton.scss": "./dist/styles/components/skeleton.scss"
       },
       "typeEntries": {
         "./button": {
@@ -6603,6 +6781,19 @@
             "SiderProps",
             "SiderSlots"
           ]
+        },
+        "./skeleton": {
+          "sourcePath": "packages/semi-ui-vue/src/components/skeleton/index.ts",
+          "declaration": "./dist/components/skeleton/index.d.ts",
+          "types": [
+            "AvatarProps",
+            "BasicProps",
+            "GenericProps",
+            "ParagraphProps",
+            "SkeletonAvatarSize",
+            "SkeletonProps",
+            "SkeletonSlots"
+          ]
         }
       }
     },
@@ -6638,7 +6829,7 @@
     },
     "styles": {
       "generators": {
-        "scripts/style-inputs.mjs": "37fa0c1f5ef790ea77d4c35e52da00cc5b1e05725a14e4b093075b84a3e7b765",
+        "scripts/style-inputs.mjs": "51cd869b1a3d9f0bdb204e3a870094ca3d698528ce12a5bacbbf1a577ab8cbea",
         "scripts/build-icon-styles.mjs": "4aa2c1703d7ab07875633ab7e8bc25bd84d08ebb943f6e67b8b0a9e65a609cd3"
       },
       "iconSources": {
@@ -17420,8 +17611,13 @@
         "sourcePath": "packages/semi-ui/skeleton/index.tsx",
         "line": 12,
         "fingerprint": "14d22e4dfbd526d1e485fa23d0692dfacc88f7995e4ea9f94145aaacc684d750",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./skeleton",
+          "name": "SkeletonProps"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "AvatarProps",
@@ -17430,8 +17626,13 @@
         "sourcePath": "packages/semi-ui/skeleton/item.tsx",
         "line": 20,
         "fingerprint": "80bb6d56edc343d580291f51c5abce3b2a14fa73f4d7f17e9300cb9497c07639",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./skeleton",
+          "name": "AvatarProps"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "BasicProps",
@@ -17440,8 +17641,13 @@
         "sourcePath": "packages/semi-ui/skeleton/item.tsx",
         "line": 9,
         "fingerprint": "4e136f05bdd673ceef701dea28c042a73711a8283cd92787672f1727fdb9e098",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./skeleton",
+          "name": "BasicProps"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "GenericProps",
@@ -17450,8 +17656,13 @@
         "sourcePath": "packages/semi-ui/skeleton/item.tsx",
         "line": 25,
         "fingerprint": "90d926f244ebf0fed56f48b0585ff10266690faafe33c2d8a131bbb8723aa56c",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./skeleton",
+          "name": "GenericProps"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "ParagraphProps",
@@ -17460,8 +17671,13 @@
         "sourcePath": "packages/semi-ui/skeleton/item.tsx",
         "line": 16,
         "fingerprint": "923bf09edac6ffb9e6401c142c328326755299232f0b31bb4ab983932af422ef",
+        "currentTypeTarget": {
+          "package": "semi-ui-vue",
+          "subpath": "./skeleton",
+          "name": "ParagraphProps"
+        },
         "sameNameRootType": false,
-        "alignment": "no-accepted-type-mapping"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "SliderProps",
@@ -22449,8 +22665,8 @@
         "line": 22,
         "evidence": "Avatar",
         "rootExport": "Skeleton",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Button",
@@ -22461,8 +22677,8 @@
         "line": 24,
         "evidence": "Button",
         "rootExport": "Skeleton",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Image",
@@ -22473,8 +22689,8 @@
         "line": 26,
         "evidence": "Image",
         "rootExport": "Skeleton",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Paragraph",
@@ -22485,8 +22701,8 @@
         "line": 25,
         "evidence": "Paragraph",
         "rootExport": "Skeleton",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "Title",
@@ -22497,8 +22713,8 @@
         "line": 23,
         "evidence": "Title",
         "rootExport": "Skeleton",
-        "currentPublicMemberAccepted": false,
-        "alignment": "no-accepted-static-contract"
+        "currentPublicMemberAccepted": true,
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "name": "__SemiComponentName__",
@@ -153162,7 +153378,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -153204,7 +153420,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -153246,7 +153462,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -153288,7 +153504,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -153330,7 +153546,7 @@
         ],
         "currentPackage": "semi-ui-vue",
         "sameSubpathExists": false,
-        "alignment": "not-exposed"
+        "alignment": "accepted-reviewed-mapping"
       },
       {
         "upstreamPackage": "@douyinfe/semi-ui",
@@ -163915,29 +164131,45 @@
         "path": "packages/semi-foundation/skeleton/animation.scss",
         "kind": "style",
         "fingerprint": "e801f9a47d4ca8d5aab7e8c94f58387100cc964101232c85ef8135020aa77270",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "style",
+          "sha256": "e801f9a47d4ca8d5aab7e8c94f58387100cc964101232c85ef8135020aa77270",
+          "currentInput": "node_modules/@douyinfe/semi-foundation/skeleton/animation.scss"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-foundation/skeleton/rtl.scss",
         "kind": "style",
         "fingerprint": "4ac600c704c5e22eed3381d3716962e7fe1687f4cdb55dbc1ba9a4a7ba034b87",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "style",
+          "sha256": "4ac600c704c5e22eed3381d3716962e7fe1687f4cdb55dbc1ba9a4a7ba034b87",
+          "currentInput": "node_modules/@douyinfe/semi-foundation/skeleton/rtl.scss"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-foundation/skeleton/skeleton.scss",
         "kind": "style",
         "fingerprint": "d121fd4e0c62c8e64b69c4048e5bd69cb27f3c77d92ff352ee6e06bfed6d0f9f",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "style",
+          "sha256": "d121fd4e0c62c8e64b69c4048e5bd69cb27f3c77d92ff352ee6e06bfed6d0f9f",
+          "currentInput": "node_modules/@douyinfe/semi-foundation/skeleton/skeleton.scss"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-foundation/skeleton/variables.scss",
         "kind": "style",
         "fingerprint": "85017d1fe967cf9d61c3f5422433621e31b78d1bb8db5858b1d5a7722208ebab",
-        "registration": null,
-        "alignment": "not-registered-for-delivery"
+        "registration": {
+          "kind": "style",
+          "sha256": "85017d1fe967cf9d61c3f5422433621e31b78d1bb8db5858b1d5a7722208ebab",
+          "currentInput": "node_modules/@douyinfe/semi-foundation/skeleton/variables.scss"
+        },
+        "alignment": "registered-source-not-component-acceptance"
       },
       {
         "path": "packages/semi-foundation/slider/animation.scss",
@@ -172731,6 +172963,10 @@
     "packages/semi-ui-vue/src/components/locale/LocaleConsumer.tsx": "220fa47b137918087d8c012f976e66983f4bcdfed860a96d3c7411ad9bc33a64",
     "packages/semi-ui-vue/src/components/locale/LocaleProvider.tsx": "6f5f381fe26f2fee87cfcc47b02453078ebd2e27e4ac6707f8a9868fcbe940c9",
     "packages/semi-ui-vue/src/components/locale/types.ts": "5b36cd904340f704f8bdf6d3cd240520fa510451b2c15a89a3856cf54d02adbb",
+    "packages/semi-ui-vue/src/components/skeleton/index.ts": "8de6bbc98029da42586419ccac865de1bdea3c4909b59c24dd289bd374bc8ff2",
+    "packages/semi-ui-vue/src/components/skeleton/item.tsx": "ad9050b357fc62a7844ae973c494ab893e37fd94f4cb98a8a430a385d13b0504",
+    "packages/semi-ui-vue/src/components/skeleton/Skeleton.tsx": "4f81b824b4a56a4ec105f41d9b7cb5df360ee6fe5b503bd933e8f280e9f7f442",
+    "packages/semi-ui-vue/src/components/skeleton/types.ts": "c947344125d43de515f26a31fd3266a23bb0e8678762f48ec17ee5ec3a05a859",
     "packages/semi-ui-vue/src/components/space/index.ts": "d8d778acca81a6e3856fe178465dafe9e4851eaa0221c41a0e1ec7898473c78e",
     "packages/semi-ui-vue/src/components/space/Space.tsx": "fc40df7185857dc7d770ca3bfcc2595d8450e6c767eb0c797d0bbddecb6d32bd",
     "packages/semi-ui-vue/src/components/space/types.ts": "5173086856b0b1996276421d64854f5a014fa8a9834cfde808a344551cdd33f8",
@@ -172754,7 +172990,7 @@
     "packages/semi-ui-vue/src/dom/keyboard.ts": "e74e69634df12cbb070845913ed25fa9f3b86a23a0bc0f75dc15f02d87557fe0",
     "packages/semi-ui-vue/src/dom/resources.ts": "7122740e4cfbce84d9c643d173318bbf44d0445dca33e444d0fbefa2bcbbf15d",
     "packages/semi-ui-vue/src/dom/scheduling.ts": "101d1fe62b8610ba8828fdbbec11b79f456dd9a39132f77239e0d9693ec6dd0d",
-    "packages/semi-ui-vue/src/index.ts": "d7e0b8fa427cba119b44ba46efeee6160d83ea432566add6b996c9495d2840b7",
+    "packages/semi-ui-vue/src/index.ts": "1156d7763a632bd1ec93d9a1532389493ba4565d479224258a3ae27f4c64e5db",
     "packages/semi-ui-vue/src/infrastructure.ts": "6055082f4e7f07c3e6af570c1732b94fd06803f75d68180977c087f0b53ffde1",
     "packages/semi-ui-vue/src/internal/button/BaseButton.tsx": "97f1a7d87154a812252a901b9cc120988f0ff2e53e2a0ce9a48ccf66bdd4ce44",
     "packages/semi-ui-vue/src/internal/button/types.ts": "3cc134e7195e49aa5b2ad2c69081c9f84c2e5f567e1440217d7f33f44fa4f8df",
@@ -172825,6 +173061,6 @@
     "packages/semi-ui-vue/src/locale/source/vi_VN.ts": "7753d4b42e455ba8958d7f39c62ea7c2b2cb30c58a8834649c5f6a4308b6586a",
     "packages/semi-ui-vue/src/locale/source/zh_CN.ts": "19eec8d677d3e750c5436d6737655ed3f35f5e58d9d07d2fd819cbe4d5031fd0",
     "packages/semi-ui-vue/src/locale/source/zh_TW.ts": "35abff16ac7be677edb3b8ad01268338d602c09fd42bdad585f985bc58ce82b0",
-    "packages/vite-plugin-semi-theme/src/index.ts": "15b233127df5a850520d11acd3bcc00395430645f5f00bf9c03d351ed65d9c07"
+    "packages/vite-plugin-semi-theme/src/index.ts": "ba11266e47bd1d5c7a3897b10609c4121bcaaf65a34f7004765419c712740c94"
   }
 }

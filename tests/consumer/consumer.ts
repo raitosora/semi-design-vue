@@ -153,6 +153,35 @@ const widenedState: ReturnType<typeof useControllableValue<number | string>> =
   state;
 void [badRead, widenedState];
 
+import SkeletonFromSubpath, {
+  Skeleton as NamedSkeleton,
+  type SkeletonProps,
+  type AvatarProps,
+  type ParagraphProps,
+} from "semi-ui-vue/skeleton";
+const namedSkeletonIdentity: typeof SkeletonFromSubpath = NamedSkeleton;
+const skeletonAvatarIdentity: typeof SkeletonFromSubpath.Avatar =
+  SkeletonFromSubpath.Avatar;
+const skeletonProps: SkeletonProps = { loading: undefined, active: true };
+const skeletonAvatarProps: AvatarProps = { size: "large", shape: "circle" };
+const skeletonParagraphProps: ParagraphProps = { rows: 0 };
+// @ts-expect-error Skeleton loading remains boolean.
+const invalidSkeletonLoading: SkeletonProps = { loading: "true" };
+// @ts-expect-error Skeleton avatar sizes remain a closed upstream union.
+const invalidSkeletonAvatarSize: AvatarProps = { size: "gigantic" };
+// @ts-expect-error Paragraph row counts remain numeric.
+const invalidSkeletonRows: ParagraphProps = { rows: "4" };
+void [
+  namedSkeletonIdentity,
+  skeletonAvatarIdentity,
+  skeletonProps,
+  skeletonAvatarProps,
+  skeletonParagraphProps,
+  invalidSkeletonLoading,
+  invalidSkeletonAvatarSize,
+  invalidSkeletonRows,
+];
+
 // Foundation bridge declarations are consumed without upstream Foundation types.
 import {
   useFoundation,

@@ -20,6 +20,8 @@ Semi Design Vue 使用原生 Vapor 模式。下面规定公共 API 的实现与�
 
 静态子组件是否另有根具名导出以固定上游为准。[Layout](../components/layout.md) 仅在根入口导出 `Layout` 值，四个子组件通过 `Layout.Header`、`Layout.Footer`、`Layout.Content`、`Layout.Sider` 使用；`semi-ui-vue/layout` 导出 Layout 与上游命名类型。不能从通用协议夹具推断 `Header` 等是根具名导出。
 
+[Skeleton](../components/skeleton.md) 同样只在根入口导出 `Skeleton` 值。Avatar、Title、Button、Paragraph、Image 占位组件通过 `Skeleton.Avatar` 等静态成员使用；它们不构成同名公共产品组件，也不是根入口的独立具名导出。`semi-ui-vue/skeleton` 提供 Skeleton 默认与具名值，以及该族的 Props/Slots 类型。
+
 ## 属性存在性与默认值
 
 包根入口提供 `hasProvidedProp(source, key)`，实现为 `Object.hasOwn`。它接收调用方尚未归一化的属性对象，或 Vue 公开的 `useAttrs()` 结果。**不能把已声明的 props 对象传给它当作调用方存在性证据**：锁定的 Vapor 版本会让声明键始终存在。
@@ -115,3 +117,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Layout 的静态子组件与侧栏协作
 
 [Layout](../components/layout.md) 与 Header/Footer/Content/Sider 都使用无参数默认 Vapor slot。Sider 挂载后向最近 Layout 按实例身份注册，条件移除和多侧栏不会互相误注销；`hasSider={true}` 可显式要求横向，`false` 不压过已注册 Sider。没有受控字段、v-model、自定义折叠事件或公开命令式 ref。当前 Vapor 编译器下，`tagName` 更新更换根元素并重挂 slot 子树，子组件状态与旧焦点会重置，Sider 重新注册；其余类名、样式和侧栏变化保留未移除的节点。当前 vue-jsx Vapor RC2 中，默认 slot 唯一根为裸 `visible && <Layout.Sider>` 的写法有未卸载风险，条件侧栏用 `v-if={visible}`；动态 Sider 列表用 `<For getKey>`，避免注册触发的父级更新与裸 `.map()` 列表互相递归。Sider 的断点仅通知媒体匹配，不自动折叠。
+
+## Skeleton 的占位和真实内容
+
+[Skeleton](../components/skeleton.md) 将固定上游的 `placeholder` 和 `children` ReactNode 改为无参数 `placeholder` 与 `default` Vapor slots。`loading=true` 只挂载占位分支及 Skeleton 根；`false` 只挂载真实内容，切换后分支内状态和焦点不会保留。slot 可返回多根 fragment；组件不探测、克隆或缓存 slot 输出。`active` 仅控制 Foundation CSS 类，动态切换没有 JS 定时器。默认值、子组件尺寸及 Avatar 的 `default` 尺寸源码/样式差异见组件页。

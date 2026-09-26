@@ -52,3 +52,12 @@
 .vapor-demo h3 {
   margin-top: 0;
 }
+/* Keep VitePress article list styling out of the Foundation Skeleton list. */
+.vp-doc .vapor-demo .semi-skeleton-paragraph {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.vp-doc .vapor-demo .semi-skeleton-paragraph li {
+  list-style: none;
+}

@@ -14,6 +14,9 @@ import GridDynamic from "../../website/examples/grid/Dynamic.vapor";
 import LayoutBasic from "../../website/examples/layout/Basic.vapor";
 import LayoutDynamic from "../../website/examples/layout/Dynamic.vapor";
 import LayoutBreakpoint from "../../website/examples/layout/Breakpoint.vapor";
+import SkeletonBasic from "../../website/examples/skeleton/Basic.vapor";
+import SkeletonDynamic from "../../website/examples/skeleton/Dynamic.vapor";
+import SkeletonTheme from "../../website/examples/skeleton/Theme.vapor";
 import ButtonBasic from "../../website/examples/button/Basic.vapor";
 import ButtonStateForm from "../../website/examples/button/StateForm.vapor";
 import ButtonGroups from "../../website/examples/button/Groups.vapor";
@@ -52,6 +55,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/divider.css";
 import "../../packages/semi-ui-vue/dist/styles/components/space.css";
 import "../../packages/semi-ui-vue/dist/styles/components/grid.css";
 import "../../packages/semi-ui-vue/dist/styles/components/layout.css";
+import "../../packages/semi-ui-vue/dist/styles/components/skeleton.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -66,11 +70,19 @@ const iconsMode = new URLSearchParams(location.search).has("icons");
 const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
+const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const app = createVaporApp(
-  spaceMode || gridMode || layoutMode
+  spaceMode || gridMode || layoutMode || skeletonMode
     ? defineVaporComponent(() => (
         <main>
-          {layoutMode ? (
+          {skeletonMode ? (
+            <>
+              <h1>Skeleton examples</h1>
+              <SkeletonBasic />
+              <SkeletonDynamic />
+              <SkeletonTheme />
+            </>
+          ) : layoutMode ? (
             <>
               <h1>Layout examples</h1>
               <LayoutBasic />

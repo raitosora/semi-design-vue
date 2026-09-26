@@ -512,3 +512,43 @@ export const siderNativeId: SiderProps = { id: "not-forwarded" };
 export const siderNativeTitle: SiderProps = { title: "not-forwarded" };
 // @ts-expect-error Sider filters native click listeners at runtime.
 export const siderNativeClick: SiderProps = { onClick: () => {} };
+
+import { Skeleton } from "semi-ui-vue";
+import type {
+  AvatarProps as SkeletonAvatarProps,
+  ParagraphProps as SkeletonParagraphProps,
+  SkeletonProps,
+  SkeletonSlots,
+} from "semi-ui-vue/skeleton";
+// @ts-expect-error Static Avatar is only a Skeleton member, not a root export.
+import { Avatar } from "semi-ui-vue";
+// @ts-expect-error Skeleton types belong to the skeleton subpath.
+import type { SkeletonProps as RootSkeletonProps } from "semi-ui-vue";
+// @ts-expect-error Loading is boolean, not a string.
+export const skeletonBadLoading = <Skeleton loading="true" />;
+// @ts-expect-error Active is boolean, not an animation name.
+export const skeletonBadActive = <Skeleton active="pulse" />;
+// @ts-expect-error The named Vapor slot replaces the ReactNode placeholder prop.
+export const skeletonRawPlaceholder = <Skeleton placeholder={<span />} />;
+// @ts-expect-error The default Vapor slot replaces the ReactNode children prop.
+export const skeletonRawChildren = <Skeleton children={<span />} />;
+// @ts-expect-error Placeholder slot cannot return raw text.
+export const skeletonTextSlot: SkeletonSlots = { placeholder: () => "loading" };
+// @ts-expect-error Default slot cannot return null.
+export const skeletonNullSlot: SkeletonSlots = { default: () => null };
+// @ts-expect-error Async slot results are unsupported.
+export const skeletonAsyncSlot: SkeletonSlots = { default: async () => [] };
+// @ts-expect-error DOM replacement cannot overwrite owned slot content.
+export const skeletonInnerHTML: SkeletonProps = { innerHTML: "<b>unsafe</b>" };
+// @ts-expect-error DOM replacement cannot overwrite owned slot content.
+export const skeletonTextContent: SkeletonProps = { textContent: "unsafe" };
+// @ts-expect-error Shape is limited to fixed upstream values.
+export const skeletonBadShape: SkeletonAvatarProps = { shape: "triangle" };
+// @ts-expect-error Avatar size is a fixed upstream enum.
+export const skeletonBadSize = <Skeleton.Avatar size="huge" />;
+// @ts-expect-error Paragraph rows is numeric.
+export const skeletonBadRows: SkeletonParagraphProps = { rows: "3" };
+// @ts-expect-error Paragraph has no loading state.
+export const skeletonParagraphLoading = <Skeleton.Paragraph loading />;
+// @ts-expect-error Skeleton does not provide a progress percentage.
+export const skeletonProgress = <Skeleton percent={20} />;

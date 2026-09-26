@@ -9,7 +9,7 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
+UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
@@ -21,9 +21,10 @@ import "semi-ui-vue/styles/components/divider.css";
 import "semi-ui-vue/styles/components/icons.css";
 import "semi-ui-vue/styles/components/spin.css";
 import "semi-ui-vue/styles/components/iconButton.css";
+import "semi-ui-vue/styles/components/skeleton.css";
 ```
 
-按需路径只加载基础、布局、栅格、间距、按钮、分割线、图标、加载和图标按钮样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
+按需路径只加载基础、布局、栅格、间距、按钮、分割线、图标、加载、图标按钮和骨架屏样式，不包含 Input 或 Tooltip 样式。Spin 默认指示器不依赖 Icon 样式；只有自定义指示器使用 Icon 时才需要对应入口。需要本阶段全部样式时使用：
 
 ```ts
 import "semi-ui-vue/styles/index.css";
@@ -35,7 +36,7 @@ import "semi-ui-vue/styles/index.css";
 
 样式来源固定为 Foundation / Theme `2.103.0`。构建只提取登记的 SCSS 闭包，随包提供必要源码、许可证及来源摘要；消费者无需安装官方 Foundation，也不需要 patch、override 或源码 alias。
 
-SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
+SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/skeleton.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
 
 CSS variables 使用上游 `--semi-*` 名称。例如：
 
@@ -62,3 +63,5 @@ Divider 使用固定上游 divider.scss / variables.scss 和共享主题闭包�
 Grid 使用固定上游 Grid SCSS 的 24 列与六个媒体断点；CSS / SCSS 分项入口均为 `styles/components/grid`，详见 [Grid](../components/grid.md)。其基础 `0` gutter 来自样式表，不会生成额外间距覆盖。
 
 Layout 使用固定上游 Layout SCSS 的纵向/横向 Flex、子区域尺寸、溢出与 RTL 规则；CSS / SCSS 分项入口均为 `styles/components/layout`，详见 [Layout](../components/layout.md)。侧栏的宽度、背景和折叠状态不由这份样式自动生成。
+
+Skeleton 使用固定上游 Skeleton SCSS 的占位尺寸、主题颜色及纯 CSS 高亮动画；CSS / SCSS 分项入口均为 `styles/components/skeleton`，详见 [Skeleton](../components/skeleton.md)。它不自动提供真实内容、请求状态或减少动态效果的逻辑。

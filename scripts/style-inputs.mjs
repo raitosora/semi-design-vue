@@ -18,6 +18,7 @@ const components = [
   "space",
   "grid",
   "layout",
+  "skeleton",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
@@ -31,6 +32,12 @@ const foundationFiles = {
     "grid/variables.scss",
   ],
   layout: ["layout/layout.scss", "layout/rtl.scss"],
+  skeleton: [
+    "skeleton/animation.scss",
+    "skeleton/rtl.scss",
+    "skeleton/skeleton.scss",
+    "skeleton/variables.scss",
+  ],
   input: [
     "input/animation.scss",
     "input/input.scss",
@@ -97,6 +104,14 @@ const sourceHashes = {
     "496fc03e73491af6b042db2062cc4f9d781f3f05bf56195a394a4d41f640c127",
   "foundation/layout/rtl.scss":
     "e231f88f5ea57b1bdf0737bdb440c2cfeeac232888a1ed00fcd1a6e5371eaa8c",
+  "foundation/skeleton/animation.scss":
+    "e801f9a47d4ca8d5aab7e8c94f58387100cc964101232c85ef8135020aa77270",
+  "foundation/skeleton/rtl.scss":
+    "4ac600c704c5e22eed3381d3716962e7fe1687f4cdb55dbc1ba9a4a7ba034b87",
+  "foundation/skeleton/skeleton.scss":
+    "d121fd4e0c62c8e64b69c4048e5bd69cb27f3c77d92ff352ee6e06bfed6d0f9f",
+  "foundation/skeleton/variables.scss":
+    "85017d1fe967cf9d61c3f5422433621e31b78d1bb8db5858b1d5a7722208ebab",
   "foundation/input/animation.scss":
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
@@ -228,6 +243,14 @@ function entrySources() {
       '@import "../vendor/foundation/layout/layout";',
       "",
     ].join("\n"),
+    "components/skeleton.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/skeleton/skeleton";',
+      "",
+    ].join("\n"),
     "components/input.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -278,6 +301,7 @@ function entrySources() {
       '@import "./components/space";',
       '@import "./components/grid";',
       '@import "./components/layout";',
+      '@import "./components/skeleton";',
       "",
     ].join("\n"),
   };
