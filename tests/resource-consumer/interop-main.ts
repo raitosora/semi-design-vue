@@ -14,6 +14,7 @@ import {
   Col,
   Layout,
   Skeleton,
+  Highlight,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -42,6 +43,7 @@ import "semi-ui-vue/styles/components/space.css";
 import "semi-ui-vue/styles/components/grid.css";
 import "semi-ui-vue/styles/components/layout.css";
 import "semi-ui-vue/styles/components/skeleton.css";
+import "semi-ui-vue/styles/components/highlight.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -51,6 +53,8 @@ const spaceSpacing = ref<number | "medium">("medium");
 const gridSpan = ref(12);
 const layoutSiderVisible = ref(true);
 const skeletonLoading = ref(true);
+const highlightText = ref("Before Semi after SEMI.");
+const highlightTag = ref("mark");
 const spinning = ref(true);
 const iconButtonLabel = ref("Save");
 const iconButtonDisabled = ref(false);
@@ -188,6 +192,24 @@ const app = createApp({
             ],
           },
         ),
+        h("section", { "data-interop-highlight": "" }, [
+          h(Highlight, {
+            sourceString: highlightText.value,
+            searchWords: [
+              {
+                text: "semi",
+                className: "interop-word",
+                style: { color: "rgb(4, 5, 6)" },
+              },
+              "<b>",
+              "&amp;",
+              "+",
+            ],
+            component: highlightTag.value,
+            highlightClassName: "interop-highlight",
+            highlightStyle: { color: "rgb(1, 2, 3)" },
+          }),
+        ]),
         h(
           Skeleton,
           {
@@ -472,6 +494,8 @@ window.interopConsumer = {
   async update() {
     spinning.value = false;
     skeletonLoading.value = false;
+    highlightText.value = "Updated Semi <b> &amp; +";
+    highlightTag.value = "em";
     iconButtonLabel.value = "Updated";
     configLocale.value = zhCN;
     standaloneLocale.value = zhCN;

@@ -1,3 +1,4 @@
+import { highlightMarkup } from "./highlight-markup";
 import { dividerMarkup } from "./divider-markup";
 import { spaceMarkup } from "./space-markup";
 import { gridMarkup } from "./grid-markup";
@@ -29,6 +30,7 @@ document.body.innerHTML = `
   ${gridMarkup("semi")}
   ${layoutMarkup("semi")}
   ${skeletonMarkup("semi")}
+  ${highlightMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -37,4 +39,5 @@ document.body.innerHTML = `
   ${gridMarkup("consumer")}
   ${layoutMarkup("consumer")}
   ${skeletonMarkup("consumer")}
+  ${highlightMarkup("consumer")}
 `;

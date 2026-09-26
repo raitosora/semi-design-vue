@@ -43,6 +43,8 @@ test("source type fixtures resolve transitive workspace imports without built de
       !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
   };
   const imports = {
+    "semi-ui-vue/highlight":
+      "packages/semi-ui-vue/src/components/highlight/index.ts",
     "semi-ui-vue/skeleton":
       "packages/semi-ui-vue/src/components/skeleton/index.ts",
     "semi-icons-vue": "packages/semi-icons-vue/src/index.ts",
@@ -381,5 +383,16 @@ test("Skeleton compiles loading branches and slots as native Vapor and resolves 
   );
   expect(resolved.resolvedModule?.resolvedFileName).toBe(
     resolve("packages/semi-ui-vue/src/components/skeleton/index.ts"),
+  );
+});
+
+test("Highlight compiles fragment matching as native Vapor without VNode or HTML parsing", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/highlight/Highlight.tsx",
+  );
+  expect(result?.code).toMatch(/create(?:For|Component)\(/);
+  expect(result?.code).toMatch(/createDynamicComponent/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|cloneVNode|h)\(|innerHTML|insertAdjacentHTML/,
   );
 });

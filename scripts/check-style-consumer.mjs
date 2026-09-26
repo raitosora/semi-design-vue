@@ -1,3 +1,7 @@
+import {
+  highlightStyleCheck,
+  highlightDirectionCheck,
+} from "../tests/style-consumer/highlight-check.mjs";
 import { dividerStyleCheck } from "../tests/style-consumer/divider-check.mjs";
 import { spaceStyleCheck } from "../tests/style-consumer/space-check.mjs";
 import { gridStyleCheck } from "../tests/style-consumer/grid-check.mjs";
@@ -155,6 +159,11 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Skeleton source hash is missing: ${file}`,
     );
+  for (const file of ["highlight/highlight", "highlight/variables"])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Highlight source hash is missing: ${file}`,
+    );
   for (const license of [
     "semi-foundation-2.103.0-MIT.txt",
     "semi-theme-default-2.103.0-MIT.txt",
@@ -301,6 +310,14 @@ async function browserCheck(url) {
       await gridStyleCheck(page, prefix);
     for (const prefix of ["semi", "consumer"])
       await layoutStyleCheck(page, prefix);
+    const highlightLight = Object.fromEntries(
+      await Promise.all(
+        ["semi", "consumer"].map(async (prefix) => [
+          prefix,
+          await highlightStyleCheck(page, prefix),
+        ]),
+      ),
+    );
     const skeletonLight = Object.fromEntries(
       await Promise.all(
         ["semi", "consumer"].map(async (prefix) => [
@@ -366,6 +383,11 @@ async function browserCheck(url) {
           skeletonLight[prefix].titleBackground,
         `${prefix} Skeleton gradient did not change with dark theme`,
       );
+    for (const prefix of ["semi", "consumer"])
+      assert(
+        (await highlightStyleCheck(page, prefix)) !== highlightLight[prefix],
+        `${prefix} Highlight dark token unchanged`,
+      );
     const dark = await page
       .locator(".semi-input-wrapper")
       .evaluate((input) => ({
@@ -415,6 +437,7 @@ async function browserCheck(url) {
       await layoutStyleCheck(page, prefix, true);
     for (const prefix of ["semi", "consumer"])
       await skeletonStyleCheck(page, prefix, true);
+    await highlightDirectionCheck(page, ["semi", "consumer"]);
     const prefixed = await page
       .locator(".consumer-input-wrapper")
       .evaluate((input) => ({
@@ -478,6 +501,7 @@ async function plainBrowserCheck(url) {
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
     await layoutStyleCheck(page, "semi");
+    const highlightLight = await highlightStyleCheck(page, "semi");
     const skeletonLight = await skeletonStyleCheck(page, "semi");
     await page.setViewportSize({ width: 960, height: 540 });
     const lightPrimary = await page
@@ -507,6 +531,10 @@ async function plainBrowserCheck(url) {
     assert(
       darkPrimary !== lightPrimary,
       "Plain Spin dark primary token did not change",
+    );
+    assert(
+      (await highlightStyleCheck(page, "semi")) !== highlightLight,
+      "Plain Highlight dark token unchanged",
     );
     await spinStyleCheck(page, "semi", darkPrimary);
     await iconButtonStyleCheck(page, "semi", darkPrimary);
@@ -538,6 +566,7 @@ async function plainBrowserCheck(url) {
     await gridStyleCheck(page, "semi", true);
     await layoutStyleCheck(page, "semi", true);
     await skeletonStyleCheck(page, "semi", true);
+    await highlightDirectionCheck(page, ["semi"]);
     const direction = await page
       .locator(".semi-input")
       .evaluate((element) => getComputedStyle(element).direction);
@@ -637,6 +666,9 @@ try {
     "grid-only.scss",
     "layout-markup.ts",
     "layout-only.scss",
+    "highlight-markup.ts",
+    "highlight-check.mjs",
+    "highlight-only.scss",
     "skeleton-markup.ts",
     "skeleton-check.mjs",
     "skeleton-only.scss",
@@ -786,6 +818,10 @@ try {
     "Direct public Skeleton SCSS entry did not compile",
   );
   const plainOutput = files(join(consumer, "plain-dist"));
+  assert(
+    directCss.includes(".consumer-highlight-tag"),
+    "Direct Highlight SCSS entry missing",
+  );
   const plainCss = plainOutput
     .filter((path) => path.endsWith(".css"))
     .map((path) => readFileSync(path, "utf8"))

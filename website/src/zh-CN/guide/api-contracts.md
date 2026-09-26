@@ -121,3 +121,7 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Skeleton 的占位和真实内容
 
 [Skeleton](../components/skeleton.md) 将固定上游的 `placeholder` 和 `children` ReactNode 改为无参数 `placeholder` 与 `default` Vapor slots。`loading=true` 只挂载占位分支及 Skeleton 根；`false` 只挂载真实内容，切换后分支内状态和焦点不会保留。slot 可返回多根 fragment；组件不探测、克隆或缓存 slot 输出。`active` 仅控制 Foundation CSS 类，动态切换没有 JS 定时器。默认值、子组件尺寸及 Avatar 的 `default` 尺寸源码/样式差异见组件页。
+
+## Highlight 的文本片段
+
+[Highlight](../components/highlight.md) 仅接受七个上游文本/匹配属性。原文与非命中部分为文本节点，命中部分默认 `mark`；`component` 改的是命中标签。无 slots、render callback、事件、ref 或属性透传；容器属性由调用方所有，片段样式由 highlightClassName/highlightStyle 与关键词对象合并。缺省和显式 undefined 恢复默认值，关键词数组中的 undefined 则保留上游 TypeError 边界。私有匹配器按固定 Foundation 的 UTF-16、正则和相邻区间合并规则实现。

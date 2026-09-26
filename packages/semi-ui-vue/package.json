@@ -166,7 +166,17 @@
       "default": "./dist/styles/components/skeleton.css"
     },
     "./styles/components/skeleton.css": "./dist/styles/components/skeleton.css",
-    "./styles/components/skeleton.scss": "./dist/styles/components/skeleton.scss"
+    "./styles/components/skeleton.scss": "./dist/styles/components/skeleton.scss",
+    "./highlight": {
+      "types": "./dist/components/highlight/index.d.ts",
+      "import": "./dist/components/highlight/index.js"
+    },
+    "./styles/components/highlight": {
+      "sass": "./dist/styles/components/highlight.scss",
+      "default": "./dist/styles/components/highlight.css"
+    },
+    "./styles/components/highlight.css": "./dist/styles/components/highlight.css",
+    "./styles/components/highlight.scss": "./dist/styles/components/highlight.scss"
   },
   "files": [
     "dist",

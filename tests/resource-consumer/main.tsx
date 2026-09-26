@@ -3,6 +3,7 @@ import { checkDividerConsumer } from "./divider.js";
 import { checkSpaceConsumer } from "./space.js";
 import { checkGridConsumer } from "./grid.js";
 import { checkLayoutConsumer } from "./layout.js";
+import { checkHighlightConsumer } from "./highlight.js";
 import { checkSkeletonConsumer } from "./skeleton.js";
 import { checkIconButtonConsumer } from "./iconButton.js";
 import { checkButtonConsumer } from "./button.js";
@@ -58,6 +59,7 @@ declare global {
       checkGrid(): Promise<string>;
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
+      checkHighlight(): Promise<string>;
       checkSpin(): Promise<string>;
       checkLocale(): Promise<string>;
       checkConfigProvider(): Promise<string>;
@@ -308,6 +310,7 @@ window.resourceConsumer = {
   checkGrid: checkGridConsumer,
   checkLayout: checkLayoutConsumer,
   checkSkeleton: checkSkeletonConsumer,
+  checkHighlight: checkHighlightConsumer,
   checkSpin: checkSpinConsumer,
   checkLocale: checkLocaleConsumer,
   checkConfigProvider: checkConfigProviderConsumer,

@@ -21,6 +21,7 @@ export default defineConfig({
         "grid",
         "layout",
         "skeleton",
+        "highlight",
       ],
     }),
   ],

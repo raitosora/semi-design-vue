@@ -19,6 +19,7 @@ const components = [
   "grid",
   "layout",
   "skeleton",
+  "highlight",
 ];
 const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
 const foundationFiles = {
@@ -32,6 +33,7 @@ const foundationFiles = {
     "grid/variables.scss",
   ],
   layout: ["layout/layout.scss", "layout/rtl.scss"],
+  highlight: ["highlight/highlight.scss", "highlight/variables.scss"],
   skeleton: [
     "skeleton/animation.scss",
     "skeleton/rtl.scss",
@@ -104,6 +106,10 @@ const sourceHashes = {
     "496fc03e73491af6b042db2062cc4f9d781f3f05bf56195a394a4d41f640c127",
   "foundation/layout/rtl.scss":
     "e231f88f5ea57b1bdf0737bdb440c2cfeeac232888a1ed00fcd1a6e5371eaa8c",
+  "foundation/highlight/highlight.scss":
+    "fa382d417efc1c47854ce964f528f6ddb0ba1ab6286957f1fd5fafc52decb878",
+  "foundation/highlight/variables.scss":
+    "664861a36c688b5f3f3bdd509c5d384681f531f731e47f4f84f9b9d50aaf9a39",
   "foundation/skeleton/animation.scss":
     "e801f9a47d4ca8d5aab7e8c94f58387100cc964101232c85ef8135020aa77270",
   "foundation/skeleton/rtl.scss":
@@ -243,6 +249,12 @@ function entrySources() {
       '@import "../vendor/foundation/layout/layout";',
       "",
     ].join("\n"),
+    "components/highlight.scss": [
+      '$semi-prefix: "semi" !default;',
+      '@import "../theme/variables";',
+      '@import "../vendor/foundation/highlight/highlight";',
+      "",
+    ].join("\n"),
     "components/skeleton.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -302,6 +314,7 @@ function entrySources() {
       '@import "./components/grid";',
       '@import "./components/layout";',
       '@import "./components/skeleton";',
+      '@import "./components/highlight";',
       "",
     ].join("\n"),
   };

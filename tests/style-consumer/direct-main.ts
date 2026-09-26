@@ -1,3 +1,5 @@
+import "./highlight-only.scss";
+import { highlightMarkup } from "./highlight-markup";
 import "./divider-only.scss";
 import "./space-only.scss";
 import "./grid-only.scss";
@@ -36,6 +38,7 @@ document.body.innerHTML = `
   ${gridMarkup("semi")}
   ${layoutMarkup("semi")}
   ${skeletonMarkup("semi")}
+  ${highlightMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -44,4 +47,5 @@ document.body.innerHTML = `
   ${gridMarkup("consumer")}
   ${layoutMarkup("consumer")}
   ${skeletonMarkup("consumer")}
+  ${highlightMarkup("consumer")}
 `;
