@@ -29,6 +29,16 @@ describe("explicit Semi theme style generation", () => {
     expect(selected).not.toMatch(/base\.scss|tooltip/);
   });
 
+  it("selects the public Progress style once without importing unrelated components", () => {
+    const selected = source(
+      semiTheme({ styles: ["progress", "progress"], prefix: "acme" }),
+      SCSS,
+    );
+    expect(selected).toBe(
+      '@use "semi-ui-vue/styles/components/progress.scss" as semi_progress with ($semi-prefix: "acme");',
+    );
+  });
+
   it("emits light/dark overrides using real fixed token names and snapshots options", () => {
     const tokens = { "color-primary": "#0052cc", "border-radius-small": 6 };
     const styles = ["input"];
@@ -107,6 +117,7 @@ describe("explicit Semi theme style generation", () => {
             "button",
             "divider",
             "space",
+            "progress",
           ],
           scss: { variables: { "height-control-default": "40px" } },
         }),
@@ -120,6 +131,10 @@ describe("explicit Semi theme style generation", () => {
       expect(css).toContain(".acme-button-split");
       expect(css).toContain(".acme-divider-vertical");
       expect(css).toContain(".acme-space-medium-horizontal");
+      expect(css).toContain(".acme-progress-circle-ring-inner");
+      expect(css).toContain(".acme-progress-track-inner-indeterminate");
+      expect(css).toContain(".acme-rtl .acme-progress");
+      expect(css).not.toContain(".semi-progress");
       expect(css).toContain(".acme-rtl .acme-space");
       expect(css).not.toContain(".semi-space");
       expect(css).not.toContain(".semi-divider");

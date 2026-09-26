@@ -19,6 +19,7 @@ const options: SemiThemeOptions = {
     "layout",
     "skeleton",
     "highlight",
+    "progress",
   ],
 };
 

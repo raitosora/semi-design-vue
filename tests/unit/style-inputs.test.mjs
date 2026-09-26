@@ -58,6 +58,7 @@ describe("fixed Semi style inputs", () => {
         "layout",
         "skeleton",
         "highlight",
+        "progress",
       ],
     });
   });

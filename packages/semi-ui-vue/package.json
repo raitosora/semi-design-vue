@@ -176,7 +176,17 @@
       "default": "./dist/styles/components/highlight.css"
     },
     "./styles/components/highlight.css": "./dist/styles/components/highlight.css",
-    "./styles/components/highlight.scss": "./dist/styles/components/highlight.scss"
+    "./styles/components/highlight.scss": "./dist/styles/components/highlight.scss",
+    "./progress": {
+      "types": "./dist/components/progress/index.d.ts",
+      "import": "./dist/components/progress/index.js"
+    },
+    "./styles/components/progress": {
+      "sass": "./dist/styles/components/progress.scss",
+      "default": "./dist/styles/components/progress.css"
+    },
+    "./styles/components/progress.css": "./dist/styles/components/progress.css",
+    "./styles/components/progress.scss": "./dist/styles/components/progress.scss"
   },
   "files": [
     "dist",

@@ -1,3 +1,4 @@
+import { progressMarkup } from "./progress-markup";
 import { highlightMarkup } from "./highlight-markup";
 import { dividerMarkup } from "./divider-markup";
 import { spaceMarkup } from "./space-markup";
@@ -31,6 +32,7 @@ document.body.innerHTML = `
   ${layoutMarkup("semi")}
   ${skeletonMarkup("semi")}
   ${highlightMarkup("semi")}
+  ${progressMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -40,4 +42,5 @@ document.body.innerHTML = `
   ${layoutMarkup("consumer")}
   ${skeletonMarkup("consumer")}
   ${highlightMarkup("consumer")}
+  ${progressMarkup("consumer")}
 `;

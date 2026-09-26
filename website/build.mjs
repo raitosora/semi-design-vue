@@ -194,6 +194,9 @@ await writeFile(
           "semi-ui-vue/layout": [
             "../../packages/semi-ui-vue/dist/components/layout/index.d.ts",
           ],
+          "semi-ui-vue/progress": [
+            "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
+          ],
           "semi-ui-vue/highlight": [
             "../../packages/semi-ui-vue/dist/components/highlight/index.d.ts",
           ],

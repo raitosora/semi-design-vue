@@ -80,3 +80,5 @@ export { Layout } from "./components/layout/index.js";
 export { Skeleton } from "./components/skeleton/index.js";
 
 export { Highlight } from "./components/highlight/index.js";
+
+export { Progress } from "./components/progress/index.js";

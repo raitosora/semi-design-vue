@@ -1,3 +1,7 @@
+import ProgressBasic from "../../website/examples/progress/Basic.vapor";
+import ProgressDynamic from "../../website/examples/progress/Dynamic.vapor";
+import ProgressFormat from "../../website/examples/progress/Format.vapor";
+import ProgressTheme from "../../website/examples/progress/Theme.vapor";
 import IconButtonBasic from "../../website/examples/iconButton/Basic.vapor";
 import IconButtonPosition from "../../website/examples/iconButton/Position.vapor";
 import IconButtonDynamic from "../../website/examples/iconButton/Dynamic.vapor";
@@ -61,6 +65,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/grid.css";
 import "../../packages/semi-ui-vue/dist/styles/components/layout.css";
 import "../../packages/semi-ui-vue/dist/styles/components/skeleton.css";
 import "../../packages/semi-ui-vue/dist/styles/components/highlight.css";
+import "../../packages/semi-ui-vue/dist/styles/components/progress.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -76,12 +81,26 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const progressMode = new URLSearchParams(location.search).has("progress");
 const highlightMode = new URLSearchParams(location.search).has("highlight");
 const app = createVaporApp(
-  spaceMode || gridMode || layoutMode || skeletonMode || highlightMode
+  spaceMode ||
+    gridMode ||
+    layoutMode ||
+    skeletonMode ||
+    highlightMode ||
+    progressMode
     ? defineVaporComponent(() => (
         <main>
-          {highlightMode ? (
+          {progressMode ? (
+            <>
+              <h1>Progress examples</h1>
+              <ProgressBasic />
+              <ProgressDynamic />
+              <ProgressFormat />
+              <ProgressTheme />
+            </>
+          ) : highlightMode ? (
             <>
               <h1>Highlight examples</h1>
               <HighlightBasic />

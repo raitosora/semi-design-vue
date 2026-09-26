@@ -43,6 +43,8 @@ test("source type fixtures resolve transitive workspace imports without built de
       !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
   };
   const imports = {
+    "semi-ui-vue/progress":
+      "packages/semi-ui-vue/src/components/progress/index.ts",
     "semi-ui-vue/highlight":
       "packages/semi-ui-vue/src/components/highlight/index.ts",
     "semi-ui-vue/skeleton":
@@ -392,6 +394,17 @@ test("Highlight compiles fragment matching as native Vapor without VNode or HTML
   );
   expect(result?.code).toMatch(/create(?:For|Component)\(/);
   expect(result?.code).toMatch(/createDynamicComponent/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|cloneVNode|h)\(|innerHTML|insertAdjacentHTML/,
+  );
+});
+
+test("Progress compiles native geometry and owned format slots without VNodes or HTML parsing", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/progress/Progress.tsx",
+  );
+  expect(result?.code).toMatch(/createSlot/);
+  expect(result?.code).toMatch(/(?:renderEffect|setClass|setStyle)\(/);
   expect(result?.code).not.toMatch(
     /\b(?:createVNode|createElementVNode|createBlock|cloneVNode|h)\(|innerHTML|insertAdjacentHTML/,
   );
