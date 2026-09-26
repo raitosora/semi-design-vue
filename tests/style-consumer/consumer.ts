@@ -18,6 +18,7 @@ const options: SemiThemeOptions = {
     "grid",
     "layout",
     "skeleton",
+    "highlight",
   ],
 };
 

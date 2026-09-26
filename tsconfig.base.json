@@ -73,6 +73,9 @@
       ],
       "semi-ui-vue/skeleton": [
         "./packages/semi-ui-vue/src/components/skeleton/index.ts"
+      ],
+      "semi-ui-vue/highlight": [
+        "./packages/semi-ui-vue/src/components/highlight/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

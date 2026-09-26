@@ -501,6 +501,17 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Skeleton subpath",
     );
+  assert(
+    /semi-ui-vue\/dist\/highlight-[^/\n]+\.js/.test(modules),
+    "Highlight implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/highlight\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve the public Highlight subpath",
+    );
   const libraryInputs = graph.compilationInputs.filter((id) =>
     /node_modules[/\\](?:@[^/\\]+[/\\])?semi-[^/\\]+[/\\]/.test(id),
   );
@@ -538,6 +549,89 @@ function checkGraph(mode = "vapor") {
     join(consumer, outDir, "resource-graph.json"),
     join(evidence, `${mode}-resource-graph.json`),
   );
+}
+
+function checkHighlightTreeShaking() {
+  for (const mode of [
+    "highlight-only",
+    "highlight-root-only",
+    "highlight-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.highlight.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasHighlight = /semi-ui-vue\/dist\/highlight-[^/\n]+\.js/.test(
+      modules,
+    );
+    assert(
+      hasHighlight === (mode !== "highlight-unused"),
+      `${mode}: Highlight implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "highlight-only"
+        ? "/semi-ui-vue/dist/components/highlight/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "highlight-unused")
+        assert(
+          !source.includes("semi-highlight-tag"),
+          "Unused Highlight marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
 }
 
 async function unusedPort() {
@@ -818,6 +912,11 @@ async function browserCheck(url) {
       "Packed Layout behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkHighlight())) ===
+        "highlight consumer passed",
+      "Packed Highlight behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSkeleton())) ===
         "skeleton consumer passed",
       "Packed Skeleton behavior failed",
@@ -1087,6 +1186,27 @@ async function interopBrowserCheck(url) {
       "Interop Layout initial Sider registry or stylesheet failed",
     );
     assert(
+      (await page.locator("[data-interop-highlight]").textContent()) ===
+        "Before Semi after SEMI." &&
+        (await page
+          .locator(
+            "[data-interop-highlight] > mark.interop-highlight.interop-word",
+          )
+          .count()) === 2 &&
+        (await page
+          .locator("[data-interop-highlight]")
+          .evaluate((element) => element.children.length)) === 2 &&
+        (await page
+          .locator(".interop-highlight")
+          .first()
+          .evaluate(
+            (element) =>
+              getComputedStyle(element).fontWeight === "600" &&
+              element.style.color === "rgb(4, 5, 6)",
+          )),
+      "Interop Highlight wrapper-free text, default tag or style priority failed",
+    );
+    assert(
       (await page.locator(".interop-skeleton.semi-skeleton-active").count()) ===
         1 &&
         (await page
@@ -1282,6 +1402,22 @@ async function interopBrowserCheck(url) {
       "Interop Spin did not stop",
     );
     assert(
+      (await page.locator("[data-interop-highlight]").textContent()) ===
+        "Updated Semi <b> &amp; +" &&
+        (await page
+          .locator("[data-interop-highlight] > em.interop-highlight")
+          .count()) === 4 &&
+        (await page
+          .locator("[data-interop-highlight] mark, [data-interop-highlight] b")
+          .count()) === 0 &&
+        (await page
+          .locator("[data-interop-highlight] em")
+          .evaluateAll((elements) =>
+            elements.every((element) => element.childElementCount === 0),
+          )),
+      "Interop Highlight dynamic tag, text or literal HTML safety failed",
+    );
+    assert(
       (await page.locator(".interop-skeleton").count()) === 0 &&
         (await page.locator("[data-skeleton-label]").textContent()) ===
           "Updated",
@@ -1340,6 +1476,12 @@ async function interopBrowserCheck(url) {
     assert(
       (await page.locator(".interop-resources").count()) === 0,
       "Interop resource unmount failed",
+    );
+    assert(
+      (await page
+        .locator("#resource-consumer")
+        .evaluate((element) => element.childNodes.length)) === 0,
+      "Interop resource teardown left DOM nodes",
     );
     assert(!errors.length, `Interop browser errors: ${errors.join("; ")}`);
     await checkExecution(page, "interop");
@@ -1427,6 +1569,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:locale.tsx"),
     "Locale application fixture was omitted from actual precompilation",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:highlight.tsx"),
+    "Highlight fixture was not compiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -1449,10 +1595,15 @@ async function run() {
     "grid-browser.ts",
     "layout-browser.ts",
     "skeleton-browser.ts",
+    "highlight-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
+    "vite.highlight.config.ts",
+    "highlight-only.ts",
+    "highlight-root-only.ts",
+    "highlight-unused.ts",
   ])
     copyFileSync(
       name === "divider-browser.ts" ||
@@ -1482,6 +1633,10 @@ async function run() {
           "grid-browser.ts",
           "layout-browser.ts",
           "skeleton-browser.ts",
+          "highlight-browser.ts",
+          "highlight-only.ts",
+          "highlight-root-only.ts",
+          "highlight-unused.ts",
           "interop-main.ts",
         ],
       },
@@ -1557,6 +1712,7 @@ async function run() {
     },
   );
   checkGraph("interop");
+  checkHighlightTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);
   checkIndependentCompilerInstall(installation.evidenceDirectory);

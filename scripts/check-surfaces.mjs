@@ -53,11 +53,11 @@ const report = {
       "built ESM entry import",
       "plain TypeScript declaration consumption",
       "isolated CSS/SCSS theme consumer build and Chromium checks",
-      "isolated Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/LocaleProvider/LocaleConsumer/ConfigProvider/Icon/SVG/locale consumer types, tree shaking, provenance and Chromium checks",
+      "isolated Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/LocaleProvider/LocaleConsumer/ConfigProvider/Icon/SVG/locale consumer types, tree shaking, provenance and Chromium checks",
       "patched Foundation fixture tarball in pure Vapor and interop",
     ],
     limitation:
-      "Four isolated tarball consumer flows check ESM/declarations, styles, Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
+      "Four isolated tarball consumer flows check ESM/declarations, styles, Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });

@@ -78,3 +78,5 @@ export { Space } from "./components/space/index.js";
 export { Row, Col } from "./components/grid/index.js";
 export { Layout } from "./components/layout/index.js";
 export { Skeleton } from "./components/skeleton/index.js";
+
+export { Highlight } from "./components/highlight/index.js";

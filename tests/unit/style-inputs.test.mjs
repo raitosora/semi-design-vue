@@ -57,6 +57,7 @@ describe("fixed Semi style inputs", () => {
         "grid",
         "layout",
         "skeleton",
+        "highlight",
       ],
     });
   });

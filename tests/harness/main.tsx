@@ -14,6 +14,10 @@ import GridDynamic from "../../website/examples/grid/Dynamic.vapor";
 import LayoutBasic from "../../website/examples/layout/Basic.vapor";
 import LayoutDynamic from "../../website/examples/layout/Dynamic.vapor";
 import LayoutBreakpoint from "../../website/examples/layout/Breakpoint.vapor";
+import HighlightBasic from "../../website/examples/highlight/Basic.vapor";
+import HighlightCustom from "../../website/examples/highlight/Custom.vapor";
+import HighlightDynamic from "../../website/examples/highlight/Dynamic.vapor";
+import HighlightTheme from "../../website/examples/highlight/Theme.vapor";
 import SkeletonBasic from "../../website/examples/skeleton/Basic.vapor";
 import SkeletonDynamic from "../../website/examples/skeleton/Dynamic.vapor";
 import SkeletonTheme from "../../website/examples/skeleton/Theme.vapor";
@@ -56,6 +60,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/space.css";
 import "../../packages/semi-ui-vue/dist/styles/components/grid.css";
 import "../../packages/semi-ui-vue/dist/styles/components/layout.css";
 import "../../packages/semi-ui-vue/dist/styles/components/skeleton.css";
+import "../../packages/semi-ui-vue/dist/styles/components/highlight.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -71,11 +76,20 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const highlightMode = new URLSearchParams(location.search).has("highlight");
 const app = createVaporApp(
-  spaceMode || gridMode || layoutMode || skeletonMode
+  spaceMode || gridMode || layoutMode || skeletonMode || highlightMode
     ? defineVaporComponent(() => (
         <main>
-          {skeletonMode ? (
+          {highlightMode ? (
+            <>
+              <h1>Highlight examples</h1>
+              <HighlightBasic />
+              <HighlightCustom />
+              <HighlightDynamic />
+              <HighlightTheme />
+            </>
+          ) : skeletonMode ? (
             <>
               <h1>Skeleton examples</h1>
               <SkeletonBasic />

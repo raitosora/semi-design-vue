@@ -1,11 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "noEmit": true, "skipLibCheck": false },
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": false
+  },
   "files": [
     "StrictFixture.tsx",
     "positive.tsx",
     "negative.tsx",
     "skeleton-positive.tsx",
-    "skeleton-negative.tsx"
+    "skeleton-negative.tsx",
+    "highlight-positive.tsx",
+    "highlight-negative.tsx"
   ]
 }
