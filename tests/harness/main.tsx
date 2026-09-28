@@ -1,3 +1,7 @@
+import TooltipBasic from "../../website/examples/tooltip/Basic.vapor";
+import TooltipTriggers from "../../website/examples/tooltip/Triggers.vapor";
+import TooltipAdvanced from "../../website/examples/tooltip/Advanced.vapor";
+import TooltipTheme from "../../website/examples/tooltip/Theme.vapor";
 import ProgressBasic from "../../website/examples/progress/Basic.vapor";
 import ProgressDynamic from "../../website/examples/progress/Dynamic.vapor";
 import ProgressFormat from "../../website/examples/progress/Format.vapor";
@@ -66,6 +70,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/layout.css";
 import "../../packages/semi-ui-vue/dist/styles/components/skeleton.css";
 import "../../packages/semi-ui-vue/dist/styles/components/highlight.css";
 import "../../packages/semi-ui-vue/dist/styles/components/progress.css";
+import "../../packages/semi-ui-vue/dist/styles/components/tooltip.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -81,6 +86,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const tooltipMode = new URLSearchParams(location.search).has("tooltip");
 const progressMode = new URLSearchParams(location.search).has("progress");
 const highlightMode = new URLSearchParams(location.search).has("highlight");
 const app = createVaporApp(
@@ -89,10 +95,19 @@ const app = createVaporApp(
     layoutMode ||
     skeletonMode ||
     highlightMode ||
-    progressMode
+    progressMode ||
+    tooltipMode
     ? defineVaporComponent(() => (
         <main>
-          {progressMode ? (
+          {tooltipMode ? (
+            <>
+              <h1>Tooltip examples</h1>
+              <TooltipBasic />
+              <TooltipTriggers />
+              <TooltipAdvanced />
+              <TooltipTheme />
+            </>
+          ) : progressMode ? (
             <>
               <h1>Progress examples</h1>
               <ProgressBasic />

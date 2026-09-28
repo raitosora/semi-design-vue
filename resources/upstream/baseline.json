@@ -15,7 +15,7 @@
       "scripts/check-upstream.mjs": "0016b46afb8dbd41e30582ea7129154840e9e9f0fb9ee597db31a08a78e45211",
       "scripts/upstream-acceptance.mjs": "179728b97c49cdde797d04dc5c16adebb819e1ae7e2cee4a13ca5ee091867cf3",
       "scripts/upstream-inventory.mjs": "8afc3904682b78cedadba3292a386d38b52a256b1a372492c8d19eeb2a76ae8f",
-      "scripts/upstream-matrix.mjs": "9d567e25b7673d51c37dadbab039e65a02d66381460d502df95dfb5dea5b2109",
+      "scripts/upstream-matrix.mjs": "d0f6f1a589a44a780b43c83f7612fc74bae8905d9c3944dc7ef6b7b20652295a",
       "scripts/upstream-refresh.mjs": "db642af0d2af37be8c5e605d71dad3a510d862ab62b86fba11d23bbc1ab2920a",
       "scripts/upstream-source.mjs": "1b1d9ae2583e2163fce03a90989dc135964c09fdfa06963c189369ddea10c8fe"
     }

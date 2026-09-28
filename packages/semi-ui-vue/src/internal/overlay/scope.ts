@@ -24,7 +24,11 @@ const stacks = new WeakMap<Document, Stack>();
 const orders = new WeakMap<Document, WeakMap<OverlayHandle, number>>();
 const eventLayers = new WeakMap<Event, WeakMap<Document, Layer | null>>();
 
-function registerLayer(document: Document, handle: OverlayHandle): Layer {
+function registerLayer(
+  document: Document,
+  handle: OverlayHandle,
+  zIndex?: number,
+): Layer {
   const stack = stacks.get(document) ?? { next: 1000, layers: [] };
   const documentOrders =
     orders.get(document) ?? new WeakMap<OverlayHandle, number>();
@@ -36,7 +40,7 @@ function registerLayer(document: Document, handle: OverlayHandle): Layer {
     next: stack.next + 1,
     layers: [...stack.layers, layer].sort((a, b) => a.order - b.order),
   });
-  handle.element.style.zIndex = String(layer.order);
+  handle.element.style.zIndex = String(zIndex ?? layer.order);
   return layer;
 }
 function removeLayer(document: Document, layer: Layer): void {
@@ -197,13 +201,15 @@ export function createOverlayScope(): OverlayScope {
         if (hadFocus) focusElement(focused, { preventScroll: true });
       }
       const document = nextContainer.ownerDocument;
-      const layer = registerLayer(document, handle);
+      if (current.active === false) return;
+      const layer = registerLayer(document, handle, current.zIndex);
       binding.own(() => removeLayer(document, layer));
-      binding.own(observePortal(element, nextContainer, nextTarget));
+      if (current.position !== "manual")
+        binding.own(observePortal(element, nextContainer, nextTarget));
       if (current.lockScroll) binding.own(lockScrolling(nextContainer));
       const roots = () => [
         element,
-        ...(nextTarget ? [nextTarget] : []),
+        ...(nextTarget && !current.closeOnTarget ? [nextTarget] : []),
         ...nextRoots,
       ];
       binding.own(

@@ -1,5 +1,5 @@
 import { defineVaporComponent, ref } from "vue";
-import { Col, Layout, Row, Space } from "semi-ui-vue";
+import { Col, Layout, Row, Space, Tooltip } from "semi-ui-vue";
 import { FoundationInput } from "../../website/examples/foundation/Input.vapor";
 import { FoundationTooltip } from "../../website/examples/foundation/Tooltip.vapor";
 import { Model } from "../fixtures/Model.vapor";
@@ -72,6 +72,24 @@ export const FoundationHarness = defineVaporComponent(() => {
           <FoundationTooltip
             content="packed-tooltip"
             onVisibleChange={(value) => (visible.value = value)}
+          />
+          <Tooltip
+            content="Public packed Tooltip"
+            motion={false}
+            trigger="click"
+            v-slots={{
+              default: (scope) => (
+                <button
+                  {...scope.attrs}
+                  {...scope.triggerProps}
+                  data-foundation-public-tooltip=""
+                  ref={scope.triggerRef}
+                >
+                  Public Tooltip trigger
+                </button>
+              ),
+            }}
+            wrapperId="foundation-public-tooltip"
           />
           <Model v-model={model.value} />
           <StrictFixture

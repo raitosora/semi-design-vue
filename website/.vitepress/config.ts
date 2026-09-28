@@ -7,6 +7,15 @@ export default defineConfig({
   srcDir: "src",
   cleanUrls: false,
   appearance: true,
+  head: [
+    [
+      "link",
+      {
+        rel: "icon",
+        href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23006'/%3E%3C/svg%3E",
+      },
+    ],
+  ],
   vite: {
     publicDir: fileURLToPath(new URL("../.generated/public", import.meta.url)),
     resolve: { dedupe: ["vue", "@vue/shared", "@vue-jsx/runtime"] },
@@ -52,6 +61,7 @@ export default defineConfig({
           { text: "Skeleton 骨架屏", link: "/zh-CN/components/skeleton" },
           { text: "Highlight 高亮文本", link: "/zh-CN/components/highlight" },
           { text: "Progress 进度条", link: "/zh-CN/components/progress" },
+          { text: "Tooltip 文字提示", link: "/zh-CN/components/tooltip" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight and progress. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress and tooltip. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -181,3 +181,19 @@ are documented separately. Host reduced-motion CSS is distinct from component
 behavior. Strict declarations, real browser updates, Chinese examples and four
 tarball consumer stages passed independent review. No status API, state icons,
 default slot, imperative method or additional public family is introduced.
+
+The `tooltip` record accepts the browser Tooltip contract with five trigger modes,
+sixteen placements, Foundation visibility/geometry and the fixed themed styles.
+Native scoped slots bind current-document HTML callback refs and composed events;
+content callbacks return synchronous primitives, while rich content and custom
+arrows use owned slots. Reactive content, nonzero measurements, positioning,
+CSS motion, reversal, focus/ARIA and teardown are covered by source browser tests,
+strict declarations, live documentation and actual tarball consumers, with pure
+Vapor and ordinary Vue interop kept separate. Production inlining is restricted
+to the eighteen pinned Tooltip/base/a11y/log and es-toolkit source files, their
+original-extension snapshots, bidirectional graph/provenance/map checks and two
+full MIT notices. The existing Foundation patch pin and runtime dependency
+policy remain unchanged. There is no automatic child inspection, SVG/MathML or
+foreign-realm trigger support, async rich callback, component SSR/hydration or
+CJS acceptance. The independent compiler installation peer constraint remains
+separate from precompiled browser and plain declaration consumers.

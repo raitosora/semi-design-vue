@@ -28,3 +28,22 @@ void [
 ];
 createVaporApp(FoundationHarness);
 createApp(FoundationHarness).use(vaporInteropPlugin);
+
+import type { TooltipProps, TooltipInstance } from "semi-ui-vue/tooltip";
+const publicTooltip: TooltipProps = {
+  trigger: "click",
+  content: () => 0,
+  wrapperId: "foundation-public-tooltip",
+  motion: false,
+};
+const invalidPublicContent: TooltipProps = {
+  // @ts-expect-error Public Tooltip content stays primitive, unlike owned slots.
+  content: () => document.createElement("b"),
+};
+const publicInstance = null as TooltipInstance | null;
+publicInstance?.focusTrigger();
+const publicPosition: Record<string, string | number> | undefined =
+  publicInstance?.rePosition();
+const publicId: string | undefined = publicInstance?.getPopupId();
+void [publicPosition, publicId];
+void [publicTooltip, invalidPublicContent];

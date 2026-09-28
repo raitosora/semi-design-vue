@@ -1,6 +1,6 @@
 # Foundation 桥接
 
-Semi Design Vue 用 `useFoundation` 连接状态机与 Vue 生命周期。此页展示输入和浮层的内部协议夹具；它们不是已交付的 Input、Tooltip 或 Popover 组件，也不提供主题、完整定位与无障碍兼容承诺。
+Semi Design Vue 用 `useFoundation` 连接状态机与 Vue 生命周期。此页展示输入和浮层的内部协议夹具，其范围与公共 [Tooltip](../components/tooltip.md) 分别定义。内部夹具不提供 Input 或 Popover 公共组件，也不构成主题、完整定位与无障碍的兼容承诺。
 
 ## 状态与生命周期
 

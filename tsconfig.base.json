@@ -77,6 +77,9 @@
       "semi-ui-vue/highlight": [
         "./packages/semi-ui-vue/src/components/highlight/index.ts"
       ],
+      "semi-ui-vue/tooltip": [
+        "./packages/semi-ui-vue/src/components/tooltip/index.ts"
+      ],
       "semi-ui-vue/progress": [
         "./packages/semi-ui-vue/src/components/progress/index.ts"
       ]

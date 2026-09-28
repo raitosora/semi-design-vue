@@ -82,3 +82,5 @@ export { Skeleton } from "./components/skeleton/index.js";
 export { Highlight } from "./components/highlight/index.js";
 
 export { Progress } from "./components/progress/index.js";
+
+export { Tooltip } from "./components/tooltip/index.js";

@@ -158,6 +158,11 @@ export function activeElement(document: Document): HTMLElement | null {
   return active as HTMLElement | null;
 }
 
+/** Available sequential targets for a component's native keyboard protocol. */
+export function getFocusableElements(root: Element): HTMLElement[] {
+  return focusCandidates(root).filter((candidate) => !isUnavailable(candidate));
+}
+
 /** Walk only ancestry exposed by the browser, including frame and shadow roots. */
 export function containsFocus(root: Element, target: Node | null): boolean {
   let current = target;

@@ -13,6 +13,8 @@ const required = [
   "tests/types/StrictFixture.tsx",
   "tests/types/positive.tsx",
   "tests/types/negative.tsx",
+  "tests/types/tooltip-positive.tsx",
+  "tests/types/tooltip-negative.tsx",
 ];
 
 for (const file of required) {

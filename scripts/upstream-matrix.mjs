@@ -27,7 +27,11 @@ export function readCurrentExports(text, resolveStar, fileName = "entry.ts") {
         ts.isStringLiteral(node.moduleSpecifier)
       ) {
         const nested = resolveStar(node.moduleSpecifier.text);
-        if (!nested?.values?.length || !Array.isArray(nested.types))
+        if (
+          !Array.isArray(nested?.values) ||
+          !Array.isArray(nested.types) ||
+          nested.values.length + nested.types.length === 0
+        )
           throw new Error("Empty or invalid export-star inventory.");
         (node.isTypeOnly ? types : values).push(...nested.values);
         types.push(...nested.types);

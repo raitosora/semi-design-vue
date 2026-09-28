@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "scope": "semi-ui-vue Tooltip production inline closure only",
+  "packages": [
+    {
+      "name": "@douyinfe/semi-foundation",
+      "version": "2.103.0",
+      "license": "semi-foundation-2.103.0-MIT.txt",
+      "licenseSha256": "2acf865e87e59090121369aac0575467067fdd7999923a70d785a46ceae3330f"
+    },
+    {
+      "name": "es-toolkit",
+      "version": "1.39.10",
+      "license": "es-toolkit-1.39.10-MIT.txt",
+      "licenseSha256": "ed68888a2a28f32a05e88f24d4d4ee75075a1bda2b6372a1f2e00fa0576a5524"
+    }
+  ],
+  "foundationPatchSha256": "3ebe6db68a2f0831212d97a8956510acee666180cdf3302fbd9ea230b687f37e",
+  "sources": [
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/base/foundation.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/base/foundation.js",
+      "sha256": "e78cf9ed1f9ecd0206376aba4a8a7ab43101feab335d5b15f4954356a0926743"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/tooltip/foundation.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/tooltip/foundation.js",
+      "sha256": "94323693686e5d67fd98b72fe789304ab07dc3bda82cb1d8f41272ea73ad23a1"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/utils/a11y.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/utils/a11y.js",
+      "sha256": "c49dd0878142d2ef9ce9be62c9744cff3304558f71ca52af9dd117598b1a2502"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/utils/log.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/utils/log.js",
+      "sha256": "602cd03abf5d0792acb92af386cd807c41808693ee24ccc7d30530af6c74a493"
+    },
+    {
+      "id": "npm:es-toolkit/dist/_internal/isUnsafeProperty.mjs",
+      "package": "es-toolkit",
+      "path": "dist/_internal/isUnsafeProperty.mjs",
+      "sha256": "3b70e8348abf1a13c8228bf4bdbe493a713b7021b78346dff03c4745534678d6"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/_internal/getTag.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/_internal/getTag.mjs",
+      "sha256": "a77894f74804dae09eb8e9107a44a79a6246d83d7b8949ee11809765506f3e45"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/_internal/isDeepKey.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/_internal/isDeepKey.mjs",
+      "sha256": "426694dec8ec526215f79f6099793f52b45481e80621df00dd5da83933a94c68"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/_internal/isPrototype.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/_internal/isPrototype.mjs",
+      "sha256": "bb543512dc807ea603ad446678c4ecaaccaedfac20e9e627e8363ad2cd9fd076"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/_internal/toKey.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/_internal/toKey.mjs",
+      "sha256": "e879022cef6f2c35f1787a01e6cbc978cfb747d2c26e11a37d22776ea1b6c3f8"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/function/noop.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/function/noop.mjs",
+      "sha256": "e11967434a6dbd1ddea998a52157b1d149512ff11a83f467145cf220fb9fe830"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/object/get.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/object/get.mjs",
+      "sha256": "5b510d19ac692f946d223aed59fbe7b5f228dff88412ba7a8f748d77b6243d31"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/predicate/isArguments.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/predicate/isArguments.mjs",
+      "sha256": "f85b2068cec57fcdf61c71873292d3fee3191161e3e2e61f0c7bf9843db18386"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/predicate/isArrayLike.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/predicate/isArrayLike.mjs",
+      "sha256": "24517e251c2a070ad08503d5204894315e661a0b8d8220bcc79f0b38cda46eba"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/predicate/isEmpty.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/predicate/isEmpty.mjs",
+      "sha256": "8a78b5ea3e3401628c21f1341fef088d8b6639ad04689fb3d4e4597fa0f8d991"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/predicate/isTypedArray.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/predicate/isTypedArray.mjs",
+      "sha256": "04d30208afdd8b3a1a5a0888899c85e73afd03ef1ec1dde99d48867535eb3c1d"
+    },
+    {
+      "id": "npm:es-toolkit/dist/compat/util/toPath.mjs",
+      "package": "es-toolkit",
+      "path": "dist/compat/util/toPath.mjs",
+      "sha256": "402616500dd067cb9a70e9065b2f0774c7db9f0816d52f90dddaaa3d423a694c"
+    },
+    {
+      "id": "npm:es-toolkit/dist/predicate/isLength.mjs",
+      "package": "es-toolkit",
+      "path": "dist/predicate/isLength.mjs",
+      "sha256": "8ffebf5ce1b8d1a58ffa4322fe81f1e3cc59d75fcfd34b4428099fe620cc025c"
+    },
+    {
+      "id": "npm:es-toolkit/dist/predicate/isTypedArray.mjs",
+      "package": "es-toolkit",
+      "path": "dist/predicate/isTypedArray.mjs",
+      "sha256": "dbd9ddeb69f1b2aa9ff3f9aba4a2857182c98a47b2d8188d7f117d29ed3a4c53"
+    }
+  ]
+}

@@ -1,4 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+const tooltipInlineProfile = JSON.parse(
+  readFileSync(
+    new URL("../../scripts/tooltip-inline-inputs.json", import.meta.url),
+    "utf8",
+  ),
+);
 import {
   assertConsumerLocation,
   assertExactDependencies,
@@ -239,5 +246,51 @@ describe("packed package registry", () => {
       rmSync(directory, { recursive: true, force: true });
     }
     await expect(fetch(registry.origin)).rejects.toThrow();
+  });
+});
+
+describe("exact Tooltip production pack members", () => {
+  const required = [
+    "package/package.json",
+    "package/LICENSE",
+    "package/dist/index.js",
+    "package/dist/index.d.ts",
+  ];
+  const snapshots = tooltipInlineProfile.sources.map(
+    ({ path, sha256 }) =>
+      `package/dist/map-sources/${sha256}${path.endsWith(".mjs") ? ".mjs" : ".js"}`,
+  );
+  it("allows all eighteen fixed snapshots and the exact production provenance member", () => {
+    expect(snapshots).toHaveLength(18);
+    expect(() =>
+      assertPackFiles([
+        ...required,
+        ...snapshots,
+        "package/dist/tooltip-inline-provenance.json",
+      ]),
+    ).not.toThrow();
+  });
+  it.each(snapshots)("rejects the wrong JS extension for %s", (path) => {
+    const wrong = path.endsWith(".mjs")
+      ? path.replace(/\.mjs$/, ".js")
+      : path.replace(/\.js$/, ".mjs");
+    expect(() => assertPackFiles([...required, wrong])).toThrow(
+      /Unexpected packed file/,
+    );
+  });
+  it.each([
+    `package/dist/map-sources/${"0".repeat(64)}.js`,
+    `package/dist/map-sources/${"0".repeat(64)}.mjs`,
+    "package/dist/map-sources/foundation.js",
+    "package/dist/map-sources/tooltip/foundation.js",
+    "package/dist/map-sources/npm/es-toolkit.mjs",
+    "package/dist/node_modules/@douyinfe/semi-foundation/lib/es/tooltip/foundation.js",
+    "package/dist/foundation-inline-provenance.json",
+    "package/dist/tooltip-inline-provenance-copy.json",
+    "package/dist/inline.mjs",
+  ])("rejects unpinned or out-of-domain pack member %s", (path) => {
+    expect(() => assertPackFiles([...required, path])).toThrow(
+      /Unexpected packed file/,
+    );
   });
 });

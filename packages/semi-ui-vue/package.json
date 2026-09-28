@@ -186,7 +186,11 @@
       "default": "./dist/styles/components/progress.css"
     },
     "./styles/components/progress.css": "./dist/styles/components/progress.css",
-    "./styles/components/progress.scss": "./dist/styles/components/progress.scss"
+    "./styles/components/progress.scss": "./dist/styles/components/progress.scss",
+    "./tooltip": {
+      "types": "./dist/components/tooltip/index.d.ts",
+      "import": "./dist/components/tooltip/index.js"
+    }
   },
   "files": [
     "dist",

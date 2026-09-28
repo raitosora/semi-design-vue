@@ -3,6 +3,7 @@ import { checkDividerConsumer } from "./divider.js";
 import { checkSpaceConsumer } from "./space.js";
 import { checkGridConsumer } from "./grid.js";
 import { checkLayoutConsumer } from "./layout.js";
+import { checkTooltipConsumer } from "./tooltip.js";
 import { checkProgressConsumer } from "./progress.js";
 import { checkHighlightConsumer } from "./highlight.js";
 import { checkSkeletonConsumer } from "./skeleton.js";
@@ -61,6 +62,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkTooltip(): Promise<string>;
       checkProgress(): Promise<string>;
       checkSpin(): Promise<string>;
       checkLocale(): Promise<string>;
@@ -313,6 +315,7 @@ window.resourceConsumer = {
   checkLayout: checkLayoutConsumer,
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
+  checkTooltip: checkTooltipConsumer,
   checkProgress: checkProgressConsumer,
   checkSpin: checkSpinConsumer,
   checkLocale: checkLocaleConsumer,
