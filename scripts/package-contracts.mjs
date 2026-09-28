@@ -3,6 +3,11 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { isBuiltin } from "node:module";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import ts from "typescript";
+import {
+  tooltipInlineGraph,
+  verifyTooltipInline,
+} from "./tooltip-inline-inputs.mjs";
+import { fileURLToPath } from "node:url";
 
 const forbidden =
   /^(?:@types\/)?(?:react(?:-dom)?|lodash(?:-es|\.[^/]+)?)(?:\/|$)|^@douyinfe\/semi-(?:foundation|ui)(?:\/|$)/;
@@ -218,6 +223,12 @@ export function validatePackageDirectory(directory) {
         graph.chunks.some((chunk) => chunk.modules?.length),
       "Empty package build graph",
     );
+    const inlineIds = new Set(tooltipInlineGraph(graph));
+    verifyTooltipInline({
+      root: fileURLToPath(new URL("../", import.meta.url)),
+      directory,
+      graph,
+    });
     for (const chunk of graph.chunks) {
       assert(
         existsSync(join(dist, chunk.file)),
@@ -225,7 +236,8 @@ export function validatePackageDirectory(directory) {
       );
       for (const id of chunk.modules) {
         assert(
-          /^(?:src\/|compiler:vue-jsx\/(?:props|vapor)$)/.test(id),
+          /^(?:src\/|compiler:vue-jsx\/(?:props|vapor)$)/.test(id) ||
+            inlineIds.has(id),
           `Unapproved bundled input: ${id}`,
         );
         assert(

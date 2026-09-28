@@ -169,6 +169,17 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Progress source hash is missing: ${file}`,
     );
+  for (const file of [
+    "tooltip/tooltip",
+    "tooltip/variables",
+    "tooltip/animation",
+    "tooltip/arrow",
+    "tooltip/rtl",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Tooltip source hash is missing: ${file}`,
+    );
   for (const file of ["highlight/highlight", "highlight/variables"])
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
@@ -611,6 +622,79 @@ async function plainBrowserCheck(url) {
   }
 }
 
+async function tooltipBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (["error", "warning"].includes(message.type()))
+        errors.push(message.text());
+    });
+    await page.goto(new URL("tooltip.html", url).href);
+    const light = {};
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate(
+        (value) => document.body.setAttribute("theme-mode", value),
+        theme,
+      );
+      for (const prefix of ["semi", "consumer", "theme"]) {
+        const style = await page
+          .locator(`[data-tooltip-style="${prefix}"]`)
+          .evaluate((element) => {
+            const value = getComputedStyle(element);
+            return {
+              opacity: value.opacity,
+              width: value.maxWidth,
+              padding: value.padding,
+              color: value.color,
+              background: value.backgroundColor,
+              fontSize: value.fontSize,
+            };
+          });
+        assert(
+          style.opacity === "1" &&
+            style.width === "240px" &&
+            style.fontSize === "14px" &&
+            style.padding === "8px 12px",
+          `${prefix} Tooltip public CSS geometry failed`,
+        );
+        assert(
+          style.background !== "rgba(0, 0, 0, 0)",
+          `${prefix} Tooltip background missing`,
+        );
+        if (theme === "light") light[prefix] = style.color;
+        else
+          assert(
+            style.color !== light[prefix],
+            `${prefix} Tooltip dark text token did not change`,
+          );
+      }
+    }
+    await page.evaluate(() => (document.documentElement.dir = "rtl"));
+    for (const prefix of ["semi", "consumer", "theme"])
+      assert(
+        (await page
+          .locator(`[data-tooltip-style="${prefix}"]`)
+          .evaluate((element) => getComputedStyle(element).direction)) ===
+          "rtl",
+        `${prefix} Tooltip RTL inheritance failed`,
+      );
+    assert(
+      errors.length === 0,
+      `Tooltip stylesheet browser errors: ${errors.join("; ")}`,
+    );
+    await page.screenshot({
+      path: resolve(root, ".vitest/attachments/style-consumer/tooltip.png"),
+    });
+  } finally {
+    await browser.close();
+  }
+}
+
 async function withPreview(outDir, check) {
   const port = await unusedPort();
   const preview = spawn(
@@ -700,6 +784,10 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "tooltip-only.scss",
+    "tooltip-main.ts",
+    "tooltip.html",
+    "vite.tooltip.config.ts",
     "highlight-markup.ts",
     "highlight-check.mjs",
     "highlight-only.scss",
@@ -914,6 +1002,31 @@ try {
     "Plain Progress CSS entry missing",
   );
   checkGraph("plain-style-graph.json");
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.tooltip.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const tooltipCss = files(join(consumer, "tooltip-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      tooltipCss.includes(`.${prefix}-tooltip-wrapper`) &&
+        tooltipCss.includes(`.${prefix}-tooltip-content`),
+      `${prefix} Tooltip CSS/SCSS/theme entry missing`,
+    );
+  checkGraph("tooltip-style-graph.json");
+  await withPreview("tooltip-dist", tooltipBrowserCheck);
+
   execFileSync(
     process.execPath,
     [

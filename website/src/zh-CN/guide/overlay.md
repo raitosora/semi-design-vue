@@ -77,3 +77,9 @@ Vapor host 的容器必须属于创建 host 的当前 document；初始和显式
 ## ConfigProvider 接入
 
 [ConfigProvider](../components/configProvider.md) 将 direction 与 getPopupContainer 传入同一 Semi context。后代用 createStaticContext(useSemiContext()) 显式把该来源交给 host，可保持容器迁移与方向的动态更新。Provider 不自动创建 host，也不复制任意 app provides；host 的 realm/document 和清理责任不变。组件页包含两个独立 app 的真实容器迁移与卸载示例。
+
+## 公共 Tooltip 与定位归属
+
+[Tooltip](../components/tooltip.md) 复用层级仲裁与生命周期，完整定位由固定 Foundation 负责。内部 layer 的 `position` 默认 `"anchor"`，保持工具示例的 bottom-start 定位；显式 `"manual"` 跳过自动定位及其几何观察器，调用方拥有位置、尺寸观察与滚动重算。`active: false` 保留 host 并释放事件仲裁、定位观察和滚动锁，重新激活恢复同一内部层序；`zIndex` 仅覆盖视觉堆叠值，关闭仲裁仍按内部层序。`closeOnTarget: true` 可显式将触发根纳入点外关闭。未指定这些选项时保持既有协议。
+
+Tooltip 的触发器由调用方显式绑定原生 ref 与 scoped slot 属性；它不使用通用 host 自动猜测子节点。默认不锁滚动，不启用 Escape 或焦点 guard；完整开关、事件通知和多根规则见组件页。

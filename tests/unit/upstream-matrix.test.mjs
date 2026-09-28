@@ -493,3 +493,53 @@ it("parses public TSX subpath type exports without treating JSX as invalid TypeS
     ),
   ).toEqual({ types: ["Theme"], values: ["Group"] });
 });
+
+describe("type-only export-star inventory", () => {
+  const declaredTypes = () =>
+    readCurrentExports(
+      "export interface TooltipProps {} export type Trigger = 'click';",
+      undefined,
+      "types.d.ts",
+    );
+  it.each(["export type *", "export *"])(
+    "keeps declaration-only %s in the type inventory",
+    (syntax) => {
+      expect(declaredTypes()).toEqual({
+        values: [],
+        types: ["TooltipProps", "Trigger"],
+      });
+      expect(
+        readCurrentExports(`${syntax} from './types.js';`, declaredTypes),
+      ).toEqual({ values: [], types: ["TooltipProps", "Trigger"] });
+    },
+  );
+  it("moves nested value names to types only for an explicit type-star", () => {
+    expect(
+      readCurrentExports("export type * from './mixed.js';", () => ({
+        values: ["ClassType"],
+        types: ["Props"],
+      })),
+    ).toEqual({ values: [], types: ["ClassType", "Props"] });
+  });
+  it.each([
+    undefined,
+    null,
+    {},
+    { values: "Value", types: [] },
+    { values: { length: 1 }, types: [] },
+    { values: [], types: "Props" },
+    { values: [], types: [] },
+  ])("rejects malformed or empty nested inventory %j", (nested) => {
+    expect(() =>
+      readCurrentExports("export type * from './types.js';", () => nested),
+    ).toThrow(/Empty or invalid export-star inventory/);
+  });
+  it("still rejects duplicate types reached through a type-star", () => {
+    expect(() =>
+      readCurrentExports(
+        "export type * from './types.js'; export type { Props } from './other.js';",
+        () => ({ values: [], types: ["Props"] }),
+      ),
+    ).toThrow(/Duplicate current exports/);
+  });
+});

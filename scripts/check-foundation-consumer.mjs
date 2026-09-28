@@ -153,6 +153,12 @@ async function browserCheck(directory, mode) {
     await expect(
       page.getByRole("textbox", { name: "Model", exact: true }),
     ).toHaveValue("reset-model");
+    await page.locator("[data-foundation-public-tooltip]").click();
+    await expect(page.locator("#foundation-public-tooltip")).toContainText(
+      "Public packed Tooltip",
+    );
+    await page.locator("#changes").click();
+    await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     const trigger = page.getByRole("button", {
       name: "Foundation tooltip trigger",
     });
@@ -166,6 +172,7 @@ async function browserCheck(directory, mode) {
     await page.locator("#remove").click();
     await expect(input).toHaveCount(0);
     await expect(page.getByRole("tooltip")).toHaveCount(0);
+    await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
     await page.evaluate(() => {
       window.detachedTrigger.dispatchEvent(new MouseEvent("mouseenter"));

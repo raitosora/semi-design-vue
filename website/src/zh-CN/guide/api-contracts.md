@@ -129,3 +129,9 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 ## Progress 的格式内容
 
 [Progress](../components/progress.md) 的 format prop 保留同步标量返回；复杂 ReactNode 内容映射到同名原生 scoped slot。slot 的 percent 是只读 Ref，在 TSX 中读取 `.value`；slot 优先且仅在信息可见时渲染。没有 default slot、children、status、事件或 ref API。根为 div，仅接受已声明 id、ARIA、data 和 Vue class / CSSProperties style；role 与数值 ARIA 由组件所有。NaN 与无穷输入、数字动画取消及 SVG 节点复用差异以组件页面为准。ProgressMotion 的对象/函数分支仅提供 opaque 真值迁移，不保留上游 MotionObject 已知键校验，且与上游存在双向类型差异；建议使用 boolean，确切签名及反例见组件页面。
+
+## Tooltip 的显式触发器
+
+[Tooltip](../components/tooltip.md) 的 default scoped slot 提供原生 `triggerRef`、稳定 keyed `getTriggerRef`、`triggerProps` 与 `attrs`，由调用方绑定当前 document/realm 的实际 HTMLElement；入口 `Element | null` 类型不承诺 SVG、MathML、组件实例或跨环境目标支持。content 的 initialFocusRef 同样由调用方绑定可聚焦 HTML 元素，具体边界见组件页。组件不检查子项或添加默认包装；disabled/loading 元素需显式可接收事件的外层。结构化内容使用 content slot，原始值 content callback 不能返回 VNode、对象或异步结果；arrow slot 拥有自定义箭头。默认 ID 需要显式应用 ARIA scope，也可传 wrapperId。
+
+`trigger="custom"` 按 visible 显示，其余模式沿上游自动触发，visible 更新作为外部命令。condition 仅拦截自动显示入口。属性、回调通知、ARIA 覆盖顺序和公开 ref 返回值以组件页的完整契约为准。

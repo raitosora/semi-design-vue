@@ -16,6 +16,7 @@ import {
   Skeleton,
   Highlight,
   Progress,
+  Tooltip,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -28,6 +29,7 @@ import {
   useConfigContext,
   type ConfigContextSource,
 } from "semi-ui-vue";
+import type { TooltipTriggerScope } from "semi-ui-vue/tooltip";
 import type { ProgressSlots } from "semi-ui-vue/progress";
 import enUS from "semi-ui-vue/locale/source/en_US";
 import zhCN from "semi-ui-vue/locale/source/zh_CN";
@@ -47,6 +49,7 @@ import "semi-ui-vue/styles/components/layout.css";
 import "semi-ui-vue/styles/components/skeleton.css";
 import "semi-ui-vue/styles/components/highlight.css";
 import "semi-ui-vue/styles/components/progress.css";
+import "semi-ui-vue/styles/components/tooltip.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -58,6 +61,8 @@ const layoutSiderVisible = ref(true);
 const skeletonLoading = ref(true);
 const highlightText = ref("Before Semi after SEMI.");
 const highlightTag = ref("mark");
+const tooltipVisible = ref(false);
+const tooltipContent = ref("Interop Tooltip content");
 const progressPercent = ref(25);
 const progressType = ref<"line" | "circle">("line");
 const spinning = ref(true);
@@ -195,6 +200,32 @@ const app = createApp({
                 },
               ),
             ],
+          },
+        ),
+        h(
+          Tooltip,
+          {
+            wrapperId: "interop-tooltip-popup",
+            motion: false,
+            trigger: "click",
+            visible: tooltipVisible.value,
+            content: tooltipContent.value,
+            "onUpdate:visible": (value: boolean) =>
+              (tooltipVisible.value = value),
+          },
+          {
+            default: (scope: TooltipTriggerScope) =>
+              h(
+                "button",
+                {
+                  ...scope.attrs,
+                  ...scope.triggerProps,
+                  ref: (value) =>
+                    scope.triggerRef(value instanceof Element ? value : null),
+                  "data-interop-tooltip": "",
+                },
+                "Interop Tooltip trigger",
+              ),
           },
         ),
         h(
@@ -520,6 +551,7 @@ window.interopConsumer = {
     skeletonLoading.value = false;
     highlightText.value = "Updated Semi <b> &amp; +";
     highlightTag.value = "em";
+    tooltipContent.value = "Updated interop Tooltip content";
     progressPercent.value = 42.5;
     progressType.value = "circle";
     iconButtonLabel.value = "Updated";

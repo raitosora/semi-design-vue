@@ -1,6 +1,16 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  rmSync,
+  readFileSync,
+  realpathSync,
+  copyFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { createRequire } from "node:module";
+import { tooltipInlineProfile } from "../../scripts/tooltip-inline-inputs.mjs";
 import { afterEach, describe, expect, it } from "vitest";
 import { validatePackageDirectory } from "../../scripts/package-contracts.mjs";
 
@@ -220,4 +230,116 @@ describe("packed public contracts", () => {
       expect(() => validatePackageDirectory(directory)).toThrow();
     }
   });
+});
+
+function inlineContractFixture() {
+  const directory = fixture({ name: "semi-ui-vue" });
+  const root = new URL("../../", import.meta.url).pathname;
+  const foundation = realpathSync(
+    join(root, "node_modules/@douyinfe/semi-foundation"),
+  );
+  const require = createRequire(join(foundation, "package.json"));
+  const roots = {
+    "@douyinfe/semi-foundation": foundation,
+    "es-toolkit": dirname(require.resolve("es-toolkit/package.json")),
+  };
+  mkdirSync(join(directory, "dist/map-sources"));
+  mkdirSync(join(directory, "dist/licenses"));
+  const sources = tooltipInlineProfile.sources.map((entry) => {
+    const name = entry.sha256 + (entry.path.endsWith(".mjs") ? ".mjs" : ".js");
+    copyFileSync(
+      join(roots[entry.package], entry.path),
+      join(directory, "dist/map-sources", name),
+    );
+    return "map-sources/" + name;
+  });
+  for (const pkg of tooltipInlineProfile.packages)
+    copyFileSync(
+      join(root, "third-party-licenses", pkg.license),
+      join(directory, "dist/licenses", pkg.license),
+    );
+  writeFileSync(
+    join(directory, "dist/index.js.map"),
+    JSON.stringify({ version: 3, sources, names: [], mappings: "" }),
+  );
+  writeFileSync(
+    join(directory, "dist/build-meta.json"),
+    JSON.stringify({
+      package: "semi-ui-vue",
+      format: "es",
+      chunks: [
+        {
+          file: "index.js",
+          modules: tooltipInlineProfile.sources.map((entry) => entry.id),
+          imports: ["vue"],
+          dynamicImports: [],
+        },
+      ],
+    }),
+  );
+  writeFileSync(
+    join(directory, "dist/tooltip-inline-provenance.json"),
+    JSON.stringify({
+      schema: 1,
+      family: "tooltip",
+      foundationPatchSha256: tooltipInlineProfile.foundationPatchSha256,
+      packages: tooltipInlineProfile.packages,
+      sources: tooltipInlineProfile.sources,
+    }),
+  );
+  return directory;
+}
+it("allows only the exact pinned Tooltip graph with retained map and license evidence", () => {
+  const directory = inlineContractFixture();
+  expect(validatePackageDirectory(directory).name).toBe("semi-ui-vue");
+  const path = join(directory, "dist/build-meta.json");
+  const graph = JSON.parse(readFileSync(path, "utf8"));
+  graph.chunks[0].modules.push(
+    "npm:@douyinfe/semi-foundation/lib/es/button/foundation.js",
+  );
+  writeFileSync(path, JSON.stringify(graph));
+  expect(() => validatePackageDirectory(directory)).toThrow(/fixed closure/);
+});
+it("rejects package contracts whose inline map omits a pinned source", () => {
+  const directory = inlineContractFixture();
+  const path = join(directory, "dist/index.js.map");
+  const map = JSON.parse(readFileSync(path, "utf8"));
+  map.sources.pop();
+  writeFileSync(path, JSON.stringify(map));
+  expect(() => validatePackageDirectory(directory)).toThrow(/snapshot absent/);
+});
+it.each(["missing map", "missing sources"])(
+  "rejects incomplete Tooltip contract %s",
+  (mode) => {
+    const directory = inlineContractFixture();
+    const path = join(directory, "dist/index.js.map");
+    if (mode === "missing map") rmSync(path);
+    else writeFileSync(path, JSON.stringify({ version: 3 }));
+    expect(() => validatePackageDirectory(directory)).toThrow(
+      /snapshot absent/,
+    );
+  },
+);
+it("rejects retained inline map inputs after graph/provenance/license claims are erased", () => {
+  const directory = inlineContractFixture();
+  writeFileSync(
+    join(directory, "dist/build-meta.json"),
+    JSON.stringify({
+      package: "semi-ui-vue",
+      format: "es",
+      chunks: [
+        {
+          file: "index.js",
+          modules: ["src/index.ts"],
+          imports: ["vue"],
+          dynamicImports: [],
+        },
+      ],
+    }),
+  );
+  rmSync(join(directory, "dist/tooltip-inline-provenance.json"));
+  rmSync(join(directory, "dist/licenses"), { recursive: true });
+  expect(() => validatePackageDirectory(directory)).toThrow(
+    /Unexpected Tooltip inline snapshot/,
+  );
 });

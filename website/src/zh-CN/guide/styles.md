@@ -9,7 +9,7 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Input / Tooltip 样式入口；后两者供原生 HTML 验证夹具使用，不代表公共组件已实现。
+UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
@@ -71,3 +71,5 @@ Skeleton 使用固定上游 Skeleton SCSS 的占位尺寸、主题颜色及纯 C
 Highlight 提供 `styles/components/highlight` 及 `.css`/`.scss` 按需入口，并包含于完整样式。固定 Foundation 的 highlight.scss/variables.scss 定义 `semi-highlight-tag` 的颜色、背景与 600 字重；无私有 RTL 规则。`vite-plugin-semi-theme` 的 `styles: ["highlight"]` 与 `$semi-prefix` 可配置选择器前缀，CSS token 名仍为 `--semi-color-highlight` / `--semi-color-highlight-bg`。组件类名保持 semi，定制前缀需调用方确保匹配。
 
 Progress 复用固定 Foundation 的 progress.scss、variables.scss 和 rtl.scss 闭包，提供 `styles/components/progress` 与 `.css`/`.scss` 按需入口，并包含于聚合样式。线形/纵向宽高过渡、环形描边过渡和不确定循环动画由 CSS 控制；组件 motion 只控制数字动画，样式没有内建 reduced-motion 覆盖。主题色与 RTL 来自既有 tokens 和祖先方向；`styles: ["progress"]` 支持主题插件选择与定制前缀，组件默认类名仍使用 semi。详见 [Progress](../components/progress.md)。
+
+Tooltip 复用固定 tooltip.scss、variables.scss、arrow.scss、animation.scss、rtl.scss，按需加载 `styles/components/tooltip.css` 或 `.scss`。坐标位于 portal-inner，用户 className/style 位于 tooltip wrapper，箭头偏移使用固定 CSS 变量。prefixCls 仅改变对应运行时类，内容与动画仍沿用固定 semi-tooltip 类；自定义前缀需匹配这些规则。详见 [Tooltip](../components/tooltip.md)。

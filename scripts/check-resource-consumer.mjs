@@ -509,6 +509,17 @@ function checkGraph(mode = "vapor") {
     /semi-ui-vue\/dist\/progress-[^/\n]+\.js/.test(modules),
     "Progress implementation missing from consumer graph",
   );
+  assert(
+    /semi-ui-vue\/dist\/tooltip-[^/\n]+\.js/.test(modules),
+    "Tooltip implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/tooltip\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve Tooltip subpath",
+    );
   if (mode === "vapor")
     assert(
       graph.compilationInputs.some((id) =>
@@ -711,6 +722,85 @@ function checkProgressTreeShaking() {
         assert(
           !source.includes("semi-progress-track"),
           "Unused Progress marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkTooltipTreeShaking() {
+  for (const mode of ["tooltip-only", "tooltip-root-only", "tooltip-unused"]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.tooltip.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasTooltip = /semi-ui-vue\/dist\/tooltip-[^/\n]+\.js/.test(modules);
+    assert(
+      hasTooltip === (mode !== "tooltip-unused"),
+      `${mode}: Tooltip implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "tooltip-only"
+        ? "/semi-ui-vue/dist/components/tooltip/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "tooltip-unused")
+        assert(
+          !source.includes("semi-tooltip-wrapper"),
+          "Unused Tooltip marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -1010,6 +1100,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkTooltip())) ===
+        "tooltip consumer passed",
+      "Packed Tooltip behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkHighlight())) ===
         "highlight consumer passed",
       "Packed Highlight behavior failed",
@@ -1293,6 +1388,18 @@ async function interopBrowserCheck(url) {
           .count()) === 1,
       "Interop Progress initial geometry and format slot failed",
     );
+    await page.locator("[data-interop-tooltip]").click();
+    await page.waitForFunction(() =>
+      document
+        .getElementById("interop-tooltip-popup")
+        ?.textContent?.includes("Interop Tooltip content"),
+    );
+    assert(
+      (await page
+        .locator("[data-interop-tooltip]")
+        .getAttribute("data-popupid")) === "interop-tooltip-popup",
+      "Interop Tooltip popup relationship failed",
+    );
     assert(
       (await page.locator("[data-interop-highlight]").textContent()) ===
         "Before Semi after SEMI." &&
@@ -1388,6 +1495,12 @@ async function interopBrowserCheck(url) {
     );
     await page.evaluate(() => window.interopConsumer.update());
     assert(
+      (await page.locator("#interop-tooltip-popup").textContent()).includes(
+        "Updated interop Tooltip content",
+      ),
+      "Interop Tooltip dynamic content before outside click failed",
+    );
+    assert(
       (await page
         .locator('.interop-icon-button [data-icon="spin"]')
         .count()) === 0 &&
@@ -1400,6 +1513,13 @@ async function interopBrowserCheck(url) {
       "Interop IconButton reactive loading/slots failed",
     );
     await page.locator(".interop-icon-button").click();
+    await page.waitForFunction(
+      () => !document.getElementById("interop-tooltip-popup"),
+    );
+    assert(
+      (await page.locator("#interop-tooltip-popup").count()) === 0,
+      "Interop Tooltip did not close after native outside click",
+    );
     assert(
       (await page.locator(".interop-button-clicks").textContent()) === "3",
       "Interop IconButton native click duplicated",
@@ -1520,6 +1640,18 @@ async function interopBrowserCheck(url) {
           "72",
       "Interop Progress update and circle geometry failed",
     );
+    await page.locator("[data-interop-tooltip]").click();
+    await page.waitForFunction(() =>
+      document
+        .getElementById("interop-tooltip-popup")
+        ?.textContent?.includes("Updated interop Tooltip content"),
+    );
+    assert(
+      (await page.locator("#interop-tooltip-popup").textContent()).includes(
+        "Updated interop Tooltip content",
+      ),
+      "Interop Tooltip dynamic content failed",
+    );
     assert(
       (await page.locator("[data-interop-highlight]").textContent()) ===
         "Updated Semi <b> &amp; +" &&
@@ -1592,6 +1724,10 @@ async function interopBrowserCheck(url) {
       "Interop custom Icon svg slot did not react to fill values",
     );
     await page.evaluate(() => window.interopConsumer.unmount());
+    assert(
+      (await page.locator("#interop-tooltip-popup").count()) === 0,
+      "Interop Tooltip teardown left portal DOM",
+    );
     assert(
       (await page.locator(".interop-resources").count()) === 0,
       "Interop resource unmount failed",
@@ -1696,6 +1832,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:progress.tsx"),
     "Progress fixture was not compiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:tooltip.tsx"),
+    "Tooltip fixture was not compiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -1720,12 +1860,17 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "tooltip-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
     "interop.html",
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.tooltip.config.ts",
+    "tooltip-only.ts",
+    "tooltip-root-only.ts",
+    "tooltip-unused.ts",
     "progress-only.ts",
     "progress-root-only.ts",
     "progress-unused.ts",
@@ -1763,6 +1908,10 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "tooltip-browser.ts",
+          "tooltip-only.ts",
+          "tooltip-root-only.ts",
+          "tooltip-unused.ts",
           "progress-only.ts",
           "progress-root-only.ts",
           "progress-unused.ts",
@@ -1846,6 +1995,7 @@ async function run() {
   checkGraph("interop");
   checkHighlightTreeShaking();
   checkProgressTreeShaking();
+  checkTooltipTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);
   checkIndependentCompilerInstall(installation.evidenceDirectory);

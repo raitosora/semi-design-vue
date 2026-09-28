@@ -13,6 +13,8 @@
     "highlight-positive.tsx",
     "highlight-negative.tsx",
     "progress-positive.tsx",
-    "progress-negative.tsx"
+    "progress-negative.tsx",
+    "tooltip-positive.tsx",
+    "tooltip-negative.tsx"
   ]
 }

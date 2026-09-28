@@ -9,6 +9,14 @@ import {
 } from "node:fs/promises";
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
+
+import {
+  tooltipInlineSource,
+  tooltipInlineGraph,
+  tooltipInlineRecord,
+  verifyTooltipInline,
+} from "./tooltip-inline-inputs.mjs";
 
 const compilerLicense = "vue-jsx-3.3.0-rc.2-MIT.txt";
 const compilerVersion = "3.3.0-rc.2";
@@ -39,12 +47,14 @@ async function files(directory) {
 
 function sourceExtension(source) {
   const extension = extname(source);
-  return [".ts", ".tsx", ".mts", ".cts", ".js", ".jsx"].includes(extension)
+  return [".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs"].includes(
+    extension,
+  )
     ? extension
     : ".ts";
 }
 
-async function sourceFor({ map, mapPath, index, packageDirectory }) {
+async function sourceFor({ root, map, mapPath, index, packageDirectory }) {
   const source = map.sources?.[index];
   if (typeof source !== "string" || !source) {
     throw new Error(`${mapPath}: source ${index} is missing.`);
@@ -70,6 +80,18 @@ async function sourceFor({ map, mapPath, index, packageDirectory }) {
     throw new Error(
       `${mapPath}: source ${source} is not an approved package source.`,
     );
+  }
+  if (toPosix(source).includes("/node_modules/")) {
+    const content = map.sourcesContent?.[index];
+    if (typeof content !== "string")
+      throw new Error("Tooltip inline source content missing");
+    const entry = tooltipInlineSource({ root, resolved, content });
+    return {
+      content,
+      kind: "tooltip-inline",
+      source: entry.path,
+      id: entry.id,
+    };
   }
   if (!helperPattern.test(toPosix(source))) {
     throw new Error(
@@ -103,6 +125,47 @@ async function writeSnapshot({ content, extension, output }) {
   return path;
 }
 
+async function rewriteInlineRegionComments(path, packageDirectory, snapshots) {
+  const source = await readFile(path, "utf8");
+  const tree = ts.createSourceFile(
+    path,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const comments = new Map();
+  const visit = (node) => {
+    for (const comment of [
+      ...(ts.getLeadingCommentRanges(source, node.pos) ?? []),
+      ...(ts.getTrailingCommentRanges(source, node.end) ?? []),
+    ])
+      comments.set(comment.pos, comment);
+    ts.forEachChild(node, visit);
+  };
+  visit(tree);
+  const edits = [...comments.values()].flatMap((comment) => {
+    const match = /^\/\/#region (.+)$/.exec(
+      source.slice(comment.pos, comment.end),
+    );
+    if (!match) return [];
+    const snapshot = snapshots.get(resolve(packageDirectory, match[1]));
+    if (!snapshot) return [];
+    return [
+      {
+        ...comment,
+        text: `//#region ${toPosix(relative(dirname(path), snapshot))}`,
+      },
+    ];
+  });
+  if (!edits.length) return;
+  let rewritten = source;
+  for (const edit of edits.sort((a, b) => b.pos - a.pos))
+    rewritten =
+      rewritten.slice(0, edit.pos) + edit.text + rewritten.slice(edit.end);
+  await writeFile(path, rewritten);
+}
+
 export async function finalizePackage({ root, packageDirectory }) {
   const dist = join(packageDirectory, "dist");
   const snapshots = join(dist, "map-sources");
@@ -112,6 +175,11 @@ export async function finalizePackage({ root, packageDirectory }) {
   if (!maps.length)
     throw new Error(`${packageDirectory}: no source maps were emitted.`);
   const helpers = new Map();
+  const inlineSources = new Set();
+  const buildMeta = JSON.parse(
+    await readFile(join(dist, "build-meta.json"), "utf8"),
+  );
+  const inlineIds = tooltipInlineGraph(buildMeta);
   for (const mapPath of maps) {
     const map = JSON.parse(await readFile(mapPath, "utf8"));
     if (
@@ -122,21 +190,55 @@ export async function finalizePackage({ root, packageDirectory }) {
       throw new Error(`${mapPath}: invalid or empty source map.`);
     }
     const rewritten = [];
+    const inlineSnapshots = new Map();
     for (let index = 0; index < map.sources.length; index += 1) {
-      const input = await sourceFor({ map, mapPath, index, packageDirectory });
+      const input = await sourceFor({
+        root,
+        map,
+        mapPath,
+        index,
+        packageDirectory,
+      });
       const snapshot = await writeSnapshot({
         content: input.content,
         extension: sourceExtension(input.source),
         output: snapshots,
       });
       rewritten.push(toPosix(relative(dirname(mapPath), snapshot)));
+      if (input.kind === "tooltip-inline") {
+        inlineSources.add(input.id);
+        inlineSnapshots.set(
+          resolve(dirname(mapPath), map.sourceRoot ?? "", map.sources[index]),
+          snapshot,
+        );
+      }
       if (input.kind === "vue-jsx")
         helpers.set(input.source, sha256(input.content));
     }
+    if (inlineSnapshots.size)
+      await rewriteInlineRegionComments(
+        mapPath.slice(0, -4),
+        packageDirectory,
+        inlineSnapshots,
+      );
     map.sources = rewritten;
     delete map.sourceRoot;
     delete map.sourcesContent;
     await writeFile(mapPath, JSON.stringify(map));
+  }
+  if (inlineIds.length || inlineSources.size) {
+    const record = tooltipInlineRecord(inlineSources);
+    const licenses = join(dist, "licenses");
+    await mkdir(licenses, { recursive: true });
+    for (const pkg of record.packages)
+      await copyFile(
+        join(root, "third-party-licenses", pkg.license),
+        join(licenses, pkg.license),
+      );
+    await writeFile(
+      join(dist, "tooltip-inline-provenance.json"),
+      JSON.stringify(record, null, 2) + "\n",
+    );
   }
   if (helpers.size) {
     const licenses = join(dist, "licenses");
@@ -237,6 +339,12 @@ export async function verifyPackageMaps({ root, packageDirectory }) {
       `${packageDirectory}: dist/map-sources contains an unreferenced snapshot.`,
     );
   }
+  verifyTooltipInline({
+    root,
+    directory: packageDirectory,
+    graph: buildMeta,
+    referencedSnapshots,
+  });
   const provenance = join(dist, "compiler-provenance.json");
   let record;
   try {

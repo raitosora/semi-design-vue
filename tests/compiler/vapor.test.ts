@@ -43,6 +43,8 @@ test("source type fixtures resolve transitive workspace imports without built de
       !/\/dist(?:\/|$)/.test(path) && ts.sys.directoryExists(path),
   };
   const imports = {
+    "semi-ui-vue/tooltip":
+      "packages/semi-ui-vue/src/components/tooltip/index.ts",
     "semi-ui-vue/progress":
       "packages/semi-ui-vue/src/components/progress/index.ts",
     "semi-ui-vue/highlight":
@@ -408,4 +410,16 @@ test("Progress compiles native geometry and owned format slots without VNodes or
   expect(result?.code).not.toMatch(
     /\b(?:createVNode|createElementVNode|createBlock|cloneVNode|h)\(|innerHTML|insertAdjacentHTML/,
   );
+});
+
+test("Tooltip compiles owned trigger/content slots and its retained portal as native Vapor", async () => {
+  const result = await server.transformRequest(
+    "/packages/semi-ui-vue/src/components/tooltip/Tooltip.tsx",
+  );
+  expect(result?.code).toMatch(/createSlot/);
+  expect(result?.code).toMatch(/(?:renderEffect|setClass|setStyle)\(/);
+  expect(result?.code).not.toMatch(
+    /\b(?:createVNode|createElementVNode|createBlock|createElementBlock|cloneVNode|h)\(|innerHTML|insertAdjacentHTML/,
+  );
+  expect(result?.code).not.toMatch(/\bdefineExpose\(/);
 });

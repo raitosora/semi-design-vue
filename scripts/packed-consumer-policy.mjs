@@ -1,4 +1,18 @@
 import { isAbsolute, relative } from "node:path";
+import { readFileSync } from "node:fs";
+
+const tooltipInlineProfile = JSON.parse(
+  readFileSync(
+    new URL("./tooltip-inline-inputs.json", import.meta.url),
+    "utf8",
+  ),
+);
+const tooltipInlineSnapshots = new Set(
+  tooltipInlineProfile.sources.map(
+    ({ path, sha256 }) =>
+      `package/dist/map-sources/${sha256}${path.endsWith(".mjs") ? ".mjs" : ".js"}`,
+  ),
+);
 
 const contains = (parent, child) => {
   const path = relative(parent, child);
@@ -67,7 +81,9 @@ export function assertPackFiles(files) {
         /^package\/dist\/(?:(?:resources|styles)\/)?licenses\/[^/]+\.txt$/.test(
           path,
         ) ||
-        debugSnapshot
+        debugSnapshot ||
+        tooltipInlineSnapshots.has(path) ||
+        path === "package/dist/tooltip-inline-provenance.json"
       ) ||
       path
         .split("/")
