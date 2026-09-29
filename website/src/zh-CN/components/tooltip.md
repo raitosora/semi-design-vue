@@ -1,6 +1,6 @@
 # Tooltip 文字提示
 
-Tooltip 在悬停、聚焦、点击或右键时提供补充说明。提示不应包含理解按钮所必需的唯一标签；触发元素仍需可见文字或无障碍名称。它是公开 Tooltip 组件，不表示 Popover 等其他浮层组件已经实现。
+Tooltip 在悬停、聚焦、点击或右键时提供补充说明。提示不应包含理解按钮所必需的唯一标签；触发元素仍需可见文字或无障碍名称。它是公开 Tooltip 组件；结构化气泡的专用样式与默认策略见 [Popover](./popover.md)。
 
 ## 导入与样式
 
@@ -119,7 +119,7 @@ Tooltip **没有默认包装根**。default slot 接收 scope，将 `scope.trigg
 | `stopPropagation`      | `boolean`                                                                                        | 无（文档约定 false）                               | 弹层 click/mousedown/focus/blur 阻止冒泡，不关闭同节点用户事件                          |
 | `role`                 | `string`                                                                                         | `'tooltip'`                                        | tooltip 描述关联；dialog 可使用同外壳 ARIA，不表示 Popover 交付                         |
 | `closeOnEsc`           | `boolean`                                                                                        | `false`                                            | 启用 Escape 通知/自动触发模式关闭                                                       |
-| `guardFocus`           | `boolean`                                                                                        | `false`                                            | 可选焦点约束，不默认开启                                                                |
+| `guardFocus`           | `boolean`                                                                                        | `false`                                            | 可选 Tab 与程序式外部焦点圈定，不默认开启                                               |
 | `returnFocusOnClose`   | `boolean`                                                                                        | `false`                                            | 按关闭语义恢复可用目标焦点；custom 由业务协调                                           |
 | `disableArrowKeyDown`  | `boolean`                                                                                        | `false`                                            | 不使用目标上下箭头转移焦点                                                              |
 | `disableFocusListener` | `boolean`                                                                                        | `false`                                            | 禁用 hover 的 focus/blur 监听                                                           |
@@ -148,13 +148,15 @@ Tooltip **没有默认包装根**。default slot 接收 scope，将 `scope.trigg
 | `rePosition()`   | 无                                       | `Record<string, string \| number>`；Foundation 当前定位结果；没有可测目标时不保证有位置                                  |
 | `getPopupId()`   | 无                                       | `string`；当前弹层 ID，用于关联检查                                                                                      |
 
+`focusTrigger()` 遵循非 custom 且 `returnFocusOnClose=true` 的回焦规则；符合条件时，即使浮层已打开且 guardFocus 开启，也可将焦点移回当前可用的原生触发器，不需要先关闭浮层。显式命令只暂挂自身浮层的焦点圈定，在该原生触发器保持焦点期间保留这一例外；同一目标与浮层的 content 或 rePosKey 更新不会取消它。焦点离开触发器、trigger/guardFocus/returnFocusOnClose 变化、目标实际移除、浮层替换或失效、关闭或卸载都会结束例外，仍活动的自身浮层恢复当前有效的焦点圈定设置。它不能越过更高的嵌套浮层夺焦；disabled、不可聚焦或已断开的目标仍受真实原生能力限制。custom 或 returnFocusOnClose=false 时不执行回焦。
+
 缺省 ID 使用既有[DOM 工具](../guide/dom.md)的 `provideAriaIdScope`：在应用根 setup 中提供明确、不同应用不重复的 prefix；显式 wrapperId 不需要该 scope。示例全部提供独立 ID。`wrapperId=""` 保留空串，不会自动申请 ID；调用方应提供有效、唯一的非空 ID。动态 ID 同样必须保持关联有效且不与其他组件重复，不支持 SSR ID 水合承诺。普通 `Ref<TooltipInstance | null>` 可使用公开方法；JSX ref 属性 shape 的工具链限制见[兼容边界](../guide/compatibility.md)，不通过 `$el` 获取原生节点。
 
 `class/className/style` 明确属于弹层；class 支持 Vue 的字符串、数组和对象形式，并与 className、内部 class 合并，不包含在 scope.attrs 中。调用方传 `id/data-*/aria-*/原生事件` 放到 scope.attrs，并由调用方选定目标。原生目标 class/style 请直接在 default slot 设置；不要用 Tooltip 的弹层 style 代替目标样式。多根 attrs 不自动复制全部根，避免重复 id。自定义 ARIA 应在内部 triggerProps 后显式设置，用户负责保持关联一致。
 
 ## 无障碍、焦点与清理
 
-默认 role=tooltip，触发器 `aria-describedby` 指向 wrapperId；dialog 模式使用 expanded/haspopup/controls。`triggerProps` 提供 `tabIndex: 0`，显式展开后 span 也进入顺序键盘导航；业务需要不同顺序时在 spread 后设置 tabindex。弹层 inner 为 tabindex=-1，默认箭头 aria-hidden；不能为 disabled button 恢复点击能力。上下箭头可将焦点转向已插入内容；关闭与返回焦点只恢复仍 connected、可见、可用的目标。Tooltip 默认不启用 Escape 关闭、焦点圈定或焦点恢复，按具体内容需求配置。Escape 交给共享浮层顶层仲裁：默认 closeOnEsc=false 时不 preventDefault 或 stopPropagation；启用后，目标业务监听器提前 preventDefault 会阻止共享层关闭，stopPropagation 会使 document 无法收到该事件并保留弹层。这不同于直接执行上游 trigger keydown 的默认 Escape 阻止行为。custom 模式仍只通知。
+默认 role=tooltip，触发器 `aria-describedby` 指向 wrapperId；dialog 模式使用 expanded/haspopup/controls。`triggerProps` 提供 `tabIndex: 0`，显式展开后 span 也进入顺序键盘导航；业务需要不同顺序时在 spread 后设置 tabindex。弹层 inner 为 tabindex=-1，默认箭头 aria-hidden；不能为 disabled button 恢复点击能力。上下箭头可将焦点转向已插入内容；关闭与返回焦点只恢复仍 connected、可见、可用的目标。Tooltip 默认不启用 Escape 关闭、焦点圈定或焦点恢复，按具体内容需求配置。启用 guardFocus 后，G11 共享浮层同时约束 Tab/Shift+Tab 和程序式外部焦点；固定上游 Foundation 只处理 Tab 圈定。内容失焦等待一个微任务确认圈定后的焦点仍是否属于当前浮层或触发目标；归属保留时不关闭，已卸载或浮层已失效时不执行旧失焦操作。这避免 mouseLeaveDelay=0 的同步失焦与圈定回焦竞态；guardFocus=false 保留零延迟同步失焦关闭。Escape 交给共享浮层顶层仲裁：默认 closeOnEsc=false 时不 preventDefault 或 stopPropagation；启用后，目标业务监听器提前 preventDefault 会阻止共享层关闭，stopPropagation 会使 document 无法收到该事件并保留弹层。这不同于直接执行上游 trigger keydown 的默认 Escape 阻止行为。custom 模式仍只通知。
 
 `visible` 表示请求，退出期间 DOM 仍保留。keepDOM 隐藏层不得继续接收焦点/点外仲裁；正常退出完成才 afterClose。快速开关使旧完成失效，卸载立即释放 timer/observer/RAF/监听与 Portal，不伪造 afterClose。滚动容器和影子根只使用浏览器公开的根与事件路径，不推断 closed shadow/slot 内部。
 
@@ -163,3 +165,7 @@ Tooltip **没有默认包装根**。default slot 接收 scope，将 `scope.trigg
 真实文档开发/生产检查位于 `website/tests/tooltip.spec.ts`，纯 Vapor 开发/生产位于 `tests/e2e/tooltip.spec.ts`；覆盖触发、ARIA、全部方向、真实几何、动态内容与容器、禁用、多根、嵌套、明暗/RTL/窄屏和溢出。截图用于人工查看，不声明完整像素一致。文档 ClientOnly 不代表组件 SSR/水合支持，普通 Vue interop 与纯 Vapor 消费证据分开。完整限制见[兼容边界](../guide/compatibility.md)。
 
 契约与样式固定来自 Semi Design 2.103.0 提交 `8bed560dd3f36579f85b7a522f19762f2bace756` 的 Tooltip/箭头源码、完整中文文档及 Tooltip Foundation/SCSS。复用已审阅 Foundation 的定位与状态逻辑，连接[Foundation 桥接](../guide/foundation.md)、[浮层容器](../guide/overlay.md)和[动画生命周期](../guide/animation.md)。Vapor 显式原生 ref/slot、primitive render callback、arrow slot、pointerdown 点外和快速反转清理是已说明的适配差异；不克隆 VNode、不检查 slot 内容、不扩展到其他组件。[上游对齐与完成度](../guide/upstream-matrix.md)登记公共组件、类型及接受状态。
+
+### 内容回调错误
+
+同步 primitive content 回调抛错或返回不支持的对象/Promise 时，先使定位、延迟与浮层资源失效并释放，再将错误交给当前 Vue 应用的错误处理器。不会保留已打开的旧 popup 继续工作；rich 内容使用 owned content slot。下面基础例子中的函数内容支持响应式更新，错误和清理边界由真实源码浏览器回归验证，示例不抑制运行错误。

@@ -17,6 +17,8 @@ import {
   Highlight,
   Progress,
   Tooltip,
+  Popover,
+  provideAriaIdScope,
   Button,
   ButtonGroup,
   SplitButtonGroup,
@@ -29,6 +31,7 @@ import {
   useConfigContext,
   type ConfigContextSource,
 } from "semi-ui-vue";
+import type { PopoverTriggerScope } from "semi-ui-vue/popover";
 import type { TooltipTriggerScope } from "semi-ui-vue/tooltip";
 import type { ProgressSlots } from "semi-ui-vue/progress";
 import enUS from "semi-ui-vue/locale/source/en_US";
@@ -50,6 +53,7 @@ import "semi-ui-vue/styles/components/skeleton.css";
 import "semi-ui-vue/styles/components/highlight.css";
 import "semi-ui-vue/styles/components/progress.css";
 import "semi-ui-vue/styles/components/tooltip.css";
+import "semi-ui-vue/styles/components/popover.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -63,6 +67,8 @@ const highlightText = ref("Before Semi after SEMI.");
 const highlightTag = ref("mark");
 const tooltipVisible = ref(false);
 const tooltipContent = ref("Interop Tooltip content");
+const popoverVisible = ref(false);
+const popoverContent = ref("Interop Popover content");
 const progressPercent = ref(25);
 const progressType = ref<"line" | "circle">("line");
 const spinning = ref(true);
@@ -108,6 +114,7 @@ const ConfigHookReader = {
 };
 const app = createApp({
   setup() {
+    provideAriaIdScope("interop-resource-consumer");
     return () =>
       h("section", { class: "interop-resources" }, [
         h(
@@ -225,6 +232,37 @@ const app = createApp({
                   "data-interop-tooltip": "",
                 },
                 "Interop Tooltip trigger",
+              ),
+          },
+        ),
+        h(
+          Popover,
+          {
+            motion: false,
+            trigger: "click",
+            visible: popoverVisible.value,
+            content: popoverContent.value,
+            "onUpdate:visible": (value: boolean) =>
+              (popoverVisible.value = value),
+          },
+          {
+            content: () =>
+              h(
+                "button",
+                { "data-interop-popover-content": "" },
+                popoverContent.value,
+              ),
+            default: (scope: PopoverTriggerScope) =>
+              h(
+                "button",
+                {
+                  ...scope.attrs,
+                  ...scope.triggerProps,
+                  ref: (value) =>
+                    scope.triggerRef(value instanceof Element ? value : null),
+                  "data-interop-popover": "",
+                },
+                "Interop Popover trigger",
               ),
           },
         ),
@@ -552,6 +590,7 @@ window.interopConsumer = {
     highlightText.value = "Updated Semi <b> &amp; +";
     highlightTag.value = "em";
     tooltipContent.value = "Updated interop Tooltip content";
+    popoverContent.value = "Updated interop Popover content";
     progressPercent.value = 42.5;
     progressType.value = "circle";
     iconButtonLabel.value = "Updated";

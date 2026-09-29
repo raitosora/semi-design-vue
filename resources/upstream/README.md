@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress and tooltip. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip and popover. All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -197,3 +197,30 @@ policy remain unchanged. There is no automatic child inspection, SVG/MathML or
 foreign-realm trigger support, async rich callback, component SSR/hydration or
 CJS acceptance. The independent compiler installation peer constraint remains
 separate from precompiled browser and plain declaration consumers.
+
+The `popover` record accepts the fixed Popover wrapper contract over the same
+Tooltip Foundation, G11 overlay/event resources and G12 motion lifecycle. It
+retains Popover defaults, card/arrow structure, roles for each trigger,
+visibility rules and notification behavior. Native trigger refs and owned
+content slots replace React child cloning. Synchronous primitive content
+callbacks retain the Tooltip adaptation; rich content uses the content slot.
+The instance exposes only `focusTrigger`; no title/footer API, public Arrow
+component or extra public family is introduced. Arrow fill defaults apply only
+to undefined; runtime null clears inline fill without extending the public type.
+An explicit supported `focusTrigger` call can focus its connected native trigger
+while its own guarded popup remains open. Its temporary focus exception ends
+on focus departure or relevant option, root, layer, closure or disposal changes;
+unrelated content/reposition updates preserve it. Custom and returnFocusOnClose=false
+retain the fixed Foundation no-op, and higher nested focus ownership is
+not bypassed. Guarded zero-delay blur settles after G11 focus redirection while
+unguarded blur retains the Foundation timing. Existing Tooltip Escape,
+hover clickToHide and focus reentry cancellation regressions remain covered.
+Standalone Popover styles reuse only the pinned Tooltip motion keyframes and
+two runtime motion classes, with explicit source adaptation metadata; they do
+not fall back to the aggregate or full Tooltip visual stylesheet. Strict
+source/declarations, numeric geometry, live Chinese examples, pure Vapor and
+separate interop, resource teardown and four actual tarball consumers bind the
+recorded browser contract. The existing production closure of eighteen sources,
+two MIT licenses, Foundation patch, HTMLElement, current document and realm boundary
+and strict compiler peer constraint are unchanged. No publication, component
+SSR/hydration, CJS, full pixel, other browser or device acceptance is implied.

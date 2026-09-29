@@ -213,7 +213,7 @@ const resources = {
     },
     iconSources: iconStyleSources,
     scope:
-      "Registered base, Input and Tooltip CSS/SCSS plus theme tokens/mixins; Icon CSS comes only from the fixed semi-icons styles and fixed theme variables.",
+      "Registered base, Input, Tooltip and Popover CSS/SCSS plus theme tokens/mixins; Icon CSS comes only from the fixed semi-icons styles and fixed theme variables.",
     check:
       "pnpm check:style-consumer && pnpm test -- tests/unit/icons-style.test.mjs",
   },
@@ -222,7 +222,8 @@ const resources = {
     sha256: sha256(
       await read("patches/@douyinfe__semi-foundation@2.103.0.patch"),
     ),
-    scope: "Input/Tooltip fixture closures only; not public components",
+    scope:
+      "Input/Tooltip fixture closures; public Tooltip and Popover reuse the existing Tooltip closure",
     check: "pnpm check:foundation-patch && pnpm check:foundation-consumer",
   },
 };

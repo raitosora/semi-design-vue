@@ -197,6 +197,9 @@ await writeFile(
           "semi-ui-vue/progress": [
             "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
           ],
+          "semi-ui-vue/popover": [
+            "../../packages/semi-ui-vue/dist/components/popover/index.d.ts",
+          ],
           "semi-ui-vue/tooltip": [
             "../../packages/semi-ui-vue/dist/components/tooltip/index.d.ts",
           ],

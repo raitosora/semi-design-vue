@@ -153,12 +153,27 @@ async function browserCheck(directory, mode) {
     await expect(
       page.getByRole("textbox", { name: "Model", exact: true }),
     ).toHaveValue("reset-model");
+    await page.locator("[data-foundation-public-popover]").click();
+    assert(
+      (
+        await page
+          .locator("[data-foundation-public-popover]")
+          .getAttribute("data-popupid")
+      )?.includes("foundation-harness-consumer"),
+      `${mode} Popover explicit ARIA scope was not used`,
+    );
+    await expect(page.locator(".semi-popover-wrapper")).toContainText(
+      "Public packed Popover",
+    );
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     await page.locator("[data-foundation-public-tooltip]").click();
     await expect(page.locator("#foundation-public-tooltip")).toContainText(
       "Public packed Tooltip",
     );
     await page.locator("#changes").click();
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
+    await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const trigger = page.getByRole("button", {
       name: "Foundation tooltip trigger",
     });
@@ -173,6 +188,7 @@ async function browserCheck(directory, mode) {
     await expect(input).toHaveCount(0);
     await expect(page.getByRole("tooltip")).toHaveCount(0);
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
+    await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
     await page.evaluate(() => {
       window.detachedTrigger.dispatchEvent(new MouseEvent("mouseenter"));
