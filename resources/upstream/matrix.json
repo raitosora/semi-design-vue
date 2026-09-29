@@ -2242,7 +2242,7 @@
         },
         "verification": {
           "status": "complete",
-          "reviewId": "popover-popover-focus-teardown-review-20260929",
+          "reviewId": "popover-native-hover-contract-review-20260929",
           "evidenceHashes": {
             "packages/semi-ui-vue/package.json": "72da24cd7b707710fe31ea00bda1109e803530e2039ebec8ba98506d5fb098ee",
             "packages/semi-ui-vue/src/components/popover/Arrow.tsx": "0c86bf3c285e3019a3ce1ba910d249c8255d5302b12f307fe9ea27f1010ba358",
@@ -2266,7 +2266,7 @@
             "scripts/check-types.mjs": "764a58453b66d5f9928c08092cd78ef9be15892088bc52c4560b755e2dddfe6d",
             "scripts/style-inputs.mjs": "726cd9fa4d04b89b6419e5e433b7ac976f7cb45bd69deed616a19589f8e65df9",
             "tests/browser/popover-boundaries.test.tsx": "19406d9f43ae4893b0bf1375524bf4f3998d6c6582f188e186e1d7722461d0d3",
-            "tests/browser/popover-contract.test.tsx": "d776879f4c3c706530eb8b4b9912e7442942cbd7a0ae27aee1c83ccf338bc8c5",
+            "tests/browser/popover-contract.test.tsx": "6ad52d6884121164bcc4291496723c12dfb14840d1c81baf68de06a2128ef5de",
             "tests/browser/popover-events.test.tsx": "188bd834734e0ca786b773223db4fa6759bdec8a80f91065d32a9f78571d7f8e",
             "tests/browser/popover-for.test.tsx": "86e77f775067e234ced80332561bea6a6e73d17b54fbfc4b4d929ea67fb035e5",
             "tests/browser/popover-geometry.test.tsx": "c3c5ef0695bb80bafd733669bb3b51e4f9b2a1173e1264a9a062b5e9468cc1d3",

@@ -1,5 +1,5 @@
 import { page } from "vitest/browser";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import {
   createVaporApp,
   defineVaporComponent,
@@ -272,15 +272,31 @@ test.each(["hover", "focus", "click", "custom", "contextMenu"] as Trigger[])(
         await settle();
       } else if (trigger === "focus") root.blur();
       await settle();
+      if (trigger === "hover") {
+        await page.getByRole("button", { name: "root", exact: true }).hover();
+        await settle();
+        expect(popup()).toBeNull();
+        expect(root.matches(":hover")).toBe(true);
+        // Enabling condition does not synthesize a second native mouseenter.
+        const outside = document.createElement("button");
+        outside.textContent = "outside hover target";
+        outside.style.cssText = "position:fixed;left:200px;top:200px";
+        fixture.host.append(outside);
+        await page.elementLocator(outside).hover();
+        expect(root.matches(":hover")).toBe(false);
+      }
       condition.value = true;
       await settle();
       if (trigger === "hover")
         await page.getByRole("button", { name: "root", exact: true }).hover();
       else activate();
       await settle();
-      expect(popup()?.getAttribute("role")).toBe(
-        trigger === "click" || trigger === "custom" ? "dialog" : "tooltip",
-      );
+      const assertRole = () =>
+        expect(popup()?.getAttribute("role")).toBe(
+          trigger === "click" || trigger === "custom" ? "dialog" : "tooltip",
+        );
+      if (trigger === "hover") await vi.waitFor(assertRole);
+      else assertRole();
       if (["click", "custom", "contextMenu"].includes(trigger)) {
         const event = new PointerEvent("pointerdown", { bubbles: true });
         document.body.dispatchEvent(event);
@@ -289,6 +305,7 @@ test.each(["hover", "focus", "click", "custom", "contextMenu"] as Trigger[])(
         expect(Boolean(popup())).toBe(trigger === "custom");
       }
       expect(changes).toContain(true);
+      if (trigger === "hover") expect(changes).toEqual([true]);
     } finally {
       fixture.dispose();
     }
