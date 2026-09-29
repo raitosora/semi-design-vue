@@ -190,7 +190,17 @@
     "./tooltip": {
       "types": "./dist/components/tooltip/index.d.ts",
       "import": "./dist/components/tooltip/index.js"
-    }
+    },
+    "./popover": {
+      "types": "./dist/components/popover/index.d.ts",
+      "import": "./dist/components/popover/index.js"
+    },
+    "./styles/components/popover": {
+      "sass": "./dist/styles/components/popover.scss",
+      "default": "./dist/styles/components/popover.css"
+    },
+    "./styles/components/popover.css": "./dist/styles/components/popover.css",
+    "./styles/components/popover.scss": "./dist/styles/components/popover.scss"
   },
   "files": [
     "dist",

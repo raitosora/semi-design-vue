@@ -180,6 +180,16 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Tooltip source hash is missing: ${file}`,
     );
+  for (const file of [
+    "popover/popover",
+    "popover/variables",
+    "popover/animation",
+    "popover/rtl",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Popover source hash is missing: ${file}`,
+    );
   for (const file of ["highlight/highlight", "highlight/variables"])
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
@@ -695,6 +705,129 @@ async function tooltipBrowserCheck(url) {
   }
 }
 
+async function popoverBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (["error", "warning"].includes(message.type()))
+        errors.push(message.text());
+    });
+    await page.goto(new URL("popover.html", url).href);
+    const light = {};
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate(
+        (value) => document.body.setAttribute("theme-mode", value),
+        theme,
+      );
+      for (const prefix of ["semi", "consumer", "theme"]) {
+        const style = await page
+          .locator(`[data-popover-style="${prefix}"]`)
+          .evaluate((element) => {
+            const value = getComputedStyle(element);
+            return {
+              opacity: value.opacity,
+              width: value.maxWidth,
+              padding: value.padding,
+              color: value.color,
+              background: value.backgroundColor,
+              fontSize: value.fontSize,
+            };
+          });
+        assert(
+          style.opacity === "1" &&
+            style.fontSize === "14px" &&
+            style.padding === "12px",
+          `${prefix} Popover public CSS geometry failed`,
+        );
+        const title = await page
+          .locator(`[data-popover-style="${prefix}"] .${prefix}-popover-title`)
+          .evaluate((element) => ({
+            padding: getComputedStyle(element).padding,
+            border: getComputedStyle(element).borderBottomWidth,
+          }));
+        assert(
+          title.padding === "8px" && title.border === "1px",
+          `${prefix} Popover title geometry failed`,
+        );
+        const arrow = page.locator(
+          `[data-popover-style="${prefix}"] .${prefix}-popover-icon-arrow`,
+        );
+        assert(
+          (await arrow.getAttribute("width")) === "24" &&
+            (await arrow.getAttribute("height")) === "8",
+          `${prefix} Popover arrow geometry failed`,
+        );
+        assert(
+          (await arrow
+            .locator("path")
+            .nth(1)
+            .evaluate((element) => getComputedStyle(element).fill)) ===
+            style.background,
+          `${prefix} Popover arrow background token failed`,
+        );
+        assert(
+          style.background !== "rgba(0, 0, 0, 0)",
+          `${prefix} Popover background missing`,
+        );
+        for (const [phase, name] of [
+          ["show", "zoomIn"],
+          ["hide", "zoomOut"],
+        ]) {
+          const motion = await page
+            .locator(`[data-popover-style="${prefix}"]`)
+            .evaluate(
+              (element, values) => {
+                const className = `${values.prefix}-tooltip-animation-${values.phase}`;
+                element.classList.add(className);
+                const actual = {
+                  name: getComputedStyle(element).animationName,
+                  duration: getComputedStyle(element).animationDuration,
+                };
+                element.classList.remove(className);
+                return actual;
+              },
+              { prefix, phase },
+            );
+          assert(
+            motion.name === `${prefix}-tooltip-${name}` &&
+              motion.duration === "0.1s",
+            `${prefix} Popover shared ${phase} animation failed`,
+          );
+        }
+        if (theme === "light") light[prefix] = style.background;
+        else
+          assert(
+            style.background !== light[prefix],
+            `${prefix} Popover dark background token did not change`,
+          );
+      }
+    }
+    await page.evaluate(() => (document.documentElement.dir = "rtl"));
+    for (const prefix of ["semi", "consumer", "theme"])
+      assert(
+        (await page
+          .locator(`[data-popover-style="${prefix}"]`)
+          .evaluate((element) => getComputedStyle(element).direction)) ===
+          "rtl",
+        `${prefix} Popover RTL inheritance failed`,
+      );
+    assert(
+      errors.length === 0,
+      `Popover stylesheet browser errors: ${errors.join("; ")}`,
+    );
+    await page.screenshot({
+      path: resolve(root, ".vitest/attachments/style-consumer/popover.png"),
+    });
+  } finally {
+    await browser.close();
+  }
+}
+
 async function withPreview(outDir, check) {
   const port = await unusedPort();
   const preview = spawn(
@@ -784,6 +917,10 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "popover-only.scss",
+    "popover-main.ts",
+    "popover.html",
+    "vite.popover.config.ts",
     "tooltip-only.scss",
     "tooltip-main.ts",
     "tooltip.html",
@@ -892,7 +1029,8 @@ try {
     "Direct Sass with did not customize control height",
   );
   assert(
-    !directCss.includes(".consumer-tooltip"),
+    !directCss.includes(".consumer-tooltip") &&
+      !directCss.includes(".consumer-popover"),
     "Direct public SCSS Input unexpectedly compiled Tooltip",
   );
   execFileSync(
@@ -958,7 +1096,7 @@ try {
     "Plain CSS consumer did not include Input selectors",
   );
   assert(
-    !plainCss.includes(".semi-tooltip"),
+    !plainCss.includes(".semi-tooltip") && !plainCss.includes(".semi-popover"),
     "Plain CSS consumer unexpectedly contains Tooltip selectors",
   );
   assert(
@@ -1026,6 +1164,51 @@ try {
     );
   checkGraph("tooltip-style-graph.json");
   await withPreview("tooltip-dist", tooltipBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.popover.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const popoverCss = files(join(consumer, "popover-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      popoverCss.includes(`.${prefix}-popover-wrapper`) &&
+        popoverCss.includes(`.${prefix}-popover-title`),
+      `${prefix} Popover CSS/SCSS/theme entry missing`,
+    );
+  const popoverGraph = checkGraph("popover-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/popover.css",
+    "/popover-only.scss",
+    "virtual:semi-theme.scss",
+  ])
+    assert(
+      popoverGraph.modules.some((id) => id.includes(fragment)),
+      `Popover style public entry missing from isolated graph: ${fragment}`,
+    );
+  assert(
+    !popoverGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Popover component-only probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:tooltip-(?!animation-(?:show|hide)\b)|button|input|spin|space|row|progress)/.test(
+      popoverCss,
+    ),
+    "Popover component-only CSS retained another public component",
+  );
+  await withPreview("popover-dist", popoverBrowserCheck);
 
   execFileSync(
     process.execPath,
@@ -1053,7 +1236,7 @@ try {
     "SCSS custom-prefix Input selector is missing from the production bundle",
   );
   assert(
-    !css.includes(".semi-tooltip"),
+    !css.includes(".semi-tooltip") && !css.includes(".semi-popover"),
     "Input-only consumer unexpectedly contains Tooltip CSS",
   );
   assert(

@@ -1,5 +1,13 @@
 import { defineVaporComponent, ref } from "vue";
-import { Col, Layout, Row, Space, Tooltip } from "semi-ui-vue";
+import {
+  Col,
+  Layout,
+  Row,
+  Space,
+  Tooltip,
+  Popover,
+  provideAriaIdScope,
+} from "semi-ui-vue";
 import { FoundationInput } from "../../website/examples/foundation/Input.vapor";
 import { FoundationTooltip } from "../../website/examples/foundation/Tooltip.vapor";
 import { Model } from "../fixtures/Model.vapor";
@@ -10,6 +18,7 @@ import {
 
 /** Validation only: compile existing examples into a private local tarball. */
 export const FoundationHarness = defineVaporComponent(() => {
+  provideAriaIdScope("foundation-harness-consumer");
   const input = ref("initial-input");
   const model = ref("initial-model");
   const api = ref<StrictFixtureExposed | null>(null);
@@ -90,6 +99,23 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
             wrapperId="foundation-public-tooltip"
+          />
+          <Popover
+            content="Public packed Popover"
+            motion={false}
+            trigger="click"
+            v-slots={{
+              default: (scope) => (
+                <button
+                  {...scope.attrs}
+                  {...scope.triggerProps}
+                  data-foundation-public-popover=""
+                  ref={scope.triggerRef}
+                >
+                  Public Popover trigger
+                </button>
+              ),
+            }}
           />
           <Model v-model={model.value} />
           <StrictFixture

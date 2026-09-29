@@ -11,6 +11,7 @@ const version = "2.103.0";
 const components = [
   "input",
   "tooltip",
+  "popover",
   "spin",
   "iconButton",
   "button",
@@ -58,6 +59,12 @@ const foundationFiles = {
     "tooltip/rtl.scss",
     "tooltip/tooltip.scss",
     "tooltip/variables.scss",
+  ],
+  popover: [
+    "popover/animation.scss",
+    "popover/popover.scss",
+    "popover/rtl.scss",
+    "popover/variables.scss",
   ],
   spin: [
     "spin/animation.scss",
@@ -149,6 +156,14 @@ const sourceHashes = {
     "7651157602a578305d953812c1337526e1a3a5a6b1244d92e2ddef973884685b",
   "foundation/tooltip/variables.scss":
     "e44815031ce2c375026a63744edbcc25481eb69a2b7d10cd35b6ebfc70161d96",
+  "foundation/popover/animation.scss":
+    "c60dbb56ae18f8f86780e10c6ddb81c142ad2368dfcd79c8da9843ae68d5f6dd",
+  "foundation/popover/popover.scss":
+    "e419614ca35c0d14938efbabbc0a103777077f235bd3ba32de03858e206b6a28",
+  "foundation/popover/rtl.scss":
+    "49512530ca4f4f6f0307cd12f01b44976cc5b01088e8eff951e0371c877d8dd6",
+  "foundation/popover/variables.scss":
+    "777e767affb5a6cd5f6c80ddeaa4d91435c78905561ce0fdf5353c62a00b138e",
   "foundation/spin/animation.scss":
     "0e011fe048b70a3e85ac33d98f0b5b87df1c09b578e481f1fdbcbda92a4af103",
   "foundation/spin/mixin.scss":
@@ -186,6 +201,42 @@ export function checkStyleSourceHashes(actual) {
   for (const [file, expected] of Object.entries(sourceHashes))
     if (actual[file] !== expected)
       throw new Error(`Locked style source drift: ${file}.`);
+}
+
+function extractStyleBlock(source, header) {
+  const start = source.indexOf(header);
+  if (start < 0 || source.indexOf(header, start + 1) >= 0)
+    throw new Error(
+      `Locked Tooltip motion block missing or duplicated: ${header}`,
+    );
+  let depth = 1;
+  for (let index = start + header.length; index < source.length; index++) {
+    if (source[index] === "{") depth++;
+    if (source[index] === "}" && --depth === 0)
+      return source.slice(start, index + 1);
+  }
+  throw new Error(`Unterminated locked Tooltip motion block: ${header}`);
+}
+
+export function popoverMotionSource(source) {
+  const blocks = [
+    "@keyframes #{$module}-zoomIn {",
+    "@keyframes #{$module}-zoomOut {",
+    "&-animation-show{",
+    "&-animation-hide{",
+  ].map((header) => extractStyleBlock(source, header));
+  return [
+    '@import "./animation";',
+    '@import "./variables";',
+    "$module: #{$prefix}-tooltip;",
+    blocks[0],
+    blocks[1],
+    ".#{$module} {",
+    blocks[2],
+    blocks[3],
+    "}",
+    "",
+  ].join("\n");
 }
 
 async function copySource(from, to) {
@@ -298,6 +349,15 @@ function entrySources() {
       '@import "../vendor/foundation/tooltip/tooltip";',
       "",
     ].join("\n"),
+    "components/popover.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/tooltip/popover-motion";',
+      '@import "../vendor/foundation/popover/popover";',
+      "",
+    ].join("\n"),
     "components/spin.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -325,6 +385,7 @@ function entrySources() {
       '@import "./base";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
+      '@import "./components/popover";',
       '@import "./components/icons";',
       '@import "./components/spin";',
       '@import "./components/iconButton";',
@@ -440,6 +501,12 @@ export async function buildStyles({ root, output }) {
         join(foundationRoot, file),
         join(output, "vendor/foundation", file),
       );
+  await writeFile(
+    join(output, "vendor/foundation/tooltip/popover-motion.scss"),
+    popoverMotionSource(
+      await readFile(join(foundationRoot, "tooltip/tooltip.scss"), "utf8"),
+    ),
+  );
   for (const [file, source] of Object.entries(entrySources()))
     await mkdir(dirname(join(output, file)), { recursive: true }).then(() =>
       writeFile(join(output, file), source),
@@ -469,6 +536,12 @@ export async function buildStyles({ root, output }) {
         sources: inputs.sourceHashes,
         icons: iconSources,
         adaptation: {
+          "vendor/foundation/tooltip/popover-motion.scss": [
+            "extract exact zoomIn/zoomOut keyframes and animation-show/hide rules from locked tooltip/tooltip.scss",
+            "reuse locked tooltip/animation.scss duration/easing and tooltip/variables.scss zoom values",
+            "keep the existing Tooltip runtime animation class namespace and prefix adaptation",
+            "omit Tooltip visual wrapper/content/arrow/RTL/bounce rules",
+          ],
           "theme/variables.scss": [
             "prepend $semi-prefix default",
             "adapt $prefix to $semi-prefix",
@@ -490,6 +563,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     output: resolve(root, "packages/semi-ui-vue/dist/styles"),
   });
   console.log(
-    "Built locked base, Input, Tooltip, Icon, Spin, IconButton, Button, Divider, Space, Grid and Layout CSS/SCSS style entries.",
+    "Built locked base, Input, Tooltip, Popover, Icon, Spin, IconButton, Button, Divider, Space, Grid and Layout CSS/SCSS style entries.",
   );
 }

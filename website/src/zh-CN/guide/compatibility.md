@@ -8,7 +8,7 @@
 
 ## 尚未验证的能力
 
-- Tooltip、Progress、Highlight、Skeleton、Layout、Row、Col、Space、Divider、Button、ButtonGroup、SplitButtonGroup、IconButton、Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 与 LocaleConsumer 已实现客户端 Vapor 路径；组件 SSR、水合、CJS 与全量 Semi 视觉对齐尚未验收。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 同样只在浏览器 Vapor 路径验证。`semi-ui-vue/tooltip`、`semi-ui-vue/progress`、`semi-ui-vue/highlight`、`semi-ui-vue/skeleton`、`semi-ui-vue/layout`、`semi-ui-vue/grid`、`semi-ui-vue/space`、`semi-ui-vue/divider`、`semi-ui-vue/button`、`semi-ui-vue/button/buttonGroup`、`semi-ui-vue/button/splitButtonGroup`、`semi-ui-vue/iconButton`、`semi-ui-vue/spin`、`semi-ui-vue/configProvider` 与 `semi-ui-vue/locale` 同样仅用于浏览器；其他公共组件的交付状态以[上游对齐与完成度](./upstream-matrix.md)和各组件页面为准。
+- Popover、Tooltip、Progress、Highlight、Skeleton、Layout、Row、Col、Space、Divider、Button、ButtonGroup、SplitButtonGroup、IconButton、Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 与 LocaleConsumer 已实现客户端 Vapor 路径；组件 SSR、水合、CJS 与全量 Semi 视觉对齐尚未验收。`semi-icons-vue` 根入口和 `semi-icons-vue/Icon` 同样只在浏览器 Vapor 路径验证。`semi-ui-vue/popover`、`semi-ui-vue/tooltip`、`semi-ui-vue/progress`、`semi-ui-vue/highlight`、`semi-ui-vue/skeleton`、`semi-ui-vue/layout`、`semi-ui-vue/grid`、`semi-ui-vue/space`、`semi-ui-vue/divider`、`semi-ui-vue/button`、`semi-ui-vue/button/buttonGroup`、`semi-ui-vue/button/splitButtonGroup`、`semi-ui-vue/iconButton`、`semi-ui-vue/spin`、`semi-ui-vue/configProvider` 与 `semi-ui-vue/locale` 同样仅用于浏览器；其他公共组件的交付状态以[上游对齐与完成度](./upstream-matrix.md)和各组件页面为准。
 - 先前 SSR 探针存在点击后静态文本丢失的水合问题，本页没有以 ClientOnly 掩盖为已修复。
 - 只在指定 Chromium 验证；Firefox、WebKit、真实移动设备不在当前验收范围。
 - JSX ref 形状检查仍有工具链限制，不能推断公共组件 ref 协议已解决。
@@ -25,6 +25,8 @@ Layout 的原生 Vapor slot 可含 fragment、条件 Sider 和稳定 key 列表�
 
 [Foundation 桥接](./foundation.md)验证固定上游输入与浮层状态机的有限路径。补丁只覆盖实际依赖闭包，不表示全套 Foundation 已兼容；资源清理只覆盖状态机自身的 destroy 与显式登记资源。
 
-[本地产物与消费方式](./packages.md)列出实际 ESM / 声明 / 样式入口、依赖和独立安装范围。没有 CJS 入口；Node 根入口只提供静态工具，不导出 Tooltip、Progress、Highlight、Skeleton、Layout、Row、Col、Space、Divider、Button、ButtonGroup、SplitButtonGroup、IconButton、Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 或 LocaleConsumer，也不代表组件 SSR / 水合支持。语言字典 `locale/source/*` 与 `locale/interface` 保持纯 Node 可用静态入口。
+[本地产物与消费方式](./packages.md)列出实际 ESM / 声明 / 样式入口、依赖和独立安装范围。没有 CJS 入口；Node 根入口只提供静态工具，不导出 Popover、Tooltip、Progress、Highlight、Skeleton、Layout、Row、Col、Space、Divider、Button、ButtonGroup、SplitButtonGroup、IconButton、Spin、Icon、ConfigProvider、ConfigConsumer、LocaleProvider 或 LocaleConsumer，也不代表组件 SSR / 水合支持。语言字典 `locale/source/*` 与 `locale/interface` 保持纯 Node 可用静态入口。
 
 [上游对齐与完成度](./upstream-matrix.md)按固定来源生成模块与导出清单，分别展示同名存在、内部设施、公开交付与行为验收；资源和测试夹具不计为完整公共组件。
+
+Popover 复用 Tooltip 的当前 document/realm HTML trigger refs、primitive callback 与 owned content slots；默认 focus/关闭策略与 Tooltip 不同，见 [Popover](../components/popover.md)。没有 title/footer、custom arrow slot 或除 focusTrigger 外的实例方法；两者浏览器路径均不构成组件 SSR/水合/CJS 支持。

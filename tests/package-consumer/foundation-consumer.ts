@@ -47,3 +47,21 @@ const publicPosition: Record<string, string | number> | undefined =
 const publicId: string | undefined = publicInstance?.getPopupId();
 void [publicPosition, publicId];
 void [publicTooltip, invalidPublicContent];
+
+import type { PopoverProps, PopoverInstance } from "semi-ui-vue/popover";
+const publicPopover: PopoverProps = {
+  trigger: "click",
+  content: () => 0,
+  motion: false,
+};
+const invalidPublicPopoverContent: PopoverProps = {
+  // @ts-expect-error Public Popover content stays primitive, unlike owned slots.
+  content: () => document.createElement("b"),
+};
+const popoverInstance = null as PopoverInstance | null;
+popoverInstance?.focusTrigger();
+// @ts-expect-error Popover does not expose Tooltip repositioning.
+popoverInstance?.rePosition();
+// @ts-expect-error Popover does not expose Tooltip popup IDs.
+popoverInstance?.getPopupId();
+void [publicPopover, invalidPublicPopoverContent];

@@ -652,3 +652,51 @@ void [
   invalidProgressStatus,
   invalidProgressFormat,
 ];
+
+import PopoverFromSubpath, {
+  Popover as NamedPopover,
+  type PopoverProps,
+  type PopoverSlots,
+  type PopoverInstance,
+} from "semi-ui-vue/popover";
+const popoverIdentity: typeof PopoverFromSubpath = NamedPopover;
+const popoverProps: PopoverProps = {
+  trigger: "click",
+  content: () => 0,
+  showArrow: true,
+  disableFocusListener: true,
+  visible: undefined,
+};
+const popoverSlots: PopoverSlots = {
+  default: ({ triggerRef, getTriggerRef, triggerProps, attrs }) => {
+    triggerRef(document.createElement("button"));
+    getTriggerRef("other")(null);
+    triggerProps.onClick?.(new MouseEvent("click"));
+    void attrs;
+    return [];
+  },
+  content: ({ initialFocusRef }) => {
+    initialFocusRef(null);
+    return [];
+  },
+};
+const popoverInstance = null as PopoverInstance | null;
+popoverInstance?.focusTrigger();
+// @ts-expect-error Popover ref exposes no Tooltip repositioning method.
+popoverInstance?.rePosition();
+// @ts-expect-error Popover ref exposes no popup id method.
+popoverInstance?.getPopupId();
+// @ts-expect-error Structured content uses a content slot.
+const popoverDOM: PopoverProps = { content: () => document.createElement("b") };
+// @ts-expect-error Popover content slot is synchronous.
+const popoverAsyncSlot: PopoverSlots = { content: async () => [] };
+// @ts-expect-error Popover has no arrow slot.
+const popoverArrowSlot: PopoverSlots = { arrow: () => [] };
+void [
+  popoverIdentity,
+  popoverProps,
+  popoverSlots,
+  popoverDOM,
+  popoverAsyncSlot,
+  popoverArrowSlot,
+];

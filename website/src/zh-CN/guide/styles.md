@@ -9,7 +9,7 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
+UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Popover、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
@@ -38,7 +38,7 @@ import "semi-ui-vue/styles/index.css";
 
 样式来源固定为 Foundation / Theme `2.103.0`。构建只提取登记的 SCSS 闭包，随包提供必要源码、许可证及来源摘要；消费者无需安装官方 Foundation，也不需要 patch、override 或源码 alias。
 
-SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/skeleton.scss`、`styles/components/highlight.scss`、`styles/components/progress.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
+SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/skeleton.scss`、`styles/components/highlight.scss`、`styles/components/progress.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/components/popover.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
 
 CSS variables 使用上游 `--semi-*` 名称。例如：
 
@@ -73,3 +73,7 @@ Highlight 提供 `styles/components/highlight` 及 `.css`/`.scss` 按需入口�
 Progress 复用固定 Foundation 的 progress.scss、variables.scss 和 rtl.scss 闭包，提供 `styles/components/progress` 与 `.css`/`.scss` 按需入口，并包含于聚合样式。线形/纵向宽高过渡、环形描边过渡和不确定循环动画由 CSS 控制；组件 motion 只控制数字动画，样式没有内建 reduced-motion 覆盖。主题色与 RTL 来自既有 tokens 和祖先方向；`styles: ["progress"]` 支持主题插件选择与定制前缀，组件默认类名仍使用 semi。详见 [Progress](../components/progress.md)。
 
 Tooltip 复用固定 tooltip.scss、variables.scss、arrow.scss、animation.scss、rtl.scss，按需加载 `styles/components/tooltip.css` 或 `.scss`。坐标位于 portal-inner，用户 className/style 位于 tooltip wrapper，箭头偏移使用固定 CSS 变量。prefixCls 仅改变对应运行时类，内容与动画仍沿用固定 semi-tooltip 类；自定义前缀需匹配这些规则。详见 [Tooltip](../components/tooltip.md)。
+
+Popover 按需加载 `styles/components/popover.css` 或 `.scss`，登记自身固定 SCSS 与最小 Tooltip motion 协作。`showArrow` 与 `arrowStyle` 控制专用箭头，内容类由 contentClassName 添加；自定义前缀须匹配编译后的 SCSS。实际目标、内容卡片与 portal 的样式边界见 [Popover](../components/popover.md)。
+
+Popover 的独立入口包含内部生成的 `popover-motion.scss`：从锁定 Tooltip SCSS 提取 zoomIn/zoomOut keyframes 与 `semi-tooltip-animation-show`/`semi-tooltip-animation-hide` 两个 motion 选择器，引用固定动画变量。它让现有 Tooltip 运行时动画类在 Popover 按需样式中生效，不导入 Tooltip 完整视觉 CSS，也没有新的公开 SCSS 子路径。按需消费者分别验证实际 CSS motion、Popover 几何与主题；不能把“按需”描述为完全没有 Tooltip 选择器。

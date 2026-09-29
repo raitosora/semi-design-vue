@@ -49,6 +49,7 @@ describe("fixed Semi style inputs", () => {
       components: [
         "input",
         "tooltip",
+        "popover",
         "spin",
         "iconButton",
         "button",

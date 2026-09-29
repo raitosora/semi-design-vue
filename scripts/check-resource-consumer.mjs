@@ -510,6 +510,17 @@ function checkGraph(mode = "vapor") {
     "Progress implementation missing from consumer graph",
   );
   assert(
+    /semi-ui-vue\/dist\/popover-[^/\n]+\.js/.test(modules),
+    "Popover implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/popover\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve Popover subpath",
+    );
+  assert(
     /semi-ui-vue\/dist\/tooltip-[^/\n]+\.js/.test(modules),
     "Tooltip implementation missing from consumer graph",
   );
@@ -776,6 +787,7 @@ function checkTooltipTreeShaking() {
       `${mode}: public entry was not resolved`,
     );
     for (const unused of [
+      "popover",
       "progress",
       "highlight",
       "skeleton",
@@ -801,6 +813,85 @@ function checkTooltipTreeShaking() {
         assert(
           !source.includes("semi-tooltip-wrapper"),
           "Unused Tooltip marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkPopoverTreeShaking() {
+  for (const mode of ["popover-only", "popover-root-only", "popover-unused"]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.popover.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasPopover = /semi-ui-vue\/dist\/popover-[^/\n]+\.js/.test(modules);
+    assert(
+      hasPopover === (mode !== "popover-unused"),
+      `${mode}: Popover implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "popover-only"
+        ? "/semi-ui-vue/dist/components/popover/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "popover-unused")
+        assert(
+          !source.includes("semi-popover"),
+          "Unused Popover marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -1100,6 +1191,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkPopover())) ===
+        "popover consumer passed",
+      "Packed Popover behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkTooltip())) ===
         "tooltip consumer passed",
       "Packed Tooltip behavior failed",
@@ -1388,6 +1484,31 @@ async function interopBrowserCheck(url) {
           .count()) === 1,
       "Interop Progress initial geometry and format slot failed",
     );
+    await page.locator("[data-interop-popover]").click();
+    assert(
+      (
+        await page
+          .locator("[data-interop-popover]")
+          .getAttribute("data-popupid")
+      )?.includes("interop-resource-consumer"),
+      "Interop Popover did not allocate from the explicit application ARIA scope",
+    );
+    await page.waitForFunction(() =>
+      document.querySelector(
+        ".semi-popover-wrapper [data-interop-popover-content]",
+      ),
+    );
+    assert(
+      (await page
+        .locator("[data-interop-popover]")
+        .getAttribute("data-popupid")) ===
+        (await page.locator(".semi-popover-wrapper").getAttribute("id")),
+      "Interop Popover popup relationship failed",
+    );
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(
+      () => !document.querySelector(".semi-popover-wrapper"),
+    );
     await page.locator("[data-interop-tooltip]").click();
     await page.waitForFunction(() =>
       document
@@ -1513,6 +1634,9 @@ async function interopBrowserCheck(url) {
       "Interop IconButton reactive loading/slots failed",
     );
     await page.locator(".interop-icon-button").click();
+    await page.waitForFunction(
+      () => !document.querySelector(".semi-popover-wrapper"),
+    );
     await page.waitForFunction(
       () => !document.getElementById("interop-tooltip-popup"),
     );
@@ -1640,6 +1764,28 @@ async function interopBrowserCheck(url) {
           "72",
       "Interop Progress update and circle geometry failed",
     );
+    await page.locator("[data-interop-popover]").click();
+    await page.waitForFunction(() =>
+      document.querySelector(
+        ".semi-popover-wrapper [data-interop-popover-content]",
+      ),
+    );
+    assert(
+      (await page
+        .locator("[data-interop-popover]")
+        .getAttribute("data-popupid")) ===
+        (await page.locator(".semi-popover-wrapper").getAttribute("id")),
+      "Interop Popover popup relationship failed",
+    );
+    assert(
+      (await page.locator("[data-interop-popover-content]").textContent()) ===
+        "Updated interop Popover content",
+      "Interop Popover owned content update failed",
+    );
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(
+      () => !document.querySelector(".semi-popover-wrapper"),
+    );
     await page.locator("[data-interop-tooltip]").click();
     await page.waitForFunction(() =>
       document
@@ -1723,10 +1869,23 @@ async function interopBrowserCheck(url) {
           "#f4c3aa",
       "Interop custom Icon svg slot did not react to fill values",
     );
+    const detachedPopoverTrigger = await page
+      .locator("[data-interop-popover]")
+      .elementHandle();
+    await page.locator("[data-interop-popover]").click();
+    await page.waitForFunction(() =>
+      document.querySelector(
+        ".semi-popover-wrapper [data-interop-popover-content]",
+      ),
+    );
     await page.evaluate(() => window.interopConsumer.unmount());
     assert(
       (await page.locator("#interop-tooltip-popup").count()) === 0,
       "Interop Tooltip teardown left portal DOM",
+    );
+    assert(
+      (await page.locator(".semi-popover-wrapper").count()) === 0,
+      "Interop Popover teardown left portal DOM",
     );
     assert(
       (await page.locator(".interop-resources").count()) === 0,
@@ -1737,6 +1896,25 @@ async function interopBrowserCheck(url) {
         .locator("#resource-consumer")
         .evaluate((element) => element.childNodes.length)) === 0,
       "Interop resource teardown left DOM nodes",
+    );
+    await detachedPopoverTrigger.evaluate((element) => element.click());
+    await page.evaluate(() => {
+      window.dispatchEvent(new Event("resize"));
+      window.dispatchEvent(new Event("scroll"));
+    });
+    assert(
+      (await page.locator("#interop-tooltip-popup").count()) === 0,
+      "Detached events recreated Interop Tooltip portal DOM",
+    );
+    assert(
+      (await page.locator(".semi-popover-wrapper").count()) === 0,
+      "Detached events recreated Interop Popover portal DOM",
+    );
+    assert(
+      (await page
+        .locator("#resource-consumer")
+        .evaluate((element) => element.childNodes.length)) === 0,
+      "Detached events recreated Interop resource DOM nodes",
     );
     assert(!errors.length, `Interop browser errors: ${errors.join("; ")}`);
     await checkExecution(page, "interop");
@@ -1836,6 +2014,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:tooltip.tsx"),
     "Tooltip fixture was not compiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:popover.tsx"),
+    "Popover fixture was not compiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -1860,6 +2042,7 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "popover-browser.ts",
     "tooltip-browser.ts",
     "vite.config.ts",
     "interop-main.ts",
@@ -1867,6 +2050,10 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.popover.config.ts",
+    "popover-only.ts",
+    "popover-root-only.ts",
+    "popover-unused.ts",
     "vite.tooltip.config.ts",
     "tooltip-only.ts",
     "tooltip-root-only.ts",
@@ -1908,7 +2095,11 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "popover-browser.ts",
           "tooltip-browser.ts",
+          "popover-only.ts",
+          "popover-root-only.ts",
+          "popover-unused.ts",
           "tooltip-only.ts",
           "tooltip-root-only.ts",
           "tooltip-unused.ts",
@@ -1996,6 +2187,7 @@ async function run() {
   checkHighlightTreeShaking();
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
+  checkPopoverTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);
   checkIndependentCompilerInstall(installation.evidenceDirectory);

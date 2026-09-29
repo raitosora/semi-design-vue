@@ -84,3 +84,14 @@ export { Highlight } from "./components/highlight/index.js";
 export { Progress } from "./components/progress/index.js";
 
 export { Tooltip } from "./components/tooltip/index.js";
+
+export { Popover } from "./components/popover/index.js";
+export type {
+  PopoverState,
+  PopoverProps,
+  PopoverSlots,
+  PopoverInstance,
+  PopoverTriggerScope,
+  PopoverTriggerProps,
+  ArrowProps,
+} from "./components/popover/index.js";

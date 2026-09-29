@@ -51,9 +51,17 @@ for (const port of [4180, 4181]) {
       .getByRole("button", { name: "函数内容提示", exact: true })
       .hover();
     await expect(page.locator("#tooltip-render-content")).toHaveText(
-      "primitive 函数返回的提示",
+      "primitive 函数返回的提示 1",
     );
     await expect(page.locator("#tooltip-render-content")).toBeVisible();
+    await page.mouse.move(0, 0);
+    await page.locator("[data-tooltip-callback-update]").click();
+    await page
+      .getByRole("button", { name: "函数内容提示", exact: true })
+      .hover();
+    await expect(page.locator("#tooltip-render-content")).toHaveText(
+      "primitive 函数返回的提示 2",
+    );
   });
   test(`${label}: Tooltip five triggers, custom notifications, condition and delay`, async ({
     checkedPage: page,

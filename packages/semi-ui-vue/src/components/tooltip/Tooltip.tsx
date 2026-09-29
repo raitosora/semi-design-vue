@@ -1,3 +1,5 @@
+import { triggerScope } from "../../internal/tooltip/trigger-scope.js";
+import { createTooltipFocusTrigger } from "../../internal/tooltip/focus-trigger.js";
 import {
   computed,
   nextTick,
@@ -19,30 +21,27 @@ import { useConfigContext } from "../configProvider/context.js";
 import { useAriaId } from "../../dom/aria.js";
 import {
   activeElement,
-  containsFocus,
+  containsFocus as contains,
   getFocusableElements,
 } from "../../internal/overlay/focus.js";
-
 import { createDefaultPropsResolver, semiGlobal } from "../../context/index.js";
-import type {
-  TooltipProps,
-  TooltipSlots,
-  TooltipTriggerScope,
-  TooltipNativeRef,
-} from "./types.js";
+import type { TooltipProps, TooltipSlots, TooltipNativeRef } from "./types.js";
 export type * from "./types.js";
 import type { Listener, Events, State } from "./state.js";
 import {
   createTooltipNotifications,
   type TooltipEmits,
 } from "./notifications.js";
+import { createTooltipContent } from "../../internal/tooltip/content-boundary.js";
 import { defaults, propNames } from "./defaults.js";
-import { createTooltipPortalEvents } from "./events.js";
+import {
+  createTooltipPortalEvents,
+  createTooltipGuardedBlur,
+} from "./events.js";
 import {
   alignPortalHost,
   requiredPosition,
   measuredRect as rect,
-  primitiveContent as primitive,
 } from "./content.js";
 const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
   (props: TooltipProps, { emit }: { emit: EmitFn<TooltipEmits> }) => {
@@ -145,13 +144,23 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
       () => resolved.value,
       emit,
     );
+    const ownsFocus = (node: Node | null) =>
+      Boolean(node && layer.value && contains(layer.value.element, node)) ||
+      [...roots.value.values()].some((element) =>
+        Boolean(node && contains(element, node)),
+      ) ||
+      Boolean(node && inner.value && contains(inner.value, node));
     const portalEvents = createTooltipPortalEvents(
       () => bridge.state.value.visible,
       () => bridge.foundation.clearDelayTimer(),
-      (related) =>
-        [...roots.value.values()].some((element) =>
-          containsFocus(element, related),
-        ) || Boolean(inner.value && containsFocus(inner.value, related)),
+      ownsFocus,
+      createTooltipGuardedBlur({
+        scope: () => bridge.scope,
+        layer: () => layer.value,
+        enabled: () => resolved.value.guardFocus,
+        ownsFocus: () => ownsFocus(activeElement(document)),
+        cancelDelay: () => bridge.foundation.clearDelayTimer(),
+      }),
     );
     let outside: (() => void) | undefined;
     let resizeRelease: (() => void) | undefined;
@@ -160,6 +169,7 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
     let observePopup = () => {};
     let closeVersion = 0;
     let finishExit = () => {};
+    let focusControl!: ReturnType<typeof createTooltipFocusTrigger>;
     let adapter!: TooltipAdapter<Record<string, unknown>, State>;
     const bridge = useFoundation<
       Record<string, unknown>,
@@ -305,6 +315,10 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
                     outside?.();
                   } else {
                     if (resolved.value.trigger !== "custom") {
+                      // An explicit Escape return must be allowed to leave the
+                      // active trap. Reopening restores guardFocus in insertPortal.
+                      if (resolved.value.returnFocusOnClose)
+                        layer.value?.update({ trapFocus: false });
                       bridge.foundation.focusTrigger();
                       bridge.foundation.hide();
                     }
@@ -501,7 +515,7 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
           zIndex: resolved.value.zIndex,
           closeOnTarget: resolved.value.clickTriggerToHide,
           closeOnEscape: resolved.value.closeOnEsc,
-          trapFocus: resolved.value.guardFocus,
+          trapFocus: focusControl.guardFocus(),
         });
       },
       onError: (error) => {
@@ -578,9 +592,10 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
                 (name === "onBlur" || name === "onMouseleave") &&
                 related instanceof Node &&
                 ([...roots.value.values()].some((element) =>
-                  containsFocus(element, related),
+                  contains(element, related),
                 ) ||
-                  (inner.value && containsFocus(inner.value, related)))
+                  (inner.value && contains(inner.value, related)) ||
+                  (layer.value && contains(layer.value.element, related)))
               )
                 return;
               const names = handled.get(event) ?? new Set<string>();
@@ -616,30 +631,16 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
         ...handlers,
       };
     });
-    const scope: TooltipTriggerScope = Object.freeze({
-      attrs,
-      triggerRef,
-      getTriggerRef,
-      get triggerProps() {
-        return triggerProps.value;
-      },
-    });
+    const scope = triggerScope(attrs, triggerRef, getTriggerRef, triggerProps);
     const placement = computed(() =>
       requiredPosition(bridge.state.value.placement),
     );
-    const content = computed(() => {
-      try {
-        return primitive(
-          typeof resolved.value.content === "function"
-            ? resolved.value.content({ initialFocusRef })
-            : resolved.value.content,
-        );
-      } catch (error) {
-        adapter.removePortal();
-        bridge.dispose();
-        throw error;
-      }
-    });
+    const { scope: contentScope, value: content } = createTooltipContent(
+      () => resolved.value.content,
+      initialFocusRef,
+      adapter.removePortal,
+      bridge.dispose,
+    );
     const innerStyle = computed(() => ({
       ...bridge.state.value.containerStyle,
       left:
@@ -662,8 +663,17 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
       "--semi-tooltip-arrow-offset-y":
         bridge.state.value.containerStyle["--semi-tooltip-arrow-offset-y"],
     }));
+    focusControl = createTooltipFocusTrigger({
+      props: () => resolved.value,
+      scope: bridge.scope,
+      layer: () => layer.value,
+      open: () => bridge.state.value.visible && bridge.state.value.isInsert,
+      root,
+      roots: () => roots.value,
+      focus: () => bridge.foundation.focusTrigger(),
+    });
     defineExpose({
-      focusTrigger: () => bridge.foundation.focusTrigger(),
+      focusTrigger: focusControl.focusTrigger,
       getPopupId: () => resolved.value.wrapperId ?? id,
       rePosition: () => bridge.foundation.calcPosition(),
     });
@@ -739,7 +749,7 @@ const Component = defineVaporComponent<TooltipProps, TooltipEmits, string, {}>(
               x-placement={placement.value}
             >
               <div class="semi-tooltip-content">
-                <slot initialFocusRef={initialFocusRef} name="content">
+                <slot {...contentScope} name="content">
                   {content.value}
                 </slot>
               </div>

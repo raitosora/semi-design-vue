@@ -1,3 +1,7 @@
+import PopoverBasic from "../../website/examples/popover/Basic.vapor";
+import PopoverTriggers from "../../website/examples/popover/Triggers.vapor";
+import PopoverAdvanced from "../../website/examples/popover/Advanced.vapor";
+import PopoverTheme from "../../website/examples/popover/Theme.vapor";
 import TooltipBasic from "../../website/examples/tooltip/Basic.vapor";
 import TooltipTriggers from "../../website/examples/tooltip/Triggers.vapor";
 import TooltipAdvanced from "../../website/examples/tooltip/Advanced.vapor";
@@ -71,6 +75,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/skeleton.css";
 import "../../packages/semi-ui-vue/dist/styles/components/highlight.css";
 import "../../packages/semi-ui-vue/dist/styles/components/progress.css";
 import "../../packages/semi-ui-vue/dist/styles/components/tooltip.css";
+import "../../packages/semi-ui-vue/dist/styles/components/popover.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -86,6 +91,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const popoverMode = new URLSearchParams(location.search).has("popover");
 const tooltipMode = new URLSearchParams(location.search).has("tooltip");
 const progressMode = new URLSearchParams(location.search).has("progress");
 const highlightMode = new URLSearchParams(location.search).has("highlight");
@@ -96,10 +102,19 @@ const app = createVaporApp(
     skeletonMode ||
     highlightMode ||
     progressMode ||
-    tooltipMode
+    tooltipMode ||
+    popoverMode
     ? defineVaporComponent(() => (
         <main>
-          {tooltipMode ? (
+          {popoverMode ? (
+            <>
+              <h1>Popover examples</h1>
+              <PopoverBasic />
+              <PopoverTriggers />
+              <PopoverAdvanced />
+              <PopoverTheme />
+            </>
+          ) : tooltipMode ? (
             <>
               <h1>Tooltip examples</h1>
               <TooltipBasic />

@@ -58,6 +58,9 @@
       ],
       "semi-ui-vue/highlight": [
         "../packages/semi-ui-vue/dist/components/highlight/index.d.ts"
+      ],
+      "semi-ui-vue/popover": [
+        "../packages/semi-ui-vue/dist/components/popover/index.d.ts"
       ]
     }
   },
