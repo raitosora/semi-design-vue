@@ -9,7 +9,7 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Popover、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
+UI 包的 JavaScript 根入口不会自动加载样式。基础入口包含固定 Theme animation.scss 的动画 CSS 变量，保留上游零时长、曲线、延迟和 transform 默认值；Collapsible 的过渡依赖这些变量。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Collapsible、Popover、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
@@ -38,7 +38,7 @@ import "semi-ui-vue/styles/index.css";
 
 样式来源固定为 Foundation / Theme `2.103.0`。构建只提取登记的 SCSS 闭包，随包提供必要源码、许可证及来源摘要；消费者无需安装官方 Foundation，也不需要 patch、override 或源码 alias。
 
-SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/skeleton.scss`、`styles/components/highlight.scss`、`styles/components/progress.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/components/popover.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
+SCSS 与 CSS 入口一一对应：`styles/base.scss`、`styles/components/layout.scss`、`styles/components/grid.scss`、`styles/components/space.scss`、`styles/components/button.scss`、`styles/components/divider.scss`、`styles/components/icons.scss`、`styles/components/spin.scss`、`styles/components/iconButton.scss`、`styles/components/skeleton.scss`、`styles/components/highlight.scss`、`styles/components/progress.scss`、`styles/components/input.scss`、`styles/components/tooltip.scss`、`styles/components/popover.scss`、`styles/components/collapsible.scss`、`styles/index.scss`。`semi-icons-vue` 也提供独立的 `styles.css` 与 `styles.scss`。SCSS 消费需要 Sass；当前验证版本为 `1.97.3`。源码继承上游 Sass `@import` 写法，升级到移除该语法的 Sass 版本需单独适配，不能直接认定兼容。
 
 CSS variables 使用上游 `--semi-*` 名称。例如：
 
@@ -77,3 +77,5 @@ Tooltip 复用固定 tooltip.scss、variables.scss、arrow.scss、animation.scss
 Popover 按需加载 `styles/components/popover.css` 或 `.scss`，登记自身固定 SCSS 与最小 Tooltip motion 协作。`showArrow` 与 `arrowStyle` 控制专用箭头，内容类由 contentClassName 添加；自定义前缀须匹配编译后的 SCSS。实际目标、内容卡片与 portal 的样式边界见 [Popover](../components/popover.md)。
 
 Popover 的独立入口包含内部生成的 `popover-motion.scss`：从锁定 Tooltip SCSS 提取 zoomIn/zoomOut keyframes 与 `semi-tooltip-animation-show`/`semi-tooltip-animation-hide` 两个 motion 选择器，引用固定动画变量。它让现有 Tooltip 运行时动画类在 Popover 按需样式中生效，不导入 Tooltip 完整视觉 CSS，也没有新的公开 SCSS 子路径。按需消费者分别验证实际 CSS motion、Popover 几何与主题；不能把“按需”描述为完全没有 Tooltip 选择器。
+
+Collapsible 的独立入口只引入固定 `collapsible/animation.scss`、`collapsible/collapsible.scss` 与 `collapsible/variables.scss` 闭包，默认与定制前缀均保留 `--semi-*` tokens。它提供高度/透明度 transition 类，容器裁剪和业务背景分别由组件和使用方设置；[生命周期差异](../components/collapsible.md)包括最终 CSS 时序覆盖与 reduced motion。

@@ -1,5 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitepress";
+const favicon =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23006'/%3E%3C/svg%3E";
 export default defineConfig({
   lang: "zh-CN",
   title: "Semi Design Vue",
@@ -12,11 +14,26 @@ export default defineConfig({
       "link",
       {
         rel: "icon",
-        href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23006'/%3E%3C/svg%3E",
+        href: favicon,
       },
     ],
   ],
   vite: {
+    plugins: [
+      {
+        name: "semi-docs-dev-favicon",
+        apply: "serve",
+        transformIndexHtml() {
+          return [
+            {
+              tag: "link",
+              attrs: { rel: "icon", href: favicon },
+              injectTo: "head",
+            },
+          ];
+        },
+      },
+    ],
     publicDir: fileURLToPath(new URL("../.generated/public", import.meta.url)),
     resolve: { dedupe: ["vue", "@vue/shared", "@vue-jsx/runtime"] },
     server: { strictPort: true },
@@ -63,6 +80,7 @@ export default defineConfig({
           { text: "Progress 进度条", link: "/zh-CN/components/progress" },
           { text: "Tooltip 文字提示", link: "/zh-CN/components/tooltip" },
           { text: "Popover 气泡卡片", link: "/zh-CN/components/popover" },
+          { text: "Collapsible 折叠", link: "/zh-CN/components/collapsible" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

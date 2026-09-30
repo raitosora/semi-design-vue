@@ -117,3 +117,5 @@ import "virtual:semi-theme.css";
 [安装与样式入口](./styles.md) · [兼容边界](./compatibility.md)
 
 [Divider](../components/divider.md) 使用 `styles: ["base", "divider"]` 选择分割线样式。组件 DOM 保持 `semi-divider*` 类名；定制前缀需由应用提供对应原生 DOM，不通过 ConfigProvider 或 Divider prop 改写。边框与文字使用各自的颜色 token，跟随局部或全局明暗主题。
+
+[Collapsible](../components/collapsible.md) 可通过 `styles: ["base", "collapsible"]` 按需编译。定制前缀改变 SCSS 类名，CSS tokens 仍使用 `--semi-*`；组件内置类名保持 `semi-`，直接组件使用方需保持默认前缀。
