@@ -700,3 +700,47 @@ void [
   popoverAsyncSlot,
   popoverArrowSlot,
 ];
+
+import DefaultCollapsible, {
+  Collapsible,
+  type CollapsibleProps,
+  type CollapsibleSlots,
+} from "semi-ui-vue/collapsible";
+
+const packedCollapsibleIdentity: typeof DefaultCollapsible = Collapsible;
+
+const packedCollapsibleProps: CollapsibleProps = {
+  isOpen: undefined,
+  motion: false,
+  duration: 250,
+  keepDOM: true,
+  lazyRender: true,
+  fade: true,
+  collapseHeight: 20,
+  collapseHeightAdaptive: true,
+  reCalcKey: "size",
+  id: "content",
+  className: "custom",
+  style: { transitionDuration: "300ms" },
+  onMotionEnd: () => {},
+};
+const packedCollapsibleSlots: CollapsibleSlots = {
+  default: () => document.createElement("div"),
+};
+// @ts-expect-error Collapsible open state is boolean.
+const invalidOpen: CollapsibleProps = { isOpen: "open" };
+// @ts-expect-error Collapsible duration is numeric.
+const invalidDuration: CollapsibleProps = { duration: "250ms" };
+// @ts-expect-error Content uses a synchronous owned slot.
+const asyncSlots: CollapsibleSlots = { default: async () => [] };
+// @ts-expect-error Scalar children are not a component prop.
+const invalidChildren: CollapsibleProps = { children: "content" };
+void [
+  packedCollapsibleIdentity,
+  packedCollapsibleProps,
+  packedCollapsibleSlots,
+  invalidOpen,
+  invalidDuration,
+  asyncSlots,
+  invalidChildren,
+];

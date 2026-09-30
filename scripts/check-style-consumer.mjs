@@ -190,6 +190,15 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Popover source hash is missing: ${file}`,
     );
+  for (const file of [
+    "collapsible/collapsible",
+    "collapsible/variables",
+    "collapsible/animation",
+  ])
+    assert(
+      /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
+      `Collapsible source hash is missing: ${file}`,
+    );
   for (const file of ["highlight/highlight", "highlight/variables"])
     assert(
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
@@ -705,6 +714,63 @@ async function tooltipBrowserCheck(url) {
   }
 }
 
+async function collapsibleBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("collapsible.html", url).href);
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate(
+        (value) => document.body.setAttribute("theme-mode", value),
+        theme,
+      );
+      for (const direction of ["ltr", "rtl"]) {
+        await page.evaluate((value) => (document.body.dir = value), direction);
+        for (const prefix of ["semi", "consumer", "theme"]) {
+          const style = await page
+            .locator(`[data-collapsible-style="${prefix}"]`)
+            .evaluate((element) => {
+              const value = getComputedStyle(element);
+              return {
+                height: value.height,
+                overflow: value.overflow,
+                property: value.transitionProperty,
+                duration: value.transitionDuration,
+                rect: element.getBoundingClientRect().height,
+              };
+            });
+          assert(
+            style.height === "48px" &&
+              style.rect === 48 &&
+              style.overflow === "hidden" &&
+              style.property.includes("height") &&
+              style.duration.includes("0.25s"),
+            `${prefix} ${theme} ${direction} Collapsible stylesheet geometry/transition failed`,
+          );
+        }
+      }
+    }
+    await page.setViewportSize({ width: 320, height: 240 });
+    assert(
+      await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+      "Collapsible style overflows narrow viewport",
+    );
+    assert(
+      errors.length === 0,
+      `Collapsible stylesheet browser errors: ${errors.join("; ")}`,
+    );
+    await page.screenshot({
+      path: resolve(root, ".vitest/attachments/style-consumer/collapsible.png"),
+    });
+  } finally {
+    await browser.close();
+  }
+}
+
 async function popoverBrowserCheck(url) {
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
@@ -917,6 +983,10 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "collapsible-only.scss",
+    "collapsible-main.ts",
+    "collapsible.html",
+    "vite.collapsible.config.ts",
     "popover-only.scss",
     "popover-main.ts",
     "popover.html",
@@ -1209,6 +1279,51 @@ try {
     "Popover component-only CSS retained another public component",
   );
   await withPreview("popover-dist", popoverBrowserCheck);
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.collapsible.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const collapsibleCss = files(join(consumer, "collapsible-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      collapsibleCss.includes(`.${prefix}-collapsible-transition`),
+      `${prefix} Collapsible CSS/SCSS/theme entry missing`,
+    );
+  const collapsibleGraph = checkGraph("collapsible-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/collapsible.css",
+    "/collapsible-only.scss",
+    "virtual:semi-theme.scss",
+  ])
+    assert(
+      collapsibleGraph.modules.some((id) => id.includes(fragment)),
+      `Collapsible style public entry missing from isolated graph: ${fragment}`,
+    );
+  assert(
+    !collapsibleGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Collapsible component-only probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:tooltip|button|input|spin|space|row|progress)/.test(
+      collapsibleCss,
+    ),
+    "Collapsible component-only CSS retained another public component",
+  );
+  await withPreview("collapsible-dist", collapsibleBrowserCheck);
 
   execFileSync(
     process.execPath,
