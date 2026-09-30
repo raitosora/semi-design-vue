@@ -42,6 +42,37 @@ async function copyInputs(destination) {
 }
 
 describe("fixed Semi style inputs", () => {
+  it("delivers locked motion variables required by Collapsible transitions", async () => {
+    const inputs = await checkStyleInputs(root);
+    expect(inputs.sourceHashes["theme/animation.scss"]).toMatch(
+      /^[a-f0-9]{64}$/,
+    );
+    expect(() =>
+      checkStyleSourceHashes({
+        ...inputs.sourceHashes,
+        "theme/animation.scss": "0".repeat(64),
+      }),
+    ).toThrow("Locked style source drift: theme/animation.scss.");
+    const output = await mkdtemp(join(tmpdir(), "semi-motion-style-test-"));
+    try {
+      await buildStyles({ root, output });
+      const base = await readFile(join(output, "base.css"), "utf8");
+      expect(base).toContain("--semi-transition_delay-none: 0ms");
+      expect(base).toMatch(/--semi-transition_function-easeIn:\s*ease-in;/);
+      expect(await readFile(join(output, "theme/animation.scss"), "utf8")).toBe(
+        await readFile(
+          join(
+            root,
+            "node_modules/@douyinfe/semi-theme-default/scss/animation.scss",
+          ),
+          "utf8",
+        ),
+      );
+    } finally {
+      await rm(output, { recursive: true, force: true });
+    }
+  });
+
   it("locks the 2.103.0 Theme source and registers delivered component SCSS closures", async () => {
     await expect(checkStyleInputs(root)).resolves.toMatchObject({
       foundationVersion: "2.103.0",
@@ -50,6 +81,7 @@ describe("fixed Semi style inputs", () => {
         "input",
         "tooltip",
         "popover",
+        "collapsible",
         "spin",
         "iconButton",
         "button",
