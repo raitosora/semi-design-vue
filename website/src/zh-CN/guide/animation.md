@@ -55,7 +55,7 @@ return (
 
 ## CSS 完成与尺寸变化
 
-`waitForMotion(element, options, done)` 观察已有 CSS 动画/过渡，不修改样式。options 支持 kind（animation / transition / both）、property（过滤过渡属性）和 timeout（最大 2147483647ms）。返回 cancel（静默终止）/finish（通知一次）。reason 为 end / cancel / timeout / none / finish。子元素冒泡与伪元素事件不会完成父元素动画；零时长、缺失结束事件、无限循环都有有界收尾。`transition: all` 建议显式指定 property；未指定时以最长时长兜底。
+`waitForMotion(element, options, done)` 观察已有 CSS 动画/过渡，不修改样式。options 支持 kind（animation / transition / both）、property（过滤过渡属性）、timeout（最大 2147483647ms）以及 ignoreCancel（默认 false）。返回 cancel（静默终止）/finish（通知一次）。reason 为 end / cancel / timeout / none / finish。子元素冒泡与伪元素事件不会完成父元素动画；零时长、缺失结束事件、无限循环都有有界收尾。`transition: all` 建议显式指定 property；未指定时以最长时长兜底。
 
 `useSizeTransition({ element, content, axis?, duration?, reducedMotion? })` 返回只读 running、finish、dispose。axis 默认 height，duration getter 默认 200ms，负数按零处理，非有限值或超过 2147483583ms 会被拒绝。content 是独立内层测量盒，避免观察受约束外层造成反馈循环；宽度过渡要求内层宽度不随外层压缩；目标尺寸使用内层 border box，内层外边距和额外兄弟节点不计入测量，应由这个独立盒包住所有内容。完成及卸载恢复调用方原有 inline 样式。不要让其他逻辑同时写入被动画接管的尺寸/overflow/transition 属性。
 
@@ -76,3 +76,7 @@ return (
 ## Tooltip 的退出与保留
 
 [Tooltip](../components/tooltip.md) 在真实非零测量与定位完成后进入动画，关闭请求保留退出 DOM，完成后移除或按 keepDOM 隐藏。快速反转使旧完成回调失效；卸载直接取消资源，不报告正常 afterClose。motion=false 和 reduced motion 的具体路径见组件页面，与 Progress 的数值动画策略分别定义。
+
+## Collapsible 的独立测量与结算
+
+[Collapsible](../components/collapsible.md) 观察独立内层，外层高度变化不会形成观察反馈。每次展开/折叠拥有完成世代，最终 DOM 样式提交后才读取 CSS 时序；调用者 duration/delay 覆盖照常参与等待。它使用 waitForMotion 的 ignoreCancel=true，避免上一个原生过渡的迟到取消事件提前结束当前请求；当前取消仍由计算时序的有限兜底结算。其他调用者的默认 cancel 完成行为保持不变。reduced motion 会取消监听并让最终 duration/delay 为零；keepDOM 只控制 slot 生命周期，不提供 hidden、inert、焦点或 ARIA 策略。
