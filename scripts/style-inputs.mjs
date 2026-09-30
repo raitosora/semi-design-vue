@@ -12,6 +12,7 @@ const components = [
   "input",
   "tooltip",
   "popover",
+  "collapsible",
   "spin",
   "iconButton",
   "button",
@@ -23,7 +24,13 @@ const components = [
   "highlight",
   "progress",
 ];
-const themeFiles = ["_font.scss", "_palette.scss", "global.scss", "mixin.scss"];
+const themeFiles = [
+  "_font.scss",
+  "_palette.scss",
+  "global.scss",
+  "mixin.scss",
+  "animation.scss",
+];
 const foundationFiles = {
   base: ["base/base.scss"],
   divider: ["divider/divider.scss", "divider/variables.scss"],
@@ -83,6 +90,11 @@ const foundationFiles = {
     "button/variables.scss",
     "keyframes/rotate.scss",
   ],
+  collapsible: [
+    "collapsible/animation.scss",
+    "collapsible/collapsible.scss",
+    "collapsible/variables.scss",
+  ],
 };
 const sourceHashes = {
   "theme/_font.scss":
@@ -93,6 +105,8 @@ const sourceHashes = {
     "ac4a890eb027c9bfae31283609e06f5f83817248d2765a5711be509097b50b8a",
   "theme/mixin.scss":
     "0a1cb5384d54a7b716f147d9ee89cf455c66d6aee4f1b11c12b03cc5bf0ac19f",
+  "theme/animation.scss":
+    "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
   "foundation/base/base.scss":
@@ -190,6 +204,12 @@ const sourceHashes = {
     "221a6e13f27fcfa1a28974c569af6804592d565c577dcf65db871ab36e07b21a",
   "foundation/keyframes/rotate.scss":
     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "foundation/collapsible/animation.scss":
+    "d1b6f38221f878deecdf85f55181b0fed8c1bd28dd3a1774d9173e19acbb0bbf",
+  "foundation/collapsible/collapsible.scss":
+    "bd94593372cfcfde75c062c06ab735c9c1167e282ac00c170cf9ca5730b3043a",
+  "foundation/collapsible/variables.scss":
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
 };
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
@@ -277,6 +297,7 @@ function entrySources() {
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
       '@import "./theme/tokens";',
+      '@import "./theme/animation";',
       '@import "./theme/mixins";',
       '@import "./vendor/foundation/base/base";',
       "",
@@ -349,6 +370,14 @@ function entrySources() {
       '@import "../vendor/foundation/tooltip/tooltip";',
       "",
     ].join("\n"),
+    "components/collapsible.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/collapsible/collapsible";',
+      "",
+    ].join("\n"),
     "components/popover.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -386,6 +415,7 @@ function entrySources() {
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',
+      '@import "./components/collapsible";',
       '@import "./components/icons";',
       '@import "./components/spin";',
       '@import "./components/iconButton";',

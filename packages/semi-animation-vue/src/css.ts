@@ -6,6 +6,8 @@ export interface CssMotionOptions {
   /** Hard upper bound in milliseconds, including CSS delays. Defaults to 10 seconds. */
   readonly timeout?: number | undefined;
   readonly property?: string | undefined;
+  /** Ignore native cancellations and retain the computed fallback for the owned request. */
+  readonly ignoreCancel?: boolean | undefined;
 }
 export interface MotionHandle {
   /** Abort without notifying completion. */
@@ -88,6 +90,7 @@ export function waitForMotion(
   };
   const listener = (event: Event) => {
     if (!scope.active || event.target !== element) return;
+    if (options.ignoreCancel && event.type.endsWith("cancel")) return;
     const motion = event as AnimationEvent | TransitionEvent;
     if (motion.pseudoElement) return;
     const key =

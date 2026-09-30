@@ -18,6 +18,7 @@ import {
   Progress,
   Tooltip,
   Popover,
+  Collapsible,
   provideAriaIdScope,
   Button,
   ButtonGroup,
@@ -54,6 +55,7 @@ import "semi-ui-vue/styles/components/highlight.css";
 import "semi-ui-vue/styles/components/progress.css";
 import "semi-ui-vue/styles/components/tooltip.css";
 import "semi-ui-vue/styles/components/popover.css";
+import "semi-ui-vue/styles/components/collapsible.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -67,6 +69,8 @@ const highlightText = ref("Before Semi after SEMI.");
 const highlightTag = ref("mark");
 const tooltipVisible = ref(false);
 const tooltipContent = ref("Interop Tooltip content");
+const collapsibleOpen = ref(true);
+const collapsibleText = ref("Interop Collapsible content");
 const popoverVisible = ref(false);
 const popoverContent = ref("Interop Popover content");
 const progressPercent = ref(25);
@@ -117,6 +121,25 @@ const app = createApp({
     provideAriaIdScope("interop-resource-consumer");
     return () =>
       h("section", { class: "interop-resources" }, [
+        h(
+          Collapsible,
+          {
+            className: "interop-collapsible",
+            isOpen: collapsibleOpen.value,
+            motion: false,
+          },
+          {
+            default: () =>
+              h(
+                "div",
+                {
+                  "data-interop-collapsible-content": "",
+                  style: { height: "40px" },
+                },
+                collapsibleText.value,
+              ),
+          },
+        ),
         h(
           Divider,
           {
@@ -578,6 +601,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      updateCollapsible(open: boolean): Promise<void>;
       updateLayout(visible: boolean): Promise<void>;
       unmount(): void;
     };
@@ -621,6 +645,11 @@ window.interopConsumer = {
   },
   async updateGrid(span) {
     gridSpan.value = span;
+    await nextTick();
+  },
+  async updateCollapsible(open) {
+    collapsibleOpen.value = open;
+    collapsibleText.value = "Updated interop Collapsible content";
     await nextTick();
   },
   async updateLayout(visible) {

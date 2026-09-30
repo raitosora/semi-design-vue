@@ -139,3 +139,30 @@ test("CSS negative delays, iteration counts, zero bounds and explicit finish are
   remove.mockRestore();
   element.remove();
 });
+
+test("CSS owned requests can ignore cancelled native tracks without losing the computed fallback", async () => {
+  const element = document.createElement("div");
+  element.style.transition = "height 50ms 20ms";
+  document.body.append(element);
+  const done = vi.fn();
+  const remove = vi.spyOn(element, "removeEventListener");
+  const motion = waitForMotion(
+    element,
+    { kind: "transition", ignoreCancel: true },
+    done,
+  );
+  try {
+    element.dispatchEvent(
+      new TransitionEvent("transitioncancel", { propertyName: "height" }),
+    );
+    expect(done).not.toHaveBeenCalled();
+    await expect.poll(() => done.mock.calls.length).toBe(1);
+    expect(done).toHaveBeenCalledWith("timeout");
+    expect(remove).toHaveBeenCalledTimes(4);
+    motion.finish();
+    expect(done).toHaveBeenCalledTimes(1);
+  } finally {
+    motion.cancel();
+    element.remove();
+  }
+});

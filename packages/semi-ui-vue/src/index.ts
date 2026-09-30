@@ -95,3 +95,9 @@ export type {
   PopoverTriggerProps,
   ArrowProps,
 } from "./components/popover/index.js";
+
+export { Collapsible } from "./components/collapsible/index.js";
+export type {
+  CollapsibleProps,
+  CollapsibleSlots,
+} from "./components/collapsible/index.js";

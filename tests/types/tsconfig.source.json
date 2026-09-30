@@ -17,6 +17,8 @@
     "tooltip-positive.tsx",
     "tooltip-negative.tsx",
     "popover-positive.tsx",
-    "popover-negative.tsx"
+    "popover-negative.tsx",
+    "collapsible-positive.tsx",
+    "collapsible-negative.tsx"
   ]
 }

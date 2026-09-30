@@ -13,6 +13,8 @@ const required = [
   "tests/types/StrictFixture.tsx",
   "tests/types/positive.tsx",
   "tests/types/negative.tsx",
+  "tests/types/collapsible-positive.tsx",
+  "tests/types/collapsible-negative.tsx",
   "tests/types/popover-positive.tsx",
   "tests/types/popover-negative.tsx",
   "tests/types/tooltip-positive.tsx",

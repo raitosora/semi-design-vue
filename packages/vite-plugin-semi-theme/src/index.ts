@@ -9,6 +9,7 @@ const entries = {
   input: "semi-ui-vue/styles/components/input.scss",
   tooltip: "semi-ui-vue/styles/components/tooltip.scss",
   popover: "semi-ui-vue/styles/components/popover.scss",
+  collapsible: "semi-ui-vue/styles/components/collapsible.scss",
   spin: "semi-ui-vue/styles/components/spin.scss",
   iconButton: "semi-ui-vue/styles/components/iconButton.scss",
   button: "semi-ui-vue/styles/components/button.scss",

@@ -85,6 +85,9 @@
       ],
       "semi-ui-vue/popover": [
         "./packages/semi-ui-vue/src/components/popover/index.ts"
+      ],
+      "semi-ui-vue/collapsible": [
+        "./packages/semi-ui-vue/src/components/collapsible/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

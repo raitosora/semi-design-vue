@@ -513,6 +513,17 @@ function checkGraph(mode = "vapor") {
     /semi-ui-vue\/dist\/popover-[^/\n]+\.js/.test(modules),
     "Popover implementation missing from consumer graph",
   );
+  assert(
+    /semi-ui-vue\/dist\/collapsible-[^/\n]+\.js/.test(modules),
+    "Collapsible implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/collapsible\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve Collapsible subpath",
+    );
   if (mode === "vapor")
     assert(
       graph.compilationInputs.some((id) =>
@@ -813,6 +824,93 @@ function checkTooltipTreeShaking() {
         assert(
           !source.includes("semi-tooltip-wrapper"),
           "Unused Tooltip marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkCollapsibleTreeShaking() {
+  for (const mode of [
+    "collapsible-only",
+    "collapsible-root-only",
+    "collapsible-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.collapsible.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasCollapsible = /semi-ui-vue\/dist\/collapsible-[^/\n]+\.js/.test(
+      modules,
+    );
+    assert(
+      hasCollapsible === (mode !== "collapsible-unused"),
+      `${mode}: Collapsible implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "collapsible-only"
+        ? "/semi-ui-vue/dist/components/collapsible/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "popover",
+      "tooltip",
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "collapsible-unused")
+        assert(
+          !source.includes("semi-collapsible"),
+          "Unused Collapsible marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -1189,6 +1287,12 @@ async function browserCheck(url) {
       (await page.evaluate(() => window.resourceConsumer.checkProgress())) ===
         "progress consumer passed",
       "Packed Progress behavior failed",
+    );
+    assert(
+      (await page.evaluate(() =>
+        window.resourceConsumer.checkCollapsible(),
+      )) === "collapsible consumer passed",
+      "Packed Collapsible behavior failed",
     );
     assert(
       (await page.evaluate(() => window.resourceConsumer.checkPopover())) ===
@@ -1614,6 +1718,32 @@ async function interopBrowserCheck(url) {
         )) === "31px",
       "Interop Icon size=inherit did not preserve 1em SVG sizing and an arbitrary caller font size",
     );
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".interop-collapsible")?.style.height === "40px",
+    );
+    assert(
+      (await page
+        .locator("[data-interop-collapsible-content]")
+        .textContent()) === "Interop Collapsible content",
+      "Interop Collapsible content failed",
+    );
+    await page.evaluate(() => window.interopConsumer.updateCollapsible(false));
+    assert(
+      (await page.locator("[data-interop-collapsible-content]").count()) === 0,
+      "Interop Collapsible closed content retained",
+    );
+    await page.evaluate(() => window.interopConsumer.updateCollapsible(true));
+    await page.waitForFunction(
+      () =>
+        document.querySelector(".interop-collapsible")?.style.height === "40px",
+    );
+    assert(
+      (await page
+        .locator("[data-interop-collapsible-content]")
+        .textContent()) === "Updated interop Collapsible content",
+      "Interop Collapsible owned slot update failed",
+    );
     await page.evaluate(() => window.interopConsumer.update());
     assert(
       (await page.locator("#interop-tooltip-popup").textContent()).includes(
@@ -2018,6 +2148,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:popover.tsx"),
     "Popover fixture was not compiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:collapsible.tsx"),
+    "Collapsible fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -2042,6 +2176,7 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "collapsible-browser.ts",
     "popover-browser.ts",
     "tooltip-browser.ts",
     "vite.config.ts",
@@ -2050,6 +2185,10 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.collapsible.config.ts",
+    "collapsible-only.ts",
+    "collapsible-root-only.ts",
+    "collapsible-unused.ts",
     "vite.popover.config.ts",
     "popover-only.ts",
     "popover-root-only.ts",
@@ -2095,8 +2234,12 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "collapsible-browser.ts",
           "popover-browser.ts",
           "tooltip-browser.ts",
+          "collapsible-only.ts",
+          "collapsible-root-only.ts",
+          "collapsible-unused.ts",
           "popover-only.ts",
           "popover-root-only.ts",
           "popover-unused.ts",
@@ -2187,6 +2330,7 @@ async function run() {
   checkHighlightTreeShaking();
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
+  checkCollapsibleTreeShaking();
   checkPopoverTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);

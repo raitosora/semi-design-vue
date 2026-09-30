@@ -200,7 +200,17 @@
       "default": "./dist/styles/components/popover.css"
     },
     "./styles/components/popover.css": "./dist/styles/components/popover.css",
-    "./styles/components/popover.scss": "./dist/styles/components/popover.scss"
+    "./styles/components/popover.scss": "./dist/styles/components/popover.scss",
+    "./collapsible": {
+      "types": "./dist/components/collapsible/index.d.ts",
+      "import": "./dist/components/collapsible/index.js"
+    },
+    "./styles/components/collapsible": {
+      "sass": "./dist/styles/components/collapsible.scss",
+      "default": "./dist/styles/components/collapsible.css"
+    },
+    "./styles/components/collapsible.css": "./dist/styles/components/collapsible.css",
+    "./styles/components/collapsible.scss": "./dist/styles/components/collapsible.scss"
   },
   "files": [
     "dist",
