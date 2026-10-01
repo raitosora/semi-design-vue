@@ -2508,7 +2508,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "overflowList-local-verify1-independent-20261001-r1",
+        "reviewId": "overflowList-font-fixture-independent-20261002-r1",
         "evidenceHashes": {
           "packages/semi-ui-vue/package.json": "12c82e9c82e34a22edec76ac1b4b870821f5492c2f1ebec32e241c8445d6c7b8",
           "packages/semi-ui-vue/src/components/overflowList/OverflowList.tsx": "a5a09d94e86ebf85a9d8517398d0bdf076882297f1e2d018b7570b23e4c978f3",
@@ -2527,7 +2527,7 @@
           "scripts/check-types.mjs": "e183c5601ae2dbf39af968c6a5288218fa2c0ec3c198b971e479566d82dffada",
           "scripts/style-inputs.mjs": "b88bfac4137b2fe51b90d548780bcfaad817a6e4d7f2a3dcfbdf23d33ce44216",
           "tests/browser/overflowList-boundaries.test.tsx": "321fc9161d5914352d57f6aa92f5299491b99e94a56d1fad5f27f79cea1b5494",
-          "tests/browser/overflowList-contract.test.tsx": "e023d9644f3daeafc2a4e0466d444715e2f0f02fb56ff8077f362fa40de2cf54",
+          "tests/browser/overflowList-contract.test.tsx": "26b893398877a4672768143ea13af2e6352b6080603fd2f39c5814e8ffa8c7da",
           "tests/browser/overflowList-interop.test.tsx": "932db0f2adf8032552a89c89e0e98c8c4d659904329183ac8e3f9a4fcf1ea407",
           "tests/browser/overflowList-layout.test.ts": "30a361d1f8485db5dddccd64ffd1950ea46d8ca3ab960299e164487d457114b6",
           "tests/browser/overflowList-ownership.test.tsx": "6363be5b7d80d85af29a749e190966897bd2a06baf8b301e173639c25aa1f70d",

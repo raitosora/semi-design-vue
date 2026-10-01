@@ -421,10 +421,40 @@ test("OverflowList restores caller aria-hidden and inert attrs after measurement
 
 test("OverflowList remeasures actual downloaded FontFace metrics without a synthetic loadingdone event", async () => {
   const family = "OverflowListRealFont";
-  const face = new FontFace(
-    family,
-    `url(${new URL("../../node_modules/vitepress/dist/client/theme-default/fonts/inter-roman-latin.woff2", import.meta.url).href})`,
-  );
+  const source = `url(${new URL("../../node_modules/vitepress/dist/client/theme-default/fonts/inter-roman-latin.woff2", import.meta.url).href})`;
+  const calibrationFamily = `${family}Calibration`;
+  const calibrationFace = new FontFace(calibrationFamily, source);
+  const probe = document.createElement("div");
+  probe.className = "semi-overflow-list-item";
+  probe.style.cssText =
+    "position:absolute;visibility:hidden;display:inline-flex;width:max-content;flex:none";
+  const probeItem = document.createElement("span");
+  probeItem.textContent = "iiiiiiii";
+  probeItem.style.cssText =
+    "display:block;white-space:nowrap;font:20px monospace";
+  probe.append(probeItem);
+  let fallbackWidth: number;
+  let loadedWidth: number;
+  try {
+    await calibrationFace.load();
+    document.fonts.add(calibrationFace);
+    document.body.append(probe);
+    fallbackWidth = probe.clientWidth;
+    probeItem.style.font = `20px ${calibrationFamily}, monospace`;
+    loadedWidth = probe.clientWidth;
+  } finally {
+    probe.remove();
+    document.fonts.delete(calibrationFace);
+  }
+  const lower = Math.max(loadedWidth * 3 + 20, fallbackWidth + 20);
+  const upper = Math.min(loadedWidth * 4, fallbackWidth * 2 + 20);
+  expect(lower).toBeLessThan(upper);
+  const containerWidth = Math.floor((lower + upper) / 2);
+  expect(loadedWidth * 3 + 20).toBeLessThanOrEqual(containerWidth);
+  expect(loadedWidth * 4).toBeGreaterThan(containerWidth);
+  expect(fallbackWidth + 20).toBeLessThanOrEqual(containerWidth);
+  expect(fallbackWidth * 2 + 20).toBeGreaterThan(containerWidth);
+  const face = new FontFace(family, source);
   const font = shallowRef("20px monospace");
   const loaded = vi.fn();
   document.fonts.addEventListener("loadingdone", loaded);
@@ -435,7 +465,7 @@ test("OverflowList remeasures actual downloaded FontFace metrics without a synth
         overflowRenderer={() => (
           <span style="width:20px;display:block;flex:none">+</span>
         )}
-        style="width:160px;display:flex"
+        style={{ width: `${containerWidth}px`, display: "flex" }}
         visibleItemRenderer={(item: OverflowItem) => (
           <span
             data-item={String(item.key)}
@@ -453,6 +483,10 @@ test("OverflowList remeasures actual downloaded FontFace metrics without a synth
     const before = f.host
       .querySelector("[data-item]")!
       .getBoundingClientRect().width;
+    expect(
+      f.host.querySelector<HTMLElement>(".semi-overflow-list-item")!
+        .clientWidth,
+    ).toBe(fallbackWidth);
     document.fonts.add(face);
     font.value = `20px ${family}, monospace`;
     await nextTick();
@@ -460,7 +494,26 @@ test("OverflowList remeasures actual downloaded FontFace metrics without a synth
     await document.fonts.ready;
     expect(faces).toContain(face);
     expect(face.status).toBe("loaded");
-    await expect.poll(() => loaded.mock.calls.length).toBeGreaterThan(0);
+    await expect
+      .poll(() =>
+        loaded.mock.calls.some(([event]) =>
+          (event as FontFaceSetLoadEvent).fontfaces.includes(face),
+        ),
+      )
+      .toBe(true);
+    await ready();
+    console.info(
+      "OverflowList FontFace geometry",
+      JSON.stringify({
+        fallbackWidth,
+        calibratedLoadedWidth: loadedWidth,
+        containerWidth,
+        actualItemWidth: f.host.querySelector<HTMLElement>(
+          ".semi-overflow-list-item",
+        )!.clientWidth,
+        visibleItems: visible(f.host).length,
+      }),
+    );
     await expect.poll(() => visible(f.host).length).toBe(3);
     await ready();
     const after = f.host
@@ -474,12 +527,16 @@ test("OverflowList remeasures actual downloaded FontFace metrics without a synth
       ".semi-overflow-list-overflow",
     )!.clientWidth;
     expect(integerOverflow).toBe(20);
-    expect(integerItem * 3 + integerOverflow).toBeLessThanOrEqual(160);
-    expect(integerItem * 4 + integerOverflow).toBeGreaterThan(160);
+    expect(integerItem).toBe(loadedWidth);
+    expect(integerItem * 3 + integerOverflow).toBeLessThanOrEqual(
+      containerWidth,
+    );
+    expect(integerItem * 4 + integerOverflow).toBeGreaterThan(containerWidth);
+    expect(integerItem * 4).toBeGreaterThan(containerWidth);
     expect(
       f.host.querySelector(".semi-overflow-list")!.getBoundingClientRect()
         .width,
-    ).toBe(160);
+    ).toBe(containerWidth);
   } finally {
     f.unmount();
     document.fonts.delete(face);
