@@ -1,3 +1,4 @@
+import { overflowListMarkup } from "./overflowList-markup";
 import { progressMarkup } from "./progress-markup";
 import { highlightMarkup } from "./highlight-markup";
 import { dividerMarkup } from "./divider-markup";
@@ -24,4 +25,5 @@ document.body.innerHTML = `
   ${skeletonMarkup("semi")}
   ${highlightMarkup("semi")}
   ${progressMarkup("semi")}
+  ${overflowListMarkup("semi")}
 `;

@@ -13,6 +13,7 @@ const components = [
   "tooltip",
   "popover",
   "collapsible",
+  "overflowList",
   "spin",
   "iconButton",
   "button",
@@ -90,6 +91,7 @@ const foundationFiles = {
     "button/variables.scss",
     "keyframes/rotate.scss",
   ],
+  overflowList: ["overflowList/overflowList.scss", "overflowList/rtl.scss"],
   collapsible: [
     "collapsible/animation.scss",
     "collapsible/collapsible.scss",
@@ -204,6 +206,10 @@ const sourceHashes = {
     "221a6e13f27fcfa1a28974c569af6804592d565c577dcf65db871ab36e07b21a",
   "foundation/keyframes/rotate.scss":
     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "foundation/overflowList/overflowList.scss":
+    "0b8482146dfa59d4ee5de06b200a55dcb2f685a82a459fe8758c0f8662930de1",
+  "foundation/overflowList/rtl.scss":
+    "bd8b8aa41591753284268ee8e0247da9ed5925f2fed7f41056e388b73ba3a78e",
   "foundation/collapsible/animation.scss":
     "d1b6f38221f878deecdf85f55181b0fed8c1bd28dd3a1774d9173e19acbb0bbf",
   "foundation/collapsible/collapsible.scss":
@@ -370,6 +376,12 @@ function entrySources() {
       '@import "../vendor/foundation/tooltip/tooltip";',
       "",
     ].join("\n"),
+    "components/overflowList.scss": [
+      "$semi-prefix: 'semi' !default;",
+      '@import "../theme/variables";',
+      '@import "../vendor/foundation/overflowList/overflowList";',
+      "",
+    ].join("\n"),
     "components/collapsible.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -416,6 +428,7 @@ function entrySources() {
       '@import "./components/tooltip";',
       '@import "./components/popover";',
       '@import "./components/collapsible";',
+      '@import "./components/overflowList";',
       '@import "./components/icons";',
       '@import "./components/spin";',
       '@import "./components/iconButton";',

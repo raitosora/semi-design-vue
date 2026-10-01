@@ -190,6 +190,16 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Popover source hash is missing: ${file}`,
     );
+  for (const name of ["overflowList", "rtl"]) {
+    const file = `foundation/overflowList/${name}.scss`;
+    assert(
+      sources.sources[file] ===
+        (name === "overflowList"
+          ? "0b8482146dfa59d4ee5de06b200a55dcb2f685a82a459fe8758c0f8662930de1"
+          : "bd8b8aa41591753284268ee8e0247da9ed5925f2fed7f41056e388b73ba3a78e"),
+      `OverflowList source hash is missing or incorrect: ${file}`,
+    );
+  }
   for (const file of [
     "collapsible/collapsible",
     "collapsible/variables",
@@ -714,6 +724,115 @@ async function tooltipBrowserCheck(url) {
   }
 }
 
+async function overflowListBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("overflowList.html", url).href);
+    await page.evaluate(() => {
+      window.overflowListStyleOriginalDir = document.body.getAttribute("dir");
+    });
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+            for (const prefix of ["semi", "consumer", "theme"])
+              document.querySelector(
+                `[data-overflow-list-style="${prefix}"]`,
+              ).className = value === "rtl" ? `${prefix}-rtl` : "";
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const geometry = await page
+              .locator(`[data-overflow-list-root="${prefix}"]`)
+              .evaluate((element) => {
+                const css = getComputedStyle(element);
+                return {
+                  display: css.display,
+                  wrap: css.flexWrap,
+                  minWidth: css.minWidth,
+                  direction: css.direction,
+                  width: element.getBoundingClientRect().width,
+                  item: element.firstElementChild.getBoundingClientRect().width,
+                  spacerShrink: getComputedStyle(element.lastElementChild)
+                    .flexShrink,
+                };
+              });
+            assert(
+              geometry.display === "flex" &&
+                geometry.wrap === "nowrap" &&
+                geometry.minWidth === "0px" &&
+                geometry.direction === direction &&
+                geometry.width === 180 &&
+                geometry.item === 60 &&
+                geometry.spacerShrink === "1",
+              `${prefix} ${theme} ${direction} OverflowList real geometry/styles failed`,
+            );
+            const scroll = await page
+              .locator(`[data-overflow-list-scroll="${prefix}"]`)
+              .evaluate((element) => ({
+                x: getComputedStyle(element).overflowX,
+                width: element.getBoundingClientRect().width,
+                client: element.clientWidth,
+                content: element.scrollWidth,
+              }));
+            assert(
+              scroll.x === "scroll" &&
+                scroll.width === 180 &&
+                scroll.client === 180 &&
+                scroll.content === 240,
+              `${prefix} OverflowList scroll wrapper geometry failed`,
+            );
+          }
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 360 });
+      await page.evaluate(() => {
+        for (const node of document.querySelectorAll(
+          "[data-overflow-list-root]",
+        ))
+          node.style.width = "140px";
+      });
+      assert(
+        await page
+          .locator('[data-overflow-list-root="semi"]')
+          .evaluate((node) => node.getBoundingClientRect().width === 140),
+        "OverflowList dynamic style width failed",
+      );
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "OverflowList stylesheet overflows narrow viewport",
+      );
+      assert(
+        errors.length === 0,
+        `OverflowList stylesheet errors: ${errors.join("; ")}`,
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/overflowList.png",
+        ),
+      });
+    } finally {
+      await page.evaluate(() => {
+        const original = window.overflowListStyleOriginalDir;
+        if (original === null) document.body.removeAttribute("dir");
+        else document.body.setAttribute("dir", original);
+      });
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
 async function collapsibleBrowserCheck(url) {
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
@@ -983,6 +1102,11 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "overflowList-only.scss",
+    "overflowList-markup.ts",
+    "overflowList-main.ts",
+    "overflowList.html",
+    "vite.overflowList.config.ts",
     "collapsible-only.scss",
     "collapsible-main.ts",
     "collapsible.html",
@@ -1151,6 +1275,10 @@ try {
     directCss.includes(".consumer-progress-circle") &&
       directCss.includes(".consumer-progress-track-inner"),
     "Direct public Progress SCSS entry missing",
+  );
+  assert(
+    directCss.includes(".consumer-overflow-list-scroll-wrapper"),
+    "Direct public OverflowList Sass entry missing",
   );
   const plainOutput = files(join(consumer, "plain-dist"));
   assert(
@@ -1333,6 +1461,52 @@ try {
       "--configLoader",
       "runner",
       "--config",
+      "vite.overflowList.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const overflowListCss = files(join(consumer, "overflowList-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      overflowListCss.includes(`.${prefix}-overflow-list-scroll-wrapper`) &&
+        overflowListCss.includes(`.${prefix}-rtl`),
+      `${prefix} OverflowList CSS/SCSS/theme/RTL entry missing`,
+    );
+  const overflowListGraph = checkGraph("overflowList-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/overflowList.css",
+    "/overflowList-only.scss",
+    "virtual:semi-theme.scss",
+  ])
+    assert(
+      overflowListGraph.modules.some((id) => id.includes(fragment)),
+      `OverflowList style public entry missing from isolated graph: ${fragment}`,
+    );
+  assert(
+    !overflowListGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "OverflowList component-only probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:tooltip|button|input|spin|space|row|progress|collapsible)/.test(
+      overflowListCss,
+    ),
+    "OverflowList component-only CSS retained another component",
+  );
+  await withPreview("overflowList-dist", overflowListBrowserCheck);
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
       "vite.config.ts",
     ],
     { cwd: consumer, env: consumerEnv, stdio: "inherit" },
@@ -1392,6 +1566,15 @@ try {
     css.includes(".consumer-progress-circle") &&
       css.includes(".semi-progress-circle"),
     "Default or custom-prefix Progress CSS missing",
+  );
+  assert(
+    css.includes(".consumer-overflow-list") &&
+      css.includes(".semi-overflow-list"),
+    "Default or custom-prefix OverflowList aggregate CSS missing",
+  );
+  assert(
+    plainCss.includes(".semi-overflow-list-scroll-wrapper"),
+    "Plain OverflowList aggregate CSS missing",
   );
   for (const path of output.filter((path) => /\.[cm]?js$/.test(path))) {
     const source = readFileSync(path, "utf8");

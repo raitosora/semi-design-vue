@@ -1,15 +1,22 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import {
   cp,
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import ts from "typescript";
+import {
+  readCurrentExports,
+  resolvePublicTypeSource,
+} from "../../scripts/upstream-matrix.mjs";
 import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
 import {
@@ -221,3 +228,116 @@ it("checks formal inputs alone and fails on real source, generated output and in
     await rm(root, { recursive: true, force: true });
   }
 }, 120000);
+
+it("resolves OverflowList root, subpath and transitive source in a cold tree without dist", async () => {
+  const root = await mkdtemp(join(tmpdir(), "semi-overflow-cold-source-"));
+  try {
+    const copy = async (path) => {
+      await mkdir(dirname(join(root, path)), { recursive: true });
+      await cp(join(repository, path), join(root, path), { recursive: true });
+    };
+    for (const name of await readdir(join(repository, "packages"))) {
+      await copy(`packages/${name}/src`);
+      await copy(`packages/${name}/package.json`);
+      await expect(
+        readFile(join(root, `packages/${name}/dist/index.js`)),
+      ).rejects.toThrow(/ENOENT/);
+    }
+    await copy("tsconfig.base.json");
+    // This is compiler resolution against fixed tooling, not an isolated package installation.
+    await symlink(
+      join(repository, "node_modules"),
+      join(root, "node_modules"),
+      "dir",
+    );
+    // es-toolkit is a real UI dependency kept in the UI package's installed tree,
+    // rather than a root development dependency. Only that external installation
+    // is shared; project modules still resolve through the copied source aliases.
+    await mkdir(join(root, "packages/semi-ui-vue/node_modules"), {
+      recursive: true,
+    });
+    await symlink(
+      join(repository, "packages/semi-ui-vue/node_modules/es-toolkit"),
+      join(root, "packages/semi-ui-vue/node_modules/es-toolkit"),
+      "dir",
+    );
+    const config = ts.readConfigFile(
+      join(root, "tsconfig.base.json"),
+      ts.sys.readFile,
+    );
+    const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
+    const resolveSource = (specifier, from) => {
+      const result = ts.resolveModuleName(
+        specifier,
+        from,
+        parsed.options,
+        ts.sys,
+      ).resolvedModule;
+      expect(result, `${specifier} from ${from}`).toBeDefined();
+      if (/^semi-/.test(specifier))
+        expect(result.resolvedFileName).toMatch(
+          new RegExp(`^${root}/packages/`),
+        );
+      if (result.resolvedFileName.startsWith(`${root}/packages/`))
+        expect(result.resolvedFileName).not.toContain("/dist/");
+      return result.resolvedFileName;
+    };
+    const entry = resolveSource("semi-ui-vue", join(root, "consumer.ts"));
+    expect(entry).toBe(join(root, "packages/semi-ui-vue/src/index.ts"));
+    const inventory = (path) =>
+      readCurrentExports(
+        readFileSync(path, "utf8"),
+        (specifier) => inventory(resolveSource(specifier, path)),
+        path,
+      );
+    expect(inventory(entry).values).toContain("OverflowList");
+    expect(inventory(entry).types).toContain("OverflowListProps");
+    const subpath = resolveSource(
+      "semi-ui-vue/overflowList",
+      join(root, "consumer.ts"),
+    );
+    expect(subpath).toBe(
+      join(root, "packages/semi-ui-vue/src/components/overflowList/index.ts"),
+    );
+    const sourcePath =
+      "packages/semi-ui-vue/src/components/overflowList/index.ts";
+    const subpathText = await readFile(subpath, "utf8");
+    const manifest = JSON.parse(
+      await readFile(join(root, "packages/semi-ui-vue/package.json"), "utf8"),
+    );
+    expect(
+      resolvePublicTypeSource(
+        "packages/semi-ui-vue",
+        manifest,
+        "./overflowList",
+        {
+          [sourcePath]: subpathText,
+        },
+      ),
+    ).toEqual({
+      sourcePath,
+      declaration: "./dist/components/overflowList/index.d.ts",
+    });
+    const seen = new Set();
+    const visit = async (path) => {
+      if (seen.has(path)) return;
+      seen.add(path);
+      const source = await readFile(path, "utf8");
+      for (const { fileName } of ts.preProcessFile(source).importedFiles) {
+        const target = resolveSource(fileName, path);
+        if (target.startsWith(`${root}/packages/`)) await visit(target);
+      }
+    };
+    await visit(subpath);
+    for (const path of [
+      "packages/semi-ui-vue/src/components/overflowList/OverflowList.tsx",
+      "packages/semi-ui-vue/src/components/overflowList/types.ts",
+      "packages/semi-ui-vue/src/components/overflowList/render.tsx",
+      "packages/semi-animation-vue/src/lifecycle/index.ts",
+      "packages/semi-ui-vue/src/context/types.ts",
+    ])
+      expect(seen.has(join(root, path)), path).toBe(true);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

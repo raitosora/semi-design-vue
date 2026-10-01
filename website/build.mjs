@@ -197,6 +197,9 @@ await writeFile(
           "semi-ui-vue/progress": [
             "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
           ],
+          "semi-ui-vue/overflowList": [
+            "../../packages/semi-ui-vue/dist/components/overflowList/index.d.ts",
+          ],
           "semi-ui-vue/collapsible": [
             "../../packages/semi-ui-vue/dist/components/collapsible/index.d.ts",
           ],

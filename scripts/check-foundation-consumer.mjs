@@ -133,6 +133,99 @@ async function browserCheck(directory, mode) {
       60,
       `${mode} Layout Sider width changed`,
     );
+    await page.waitForFunction(
+      () =>
+        [
+          ...document.querySelectorAll("[data-foundation-overflow-item]"),
+        ].filter(
+          (node) =>
+            node.getClientRects().length > 0 &&
+            !node.closest("[hidden], [inert]") &&
+            getComputedStyle(node).visibility === "visible",
+        ).length === 2,
+    );
+    assert.equal(
+      await page
+        .locator(".foundation-overflow-list")
+        .evaluate((node) => node.getBoundingClientRect().width),
+      155,
+      `${mode} OverflowList real root geometry failed`,
+    );
+    await expect(
+      page.locator("[data-foundation-overflow-count]"),
+    ).toHaveAttribute("data-foundation-overflow-count", "1");
+    await expect(page.locator("[data-foundation-overflow-count]")).toHaveText(
+      "+1",
+    );
+    await page.evaluate(() => {
+      window.foundationOverflowFirst = document.querySelector(
+        '[data-foundation-overflow-item="a"]',
+      );
+    });
+    await page.locator("#overflow-resize").click();
+    await page.waitForFunction(
+      () =>
+        [
+          ...document.querySelectorAll("[data-foundation-overflow-item]"),
+        ].filter(
+          (node) =>
+            node.getClientRects().length > 0 &&
+            !node.closest("[hidden], [inert]") &&
+            getComputedStyle(node).visibility === "visible",
+        ).length === 3,
+    );
+    await expect(
+      page.locator('[data-foundation-overflow-item="a"]'),
+    ).toHaveText("Updated Foundation a");
+    await expect(
+      page.locator("[data-foundation-overflow-count]"),
+    ).toHaveAttribute("data-foundation-overflow-count", "0");
+    await expect(page.locator("[data-foundation-overflow-count]")).toHaveText(
+      "+0",
+    );
+    assert.equal(
+      await page.evaluate(() =>
+        [...document.querySelectorAll("[data-foundation-overflow-item]")]
+          .map(
+            (node) =>
+              `${node.getAttribute("data-foundation-overflow-item")}:${node.getAttribute("data-foundation-overflow-index")}`,
+          )
+          .join(","),
+      ),
+      "c:0,a:1,d:2",
+      `${mode} OverflowList reorder slot index did not update`,
+    );
+    assert(
+      await page.evaluate(
+        () =>
+          window.foundationOverflowFirst ===
+          document.querySelector('[data-foundation-overflow-item="a"]'),
+      ),
+      `${mode} OverflowList keyed reorder replaced the owned node`,
+    );
+    await page.locator("#overflow-narrow").click();
+    await page.waitForFunction(
+      () =>
+        [
+          ...document.querySelectorAll("[data-foundation-overflow-item]"),
+        ].filter(
+          (node) =>
+            node.getClientRects().length > 0 &&
+            !node.closest("[hidden], [inert]") &&
+            getComputedStyle(node).visibility === "visible",
+        ).length === 1,
+    );
+    await expect(
+      page.locator(
+        "[data-foundation-overflow-item]:visible:not([hidden] *, [inert] *)",
+      ),
+    ).toHaveAttribute("data-foundation-overflow-item", "c");
+    await expect(
+      page.locator("[data-foundation-overflow-count]"),
+    ).toHaveAttribute("data-foundation-overflow-count", "2");
+    await expect(page.locator("[data-foundation-overflow-count]")).toHaveText(
+      "+2",
+    );
     const input = page.getByRole("textbox", {
       name: "Foundation input",
       exact: true,
@@ -190,14 +283,23 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(page.locator(".foundation-overflow-list")).toHaveCount(0);
+    const overflowState = await page.locator("#overflow-changes").textContent();
     await page.evaluate(() => {
       window.detachedTrigger.dispatchEvent(new MouseEvent("mouseenter"));
       window.dispatchEvent(new Event("resize"));
       window.dispatchEvent(new Event("scroll"));
     });
     await expect(page.locator("#visible")).toHaveText(state);
+    await expect(page.locator("#overflow-changes")).toHaveText(overflowState);
     assert.deepEqual(errors, [], `${mode} browser errors`);
     await page.screenshot({ path: join(evidence, `${mode}.png`) });
+    await page.evaluate(() => window.unmountFoundation());
+    assert.equal(
+      await page.locator("#app").evaluate((node) => node.childNodes.length),
+      0,
+      `${mode} Foundation/OverflowList unmount left real DOM`,
+    );
   } finally {
     await browser?.close();
     await new Promise((accept, reject) =>
@@ -312,6 +414,20 @@ try {
           /semi-ui-vue\/dist\/layout-[^/]+\.js$/.test(id) && renderedLength > 0,
       ),
       "Packed Layout implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          /semi-ui-vue\/dist\/overflowList-[^/]+\.js$/.test(id) &&
+          renderedLength > 0,
+      ),
+      "Packed OverflowList implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/overflowList\.css$/.test(id),
+      ),
+      "Packed OverflowList stylesheet is absent from Foundation consumer bundle",
     );
     assert(
       graph.modules.every(

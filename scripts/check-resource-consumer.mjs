@@ -514,6 +514,17 @@ function checkGraph(mode = "vapor") {
     "Popover implementation missing from consumer graph",
   );
   assert(
+    /semi-ui-vue\/dist\/overflowList-[^/\n]+\.js/.test(modules),
+    "OverflowList implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        /semi-ui-vue\/dist\/components\/overflowList\/index\.js$/.test(id),
+      ),
+      "Pure Vapor consumer did not resolve OverflowList subpath",
+    );
+  assert(
     /semi-ui-vue\/dist\/collapsible-[^/\n]+\.js/.test(modules),
     "Collapsible implementation missing from consumer graph",
   );
@@ -824,6 +835,94 @@ function checkTooltipTreeShaking() {
         assert(
           !source.includes("semi-tooltip-wrapper"),
           "Unused Tooltip marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkOverflowListTreeShaking() {
+  for (const mode of [
+    "overflowList-only",
+    "overflowList-root-only",
+    "overflowList-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.overflowList.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasOverflowList = /semi-ui-vue\/dist\/overflowList-[^/\n]+\.js/.test(
+      modules,
+    );
+    assert(
+      hasOverflowList === (mode !== "overflowList-unused"),
+      `${mode}: OverflowList implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "overflowList-only"
+        ? "/semi-ui-vue/dist/components/overflowList/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "collapsible",
+      "popover",
+      "tooltip",
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "overflowList-unused")
+        assert(
+          !source.includes("semi-overflow-list"),
+          "Unused OverflowList marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -1290,6 +1389,12 @@ async function browserCheck(url) {
     );
     assert(
       (await page.evaluate(() =>
+        window.resourceConsumer.checkOverflowList(),
+      )) === "overflowList consumer passed",
+      "Packed OverflowList behavior failed",
+    );
+    assert(
+      (await page.evaluate(() =>
         window.resourceConsumer.checkCollapsible(),
       )) === "collapsible consumer passed",
       "Packed Collapsible behavior failed",
@@ -1728,6 +1833,82 @@ async function interopBrowserCheck(url) {
         .textContent()) === "Interop Collapsible content",
       "Interop Collapsible content failed",
     );
+    await page.waitForFunction(
+      () =>
+        [...document.querySelectorAll("[data-interop-overflow-item]")].filter(
+          (node) =>
+            node.getClientRects().length > 0 && !node.closest("[hidden]"),
+        ).length === 2,
+    );
+    assert(
+      await page
+        .locator(".interop-overflow-list")
+        .evaluate(
+          (node) => Math.abs(node.getBoundingClientRect().width - 155) < 0.1,
+        ),
+      "Interop OverflowList real root geometry failed",
+    );
+    await page.evaluate(() => window.interopConsumer.updateOverflowList(220));
+    await page.waitForFunction(
+      () =>
+        [...document.querySelectorAll("[data-interop-overflow-item]")].filter(
+          (node) =>
+            node.getClientRects().length > 0 && !node.closest("[hidden]"),
+        ).length === 3,
+    );
+    assert(
+      (await page.locator('[data-interop-overflow-item="a"]').textContent()) ===
+        "Updated interop a",
+      "Interop OverflowList renderer slot update failed",
+    );
+    const scrollWrapper = page.locator(
+      ".interop-scroll-overflow-list .semi-overflow-list-scroll-wrapper",
+    );
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector("[data-interop-scroll-after]")
+          ?.getAttribute("data-interop-scroll-after") === "b,c",
+    );
+    assert(
+      await scrollWrapper.evaluate(
+        (node) => node.clientWidth === 100 && node.scrollWidth === 180,
+      ),
+      "Interop scroll OverflowList real wrapper geometry failed",
+    );
+    await scrollWrapper.evaluate((node) => {
+      node.scrollLeft = 80;
+    });
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector("[data-interop-scroll-before]")
+          ?.getAttribute("data-interop-scroll-before") === "a,b" &&
+        document
+          .querySelector("[data-interop-scroll-after]")
+          ?.getAttribute("data-interop-scroll-after") === "",
+    );
+    await page.evaluate(() => window.interopConsumer.updateOverflowScroll(240));
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector("[data-interop-scroll-before]")
+          ?.getAttribute("data-interop-scroll-before") === "" &&
+        document
+          .querySelector("[data-interop-scroll-after]")
+          ?.getAttribute("data-interop-scroll-after") === "",
+    );
+    assert(
+      await scrollWrapper.evaluate(
+        (node) => node.clientWidth === 200 && node.scrollWidth === 200,
+      ),
+      "Interop scroll OverflowList resize geometry failed",
+    );
+    assert(
+      (await page.locator('[data-interop-scroll-item="a"]').textContent()) ===
+        "Updated interop scroll a",
+      "Interop scroll OverflowList native item slot text update failed",
+    );
     await page.evaluate(() => window.interopConsumer.updateCollapsible(false));
     assert(
       (await page.locator("[data-interop-collapsible-content]").count()) === 0,
@@ -2008,7 +2189,37 @@ async function interopBrowserCheck(url) {
         ".semi-popover-wrapper [data-interop-popover-content]",
       ),
     );
+    const overflowScrollNotifications = await page.evaluate(() =>
+      window.interopConsumer.getOverflowScrollNotifications(),
+    );
+    await page.evaluate(() => {
+      window.detachedOverflowScroller = document.querySelector(
+        ".interop-scroll-overflow-list .semi-overflow-list-scroll-wrapper",
+      );
+    });
     await page.evaluate(() => window.interopConsumer.unmount());
+    assert(
+      (await page.locator(".interop-scroll-overflow-list").count()) === 0 &&
+        (await page.locator(".interop-overflow-list").count()) === 0,
+      "Interop OverflowList unmount retained owned DOM",
+    );
+    await page.evaluate(() => {
+      window.detachedOverflowScroller.dispatchEvent(new Event("scroll"));
+      window.dispatchEvent(new Event("resize"));
+    });
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        ),
+    );
+    assert(
+      (await page.evaluate(() =>
+        window.interopConsumer.getOverflowScrollNotifications(),
+      )) === overflowScrollNotifications,
+      "Detached interop OverflowList revived observer notifications",
+    );
+
     assert(
       (await page.locator("#interop-tooltip-popup").count()) === 0,
       "Interop Tooltip teardown left portal DOM",
@@ -2152,6 +2363,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:collapsible.tsx"),
     "Collapsible fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:overflowList.tsx"),
+    "OverflowList fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -2176,6 +2391,7 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "overflowList-browser.ts",
     "collapsible-browser.ts",
     "popover-browser.ts",
     "tooltip-browser.ts",
@@ -2185,6 +2401,10 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.overflowList.config.ts",
+    "overflowList-only.ts",
+    "overflowList-root-only.ts",
+    "overflowList-unused.ts",
     "vite.collapsible.config.ts",
     "collapsible-only.ts",
     "collapsible-root-only.ts",
@@ -2234,9 +2454,13 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "overflowList-browser.ts",
           "collapsible-browser.ts",
           "popover-browser.ts",
           "tooltip-browser.ts",
+          "overflowList-only.ts",
+          "overflowList-root-only.ts",
+          "overflowList-unused.ts",
           "collapsible-only.ts",
           "collapsible-root-only.ts",
           "collapsible-unused.ts",
@@ -2331,6 +2555,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkOverflowListTreeShaking();
   checkPopoverTreeShaking();
   await withPreview("dist", browserCheck);
   await withPreview("interop-dist", interopBrowserCheck);

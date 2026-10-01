@@ -5,7 +5,10 @@ import "semi-ui-vue/styles/components/grid.css";
 import "semi-ui-vue/styles/components/layout.css";
 import "semi-ui-vue/styles/components/tooltip.css";
 import "semi-ui-vue/styles/components/popover.css";
+import "semi-ui-vue/styles/components/overflowList.css";
 
 if (!FoundationHarness.__vapor)
   throw new Error("Expected precompiled Vapor fixture");
-createApp(FoundationHarness).use(vaporInteropPlugin).mount("#app");
+const app = createApp(FoundationHarness).use(vaporInteropPlugin);
+app.mount("#app");
+window.unmountFoundation = () => app.unmount();

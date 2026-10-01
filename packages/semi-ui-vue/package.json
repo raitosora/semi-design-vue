@@ -210,7 +210,17 @@
       "default": "./dist/styles/components/collapsible.css"
     },
     "./styles/components/collapsible.css": "./dist/styles/components/collapsible.css",
-    "./styles/components/collapsible.scss": "./dist/styles/components/collapsible.scss"
+    "./styles/components/collapsible.scss": "./dist/styles/components/collapsible.scss",
+    "./overflowList": {
+      "types": "./dist/components/overflowList/index.d.ts",
+      "import": "./dist/components/overflowList/index.js"
+    },
+    "./styles/components/overflowList": {
+      "sass": "./dist/styles/components/overflowList.scss",
+      "default": "./dist/styles/components/overflowList.css"
+    },
+    "./styles/components/overflowList.css": "./dist/styles/components/overflowList.css",
+    "./styles/components/overflowList.scss": "./dist/styles/components/overflowList.scss"
   },
   "files": [
     "dist",
@@ -230,6 +240,7 @@
   },
   "dependencies": {
     "date-fns": "2.30.0",
+    "es-toolkit": "1.39.10",
     "semi-animation-vue": "workspace:*",
     "semi-icons-vue": "workspace:*"
   }

@@ -20,6 +20,7 @@ const options: SemiThemeOptions = {
     "skeleton",
     "highlight",
     "progress",
+    "overflowList",
   ],
 };
 

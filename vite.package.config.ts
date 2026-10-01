@@ -1,4 +1,4 @@
-import { globSync, readFileSync } from "node:fs";
+import { globSync, readFileSync, realpathSync } from "node:fs";
 import { isBuiltin } from "node:module";
 import { relative, resolve } from "node:path";
 import { defineConfig } from "vite";
@@ -11,6 +11,27 @@ const externalPackages = Object.keys({
   ...manifest.dependencies,
   ...manifest.peerDependencies,
 });
+// Only the existing pinned Tooltip Foundation imports retain their utility
+// inline closure. The UI's own es-toolkit imports remain declared externals.
+const tooltipInlineProfile: {
+  sources: Array<{ package: string; path: string }>;
+} = JSON.parse(
+  readFileSync(
+    new URL("./scripts/tooltip-inline-inputs.json", import.meta.url),
+    "utf8",
+  ),
+);
+const tooltipInlineImporters = new Set(
+  manifest.name === "semi-ui-vue"
+    ? tooltipInlineProfile.sources
+        .filter((source) => source.package === "@douyinfe/semi-foundation")
+        .map((source) =>
+          realpathSync(
+            resolve("../../node_modules", source.package, source.path),
+          ),
+        )
+    : [],
+);
 const resourceEntries = globSync([
   "src/icons/*.tsx",
   "src/icons/index.ts",
@@ -84,11 +105,20 @@ export default defineConfig({
       fileName: (_format, name) => `${name}.js`,
     },
     rolldownOptions: {
-      external: (id) =>
-        (nodePackage && isBuiltin(id)) ||
-        externalPackages.some(
-          (name) => id === name || id.startsWith(`${name}/`),
-        ),
+      external: (id, importer) => {
+        if (
+          id === "es-toolkit/compat" &&
+          importer !== undefined &&
+          tooltipInlineImporters.has(importer)
+        )
+          return false;
+        return (
+          (nodePackage && isBuiltin(id)) ||
+          externalPackages.some(
+            (name) => id === name || id.startsWith(`${name}/`),
+          )
+        );
+      },
     },
   },
 });

@@ -6,6 +6,7 @@ import {
   Space,
   Tooltip,
   Popover,
+  OverflowList,
   provideAriaIdScope,
 } from "semi-ui-vue";
 import { FoundationInput } from "../../website/examples/foundation/Input.vapor";
@@ -26,6 +27,10 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const overflowWidth = ref(155);
+  const overflowLabel = ref("Foundation");
+  const overflowChanges = ref(0);
+  const overflowItems = ref([{ key: "a" }, { key: "b" }, { key: "c" }]);
   return (
     <section>
       {alive.value && (
@@ -68,6 +73,44 @@ export const FoundationHarness = defineVaporComponent(() => {
                     v-slots={{ default: () => <span>Foundation content</span> }}
                   />
                 </>
+              ),
+            }}
+          />
+          <OverflowList
+            className="foundation-overflow-list"
+            collapseFrom="end"
+            itemKey="key"
+            items={overflowItems.value}
+            minVisibleItems={0}
+            onOverflow={() => overflowChanges.value++}
+            style={{ width: `${overflowWidth.value}px` }}
+            v-slots={{
+              visibleItem: (scope) => (
+                <button
+                  data-foundation-overflow-index={scope.index}
+                  data-foundation-overflow-item={String(scope.item.key)}
+                  style={{
+                    flex: "0 0 60px",
+                    width: "60px",
+                    padding: "0",
+                    border: "0",
+                  }}
+                >
+                  {`${overflowLabel.value} ${String(scope.item.key)}`}
+                </button>
+              ),
+              overflow: (scope) => (
+                <button
+                  data-foundation-overflow-count={scope.items.length}
+                  style={{
+                    flex: "0 0 30px",
+                    width: "30px",
+                    padding: "0",
+                    border: "0",
+                  }}
+                >
+                  {`+${scope.items.length}`}
+                </button>
               ),
             }}
           />
@@ -131,6 +174,24 @@ export const FoundationHarness = defineVaporComponent(() => {
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>
       <output id="visible">{String(visible.value)}</output>
+      <output id="overflow-changes">{overflowChanges.value}</output>
+      <button
+        id="overflow-resize"
+        onClick={() => {
+          overflowWidth.value = 220;
+          overflowItems.value = [
+            overflowItems.value[2],
+            overflowItems.value[0],
+            { key: "d" },
+          ];
+          overflowLabel.value = "Updated Foundation";
+        }}
+      >
+        Resize OverflowList
+      </button>
+      <button id="overflow-narrow" onClick={() => (overflowWidth.value = 95)}>
+        Narrow OverflowList
+      </button>
       <output id="exposed">{exposed.value}</output>
       <button id="update" onClick={() => (input.value = "parent-update")}>
         Update parent
