@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as sass from "sass";
+import { build as buildVite } from "vite";
 import { describe, expect, it } from "vitest";
 import {
   buildStyles,
@@ -82,6 +83,7 @@ describe("fixed Semi style inputs", () => {
         "tooltip",
         "popover",
         "collapsible",
+        "overflowList",
         "spin",
         "iconButton",
         "button",
@@ -147,6 +149,30 @@ describe("fixed Semi style inputs", () => {
             root,
             `node_modules/@douyinfe/semi-foundation/skeleton/${name}.scss`,
           ),
+          "utf8",
+        ),
+      ).toBe(snapshot.files[`packages/semi-${source}`]);
+      expect(() =>
+        checkStyleSourceHashes({
+          ...inputs.sourceHashes,
+          [source]: "0".repeat(64),
+        }),
+      ).toThrow(source);
+    }
+  });
+
+  it("locks both OverflowList SCSS inputs and rejects drift", async () => {
+    const inputs = await checkStyleInputs(root);
+    const snapshot = JSON.parse(
+      await readFile(join(root, "resources/upstream/sources.json"), "utf8"),
+    );
+    expect(inputs.components).toContain("overflowList");
+    for (const name of ["overflowList", "rtl"]) {
+      const source = `foundation/overflowList/${name}.scss`;
+      expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        await readFile(
+          join(root, "node_modules/@douyinfe/semi-" + source),
           "utf8",
         ),
       ).toBe(snapshot.files[`packages/semi-${source}`]);
@@ -388,6 +414,49 @@ describe("fixed Semi style inputs", () => {
       expect(groupCss).toContain(".consumer-button-group");
       expect(groupCss).toContain(".consumer-button-split");
       expect(groupCss).not.toContain(".semi-button");
+      const overflowList = await read("components/overflowList.css");
+      expect(overflowList).toContain(".semi-overflow-list-scroll-wrapper");
+      expect(overflowList).toContain("overflow-x: scroll");
+      expect(overflowList).toContain(".semi-rtl .semi-overflow-list");
+      expect(overflowList).not.toMatch(/\.semi-(?:input|tooltip|button|spin)/);
+      expect(await read("index.css")).toContain(overflowList.trim());
+      const prefixedOverflowList = sass.compileString(
+        '@use "components/overflowList" with ($semi-prefix: consumer, $height-control-default: 40px);',
+        { loadPaths: [output] },
+      ).css;
+      expect(prefixedOverflowList).toContain(
+        ".consumer-overflow-list-scroll-wrapper",
+      );
+      expect(prefixedOverflowList).toContain(
+        ".consumer-rtl .consumer-overflow-list",
+      );
+      expect(prefixedOverflowList).not.toContain(".semi-overflow-list");
+      // Compile the real plain-CSS fixture against freshly generated public
+      // styles, independently of package dist or the custom-prefix theme.
+      const plainBundle = await buildVite({
+        configFile: false,
+        resolve: {
+          alias: [
+            { find: /^semi-ui-vue\/styles(?=\/|$)/, replacement: output },
+          ],
+        },
+        logLevel: "silent",
+        build: {
+          write: false,
+          rolldownOptions: {
+            input: join(root, "tests/style-consumer/plain.css"),
+          },
+        },
+      });
+      const plainCss = plainBundle.output
+        .filter(
+          (entry) => entry.type === "asset" && entry.fileName.endsWith(".css"),
+        )
+        .map((entry) => String(entry.source))
+        .join("\n");
+      expect(plainCss).toContain(".semi-overflow-list-scroll-wrapper");
+      expect(plainCss).toContain(".semi-rtl .semi-overflow-list");
+      expect(plainCss).toContain(".semi-input-wrapper");
       const provenance = JSON.parse(await read("sources.json"));
       expect(provenance.sources).toEqual(
         (await checkStyleInputs(root)).sourceHashes,

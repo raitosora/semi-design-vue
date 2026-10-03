@@ -19,6 +19,8 @@
     "popover-positive.tsx",
     "popover-negative.tsx",
     "collapsible-positive.tsx",
-    "collapsible-negative.tsx"
+    "collapsible-negative.tsx",
+    "overflowList-positive.tsx",
+    "overflowList-negative.tsx"
   ]
 }

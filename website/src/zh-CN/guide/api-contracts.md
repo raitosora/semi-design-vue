@@ -135,3 +135,17 @@ host 和控件共享同一个 key（工厂每次产生新 key），使用 Vue �
 [Tooltip](../components/tooltip.md) 的 default scoped slot 提供原生 `triggerRef`、稳定 keyed `getTriggerRef`、`triggerProps` 与 `attrs`，由调用方绑定当前 document/realm 的实际 HTMLElement；入口 `Element | null` 类型不承诺 SVG、MathML、组件实例或跨环境目标支持。content 的 initialFocusRef 同样由调用方绑定可聚焦 HTML 元素，具体边界见组件页。组件不检查子项或添加默认包装；disabled/loading 元素需显式可接收事件的外层。结构化内容使用 content slot，原始值 content callback 不能返回 VNode、对象或异步结果；arrow slot 拥有自定义箭头。默认 ID 需要显式应用 ARIA scope，也可传 wrapperId。
 
 `trigger="custom"` 按 visible 显示，其余模式沿上游自动触发，visible 更新作为外部命令。condition 仅拦截自动显示入口。属性、回调通知、ARIA 覆盖顺序和公开 ref 返回值以组件页的完整契约为准。
+
+## OverflowList 的原生 renderer 与测量
+
+[OverflowList](../components/overflowList.md) 用显式 items 驱动每个拥有原生内容的项目分支，不探测 slot 返回值识别项目。raw callback `visibleItemRenderer(item, index)` 接收当前普通参数；item/index 改变时重建 callback 拥有的子分支，稳定 key 的项目包装元素保留。命名 slot `visibleItem(scope)` 的 item/index 则是只读实时 getter，直接读取 scope.item/index，不解构为快照，也不使用 Ref.value；同 key 的原生子内容保留。各命名 slot 的 scope 属性浅只读，拒绝替换或删除；scope.item 与 scope.items 中的调用者记录保持原对象身份，不深只读、不冻结数组或项目，不应通过 slot 修改输入。两条路径均支持同步 Vapor fragment、多根、条件、For、嵌套及原生元素 ref。`overflowRenderer(items)` 在 collapse 接收一维数组，在 scroll 接收两侧二维数组并返回两份内容。原生 collapse `overflow(scope)` 通过 scope.items 的实时 getter 读取一维折叠项；原生 scroll 改用 `overflowStart(scope)`、`overflowEnd(scope)`，每侧的 scope.items 均为一维溢出项，分别由真正的原生 outlet 管理。滚动双命名 slot 是 Vue 内容所有权的必要适配扩展，不是上游属性；不检查或拆分 slot 渲染结果。slot 优先于对应 renderer；不接受默认 slot、ReactNode、Promise 或 children。
+
+raw renderer 的 `OverflowRenderResult` 支持原生内容、标量与递归数组：字符串/数字规范化为文本，boolean/null/undefined 为空内容。named slots 仅返回 Vue `VaporRenderResult | null | undefined`，原始字符串/数字/boolean 不属于原生 slot block，文本需写在 JSX 文本容器或 fragment 中。Vue JSX 联合类型无法静态区分 Vapor 与 VDOM，不宣称静态拒绝所有 VNode。普通 Vue 宿主的 named slots 可通过 `vaporInteropPlugin` 返回 h() 内容，由 Vue outlet 完成转换；raw renderer 不支持手造 VNode 或 VDOM return-render，纯 Vapor 与 interop 证明范围分开。
+
+OverflowList slot 的实时 getter 必须在 JSX 的原生 effect/条件块内读取。`overflow: (scope) => <>{scope.items.length ? <span>+{scope.items.length}</span> : null}</>` 会生成响应条件块；函数最外层普通 JavaScript 的 if/ternary 仅在内容分支创建时求值，getter 更新不令它自动执行。遵循 [Vapor 示例编写](./authoring.md#真实源码流程) 与上方 slots 读取规则，不把 setup/slot 函数解释为反复 VDOM render。
+
+scroll raw tuple 在当前 pair 分支的共同资源 scope 创建，两份原生内容分别挂在 display:contents 的真实 div 载体上，增加 DOM 祖先而不增加该载体布局盒。仅在侧 slot 缺失、需要 fallback 时调用 raw callback，每个 pair 分支一次；双侧 slot 提供时不调用。单侧覆写只将该侧 raw 载体移出文档，共同资源及另一侧 DOM 身份、点击、响应性继续存在；移除槽后插回 live 载体。renderer/items 使 pair 分支重建或组件卸载时才共同释放，不能宣称单侧覆写已经独立 unmount，也不将此共同分支管理说成 slot 预执行或 VNode 缓存。
+
+OverflowList 折叠计算以根、项目包装和溢出提示包装的整数 `clientWidth` 为准，与固定上游策略一致。根值包含 padding、不包含 border，项目内容 margin 可能影响包装实测宽度；根 flex gap 不另行扣除，子像素布局会受到整数舍入影响。根宽 146、三个包装各宽 48 的宽度和 144 可以保留三项，但额外 12px gap 仍会使实际内容越过根边缘；不承诺调用者额外 gap、margin 下的总包围盒无溢出。尺寸监听与字体变化重新测量沿用同一计算边界。
+
+折叠候选项临时参与真实测量后卸载，稳定展示只保留一份内容树；测量候选项通过 inert/aria-hidden 排除交互。折叠项闭包状态的独立变化需要新 items/renderer 身份或已支持尺寸触发重新测量。固定上游 floor(width/4) 候选数量启发式没有移植；每轮临时挂载全部项目测量，不承诺虚拟化或相同测量开销。安全空列表、最小项数归一化、统一 key、滚动包装与非单调溢出内容的有限收敛差异见组件页面。根接受安全 HTML attrs，内部测量 visibility/maxWidth 最后应用；没有公开 ref 方法、静态子组件、键盘或额外列表 ARIA 协议。

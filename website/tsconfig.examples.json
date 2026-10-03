@@ -59,6 +59,9 @@
       "semi-ui-vue/highlight": [
         "../packages/semi-ui-vue/dist/components/highlight/index.d.ts"
       ],
+      "semi-ui-vue/overflowList": [
+        "../packages/semi-ui-vue/dist/components/overflowList/index.d.ts"
+      ],
       "semi-ui-vue/collapsible": [
         "../packages/semi-ui-vue/dist/components/collapsible/index.d.ts"
       ],

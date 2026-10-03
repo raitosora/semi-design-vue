@@ -19,6 +19,7 @@ import {
   Tooltip,
   Popover,
   Collapsible,
+  OverflowList,
   provideAriaIdScope,
   Button,
   ButtonGroup,
@@ -56,6 +57,7 @@ import "semi-ui-vue/styles/components/progress.css";
 import "semi-ui-vue/styles/components/tooltip.css";
 import "semi-ui-vue/styles/components/popover.css";
 import "semi-ui-vue/styles/components/collapsible.css";
+import "semi-ui-vue/styles/components/overflowList.css";
 
 const dividerLayout = ref<"horizontal" | "vertical">("horizontal");
 const dividerVisible = ref(true);
@@ -69,6 +71,12 @@ const highlightText = ref("Before Semi after SEMI.");
 const highlightTag = ref("mark");
 const tooltipVisible = ref(false);
 const tooltipContent = ref("Interop Tooltip content");
+const overflowScrollWidth = ref(140);
+const overflowScrollLabel = ref("Interop scroll");
+const overflowScrollNotifications = ref(0);
+const overflowScrollItems = [{ key: "a" }, { key: "b" }, { key: "c" }];
+const overflowWidth = ref(155);
+const overflowLabel = ref("Interop");
 const collapsibleOpen = ref(true);
 const collapsibleText = ref("Interop Collapsible content");
 const popoverVisible = ref(false);
@@ -121,6 +129,95 @@ const app = createApp({
     provideAriaIdScope("interop-resource-consumer");
     return () =>
       h("section", { class: "interop-resources" }, [
+        h(
+          OverflowList,
+          {
+            className: "interop-overflow-list",
+            items: [{ key: "a" }, { key: "b" }, { key: "c" }],
+            itemKey: "key",
+            minVisibleItems: 0,
+            collapseFrom: "end",
+            style: { width: `${overflowWidth.value}px` },
+          },
+          {
+            visibleItem: ({ item }: { item: Record<string, unknown> }) =>
+              h(
+                "button",
+                {
+                  "data-interop-overflow-item": String(item.key),
+                  style: {
+                    flex: "0 0 60px",
+                    width: "60px",
+                    padding: "0",
+                    border: "0",
+                  },
+                },
+                `${overflowLabel.value} ${String(item.key)}`,
+              ),
+            overflow: ({ items }: { items: Record<string, unknown>[] }) =>
+              h(
+                "button",
+                {
+                  "data-interop-overflow-count": items.length,
+                  style: {
+                    flex: "0 0 30px",
+                    width: "30px",
+                    padding: "0",
+                    border: "0",
+                  },
+                },
+                `+${items.length}`,
+              ),
+          },
+        ),
+        h(
+          OverflowList,
+          {
+            className: "interop-scroll-overflow-list",
+            items: overflowScrollItems,
+            itemKey: "key",
+            renderMode: "scroll",
+            style: { width: `${overflowScrollWidth.value}px` },
+            onVisibleStateChange: () => overflowScrollNotifications.value++,
+          },
+          {
+            visibleItem: (scope: { readonly item: Record<string, unknown> }) =>
+              h(
+                "button",
+                {
+                  "data-interop-scroll-item": String(scope.item.key),
+                  style: { width: "60px", padding: "0", border: "0" },
+                },
+                `${overflowScrollLabel.value} ${String(scope.item.key)}`,
+              ),
+            overflowStart: (scope: {
+              readonly items: Record<string, unknown>[];
+            }) =>
+              h(
+                "button",
+                {
+                  "data-interop-scroll-before": scope.items
+                    .map((item) => item.key)
+                    .join(","),
+                  style: { width: "20px", padding: "0", border: "0" },
+                },
+                "Before",
+              ),
+            overflowEnd: (scope: {
+              readonly items: Record<string, unknown>[];
+            }) =>
+              h(
+                "button",
+                {
+                  "data-interop-scroll-after": scope.items
+                    .map((item) => item.key)
+                    .join(","),
+                  style: { width: "20px", padding: "0", border: "0" },
+                },
+                "After",
+              ),
+          },
+        ),
         h(
           Collapsible,
           {
@@ -601,6 +698,9 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      updateOverflowList(width: number): Promise<void>;
+      updateOverflowScroll(width: number): Promise<void>;
+      getOverflowScrollNotifications(): number;
       updateCollapsible(open: boolean): Promise<void>;
       updateLayout(visible: boolean): Promise<void>;
       unmount(): void;
@@ -645,6 +745,19 @@ window.interopConsumer = {
   },
   async updateGrid(span) {
     gridSpan.value = span;
+    await nextTick();
+  },
+  async updateOverflowScroll(width) {
+    overflowScrollWidth.value = width;
+    overflowScrollLabel.value = "Updated interop scroll";
+    await nextTick();
+  },
+  getOverflowScrollNotifications() {
+    return overflowScrollNotifications.value;
+  },
+  async updateOverflowList(width) {
+    overflowWidth.value = width;
+    overflowLabel.value = "Updated interop";
     await nextTick();
   },
   async updateCollapsible(open) {

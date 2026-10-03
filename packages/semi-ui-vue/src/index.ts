@@ -101,3 +101,17 @@ export type {
   CollapsibleProps,
   CollapsibleSlots,
 } from "./components/collapsible/index.js";
+
+export { OverflowList } from "./components/overflowList/index.js";
+export type {
+  OverflowItem,
+  OverflowKey,
+  OverflowListBaseProps,
+  OverflowListCollapseProps,
+  OverflowListScrollProps,
+  OverflowListCollapseSlots,
+  OverflowListScrollSlots,
+  OverflowListProps,
+  OverflowListSlots,
+  OverflowRenderResult,
+} from "./components/overflowList/index.js";

@@ -88,6 +88,9 @@
       ],
       "semi-ui-vue/collapsible": [
         "./packages/semi-ui-vue/src/components/collapsible/index.ts"
+      ],
+      "semi-ui-vue/overflowList": [
+        "./packages/semi-ui-vue/src/components/overflowList/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

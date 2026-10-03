@@ -103,6 +103,9 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
+      es-toolkit:
+        specifier: 1.39.10
+        version: 1.39.10
       semi-animation-vue:
         specifier: workspace:*
         version: link:../semi-animation-vue

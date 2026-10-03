@@ -1,3 +1,7 @@
+import OverflowListBasic from "../../website/examples/overflowList/Basic.vapor";
+import OverflowListDynamic from "../../website/examples/overflowList/Dynamic.vapor";
+import OverflowListScroll from "../../website/examples/overflowList/Scroll.vapor";
+import OverflowListTheme from "../../website/examples/overflowList/Theme.vapor";
 import CollapsibleBasic from "../../website/examples/collapsible/Basic.vapor";
 import CollapsibleDynamic from "../../website/examples/collapsible/Dynamic.vapor";
 import CollapsibleRetention from "../../website/examples/collapsible/Retention.vapor";
@@ -81,6 +85,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/progress.css";
 import "../../packages/semi-ui-vue/dist/styles/components/tooltip.css";
 import "../../packages/semi-ui-vue/dist/styles/components/popover.css";
 import "../../packages/semi-ui-vue/dist/styles/components/collapsible.css";
+import "../../packages/semi-ui-vue/dist/styles/components/overflowList.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -96,6 +101,9 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const overflowListMode = new URLSearchParams(location.search).has(
+  "overflowList",
+);
 const collapsibleMode = new URLSearchParams(location.search).has("collapsible");
 const popoverMode = new URLSearchParams(location.search).has("popover");
 const tooltipMode = new URLSearchParams(location.search).has("tooltip");
@@ -110,10 +118,19 @@ const app = createVaporApp(
     progressMode ||
     tooltipMode ||
     popoverMode ||
-    collapsibleMode
+    collapsibleMode ||
+    overflowListMode
     ? defineVaporComponent(() => (
         <main>
-          {collapsibleMode ? (
+          {overflowListMode ? (
+            <>
+              <h1>OverflowList examples</h1>
+              <OverflowListBasic />
+              <OverflowListDynamic />
+              <OverflowListScroll />
+              <OverflowListTheme />
+            </>
+          ) : collapsibleMode ? (
             <>
               <h1>Collapsible examples</h1>
               <CollapsibleBasic />

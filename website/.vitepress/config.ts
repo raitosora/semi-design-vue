@@ -81,6 +81,10 @@ export default defineConfig({
           { text: "Tooltip 文字提示", link: "/zh-CN/components/tooltip" },
           { text: "Popover 气泡卡片", link: "/zh-CN/components/popover" },
           { text: "Collapsible 折叠", link: "/zh-CN/components/collapsible" },
+          {
+            text: "OverflowList 溢出列表",
+            link: "/zh-CN/components/overflowList",
+          },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

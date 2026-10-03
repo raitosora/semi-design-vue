@@ -1,0 +1,22 @@
+import { defineConfig } from "vite";
+import { resourceGraph } from "./graph-plugin";
+
+export default defineConfig(({ mode }) => {
+  if (
+    ![
+      "overflowList-only",
+      "overflowList-root-only",
+      "overflowList-unused",
+    ].includes(mode)
+  )
+    throw new Error(`Unknown OverflowList tree-shaking probe: ${mode}`);
+  return {
+    plugins: [resourceGraph()],
+    build: {
+      outDir: `${mode}-dist`,
+      emptyOutDir: true,
+      minify: false,
+      lib: { entry: `${mode}.ts`, formats: ["es"], fileName: "probe" },
+    },
+  };
+});

@@ -9,7 +9,7 @@ pnpm install --frozen-lockfile
 pnpm build:packages
 ```
 
-UI 包的 JavaScript 根入口不会自动加载样式。基础入口包含固定 Theme animation.scss 的动画 CSS 变量，保留上游零时长、曲线、延迟和 transform 默认值；Collapsible 的过渡依赖这些变量。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、Collapsible、Popover、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
+UI 包的 JavaScript 根入口不会自动加载样式。基础入口包含固定 Theme animation.scss 的动画 CSS 变量，保留上游零时长、曲线、延迟和 transform 默认值；Collapsible 的过渡依赖这些变量。普通 CSS 使用方不需要 Sass 或主题插件。当前提供基础 tokens、Layout、Grid、Space、Button、Divider、Icon、Spin、IconButton、Skeleton、Highlight、Progress、OverflowList、Collapsible、Popover、Tooltip 与 Input 样式入口；Input 样式供内部原生 HTML 夹具使用，公共组件尚未提供。
 
 ```ts
 import "semi-ui-vue/styles/base.css";
@@ -79,3 +79,5 @@ Popover 按需加载 `styles/components/popover.css` 或 `.scss`，登记自身�
 Popover 的独立入口包含内部生成的 `popover-motion.scss`：从锁定 Tooltip SCSS 提取 zoomIn/zoomOut keyframes 与 `semi-tooltip-animation-show`/`semi-tooltip-animation-hide` 两个 motion 选择器，引用固定动画变量。它让现有 Tooltip 运行时动画类在 Popover 按需样式中生效，不导入 Tooltip 完整视觉 CSS，也没有新的公开 SCSS 子路径。按需消费者分别验证实际 CSS motion、Popover 几何与主题；不能把“按需”描述为完全没有 Tooltip 选择器。
 
 Collapsible 的独立入口只引入固定 `collapsible/animation.scss`、`collapsible/collapsible.scss` 与 `collapsible/variables.scss` 闭包，默认与定制前缀均保留 `--semi-*` tokens。它提供高度/透明度 transition 类，容器裁剪和业务背景分别由组件和使用方设置；[生命周期差异](../components/collapsible.md)包括最终 CSS 时序覆盖与 reduced motion。
+
+OverflowList 的 `styles/components/overflowList`、`.css` 与 `.scss` 按需入口使用固定 `overflowList/overflowList.scss` 与 `overflowList/rtl.scss` 闭包，也包含于完整样式。`styles: ["overflowList"]` 可选择主题插件入口，`$semi-prefix` 支持定制选择器前缀，组件默认类名保持 semi，业务需确保匹配。固定样式负责横向布局；业务项目背景、按钮语义与两側溢出提示由 renderer/slot 提供。完整动态几何与尺寸测量边界见 [OverflowList](../components/overflowList.md)。

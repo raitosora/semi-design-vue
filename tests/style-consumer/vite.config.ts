@@ -23,6 +23,7 @@ export default defineConfig({
         "skeleton",
         "highlight",
         "progress",
+        "overflowList",
       ],
     }),
   ],

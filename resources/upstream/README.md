@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip and popover. All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible and overflowList (17 families). All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -224,3 +224,27 @@ recorded browser contract. The existing production closure of eighteen sources,
 two MIT licenses, Foundation patch, HTMLElement, current document and realm boundary
 and strict compiler peer constraint are unchanged. No publication, component
 SSR/hydration, CJS, full pixel, other browser or device acceptance is implied.
+
+The `collapsible` record accepts the fixed controlled content container, dynamic
+height measurement, keepDOM/lazyRender behavior, motion reversal and CSS timing.
+Native Vapor slots retain their owners without child inspection. Existing G10
+DOM and G12 animation resources provide measurement, cancellation and cleanup.
+Strict declarations, numeric browser geometry, live Chinese examples and four
+real tarball consumers bind the accepted contract. Focus, hidden/inert and ARIA
+remain caller responsibilities; no trigger, accordion or extra public family
+is implied. The existing compiler peer and SSR/hydration/CJS limits remain.
+
+The `overflowList` record accepts the fixed collapse and scroll browser contract
+with native owned content, stable keys, integer measured widths and scoped
+resize/intersection/font/scheduling cleanup. Strict source/generated declarations,
+real geometry, live Chinese examples, pure Vapor and separate Vue interop,
+per-source four-dimensional coverage and four actual tarball consumer flows
+passed complete local verification and independent review. Full-candidate
+measurement, conservative convergence, external gap/margin layout limits and
+shared raw scrolling fallback ownership remain explicit adaptation differences.
+No additional public family, imperative ref, keyboard protocol, component SSR,
+hydration, CJS, publication or full pixel-equivalence is accepted.
+Native scrolling content uses separate `overflowStart` and `overflowEnd` slot
+outlets with one-sided item arrays, while the raw `overflowRenderer` retains
+its two-dimensional input and two-part result. These slot names preserve Vue
+content ownership and are adaptation APIs, not additional upstream properties.
