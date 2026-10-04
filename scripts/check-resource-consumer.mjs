@@ -40,6 +40,46 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+// Chunk filenames are a bundler detail. Bind implementation identity to the
+// installed tarball's source metadata and hash-addressed source-map snapshots.
+function implementationChunks(directory, sourcePath, exportName) {
+  const dist = join(directory, "node_modules/semi-ui-vue/dist");
+  const metadata = JSON.parse(
+    readFileSync(join(dist, "build-meta.json"), "utf8"),
+  );
+  const chunks = metadata.chunks.filter((chunk) =>
+    chunk.modules.includes(sourcePath),
+  );
+  assert(chunks.length > 0, `Missing packed source identity: ${sourcePath}`);
+  return chunks.map((chunk) => {
+    const chunkPath = join(dist, chunk.file);
+    const map = JSON.parse(readFileSync(`${chunkPath}.map`, "utf8"));
+    const matches = map.sources.filter((source) => {
+      const snapshot = readFileSync(resolve(dirname(chunkPath), source));
+      const hash = createHash("sha256").update(snapshot).digest("hex");
+      assert(
+        source.includes(`/map-sources/${hash}.`) ||
+          source.startsWith(`map-sources/${hash}.`),
+        `Packed map snapshot hash mismatch: ${source}`,
+      );
+      return new RegExp(`export const ${exportName}\\b`).test(
+        snapshot.toString("utf8"),
+      );
+    });
+    assert(
+      matches.length === 1,
+      `Missing unique packed implementation source: ${sourcePath}`,
+    );
+    return realpathSync(chunkPath);
+  });
+}
+
+function hasImplementation(modules, sourcePath, exportName) {
+  return implementationChunks(consumer, sourcePath, exportName).some((id) =>
+    modules.includes(id),
+  );
+}
+
 function checkIndependentCompilerInstall(evidenceDirectory) {
   const directory = join(work, "strict-tsx-compiler-install");
   mkdirSync(directory);
@@ -510,7 +550,11 @@ function checkGraph(mode = "vapor") {
     "Progress implementation missing from consumer graph",
   );
   assert(
-    /semi-ui-vue\/dist\/popover-[^/\n]+\.js/.test(modules),
+    hasImplementation(
+      graph.modules,
+      "src/components/popover/Popover.tsx",
+      "Popover",
+    ),
     "Popover implementation missing from consumer graph",
   );
   assert(
@@ -520,6 +564,10 @@ function checkGraph(mode = "vapor") {
   assert(
     /semi-ui-vue\/dist\/overflowList-[^/\n]+\.js/.test(modules),
     "OverflowList implementation missing from consumer graph",
+  );
+  assert(
+    hasImplementation(graph.modules, "src/components/tag/Tag.tsx", "Tag"),
+    "Tag implementation missing from consumer graph",
   );
   if (mode === "vapor")
     assert(
@@ -547,7 +595,11 @@ function checkGraph(mode = "vapor") {
       "Pure Vapor consumer did not resolve Popover subpath",
     );
   assert(
-    /semi-ui-vue\/dist\/tooltip-[^/\n]+\.js/.test(modules),
+    hasImplementation(
+      graph.modules,
+      "src/components/tooltip/Tooltip.tsx",
+      "Tooltip",
+    ),
     "Tooltip implementation missing from consumer graph",
   );
   if (mode === "vapor")
@@ -799,7 +851,11 @@ function checkTooltipTreeShaking() {
       `${mode}: empty tree-shaking evidence`,
     );
     const modules = graph.modules.join("\n");
-    const hasTooltip = /semi-ui-vue\/dist\/tooltip-[^/\n]+\.js/.test(modules);
+    const hasTooltip = hasImplementation(
+      graph.modules,
+      "src/components/tooltip/Tooltip.tsx",
+      "Tooltip",
+    );
     assert(
       hasTooltip === (mode !== "tooltip-unused"),
       `${mode}: Tooltip implementation tree-shaking mismatch`,
@@ -845,6 +901,144 @@ function checkTooltipTreeShaking() {
         sha256: createHash("sha256").update(source).digest("hex"),
       };
     });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkTagOutput(source, mode) {
+  const includesGroup = mode === "tag-group-only" || mode === "tag-root-only";
+  assert(
+    source.includes("semi-tag-rest-group-popover") === includesGroup,
+    `${mode}: TagGroup implementation tree-shaking mismatch`,
+  );
+  assert(
+    source.includes("semi-popover-icon-arrow") === includesGroup,
+    `${mode}: Popover implementation tree-shaking mismatch`,
+  );
+}
+
+function checkTagTreeShaking() {
+  for (const mode of [
+    "tag-only",
+    "tag-root-only",
+    "tag-root-tag-only",
+    "tag-group-only",
+    "tag-split-only",
+    "tag-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.tag.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasTag = hasImplementation(
+      graph.modules,
+      "src/components/tag/Tag.tsx",
+      "Tag",
+    );
+    const hasSplit = hasImplementation(
+      graph.modules,
+      "src/components/tag/splitTagGroup.tsx",
+      "SplitTagGroup",
+    );
+    assert(
+      mode === "tag-split-only" ? hasSplit : hasTag === (mode !== "tag-unused"),
+      `${mode}: Tag family implementation tree-shaking mismatch`,
+    );
+    if (mode === "tag-group-only" || mode === "tag-root-only")
+      assert(
+        hasImplementation(
+          graph.modules,
+          "src/components/tag/group.tsx",
+          "TagGroup",
+        ),
+        `${mode}: packed TagGroup implementation missing`,
+      );
+    assert(
+      hasImplementation(
+        graph.modules,
+        "src/components/popover/Popover.tsx",
+        "Popover",
+      ) === (mode === "tag-group-only" || mode === "tag-root-only"),
+      `${mode}: packed Popover implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "tag-only"
+        ? "/semi-ui-vue/dist/components/tag/index.js"
+        : mode === "tag-group-only"
+          ? "/semi-ui-vue/dist/components/tag/group.js"
+          : mode === "tag-split-only"
+            ? "/semi-ui-vue/dist/components/tag/splitTagGroup.js"
+            : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "collapsible",
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "tag-unused")
+        assert(
+          !source.includes("semi-tag"),
+          "Unused Tag marker survived in executable output",
+        );
+      else
+        assert(
+          source.includes("semi-tag"),
+          `${mode}: Tag marker missing from executable output`,
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    checkTagOutput(
+      outputFiles.map((path) => readFileSync(path, "utf8")).join("\n"),
+      mode,
+    );
     const evidence = join(root, ".vitest/attachments/resource-consumer");
     mkdirSync(evidence, { recursive: true });
     copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
@@ -1143,7 +1337,11 @@ function checkPopoverTreeShaking() {
       `${mode}: empty tree-shaking evidence`,
     );
     const modules = graph.modules.join("\n");
-    const hasPopover = /semi-ui-vue\/dist\/popover-[^/\n]+\.js/.test(modules);
+    const hasPopover = hasImplementation(
+      graph.modules,
+      "src/components/popover/Popover.tsx",
+      "Popover",
+    );
     assert(
       hasPopover === (mode !== "popover-unused"),
       `${mode}: Popover implementation tree-shaking mismatch`,
@@ -1481,6 +1679,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkTag())) ===
+        "tag consumer passed",
+      "Packed Tag behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkAvatar())) ===
         "avatar consumer passed",
       "Packed Avatar behavior failed",
@@ -1688,6 +1891,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkTag())) ===
+        "tag interop passed",
+      "Packed Tag interop behavior failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkAvatar())) ===
         "avatar interop passed",
@@ -2396,7 +2604,15 @@ async function withPreview(outDir, check) {
 
 async function run() {
   mkdirSync(consumer, { recursive: true });
+  const hashFile = (path) =>
+    createHash("sha256").update(readFileSync(path)).digest("hex");
+  const tagProducerSourceHash = hashFile(join(fixture, "tag.tsx"));
   prepareResourceApplication(root, work, consumer);
+  assert(
+    hashFile(join(fixture, "tag.tsx")) === tagProducerSourceHash,
+    "Tag producer fixture changed during precompilation",
+  );
+  const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
     readFileSync(
       join(
@@ -2474,6 +2690,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:avatar.tsx"),
     "Avatar fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:tag.tsx"),
+    "Tag fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -2498,6 +2718,8 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "tag-browser.ts",
+    "tag-interop.ts",
     "avatar-browser.ts",
     "avatar-interop.ts",
     "overflowList-browser.ts",
@@ -2510,6 +2732,13 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.tag.config.ts",
+    "tag-only.ts",
+    "tag-root-only.ts",
+    "tag-root-tag-only.ts",
+    "tag-group-only.ts",
+    "tag-split-only.ts",
+    "tag-unused.ts",
     "vite.avatar.config.ts",
     "avatar-only.ts",
     "avatar-root-only.ts",
@@ -2549,6 +2778,30 @@ async function run() {
       join(consumer, name),
     );
   writeFileSync(
+    join(root, ".vitest/attachments/resource-consumer/tag-fixture-inputs.json"),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/tag.tsx",
+          sha256: tagProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        interop: {
+          source: "tests/resource-consumer/tag-interop.ts",
+          copiedSha256: hashFile(join(consumer, "tag-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/tag-browser.ts",
+          copiedSha256: hashFile(join(consumer, "tag-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
+  writeFileSync(
     join(consumer, "tsconfig.json"),
     JSON.stringify(
       {
@@ -2568,8 +2821,16 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "tag-browser.ts",
+          "tag-interop.ts",
           "avatar-browser.ts",
           "avatar-interop.ts",
+          "tag-only.ts",
+          "tag-root-only.ts",
+          "tag-root-tag-only.ts",
+          "tag-group-only.ts",
+          "tag-split-only.ts",
+          "tag-unused.ts",
           "avatar-only.ts",
           "avatar-root-only.ts",
           "avatar-group-only.ts",
@@ -2675,6 +2936,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkTagTreeShaking();
   checkAvatarTreeShaking();
   checkOverflowListTreeShaking();
   checkPopoverTreeShaking();

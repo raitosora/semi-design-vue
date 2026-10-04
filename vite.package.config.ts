@@ -43,6 +43,9 @@ const resourceEntries = globSync([
   "src/components/index.ts",
   "src/components/*/index.ts",
   "src/components/avatar/avatarGroup.tsx",
+  "src/components/tag/group.tsx",
+  "src/components/tag/splitTagGroup.tsx",
+  "src/components/tag/interface.ts",
   "src/components/button/buttonGroup.tsx",
   "src/components/button/splitButtonGroup.tsx",
 ]).filter((file) => !file.endsWith(".d.ts"));

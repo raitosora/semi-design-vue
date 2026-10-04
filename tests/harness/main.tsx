@@ -1,3 +1,7 @@
+import TagBasic from "../../website/examples/tag/Basic.vapor";
+import TagInteraction from "../../website/examples/tag/Interaction.vapor";
+import TagGroups from "../../website/examples/tag/Groups.vapor";
+import TagTheme from "../../website/examples/tag/Theme.vapor";
 import AvatarBasic from "../../website/examples/avatar/Basic.vapor";
 import AvatarMeasure from "../../website/examples/avatar/Measure.vapor";
 import AvatarDecoration from "../../website/examples/avatar/Decoration.vapor";
@@ -92,6 +96,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/popover.css";
 import "../../packages/semi-ui-vue/dist/styles/components/collapsible.css";
 import "../../packages/semi-ui-vue/dist/styles/components/overflowList.css";
 import "../../packages/semi-ui-vue/dist/styles/components/avatar.css";
+import "../../packages/semi-ui-vue/dist/styles/components/tag.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -107,6 +112,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const tagMode = new URLSearchParams(location.search).has("tag");
 const avatarMode = new URLSearchParams(location.search).has("avatar");
 const overflowListMode = new URLSearchParams(location.search).has(
   "overflowList",
@@ -127,10 +133,19 @@ const app = createVaporApp(
     popoverMode ||
     collapsibleMode ||
     overflowListMode ||
-    avatarMode
+    avatarMode ||
+    tagMode
     ? defineVaporComponent(() => (
         <main>
-          {avatarMode ? (
+          {tagMode ? (
+            <>
+              <h1>Tag examples</h1>
+              <TagBasic />
+              <TagInteraction />
+              <TagGroups />
+              <TagTheme />
+            </>
+          ) : avatarMode ? (
             <>
               <h1>Avatar examples</h1>
               <AvatarBasic />

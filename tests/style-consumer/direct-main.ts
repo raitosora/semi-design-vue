@@ -1,3 +1,5 @@
+import "./tag-only.scss";
+import { tagMarkup } from "./tag-markup";
 import "./avatar-only.scss";
 import { avatarMarkup } from "./avatar-markup";
 import "./overflowList-only.scss";
@@ -48,6 +50,7 @@ document.body.innerHTML = `
   ${progressMarkup("semi")}
   ${overflowListMarkup("semi")}
   ${avatarMarkup("semi")}
+  ${tagMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -60,4 +63,5 @@ document.body.innerHTML = `
   ${progressMarkup("consumer")}
   ${overflowListMarkup("consumer")}
   ${avatarMarkup("consumer")}
+  ${tagMarkup("consumer")}
 `;

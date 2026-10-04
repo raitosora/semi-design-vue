@@ -23,6 +23,10 @@
     "overflowList-positive.tsx",
     "overflowList-negative.tsx",
     "avatar-positive.tsx",
-    "avatar-negative.tsx"
+    "avatar-negative.tsx",
+    "tag-positive.tsx",
+    "tag-negative.tsx",
+    "tag-group-positive.tsx",
+    "tag-group-negative.tsx"
   ]
 }

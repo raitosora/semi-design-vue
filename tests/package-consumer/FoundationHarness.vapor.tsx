@@ -2,6 +2,9 @@ import { defineVaporComponent, ref } from "vue";
 import {
   Avatar,
   AvatarGroup,
+  Tag,
+  TagGroup,
+  SplitTagGroup,
   Col,
   Layout,
   Row,
@@ -29,6 +32,9 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const tagLabel = ref("Foundation Tag");
+  const tagCount = ref(1);
+  const tagCloses = ref(0);
   const avatarLabel = ref("Foundation Avatar");
   const avatarCount = ref(1);
   const overflowWidth = ref(155);
@@ -80,6 +86,45 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <div data-foundation-tag="">
+            <Tag
+              children={tagLabel.value}
+              className="foundation-tag"
+              closable
+              onClose={(_value, event) => {
+                tagCloses.value++;
+                event.preventDefault();
+              }}
+              tagKey="foundation"
+            />
+            <TagGroup
+              className="foundation-tag-group"
+              maxTagCount={tagCount.value}
+              tagList={[
+                {
+                  children: "First",
+                  tagKey: "a",
+                  className: "foundation-tag-a",
+                },
+                {
+                  children: "Second",
+                  tagKey: "b",
+                  className: "foundation-tag-b",
+                },
+              ]}
+            />
+            <SplitTagGroup
+              aria-label="Foundation split"
+              className="foundation-tag-split"
+            >
+              {() => (
+                <>
+                  <Tag children={tagLabel.value} />
+                  <Tag children="Tail" />
+                </>
+              )}
+            </SplitTagGroup>
+          </div>
           <div data-foundation-avatar="">
             <Avatar
               children={avatarLabel.value}
@@ -202,6 +247,16 @@ export const FoundationHarness = defineVaporComponent(() => {
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>
       <output id="visible">{String(visible.value)}</output>
+      <output id="tag-closes">{tagCloses.value}</output>
+      <button
+        id="tag-update"
+        onClick={() => {
+          tagLabel.value = "Updated Tag";
+          tagCount.value = 2;
+        }}
+      >
+        Update Tag
+      </button>
       <button
         id="avatar-update"
         onClick={() => {

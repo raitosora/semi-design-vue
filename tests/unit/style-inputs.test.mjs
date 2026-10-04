@@ -80,6 +80,7 @@ describe("fixed Semi style inputs", () => {
       themeVersion: "2.103.0",
       components: [
         "avatar",
+        "tag",
         "input",
         "tooltip",
         "popover",

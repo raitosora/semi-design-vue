@@ -197,6 +197,18 @@ await writeFile(
           "semi-ui-vue/progress": [
             "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
           ],
+          "semi-ui-vue/tag": [
+            "../../packages/semi-ui-vue/dist/components/tag/index.d.ts",
+          ],
+          "semi-ui-vue/tag/group": [
+            "../../packages/semi-ui-vue/dist/components/tag/group.d.ts",
+          ],
+          "semi-ui-vue/tag/splitTagGroup": [
+            "../../packages/semi-ui-vue/dist/components/tag/splitTagGroup.d.ts",
+          ],
+          "semi-ui-vue/tag/interface": [
+            "../../packages/semi-ui-vue/dist/components/tag/interface.d.ts",
+          ],
           "semi-ui-vue/avatar": [
             "../../packages/semi-ui-vue/dist/components/avatar/index.d.ts",
           ],

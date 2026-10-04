@@ -234,7 +234,29 @@
       "default": "./dist/styles/components/avatar.css"
     },
     "./styles/components/avatar.css": "./dist/styles/components/avatar.css",
-    "./styles/components/avatar.scss": "./dist/styles/components/avatar.scss"
+    "./styles/components/avatar.scss": "./dist/styles/components/avatar.scss",
+    "./tag": {
+      "types": "./dist/components/tag/index.d.ts",
+      "import": "./dist/components/tag/index.js"
+    },
+    "./tag/group": {
+      "types": "./dist/components/tag/group.d.ts",
+      "import": "./dist/components/tag/group.js"
+    },
+    "./tag/splitTagGroup": {
+      "types": "./dist/components/tag/splitTagGroup.d.ts",
+      "import": "./dist/components/tag/splitTagGroup.js"
+    },
+    "./tag/interface": {
+      "types": "./dist/components/tag/interface.d.ts",
+      "import": "./dist/components/tag/interface.js"
+    },
+    "./styles/components/tag": {
+      "sass": "./dist/styles/components/tag.scss",
+      "default": "./dist/styles/components/tag.css"
+    },
+    "./styles/components/tag.css": "./dist/styles/components/tag.css",
+    "./styles/components/tag.scss": "./dist/styles/components/tag.scss"
   },
   "files": [
     "dist",

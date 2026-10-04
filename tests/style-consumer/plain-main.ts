@@ -1,3 +1,4 @@
+import { tagMarkup } from "./tag-markup";
 import { avatarMarkup } from "./avatar-markup";
 import { overflowListMarkup } from "./overflowList-markup";
 import { progressMarkup } from "./progress-markup";
@@ -28,4 +29,5 @@ document.body.innerHTML = `
   ${progressMarkup("semi")}
   ${overflowListMarkup("semi")}
   ${avatarMarkup("semi")}
+  ${tagMarkup("semi")}
 `;

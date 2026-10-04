@@ -22,6 +22,7 @@ const options: SemiThemeOptions = {
     "progress",
     "overflowList",
     "avatar",
+    "tag",
   ],
 };
 

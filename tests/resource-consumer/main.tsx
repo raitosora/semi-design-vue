@@ -1,3 +1,4 @@
+import { checkTagConsumer } from "./tag.js";
 import "semi-ui-vue/styles/base.css";
 import { checkAvatarConsumer } from "./avatar.js";
 import { checkDividerConsumer } from "./divider.js";
@@ -66,6 +67,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkTag(): Promise<string>;
       checkAvatar(): Promise<string>;
       checkOverflowList(): Promise<string>;
       checkCollapsible(): Promise<string>;
@@ -324,6 +326,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkTag: checkTagConsumer,
   checkAvatar: checkAvatarConsumer,
   checkOverflowList: checkOverflowListConsumer,
   checkCollapsible: checkCollapsibleConsumer,

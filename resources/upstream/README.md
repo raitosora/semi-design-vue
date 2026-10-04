@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible, overflowList and avatar (18 families). All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible, overflowList, avatar and tag (19 families). All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -266,3 +266,17 @@ Foundation patch or production closure. No Avatar.Group, imperative ref method,
 public Image or other public family is introduced. The existing independent TSX
 peer constraint, document/ref/realm limits and SSR/hydration/CJS and full pixel
 parity exclusions remain.
+
+The `tag` record accepts Tag, TagGroup and SplitTagGroup against the fixed source.
+Tag captures global defaults per instance, compares click handlers with that
+captured default, retains hidden DOM and follows the fixed close/keyboard event
+order. TagGroup owns keyed native content and folds by item count, reusing the
+existing Popover lifecycle without width measurement. SplitTagGroup decorates
+direct DOM elements and cleans its own boundary markers; it does not inspect or
+clone VNodes. Synchronous native render factories and interop host slots have
+distinct ownership contracts. The upstream VaporRenderResult declaration includes
+VNode in its union, but direct VNode-returning native factories are unsupported.
+The independent split subpath is a packaging adaptation. No close-content API,
+static group member, new public ref method or other component family is implied.
+Strict declarations, four tarball flows, browser lifecycles, themed documentation
+and representative visuals preserve the existing runtime and installation limits.

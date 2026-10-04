@@ -10,6 +10,7 @@ const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
   "avatar",
+  "tag",
   "input",
   "tooltip",
   "popover",
@@ -98,6 +99,7 @@ const foundationFiles = {
     "collapsible/collapsible.scss",
     "collapsible/variables.scss",
   ],
+  tag: ["tag/tag.scss", "tag/rtl.scss", "tag/mixin.scss", "tag/variables.scss"],
   avatar: [
     "avatar/animation.scss",
     "avatar/avatar.scss",
@@ -224,6 +226,14 @@ const sourceHashes = {
     "bd94593372cfcfde75c062c06ab735c9c1167e282ac00c170cf9ca5730b3043a",
   "foundation/collapsible/variables.scss":
     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "foundation/tag/tag.scss":
+    "d72c8e56177e1cdf20921bb3f35a62d83bc1f33c4bbadf7d7414983bd7cb05cd",
+  "foundation/tag/rtl.scss":
+    "93c2c0e3194437f323ef7a05b836e6b25c34b5984d518dcf660b9f305fa35a21",
+  "foundation/tag/mixin.scss":
+    "867e1515dbf4cd3a4884ed1a73f01b22a57ea6d524d664dc9428897d2abb7c9d",
+  "foundation/tag/variables.scss":
+    "5b91123335141da9b77cc90c943fe45ac96c98997af2e8f445323cb7a3ce9013",
   "foundation/avatar/animation.scss":
     "68dff81611b74720aa6216351243a502a2b8d25b8907e27ac4642e6e37521506",
   "foundation/avatar/avatar.scss":
@@ -324,6 +334,15 @@ function entrySources() {
       '@import "./theme/animation";',
       '@import "./theme/mixins";',
       '@import "./vendor/foundation/base/base";',
+      "",
+    ].join("\n"),
+    // Avatar, Popover and icon styles remain explicit composition dependencies.
+    "components/tag.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/tag/tag";',
       "",
     ].join("\n"),
     "components/avatar.scss": [
@@ -451,6 +470,7 @@ function entrySources() {
       "$height-control-default: 32px !default;",
       '@import "./base";',
       '@import "./components/avatar";',
+      '@import "./components/tag";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',
