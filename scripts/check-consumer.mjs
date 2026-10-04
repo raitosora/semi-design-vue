@@ -323,6 +323,7 @@ try {
   const rejectedHighlightExports = [];
   const rejectedProgressExports = [];
   const rejectedTooltipExports = [];
+  const rejectedAvatarExports = [];
   const rejectedOverflowListExports = [];
   const rejectedCollapsibleExports = [];
   const rejectedPopoverExports = [];
@@ -348,6 +349,8 @@ try {
     "Popover",
     "Collapsible",
     "OverflowList",
+    "Avatar",
+    "AvatarGroup",
   ]) {
     // Each export is tested alone: another missing named export cannot make a
     // leaked browser component accidentally pass this gate.
@@ -358,45 +361,47 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${exportName === "OverflowList" ? "overflowList" : exportName === "Collapsible" ? "collapsible" : exportName === "Popover" ? "popover" : exportName === "Tooltip" ? "tooltip" : exportName === "Progress" ? "progress" : exportName === "Highlight" ? "highlight" : exportName === "Skeleton" ? "skeleton" : exportName === "Layout" ? "layout" : ["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "Avatar" ? "avatar" : exportName === "AvatarGroup" ? "avatarGroup" : exportName === "OverflowList" ? "overflowList" : exportName === "Collapsible" ? "collapsible" : exportName === "Popover" ? "popover" : exportName === "Tooltip" ? "tooltip" : exportName === "Progress" ? "progress" : exportName === "Highlight" ? "highlight" : exportName === "Skeleton" ? "skeleton" : exportName === "Layout" ? "layout" : ["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
-          exportName === "OverflowList"
-            ? "OverflowList"
-            : exportName === "Collapsible"
-              ? "Collapsible"
-              : exportName === "Popover"
-                ? "Popover"
-                : exportName === "Tooltip"
-                  ? "Tooltip"
-                  : exportName === "Progress"
-                    ? "Progress"
-                    : exportName === "Highlight"
-                      ? "Highlight"
-                      : exportName === "Skeleton"
-                        ? "Skeleton"
-                        : exportName === "Layout"
-                          ? "Layout"
-                          : ["Row", "Col"].includes(exportName)
-                            ? "Row"
-                            : exportName === "Space"
-                              ? "Space"
-                              : exportName === "Divider"
-                                ? "Divider"
-                                : exportName === "IconButton"
-                                  ? "IconButton"
-                                  : exportName === "Spin"
-                                    ? "Spin"
-                                    : exportName === "Button"
-                                      ? "Button"
-                                      : exportName === "ButtonGroup"
-                                        ? "ButtonGroup"
-                                        : exportName === "SplitButtonGroup"
-                                          ? "SplitButtonGroup"
-                                          : exportName.startsWith("Locale")
-                                            ? "LocaleProvider"
-                                            : "ConfigProvider",
+          exportName === "Avatar" || exportName === "AvatarGroup"
+            ? exportName
+            : exportName === "OverflowList"
+              ? "OverflowList"
+              : exportName === "Collapsible"
+                ? "Collapsible"
+                : exportName === "Popover"
+                  ? "Popover"
+                  : exportName === "Tooltip"
+                    ? "Tooltip"
+                    : exportName === "Progress"
+                      ? "Progress"
+                      : exportName === "Highlight"
+                        ? "Highlight"
+                        : exportName === "Skeleton"
+                          ? "Skeleton"
+                          : exportName === "Layout"
+                            ? "Layout"
+                            : ["Row", "Col"].includes(exportName)
+                              ? "Row"
+                              : exportName === "Space"
+                                ? "Space"
+                                : exportName === "Divider"
+                                  ? "Divider"
+                                  : exportName === "IconButton"
+                                    ? "IconButton"
+                                    : exportName === "Spin"
+                                      ? "Spin"
+                                      : exportName === "Button"
+                                        ? "Button"
+                                        : exportName === "ButtonGroup"
+                                          ? "ButtonGroup"
+                                          : exportName === "SplitButtonGroup"
+                                            ? "SplitButtonGroup"
+                                            : exportName.startsWith("Locale")
+                                              ? "LocaleProvider"
+                                              : "ConfigProvider",
           exportName,
         ),
       );
@@ -427,41 +432,43 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    (exportName === "OverflowList"
-      ? rejectedOverflowListExports
-      : exportName === "Collapsible"
-        ? rejectedCollapsibleExports
-        : exportName === "Popover"
-          ? rejectedPopoverExports
-          : exportName === "Tooltip"
-            ? rejectedTooltipExports
-            : exportName === "Progress"
-              ? rejectedProgressExports
-              : exportName === "Highlight"
-                ? rejectedHighlightExports
-                : exportName === "Skeleton"
-                  ? rejectedSkeletonExports
-                  : exportName === "Layout"
-                    ? rejectedLayoutExports
-                    : ["Row", "Col"].includes(exportName)
-                      ? rejectedGridExports
-                      : exportName === "Space"
-                        ? rejectedSpaceExports
-                        : exportName === "Divider"
-                          ? rejectedDividerExports
-                          : exportName === "IconButton"
-                            ? rejectedIconButtonExports
-                            : exportName === "Spin"
-                              ? rejectedSpinExports
-                              : [
-                                    "Button",
-                                    "ButtonGroup",
-                                    "SplitButtonGroup",
-                                  ].includes(exportName)
-                                ? rejectedButtonExports
-                                : exportName.startsWith("Locale")
-                                  ? rejectedLocaleExports
-                                  : rejectedConfigExports
+    (["Avatar", "AvatarGroup"].includes(exportName)
+      ? rejectedAvatarExports
+      : exportName === "OverflowList"
+        ? rejectedOverflowListExports
+        : exportName === "Collapsible"
+          ? rejectedCollapsibleExports
+          : exportName === "Popover"
+            ? rejectedPopoverExports
+            : exportName === "Tooltip"
+              ? rejectedTooltipExports
+              : exportName === "Progress"
+                ? rejectedProgressExports
+                : exportName === "Highlight"
+                  ? rejectedHighlightExports
+                  : exportName === "Skeleton"
+                    ? rejectedSkeletonExports
+                    : exportName === "Layout"
+                      ? rejectedLayoutExports
+                      : ["Row", "Col"].includes(exportName)
+                        ? rejectedGridExports
+                        : exportName === "Space"
+                          ? rejectedSpaceExports
+                          : exportName === "Divider"
+                            ? rejectedDividerExports
+                            : exportName === "IconButton"
+                              ? rejectedIconButtonExports
+                              : exportName === "Spin"
+                                ? rejectedSpinExports
+                                : [
+                                      "Button",
+                                      "ButtonGroup",
+                                      "SplitButtonGroup",
+                                    ].includes(exportName)
+                                  ? rejectedButtonExports
+                                  : exportName.startsWith("Locale")
+                                    ? rejectedLocaleExports
+                                    : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -522,6 +529,7 @@ try {
         rejectedHighlightExports,
         rejectedProgressExports,
         rejectedTooltipExports,
+        rejectedAvatarExports,
         rejectedOverflowListExports,
         rejectedCollapsibleExports,
         rejectedPopoverExports,

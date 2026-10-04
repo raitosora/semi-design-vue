@@ -7,8 +7,8 @@ import SubpathSkeleton, {
   type ParagraphProps,
   type GenericProps,
 } from "semi-ui-vue/skeleton";
-// @ts-expect-error Skeleton children are static members, not root named exports.
-import { Avatar } from "semi-ui-vue";
+// @ts-expect-error Skeleton.Avatar has no standalone SkeletonAvatar root alias.
+import { SkeletonAvatar } from "semi-ui-vue";
 // @ts-expect-error Skeleton children are static members, not root named exports.
 import { Title } from "semi-ui-vue";
 // @ts-expect-error Skeleton children are static members, not root named exports.
@@ -90,7 +90,7 @@ void [
   invalidRows,
   invalidSlot,
   invalidAsyncSlot,
-  Avatar,
+  SkeletonAvatar,
   Title,
   Paragraph,
   Image,

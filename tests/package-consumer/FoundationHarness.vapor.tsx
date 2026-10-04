@@ -1,5 +1,7 @@
 import { defineVaporComponent, ref } from "vue";
 import {
+  Avatar,
+  AvatarGroup,
   Col,
   Layout,
   Row,
@@ -27,6 +29,8 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const avatarLabel = ref("Foundation Avatar");
+  const avatarCount = ref(1);
   const overflowWidth = ref(155);
   const overflowLabel = ref("Foundation");
   const overflowChanges = ref(0);
@@ -76,6 +80,30 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <div data-foundation-avatar="">
+            <Avatar
+              children={avatarLabel.value}
+              className="foundation-avatar-text"
+              gap={4}
+              size="small"
+            />
+            <AvatarGroup maxCount={avatarCount.value} size="small">
+              {() => (
+                <>
+                  <Avatar
+                    alt="First Foundation avatar"
+                    children="A"
+                    className="foundation-avatar-a"
+                  />
+                  <Avatar
+                    alt="Second Foundation avatar"
+                    children="B"
+                    className="foundation-avatar-b"
+                  />
+                </>
+              )}
+            </AvatarGroup>
+          </div>
           <OverflowList
             className="foundation-overflow-list"
             collapseFrom="end"
@@ -174,6 +202,15 @@ export const FoundationHarness = defineVaporComponent(() => {
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>
       <output id="visible">{String(visible.value)}</output>
+      <button
+        id="avatar-update"
+        onClick={() => {
+          avatarLabel.value = "Updated Avatar";
+          avatarCount.value = 2;
+        }}
+      >
+        Update Avatar
+      </button>
       <output id="overflow-changes">{overflowChanges.value}</output>
       <button
         id="overflow-resize"

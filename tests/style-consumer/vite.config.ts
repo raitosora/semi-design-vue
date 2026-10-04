@@ -24,6 +24,7 @@ export default defineConfig({
         "highlight",
         "progress",
         "overflowList",
+        "avatar",
       ],
     }),
   ],

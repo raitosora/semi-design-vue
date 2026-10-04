@@ -85,6 +85,7 @@ export default defineConfig({
             text: "OverflowList 溢出列表",
             link: "/zh-CN/components/overflowList",
           },
+          { text: "Avatar 头像", link: "/zh-CN/components/avatar" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

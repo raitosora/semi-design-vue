@@ -1,3 +1,5 @@
+import { checkAvatarInterop } from "./avatar-interop.js";
+import "semi-ui-vue/styles/components/avatar.css";
 import {
   createApp,
   h,
@@ -698,6 +700,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkAvatar(): Promise<string>;
       updateOverflowList(width: number): Promise<void>;
       updateOverflowScroll(width: number): Promise<void>;
       getOverflowScrollNotifications(): number;
@@ -708,6 +711,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkAvatar: checkAvatarInterop,
   async update() {
     spinning.value = false;
     skeletonLoading.value = false;

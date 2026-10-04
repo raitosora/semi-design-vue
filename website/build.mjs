@@ -197,6 +197,12 @@ await writeFile(
           "semi-ui-vue/progress": [
             "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
           ],
+          "semi-ui-vue/avatar": [
+            "../../packages/semi-ui-vue/dist/components/avatar/index.d.ts",
+          ],
+          "semi-ui-vue/avatar/avatarGroup": [
+            "../../packages/semi-ui-vue/dist/components/avatar/avatarGroup.d.ts",
+          ],
           "semi-ui-vue/overflowList": [
             "../../packages/semi-ui-vue/dist/components/overflowList/index.d.ts",
           ],

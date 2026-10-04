@@ -1,3 +1,4 @@
+import "semi-ui-vue/styles/components/avatar.css";
 import { createVaporApp } from "vue";
 import { FoundationHarness } from "@raitosora/semi-validation-foundation";
 import "semi-ui-vue/styles/components/space.css";

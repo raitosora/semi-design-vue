@@ -1,3 +1,4 @@
+import { avatarMarkup } from "./avatar-markup";
 import { overflowListMarkup } from "./overflowList-markup";
 import { progressMarkup } from "./progress-markup";
 import { highlightMarkup } from "./highlight-markup";
@@ -26,4 +27,5 @@ document.body.innerHTML = `
   ${highlightMarkup("semi")}
   ${progressMarkup("semi")}
   ${overflowListMarkup("semi")}
+  ${avatarMarkup("semi")}
 `;

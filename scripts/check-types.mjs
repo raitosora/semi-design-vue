@@ -13,6 +13,8 @@ const required = [
   "tests/types/StrictFixture.tsx",
   "tests/types/positive.tsx",
   "tests/types/negative.tsx",
+  "tests/types/avatar-positive.tsx",
+  "tests/types/avatar-negative.tsx",
   "tests/types/overflowList-positive.tsx",
   "tests/types/overflowList-negative.tsx",
   "tests/types/collapsible-positive.tsx",
