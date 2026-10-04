@@ -115,3 +115,9 @@ export type {
   OverflowListSlots,
   OverflowRenderResult,
 } from "./components/overflowList/index.js";
+
+export { Avatar, AvatarGroup } from "./components/avatar/index.js";
+export type {
+  AvatarProps,
+  AvatarGroupProps,
+} from "./components/avatar/index.js";

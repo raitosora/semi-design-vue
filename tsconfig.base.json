@@ -91,6 +91,12 @@
       ],
       "semi-ui-vue/overflowList": [
         "./packages/semi-ui-vue/src/components/overflowList/index.ts"
+      ],
+      "semi-ui-vue/avatar": [
+        "./packages/semi-ui-vue/src/components/avatar/index.ts"
+      ],
+      "semi-ui-vue/avatar/avatarGroup": [
+        "./packages/semi-ui-vue/src/components/avatar/avatarGroup.tsx"
       ]
     },
     "allowImportingTsExtensions": true

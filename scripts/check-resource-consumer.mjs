@@ -514,6 +514,10 @@ function checkGraph(mode = "vapor") {
     "Popover implementation missing from consumer graph",
   );
   assert(
+    /semi-ui-vue\/dist\/(?:avatar|Avatar)[^/\n]*\.js/.test(modules),
+    "Avatar implementation missing from consumer graph",
+  );
+  assert(
     /semi-ui-vue\/dist\/overflowList-[^/\n]+\.js/.test(modules),
     "OverflowList implementation missing from consumer graph",
   );
@@ -835,6 +839,95 @@ function checkTooltipTreeShaking() {
         assert(
           !source.includes("semi-tooltip-wrapper"),
           "Unused Tooltip marker survived in executable output",
+        );
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkAvatarTreeShaking() {
+  for (const mode of [
+    "avatar-only",
+    "avatar-root-only",
+    "avatar-group-only",
+    "avatar-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.avatar.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const modules = graph.modules.join("\n");
+    const hasAvatar = /semi-ui-vue\/dist\/(?:avatar|Avatar)[^/\n]*\.js/.test(
+      modules,
+    );
+    assert(
+      hasAvatar === (mode !== "avatar-unused"),
+      `${mode}: Avatar implementation tree-shaking mismatch`,
+    );
+    const entry =
+      mode === "avatar-only"
+        ? "/semi-ui-vue/dist/components/avatar/index.js"
+        : mode === "avatar-group-only"
+          ? "/semi-ui-vue/dist/components/avatar/avatarGroup.js"
+          : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    for (const unused of [
+      "collapsible",
+      "progress",
+      "highlight",
+      "skeleton",
+      "layout",
+      "grid",
+      "space",
+      "spin",
+      "button",
+    ])
+      assert(
+        !new RegExp(`semi-ui-vue/dist/${unused}-[^/\\n]+\\.js`).test(modules),
+        `${mode}: retained unrelated ${unused} implementation`,
+      );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      if (mode === "avatar-unused")
+        assert(
+          !source.includes("semi-avatar"),
+          "Unused Avatar marker survived in executable output",
         );
       return {
         file: path.slice(directory.length + 1),
@@ -1388,6 +1481,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkAvatar())) ===
+        "avatar consumer passed",
+      "Packed Avatar behavior failed",
+    );
+    assert(
       (await page.evaluate(() =>
         window.resourceConsumer.checkOverflowList(),
       )) === "overflowList consumer passed",
@@ -1590,6 +1688,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkAvatar())) ===
+        "avatar interop passed",
+      "Packed Avatar interop behavior failed",
+    );
     assert(
       (await page
         .locator('.interop-icon-button [data-icon="spin"]')
@@ -2367,6 +2470,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:overflowList.tsx"),
     "OverflowList fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:avatar.tsx"),
+    "Avatar fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -2391,6 +2498,8 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "avatar-browser.ts",
+    "avatar-interop.ts",
     "overflowList-browser.ts",
     "collapsible-browser.ts",
     "popover-browser.ts",
@@ -2401,6 +2510,11 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.avatar.config.ts",
+    "avatar-only.ts",
+    "avatar-root-only.ts",
+    "avatar-group-only.ts",
+    "avatar-unused.ts",
     "vite.overflowList.config.ts",
     "overflowList-only.ts",
     "overflowList-root-only.ts",
@@ -2454,6 +2568,12 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "avatar-browser.ts",
+          "avatar-interop.ts",
+          "avatar-only.ts",
+          "avatar-root-only.ts",
+          "avatar-group-only.ts",
+          "avatar-unused.ts",
           "overflowList-browser.ts",
           "collapsible-browser.ts",
           "popover-browser.ts",
@@ -2555,6 +2675,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkAvatarTreeShaking();
   checkOverflowListTreeShaking();
   checkPopoverTreeShaking();
   await withPreview("dist", browserCheck);

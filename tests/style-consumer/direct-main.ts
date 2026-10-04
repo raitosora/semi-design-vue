@@ -1,3 +1,5 @@
+import "./avatar-only.scss";
+import { avatarMarkup } from "./avatar-markup";
 import "./overflowList-only.scss";
 import { overflowListMarkup } from "./overflowList-markup";
 import "./highlight-only.scss";
@@ -45,6 +47,7 @@ document.body.innerHTML = `
   ${highlightMarkup("semi")}
   ${progressMarkup("semi")}
   ${overflowListMarkup("semi")}
+  ${avatarMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -56,4 +59,5 @@ document.body.innerHTML = `
   ${highlightMarkup("consumer")}
   ${progressMarkup("consumer")}
   ${overflowListMarkup("consumer")}
+  ${avatarMarkup("consumer")}
 `;

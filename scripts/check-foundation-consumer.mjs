@@ -133,6 +133,52 @@ async function browserCheck(directory, mode) {
       60,
       `${mode} Layout Sider width changed`,
     );
+    await expect(
+      page.locator("[data-foundation-avatar] .semi-avatar-item-more"),
+    ).toContainText("+1");
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(".foundation-avatar-text .semi-avatar-label")
+          ?.getBoundingClientRect().width <= 32,
+    );
+    assert.equal(
+      await page
+        .locator(".foundation-avatar-text")
+        .evaluate((node) => node.getBoundingClientRect().width),
+      32,
+      `${mode} Avatar actual width failed`,
+    );
+    await page.evaluate(() => {
+      window.foundationAvatarFirst = document.querySelector(
+        ".foundation-avatar-a",
+      );
+    });
+    await page.locator("#avatar-update").click();
+    await expect(page.locator(".foundation-avatar-text")).toContainText(
+      "Updated Avatar",
+    );
+    await expect(
+      page.locator("[data-foundation-avatar] .semi-avatar-item-more"),
+    ).toHaveCount(0);
+    assert(
+      await page.evaluate(
+        () =>
+          window.foundationAvatarFirst ===
+          document.querySelector(".foundation-avatar-a"),
+      ),
+      `${mode} AvatarGroup expansion lost DOM identity`,
+    );
+    assert(
+      await page
+        .locator(".foundation-avatar-b")
+        .evaluate(
+          (node) =>
+            node.getClientRects().length > 0 &&
+            !node.closest("[hidden],[inert]"),
+        ),
+      `${mode} AvatarGroup expansion retained hidden content`,
+    );
     await page.waitForFunction(
       () =>
         [
@@ -283,6 +329,7 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(page.locator("[data-foundation-avatar]")).toHaveCount(0);
     await expect(page.locator(".foundation-overflow-list")).toHaveCount(0);
     const overflowState = await page.locator("#overflow-changes").textContent();
     await page.evaluate(() => {
@@ -414,6 +461,20 @@ try {
           /semi-ui-vue\/dist\/layout-[^/]+\.js$/.test(id) && renderedLength > 0,
       ),
       "Packed Layout implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          /semi-ui-vue\/dist\/(?:avatar|Avatar)[^/]*\.js$/.test(id) &&
+          renderedLength > 0,
+      ),
+      "Packed Avatar implementation missing from Foundation consumer graph",
+    );
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/avatar\.css$/.test(id),
+      ),
+      "Packed Avatar stylesheet missing from Foundation consumer graph",
     );
     assert(
       graph.modules.some(

@@ -149,3 +149,9 @@ scroll raw tuple 在当前 pair 分支的共同资源 scope 创建，两份原�
 OverflowList 折叠计算以根、项目包装和溢出提示包装的整数 `clientWidth` 为准，与固定上游策略一致。根值包含 padding、不包含 border，项目内容 margin 可能影响包装实测宽度；根 flex gap 不另行扣除，子像素布局会受到整数舍入影响。根宽 146、三个包装各宽 48 的宽度和 144 可以保留三项，但额外 12px gap 仍会使实际内容越过根边缘；不承诺调用者额外 gap、margin 下的总包围盒无溢出。尺寸监听与字体变化重新测量沿用同一计算边界。
 
 折叠候选项临时参与真实测量后卸载，稳定展示只保留一份内容树；测量候选项通过 inert/aria-hidden 排除交互。折叠项闭包状态的独立变化需要新 items/renderer 身份或已支持尺寸触发重新测量。固定上游 floor(width/4) 候选数量启发式没有移植；每轮临时挂载全部项目测量，不承诺虚拟化或相同测量开销。安全空列表、最小项数归一化、统一 key、滚动包装与非单调溢出内容的有限收敛差异见组件页面。根接受安全 HTML attrs，内部测量 visibility/maxWidth 最后应用；没有公开 ref 方法、静态子组件、键盘或额外列表 ARIA 协议。
+
+## Avatar 的内容与分组所有权
+
+[Avatar](../components/avatar.md) 保留显式字符串 children 的文字缩放路径，default slot 承载富内容；不能预执行 slot 判断它是否是字符串或 Avatar。hoverMask、topSlot/bottomSlot 的 text 和 render 使用同步原生内容协议，组件不克隆、缓存 VNode，也不将 renderer 结果强制字符串化。顶层 onError 是实际 Foundation 的零参数返回值回调，严格 false 阻止默认图片回退；imgAttr 的原生图片事件与它不是同一协议。
+
+AvatarGroup 通过子 Avatar 注册和真实 DOM 顺序处理稳定 key、增删重排与条件内容；组 size/shape 覆盖成员，对嵌套组遵循最近上下文。折叠项保留原生子树，用 hidden/inert/aria-hidden 阻止展示与交互，不将折叠描述成卸载或业务资源暂停。renderMore 接收数量及只读 AvatarGroupItem 描述快照（id/index/props/label），不是可克隆的 ReactNode 或可重挂的内容。默认更多提示只显示 +N，需要交互时调用者组合 Popover 与原生 button。组件没有 Avatar.Group、more 命名 slot 或公开 imperative ref。

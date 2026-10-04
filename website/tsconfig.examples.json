@@ -8,6 +8,12 @@
     "outDir": ".generated/examples",
     "paths": {
       "semi-ui-vue": ["../packages/semi-ui-vue/dist/index.d.ts"],
+      "semi-ui-vue/avatar": [
+        "../packages/semi-ui-vue/dist/components/avatar/index.d.ts"
+      ],
+      "semi-ui-vue/avatar/avatarGroup": [
+        "../packages/semi-ui-vue/dist/components/avatar/avatarGroup.d.ts"
+      ],
       "semi-icons-vue": ["../packages/semi-icons-vue/dist/index.d.ts"],
       "semi-icons-lab-vue": ["../packages/semi-icons-lab-vue/dist/index.d.ts"],
       "semi-illustrations-vue": [

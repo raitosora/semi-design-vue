@@ -68,7 +68,7 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible and overflowList (17 families). All other
+accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible, overflowList and avatar (18 families). All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -165,8 +165,9 @@ Strict declarations, Chromium behavior, Chinese examples and three direct
 Skeleton tarball consumer surfaces passed; the separate patched Foundation
 tarball remains a regression flow. Explicit differences include the upstream
 generator's undefined type crash, Paragraph native-attribute forwarding and
-the fixed SCSS missing a dimension rule for Avatar size `default`. Independent
-Avatar, Typography and Image public families remain unaccepted. The existing
+the fixed SCSS missing a dimension rule for Avatar size `default`. The Skeleton decision does not accept independent Avatar, Typography or Image
+contracts; Avatar has a separate acceptance record below. Typography and Image
+remain unaccepted. The existing
 TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.
 
 The `progress` record accepts the fixed line/circle, indeterminate, direction,
@@ -248,3 +249,20 @@ Native scrolling content uses separate `overflowStart` and `overflowEnd` slot
 outlets with one-sided item arrays, while the raw `overflowRenderer` retains
 its two-dimensional input and two-part result. These slot names preserve Vue
 content ownership and are adaptation APIs, not additional upstream properties.
+
+The `avatar` record accepts Avatar and AvatarGroup for native browser Vapor.
+Image revision ownership covers loading, failure, source replacement and teardown;
+only synchronous false cancels the default fallback. Live text geometry follows
+the pinned Foundation formula through existing G10 resize and scheduling tools.
+Native rich slots retain their owners and are not inspected, cloned or measured.
+Group membership follows registered instances and actual DOM order; folded
+Avatars stay mounted under hidden/inert state, while custom more renderers receive
+readonly descriptors. This intentionally differs from React child cloning and
+unmounting. Hover content layout belongs to callers; fixed top decorations can
+occlude an unstyled mask. Strict declarations, real geometry, live Chinese
+examples, full browser regressions and four isolated tarball consumers bind the
+accepted contract. Fixed styles and licenses are retained without expanding the
+Foundation patch or production closure. No Avatar.Group, imperative ref method,
+public Image or other public family is introduced. The existing independent TSX
+peer constraint, document/ref/realm limits and SSR/hydration/CJS and full pixel
+parity exclusions remain.

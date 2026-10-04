@@ -21,6 +21,8 @@
     "collapsible-positive.tsx",
     "collapsible-negative.tsx",
     "overflowList-positive.tsx",
-    "overflowList-negative.tsx"
+    "overflowList-negative.tsx",
+    "avatar-positive.tsx",
+    "avatar-negative.tsx"
   ]
 }

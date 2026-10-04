@@ -575,3 +575,17 @@ export const progressContracts = (
   <ProgressFromPath {...progressProps} v-slots={progressSlots} />
 );
 void progressIdentity;
+
+import { Avatar, AvatarGroup } from "semi-ui-vue";
+export const avatarContract = (
+  <AvatarGroup
+    maxCount={1}
+    renderMore={(count, rest) => (
+      <span>
+        {count}:{rest[0]?.label}
+      </span>
+    )}
+  >
+    {() => <Avatar alt="Person" children="A" onError={() => false} />}
+  </AvatarGroup>
+);

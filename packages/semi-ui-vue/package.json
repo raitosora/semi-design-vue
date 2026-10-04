@@ -220,7 +220,21 @@
       "default": "./dist/styles/components/overflowList.css"
     },
     "./styles/components/overflowList.css": "./dist/styles/components/overflowList.css",
-    "./styles/components/overflowList.scss": "./dist/styles/components/overflowList.scss"
+    "./styles/components/overflowList.scss": "./dist/styles/components/overflowList.scss",
+    "./avatar": {
+      "types": "./dist/components/avatar/index.d.ts",
+      "import": "./dist/components/avatar/index.js"
+    },
+    "./avatar/avatarGroup": {
+      "types": "./dist/components/avatar/avatarGroup.d.ts",
+      "import": "./dist/components/avatar/avatarGroup.js"
+    },
+    "./styles/components/avatar": {
+      "sass": "./dist/styles/components/avatar.scss",
+      "default": "./dist/styles/components/avatar.css"
+    },
+    "./styles/components/avatar.css": "./dist/styles/components/avatar.css",
+    "./styles/components/avatar.scss": "./dist/styles/components/avatar.scss"
   },
   "files": [
     "dist",

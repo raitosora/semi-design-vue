@@ -1,3 +1,4 @@
+import type { AvatarProps } from "../components/avatar/types.js";
 import type { OverflowListProps } from "../components/overflowList/types.js";
 import type { CollapsibleProps } from "../components/collapsible/types.js";
 import type { InjectionKey, Ref } from "vue";
@@ -10,6 +11,7 @@ import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
 export interface SemiComponentProps {
+  Avatar: Omit<AvatarProps, "v-slots">;
   OverflowList: Omit<OverflowListProps, "v-slots" | "children" | "class">;
   Collapsible: Omit<CollapsibleProps, "v-slots" | "children" | "class">;
   Popover: Omit<PopoverProps, "v-slots" | "children" | "class">;

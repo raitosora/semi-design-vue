@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "avatar",
   "input",
   "tooltip",
   "popover",
@@ -96,6 +97,13 @@ const foundationFiles = {
     "collapsible/animation.scss",
     "collapsible/collapsible.scss",
     "collapsible/variables.scss",
+  ],
+  avatar: [
+    "avatar/animation.scss",
+    "avatar/avatar.scss",
+    "avatar/mixin.scss",
+    "avatar/rtl.scss",
+    "avatar/variables.scss",
   ],
 };
 const sourceHashes = {
@@ -216,6 +224,16 @@ const sourceHashes = {
     "bd94593372cfcfde75c062c06ab735c9c1167e282ac00c170cf9ca5730b3043a",
   "foundation/collapsible/variables.scss":
     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "foundation/avatar/animation.scss":
+    "68dff81611b74720aa6216351243a502a2b8d25b8907e27ac4642e6e37521506",
+  "foundation/avatar/avatar.scss":
+    "b8c7885e222b6518ce4853ce2fa9473d82a0b10955aa2cbe244dbdee495a7079",
+  "foundation/avatar/mixin.scss":
+    "babcfe4e14b3fcec63d801f00d21c510a0b709e08e953f65e826ac7ce4344116",
+  "foundation/avatar/rtl.scss":
+    "3437523f0442a0ff7002220f3ea757a1dad9148921dd98bae47a4b2521d251ff",
+  "foundation/avatar/variables.scss":
+    "734913ce77b3a0b6381083a66ab359f378443f98c591f7a2bcd334dddb0ef8e1",
 };
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
@@ -306,6 +324,14 @@ function entrySources() {
       '@import "./theme/animation";',
       '@import "./theme/mixins";',
       '@import "./vendor/foundation/base/base";',
+      "",
+    ].join("\n"),
+    "components/avatar.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/avatar/avatar";',
       "",
     ].join("\n"),
     "components/divider.scss": [
@@ -424,6 +450,7 @@ function entrySources() {
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
       '@import "./base";',
+      '@import "./components/avatar";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',

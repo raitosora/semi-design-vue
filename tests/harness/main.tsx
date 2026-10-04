@@ -1,3 +1,8 @@
+import AvatarBasic from "../../website/examples/avatar/Basic.vapor";
+import AvatarMeasure from "../../website/examples/avatar/Measure.vapor";
+import AvatarDecoration from "../../website/examples/avatar/Decoration.vapor";
+import AvatarGroup from "../../website/examples/avatar/Group.vapor";
+import AvatarTheme from "../../website/examples/avatar/Theme.vapor";
 import OverflowListBasic from "../../website/examples/overflowList/Basic.vapor";
 import OverflowListDynamic from "../../website/examples/overflowList/Dynamic.vapor";
 import OverflowListScroll from "../../website/examples/overflowList/Scroll.vapor";
@@ -86,6 +91,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/tooltip.css";
 import "../../packages/semi-ui-vue/dist/styles/components/popover.css";
 import "../../packages/semi-ui-vue/dist/styles/components/collapsible.css";
 import "../../packages/semi-ui-vue/dist/styles/components/overflowList.css";
+import "../../packages/semi-ui-vue/dist/styles/components/avatar.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -101,6 +107,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const avatarMode = new URLSearchParams(location.search).has("avatar");
 const overflowListMode = new URLSearchParams(location.search).has(
   "overflowList",
 );
@@ -119,10 +126,20 @@ const app = createVaporApp(
     tooltipMode ||
     popoverMode ||
     collapsibleMode ||
-    overflowListMode
+    overflowListMode ||
+    avatarMode
     ? defineVaporComponent(() => (
         <main>
-          {overflowListMode ? (
+          {avatarMode ? (
+            <>
+              <h1>Avatar examples</h1>
+              <AvatarBasic />
+              <AvatarMeasure />
+              <AvatarDecoration />
+              <AvatarGroup />
+              <AvatarTheme />
+            </>
+          ) : overflowListMode ? (
             <>
               <h1>OverflowList examples</h1>
               <OverflowListBasic />

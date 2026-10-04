@@ -1,3 +1,4 @@
+import { avatarStyleCheck } from "../tests/style-consumer/avatar-check.mjs";
 import {
   highlightStyleCheck,
   highlightDirectionCheck,
@@ -190,6 +191,19 @@ function checkStyleMetadata() {
       /^[a-f0-9]{64}$/.test(sources.sources[`foundation/${file}.scss`]),
       `Popover source hash is missing: ${file}`,
     );
+  for (const [name, expected] of Object.entries({
+    avatar: "b8c7885e222b6518ce4853ce2fa9473d82a0b10955aa2cbe244dbdee495a7079",
+    variables:
+      "734913ce77b3a0b6381083a66ab359f378443f98c591f7a2bcd334dddb0ef8e1",
+    mixin: "babcfe4e14b3fcec63d801f00d21c510a0b709e08e953f65e826ac7ce4344116",
+    animation:
+      "68dff81611b74720aa6216351243a502a2b8d25b8907e27ac4642e6e37521506",
+    rtl: "3437523f0442a0ff7002220f3ea757a1dad9148921dd98bae47a4b2521d251ff",
+  }))
+    assert(
+      sources.sources[`foundation/avatar/${name}.scss`] === expected,
+      `Avatar source hash differs: ${name}`,
+    );
   for (const name of ["overflowList", "rtl"]) {
     const file = `foundation/overflowList/${name}.scss`;
     assert(
@@ -354,6 +368,7 @@ async function browserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    await avatarStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     for (const prefix of ["semi", "consumer"])
@@ -562,6 +577,7 @@ async function plainBrowserCheck(url) {
     );
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
+    await avatarStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
@@ -719,6 +735,70 @@ async function tooltipBrowserCheck(url) {
     await page.screenshot({
       path: resolve(root, ".vitest/attachments/style-consumer/tooltip.png"),
     });
+  } finally {
+    await browser.close();
+  }
+}
+
+async function avatarBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage();
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("avatar.html", url).href);
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      const backgrounds = {};
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+            for (const prefix of ["semi", "consumer", "theme"])
+              document.querySelector(
+                `[data-avatar-style="${prefix}"]`,
+              ).className = value === "rtl" ? `${prefix}-rtl` : "";
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const background = await avatarStyleCheck(page, prefix, direction);
+            if (direction === "ltr") {
+              if (theme === "light") backgrounds[prefix] = background;
+              else
+                assert(
+                  background !== backgrounds[prefix],
+                  `${prefix} Avatar dark theme did not change palette`,
+                );
+            }
+          }
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 360 });
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Avatar styles overflow narrow viewport",
+      );
+      assert(errors.length === 0, `Avatar style errors: ${errors.join("; ")}`);
+      await page.screenshot({
+        path: resolve(root, ".vitest/attachments/style-consumer/avatar.png"),
+      });
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
   } finally {
     await browser.close();
   }
@@ -1102,6 +1182,11 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "avatar-only.scss",
+    "avatar-markup.ts",
+    "avatar-main.ts",
+    "avatar.html",
+    "vite.avatar.config.ts",
     "overflowList-only.scss",
     "overflowList-markup.ts",
     "overflowList-main.ts",
@@ -1498,6 +1583,51 @@ try {
     "OverflowList component-only CSS retained another component",
   );
   await withPreview("overflowList-dist", overflowListBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.avatar.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const avatarCss = files(join(consumer, "avatar-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      avatarCss.includes(`.${prefix}-avatar-group`) &&
+        avatarCss.includes(`.${prefix}-avatar-small`),
+      `${prefix} Avatar CSS/SCSS/theme entry missing`,
+    );
+  const avatarGraph = checkGraph("avatar-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/avatar.css",
+    "/avatar-only.scss",
+    "virtual:semi-theme.scss",
+  ])
+    assert(
+      avatarGraph.modules.some((id) => id.includes(fragment)),
+      `Avatar public style entry missing: ${fragment}`,
+    );
+  assert(
+    !avatarGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Avatar style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+      avatarCss,
+    ),
+    "Avatar-only stylesheet retained unrelated component",
+  );
+  await withPreview("avatar-dist", avatarBrowserCheck);
 
   execFileSync(
     process.execPath,

@@ -520,8 +520,8 @@ import type {
   SkeletonProps,
   SkeletonSlots,
 } from "semi-ui-vue/skeleton";
-// @ts-expect-error Static Avatar is only a Skeleton member, not a root export.
-import { Avatar } from "semi-ui-vue";
+// @ts-expect-error Skeleton.Avatar has no standalone SkeletonAvatar root alias.
+import { SkeletonAvatar } from "semi-ui-vue";
 // @ts-expect-error Skeleton types belong to the skeleton subpath.
 import type { SkeletonProps as RootSkeletonProps } from "semi-ui-vue";
 // @ts-expect-error Loading is boolean, not a string.
@@ -584,3 +584,11 @@ export const progressReadonly = (
     }}
   />
 );
+
+import { Avatar, AvatarGroup } from "semi-ui-vue";
+// @ts-expect-error Avatar does not expose a static Group.
+export const badAvatarStatic = <Avatar.Group />;
+// @ts-expect-error Avatar error callback has no argument.
+export const badAvatarError = <Avatar onError={(_event: Event) => false} />;
+// @ts-expect-error Group maxCount is numeric.
+export const badAvatarCount = <AvatarGroup maxCount="two" />;
