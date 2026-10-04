@@ -1,0 +1,10 @@
+// Composition dependencies are explicitly requested, never injected by Tag.
+@use "semi-ui-vue/styles/components/avatar" with (
+  $semi-prefix: consumer
+);
+@use "semi-ui-vue/styles/components/popover" with (
+  $semi-prefix: consumer
+);
+@use "semi-ui-vue/styles/components/icons" with (
+  $semi-prefix: consumer
+);

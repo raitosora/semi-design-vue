@@ -121,3 +121,10 @@ export type {
   AvatarProps,
   AvatarGroupProps,
 } from "./components/avatar/index.js";
+
+export { Tag, TagGroup, SplitTagGroup } from "./components/tag/index.js";
+export type {
+  TagProps,
+  TagGroupProps,
+  SplitTagGroupProps,
+} from "./components/tag/index.js";

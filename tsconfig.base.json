@@ -97,6 +97,19 @@
       ],
       "semi-ui-vue/avatar/avatarGroup": [
         "./packages/semi-ui-vue/src/components/avatar/avatarGroup.tsx"
+      ],
+      "semi-ui-vue/tag": ["./packages/semi-ui-vue/src/components/tag/index.ts"],
+      "semi-ui-vue/tag/group": [
+        "./packages/semi-ui-vue/src/components/tag/group.tsx"
+      ],
+      "semi-ui-vue/tag/splitTagGroup": [
+        "./packages/semi-ui-vue/src/components/tag/splitTagGroup.tsx"
+      ],
+      "semi-ui-vue/tag/interface": [
+        "./packages/semi-ui-vue/src/components/tag/interface.ts"
+      ],
+      "semi-icons-vue/IconClose": [
+        "./packages/semi-icons-vue/src/icons/IconClose.tsx"
       ]
     },
     "allowImportingTsExtensions": true

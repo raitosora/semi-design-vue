@@ -83,3 +83,5 @@ Collapsible 的独立入口只引入固定 `collapsible/animation.scss`、`colla
 OverflowList 的 `styles/components/overflowList`、`.css` 与 `.scss` 按需入口使用固定 `overflowList/overflowList.scss` 与 `overflowList/rtl.scss` 闭包，也包含于完整样式。`styles: ["overflowList"]` 可选择主题插件入口，`$semi-prefix` 支持定制选择器前缀，组件默认类名保持 semi，业务需确保匹配。固定样式负责横向布局；业务项目背景、按钮语义与两側溢出提示由 renderer/slot 提供。完整动态几何与尺寸测量边界见 [OverflowList](../components/overflowList.md)。
 
 Avatar 与 AvatarGroup 共用 `styles/components/avatar`、`.css` 和 `.scss` 入口，也包含在聚合样式中。它们使用固定 avatar、animation、mixin、rtl 与 variables 五份 SCSS；`styles: ["avatar"]` 选择主题插件入口，`$semi-prefix` 可定制选择器前缀，CSS tokens 仍为 `--semi-*`。顶部/底部装饰、边框与内容动画均使用同一闭包，不引入 Image、Tag 或 Badge 样式。详见 [Avatar](../components/avatar.md)。
+
+Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.scss`，主题插件支持 `styles: ["tag"]`。其固定闭包只有 tag、variables、mixin、rtl 四份 SCSS；关闭图标另引 icons，内置头像另引 avatar，溢出浮层另引 popover，或统一使用聚合样式。Tag 的数量折叠不由 CSS 容器宽度驱动。详见 [Tag](../components/tag.md)。

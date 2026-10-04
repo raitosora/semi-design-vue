@@ -1,3 +1,4 @@
+import { tagStyleCheck } from "../tests/style-consumer/tag-check.mjs";
 import { avatarStyleCheck } from "../tests/style-consumer/avatar-check.mjs";
 import {
   highlightStyleCheck,
@@ -204,6 +205,17 @@ function checkStyleMetadata() {
       sources.sources[`foundation/avatar/${name}.scss`] === expected,
       `Avatar source hash differs: ${name}`,
     );
+  for (const [name, expected] of Object.entries({
+    tag: "d72c8e56177e1cdf20921bb3f35a62d83bc1f33c4bbadf7d7414983bd7cb05cd",
+    rtl: "93c2c0e3194437f323ef7a05b836e6b25c34b5984d518dcf660b9f305fa35a21",
+    mixin: "867e1515dbf4cd3a4884ed1a73f01b22a57ea6d524d664dc9428897d2abb7c9d",
+    variables:
+      "5b91123335141da9b77cc90c943fe45ac96c98997af2e8f445323cb7a3ce9013",
+  }))
+    assert(
+      sources.sources[`foundation/tag/${name}.scss`] === expected,
+      `Tag source hash differs: ${name}`,
+    );
   for (const name of ["overflowList", "rtl"]) {
     const file = `foundation/overflowList/${name}.scss`;
     assert(
@@ -369,6 +381,7 @@ async function browserCheck(url) {
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
     await avatarStyleCheck(page, "semi");
+    await tagStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     for (const prefix of ["semi", "consumer"])
@@ -578,6 +591,7 @@ async function plainBrowserCheck(url) {
     page.on("pageerror", (error) => messages.push(error.message));
     await page.goto(url, { waitUntil: "networkidle" });
     await avatarStyleCheck(page, "semi");
+    await tagStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
@@ -735,6 +749,136 @@ async function tooltipBrowserCheck(url) {
     await page.screenshot({
       path: resolve(root, ".vitest/attachments/style-consumer/tooltip.png"),
     });
+  } finally {
+    await browser.close();
+  }
+}
+
+async function tagBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("tag.html", url).href);
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      const backgrounds = {};
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        const canvas = await page.evaluate(() => ({
+          background: getComputedStyle(document.body).backgroundColor,
+          color: getComputedStyle(document.body).color,
+        }));
+        assert(
+          canvas.background ===
+            (theme === "dark" ? "rgb(22, 22, 26)" : "rgb(255, 255, 255)"),
+          `Tag ${theme} canvas background missing`,
+        );
+        assert(
+          canvas.color !== canvas.background,
+          `Tag ${theme} canvas text has no contrast`,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+            for (const prefix of ["semi", "consumer", "theme"])
+              for (const selector of [
+                "data-tag-style",
+                "data-tag-overflow-style",
+              ])
+                document.querySelector(`[${selector}="${prefix}"]`).className =
+                  value === "rtl" ? `${prefix}-rtl` : "";
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const background = await tagStyleCheck(
+              page,
+              prefix,
+              direction,
+              true,
+            );
+            assert(
+              background ===
+                (theme === "light" ? "rgb(246, 248, 250)" : "rgb(30, 32, 36)"),
+              `${prefix} Tag custom background token missing`,
+            );
+            if (direction === "ltr") {
+              if (theme === "light") backgrounds[prefix] = background;
+              else
+                assert(
+                  background !== backgrounds[prefix],
+                  `${prefix} Tag dark theme did not change palette`,
+                );
+            }
+            const close = page.locator(
+              `[data-tag-style="${prefix}"] [data-tag-close]`,
+            );
+            await page.keyboard.press("Tab");
+            await close.focus();
+            assert(
+              await close.evaluate(
+                (node) =>
+                  node === document.activeElement &&
+                  getComputedStyle(node).outlineStyle === "solid",
+              ),
+              `${prefix} Tag focus-visible outline missing`,
+            );
+            await close.evaluate(
+              (node, name) => node.classList.add(`${name}-tag-invisible`),
+              prefix,
+            );
+            assert(
+              await close.evaluate(
+                (node) => getComputedStyle(node).display === "none",
+              ),
+              `${prefix} Tag invisible class missing`,
+            );
+            await close.evaluate(
+              (node, name) => node.classList.remove(`${name}-tag-invisible`),
+              prefix,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/tag-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Tag styles overflow narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/tag-narrow.png",
+        ),
+        fullPage: true,
+      });
+      assert(errors.length === 0, `Tag style errors: ${errors.join("; ")}`);
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
   } finally {
     await browser.close();
   }
@@ -1182,6 +1326,13 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "tag-only.scss",
+    "tag-composition.scss",
+    "tag-theme-icons.scss",
+    "tag-markup.ts",
+    "tag-main.ts",
+    "tag.html",
+    "vite.tag.config.ts",
     "avatar-only.scss",
     "avatar-markup.ts",
     "avatar-main.ts",
@@ -1628,6 +1779,60 @@ try {
     "Avatar-only stylesheet retained unrelated component",
   );
   await withPreview("avatar-dist", avatarBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.tag.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const tagCss = files(join(consumer, "tag-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      tagCss.includes(`.${prefix}-tag-group`) &&
+        tagCss.includes(`.${prefix}-tag-split`) &&
+        tagCss.includes(`.${prefix}-avatar`) &&
+        tagCss.includes(`.${prefix}-popover-wrapper`) &&
+        tagCss.includes(`.${prefix}-icon`),
+      `${prefix} Tag composition style entry missing`,
+    );
+  const tagGraph = checkGraph("tag-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/tag.css",
+    "/semi-ui-vue/dist/styles/components/avatar.css",
+    "/semi-ui-vue/dist/styles/components/popover.css",
+    "/semi-ui-vue/dist/styles/components/icons.css",
+    "/tag-only.scss",
+    "/tag-composition.scss",
+    "/tag-theme-icons.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      tagGraph.modules.some((id) => id.includes(fragment)),
+      `Tag public style entry missing: ${fragment}`,
+    );
+  assert(
+    !tagGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Tag composition probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:badge|typography|image|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+      tagCss,
+    ),
+    "Tag composition stylesheet retained unrelated component",
+  );
+  await withPreview("tag-dist", tagBrowserCheck);
 
   execFileSync(
     process.execPath,

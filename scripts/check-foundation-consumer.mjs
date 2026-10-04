@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFileSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
 import {
@@ -11,7 +13,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium, expect } from "@playwright/test";
 import { buildFoundationFixture } from "./build-foundation-fixture.mjs";
@@ -22,6 +24,40 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const fixture = join(root, "tests/package-consumer");
 const evidence = join(root, ".vitest/attachments/foundation-consumer");
 const work = await mkdtemp(join(tmpdir(), "semi-foundation-tarball-"));
+
+// Chunk filenames are a bundler detail. Bind implementation identity to the
+// installed tarball's source metadata and hash-addressed source-map snapshots.
+function implementationChunks(directory, sourcePath, exportName) {
+  const dist = join(directory, "node_modules/semi-ui-vue/dist");
+  const metadata = JSON.parse(
+    readFileSync(join(dist, "build-meta.json"), "utf8"),
+  );
+  const chunks = metadata.chunks.filter((chunk) =>
+    chunk.modules.includes(sourcePath),
+  );
+  assert(chunks.length > 0, `Missing packed source identity: ${sourcePath}`);
+  return chunks.map((chunk) => {
+    const chunkPath = join(dist, chunk.file);
+    const map = JSON.parse(readFileSync(`${chunkPath}.map`, "utf8"));
+    const matches = map.sources.filter((source) => {
+      const snapshot = readFileSync(resolve(dirname(chunkPath), source));
+      const hash = createHash("sha256").update(snapshot).digest("hex");
+      assert(
+        source.includes(`/map-sources/${hash}.`) ||
+          source.startsWith(`map-sources/${hash}.`),
+        `Packed map snapshot hash mismatch: ${source}`,
+      );
+      return new RegExp(`export const ${exportName}\\b`).test(
+        snapshot.toString("utf8"),
+      );
+    });
+    assert(
+      matches.length === 1,
+      `Missing unique packed implementation source: ${sourcePath}`,
+    );
+    return realpathSync(chunkPath);
+  });
+}
 
 async function outputFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -133,6 +169,37 @@ async function browserCheck(directory, mode) {
       60,
       `${mode} Layout Sider width changed`,
     );
+    await expect(page.locator(".foundation-tag-group")).toContainText("+1");
+    await page.locator(".foundation-tag .semi-tag-close").click();
+    await expect(page.locator("#tag-closes")).toHaveText("1");
+    await expect(page.locator(".foundation-tag")).not.toHaveClass(
+      /semi-tag-invisible/,
+    );
+    await page.evaluate(() => {
+      window.foundationTagFirst = document.querySelector(".foundation-tag-a");
+    });
+    await page.locator("#tag-update").click();
+    await expect(page.locator(".foundation-tag")).toContainText("Updated Tag");
+    await expect(page.locator(".foundation-tag-group")).not.toContainText("+1");
+    await expect(page.locator(".foundation-tag-b")).toBeVisible();
+    assert(
+      await page.evaluate(
+        () =>
+          window.foundationTagFirst ===
+          document.querySelector(".foundation-tag-a"),
+      ),
+      `${mode} TagGroup expansion lost DOM identity`,
+    );
+    await expect(page.locator(".foundation-tag-split")).toHaveAttribute(
+      "role",
+      "group",
+    );
+    await expect(
+      page.locator(".foundation-tag-split .semi-tag-first"),
+    ).toHaveCount(1);
+    await expect(
+      page.locator(".foundation-tag-split .semi-tag-last"),
+    ).toHaveCount(1);
     await expect(
       page.locator("[data-foundation-avatar] .semi-avatar-item-more"),
     ).toContainText("+1");
@@ -329,6 +396,7 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(page.locator("[data-foundation-tag]")).toHaveCount(0);
     await expect(page.locator("[data-foundation-avatar]")).toHaveCount(0);
     await expect(page.locator(".foundation-overflow-list")).toHaveCount(0);
     const overflowState = await page.locator("#overflow-changes").textContent();
@@ -433,6 +501,11 @@ try {
     const graph = JSON.parse(
       await readFile(join(consumer, "graph.json"), "utf8"),
     );
+    const tagChunks = implementationChunks(
+      consumer,
+      "src/components/tag/Tag.tsx",
+      "Tag",
+    );
     assert(graph.modules.length > 0, "Empty consumer bundle graph");
     assert(
       graph.modules.some(
@@ -461,6 +534,19 @@ try {
           /semi-ui-vue\/dist\/layout-[^/]+\.js$/.test(id) && renderedLength > 0,
       ),
       "Packed Layout implementation is absent from Foundation consumer bundle",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          tagChunks.includes(id) && renderedLength > 0,
+      ),
+      "Packed Tag implementation missing from Foundation consumer graph",
+    );
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/tag\.css$/.test(id),
+      ),
+      "Packed Tag stylesheet missing from Foundation consumer graph",
     );
     assert(
       graph.modules.some(
