@@ -835,3 +835,46 @@ import DefaultOverflowList, {
     unsafeHtml,
   ];
 }
+
+import type {
+  BadgeProps,
+  BadgeSlots,
+  BadgeContent,
+  BadgePosition,
+  BadgeTheme,
+  BadgeType,
+} from "semi-ui-vue/badge";
+const badgeProps: BadgeProps = {
+  count: 0,
+  overflowCount: 0,
+  dot: undefined,
+  position: "leftTop",
+  type: "primary",
+  theme: "solid",
+  children: "anchor",
+};
+const badgeSlots: BadgeSlots = { default: () => [] };
+const badgeContent: BadgeContent = () => ["safe", 0, false, null];
+const badgePosition: BadgePosition = "rightBottom",
+  badgeTheme: BadgeTheme = "inverted",
+  badgeType: BadgeType = "danger";
+// @ts-expect-error Badge does not expose an invented size property.
+const badgeSize: BadgeProps = { size: "small" };
+// @ts-expect-error Counts do not accept arbitrary objects.
+const badgeObject: BadgeProps = { count: {} };
+// @ts-expect-error Renderers remain synchronous after declaration packaging.
+const badgeAsync: BadgeProps = { count: async () => null };
+// @ts-expect-error Badge has no count slot.
+const badgeCountSlot: BadgeSlots = { count: () => null };
+void [
+  badgeProps,
+  badgeSlots,
+  badgeContent,
+  badgePosition,
+  badgeTheme,
+  badgeType,
+  badgeSize,
+  badgeObject,
+  badgeAsync,
+  badgeCountSlot,
+];

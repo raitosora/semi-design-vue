@@ -569,6 +569,10 @@ function checkGraph(mode = "vapor") {
     hasImplementation(graph.modules, "src/components/tag/Tag.tsx", "Tag"),
     "Tag implementation missing from consumer graph",
   );
+  assert(
+    hasImplementation(graph.modules, "src/components/badge/Badge.tsx", "Badge"),
+    "Badge implementation missing from consumer graph",
+  );
   if (mode === "vapor")
     assert(
       graph.compilationInputs.some((id) =>
@@ -921,6 +925,103 @@ function checkTagOutput(source, mode) {
     source.includes("semi-popover-icon-arrow") === includesGroup,
     `${mode}: Popover implementation tree-shaking mismatch`,
   );
+}
+
+function checkBadgeTreeShaking() {
+  for (const mode of ["badge-only", "badge-root-only", "badge-unused"]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.badge.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    assert(
+      hasImplementation(
+        graph.modules,
+        "src/components/badge/Badge.tsx",
+        "Badge",
+      ) ===
+        (mode !== "badge-unused"),
+      `${mode}: Badge implementation tree-shaking mismatch`,
+    );
+    for (const [sourcePath, exportName] of [
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/tag/group.tsx", "TagGroup"],
+      ["src/components/popover/Popover.tsx", "Popover"],
+      ["src/components/tooltip/Tooltip.tsx", "Tooltip"],
+      ["src/components/overflowList/OverflowList.tsx", "OverflowList"],
+      ["src/components/collapsible/Collapsible.tsx", "Collapsible"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, exportName),
+        `${mode}: retained unrelated ${exportName} implementation`,
+      );
+    const entry =
+      mode === "badge-only"
+        ? "/semi-ui-vue/dist/components/badge/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-badge") === (mode !== "badge-unused"),
+      `${mode}: Badge executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-popover",
+      "semi-tooltip",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
+      "semi-skeleton",
+      "semi-button",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
 }
 
 function checkTagTreeShaking() {
@@ -1679,6 +1780,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkBadge())) ===
+        "badge consumer passed",
+      "Packed Badge behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkTag())) ===
         "tag consumer passed",
       "Packed Tag behavior failed",
@@ -1891,6 +1997,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkBadge())) ===
+        "badge interop passed",
+      "Packed Badge interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkTag())) ===
         "tag interop passed",
@@ -2606,11 +2717,16 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const badgeProducerSourceHash = hashFile(join(fixture, "badge.tsx"));
   const tagProducerSourceHash = hashFile(join(fixture, "tag.tsx"));
   prepareResourceApplication(root, work, consumer);
   assert(
     hashFile(join(fixture, "tag.tsx")) === tagProducerSourceHash,
     "Tag producer fixture changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "badge.tsx")) === badgeProducerSourceHash,
+    "Badge producer changed during precompilation",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -2707,6 +2823,10 @@ async function run() {
     label: "resources",
   });
   consumerEnv = installation.env;
+  assert(
+    fixtureCompilation.modules?.includes("fixture:badge.tsx"),
+    "Badge fixture was not precompiled",
+  );
   for (const name of [
     "graph-plugin.ts",
     "index.html",
@@ -2718,6 +2838,8 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "badge-browser.ts",
+    "badge-interop.ts",
     "tag-browser.ts",
     "tag-interop.ts",
     "avatar-browser.ts",
@@ -2732,6 +2854,10 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.badge.config.ts",
+    "badge-only.ts",
+    "badge-root-only.ts",
+    "badge-unused.ts",
     "vite.tag.config.ts",
     "tag-only.ts",
     "tag-root-only.ts",
@@ -2778,6 +2904,33 @@ async function run() {
       join(consumer, name),
     );
   writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/badge-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/badge.tsx",
+          sha256: badgeProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        interop: {
+          source: "tests/resource-consumer/badge-interop.ts",
+          copiedSha256: hashFile(join(consumer, "badge-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/badge-browser.ts",
+          copiedSha256: hashFile(join(consumer, "badge-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
+  writeFileSync(
     join(root, ".vitest/attachments/resource-consumer/tag-fixture-inputs.json"),
     JSON.stringify(
       {
@@ -2821,10 +2974,15 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "badge-browser.ts",
+          "badge-interop.ts",
           "tag-browser.ts",
           "tag-interop.ts",
           "avatar-browser.ts",
           "avatar-interop.ts",
+          "badge-only.ts",
+          "badge-root-only.ts",
+          "badge-unused.ts",
           "tag-only.ts",
           "tag-root-only.ts",
           "tag-root-tag-only.ts",
@@ -2936,6 +3094,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkBadgeTreeShaking();
   checkTagTreeShaking();
   checkAvatarTreeShaking();
   checkOverflowListTreeShaking();

@@ -81,6 +81,7 @@ describe("fixed Semi style inputs", () => {
       components: [
         "avatar",
         "tag",
+        "badge",
         "input",
         "tooltip",
         "popover",

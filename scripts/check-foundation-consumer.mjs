@@ -117,6 +117,24 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const badge = page.locator(".foundation-badge .semi-badge-count");
+    await expect(badge).toHaveText("9+");
+    await expect(badge).toHaveCSS("position", "absolute");
+    await page.evaluate(() => {
+      window.foundationBadgeAnchor = document.querySelector(
+        "[data-foundation-badge-anchor]",
+      );
+    });
+    await page.locator("#badge-update").click();
+    await expect(badge).toHaveText("9");
+    assert(
+      await page.evaluate(
+        () =>
+          window.foundationBadgeAnchor ===
+          document.querySelector("[data-foundation-badge-anchor]"),
+      ),
+      `${mode} Badge count update replaced anchor DOM`,
+    );
     const space = page.locator(".foundation-space");
     await expect(space).toHaveAttribute("role", "group");
     await expect(space.locator(":scope > button")).toHaveCount(2);
@@ -396,6 +414,7 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(page.locator(".foundation-badge")).toHaveCount(0);
     await expect(page.locator("[data-foundation-tag]")).toHaveCount(0);
     await expect(page.locator("[data-foundation-avatar]")).toHaveCount(0);
     await expect(page.locator(".foundation-overflow-list")).toHaveCount(0);
@@ -500,6 +519,24 @@ try {
     );
     const graph = JSON.parse(
       await readFile(join(consumer, "graph.json"), "utf8"),
+    );
+    const badgeChunks = implementationChunks(
+      consumer,
+      "src/components/badge/Badge.tsx",
+      "Badge",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          badgeChunks.includes(id) && renderedLength > 0,
+      ),
+      "Packed Badge implementation missing from Foundation consumer graph",
+    );
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/badge\.css$/.test(id),
+      ),
+      "Packed Badge stylesheet missing from Foundation consumer graph",
     );
     const tagChunks = implementationChunks(
       consumer,

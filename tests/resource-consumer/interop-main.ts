@@ -1,3 +1,5 @@
+import { checkBadgeInterop } from "./badge-interop.js";
+import "semi-ui-vue/styles/components/badge.css";
 import { checkTagInterop } from "./tag-interop.js";
 import "semi-ui-vue/styles/components/tag.css";
 import { checkAvatarInterop } from "./avatar-interop.js";
@@ -702,6 +704,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkBadge(): Promise<string>;
       checkTag(): Promise<string>;
       checkAvatar(): Promise<string>;
       updateOverflowList(width: number): Promise<void>;
@@ -714,6 +717,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkBadge: checkBadgeInterop,
   checkTag: checkTagInterop,
   checkAvatar: checkAvatarInterop,
   async update() {

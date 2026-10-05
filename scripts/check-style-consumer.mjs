@@ -1,3 +1,4 @@
+import { badgeStyleCheck } from "../tests/style-consumer/badge-check.mjs";
 import { tagStyleCheck } from "../tests/style-consumer/tag-check.mjs";
 import { avatarStyleCheck } from "../tests/style-consumer/avatar-check.mjs";
 import {
@@ -215,6 +216,16 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    badge: "4a01d50e9461f21f56988a595a43c3db6fdeb1eddf05ee2d3a8fa0fc88003973",
+    variables:
+      "59def735a9177e5b7c7b3887a0d5a234217a0e1680f89b1b6067728d1029374e",
+    rtl: "23744f499229e8261cdd21e78a75cf492f0ef026a1abd863f8bb7b40eee0ff74",
+  }))
+    assert(
+      sources.sources[`foundation/badge/${name}.scss`] === expected,
+      `Badge source hash differs: ${name}`,
     );
   for (const name of ["overflowList", "rtl"]) {
     const file = `foundation/overflowList/${name}.scss`;
@@ -749,6 +760,80 @@ async function tooltipBrowserCheck(url) {
     await page.screenshot({
       path: resolve(root, ".vitest/attachments/style-consumer/tooltip.png"),
     });
+  } finally {
+    await browser.close();
+  }
+}
+
+async function badgeBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("badge.html", url).href);
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const background = await badgeStyleCheck(page, prefix);
+            assert(
+              background ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Badge custom theme token missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/badge-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await badgeStyleCheck(page, prefix);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Badge style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/badge-narrow.png",
+        ),
+        fullPage: true,
+      });
+      assert(
+        !errors.length,
+        `Badge style browser errors: ${errors.join("; ")}`,
+      );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
   } finally {
     await browser.close();
   }
@@ -1326,6 +1411,11 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "badge-only.scss",
+    "badge-markup.ts",
+    "badge-main.ts",
+    "badge.html",
+    "vite.badge.config.ts",
     "tag-only.scss",
     "tag-composition.scss",
     "tag-theme-icons.scss",
@@ -1833,6 +1923,53 @@ try {
     "Tag composition stylesheet retained unrelated component",
   );
   await withPreview("tag-dist", tagBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.badge.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const badgeCss = files(join(consumer, "badge-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      badgeCss.includes(`.${prefix}-badge-count`) &&
+        badgeCss.includes(`.${prefix}-badge-dot`) &&
+        badgeCss.includes(`.${prefix}-badge-leftBottom`),
+      `${prefix} Badge CSS/SCSS/theme entry missing`,
+    );
+  const badgeGraph = checkGraph("badge-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/badge.css",
+    "/badge-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      badgeGraph.modules.some((id) => id.includes(fragment)),
+      `Badge public style entry missing: ${fragment}`,
+    );
+  assert(
+    !badgeGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Badge style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:avatar|tag|tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+      badgeCss,
+    ),
+    "Badge-only stylesheet retained unrelated component",
+  );
+  await withPreview("badge-dist", badgeBrowserCheck);
 
   execFileSync(
     process.execPath,
