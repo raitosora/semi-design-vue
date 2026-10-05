@@ -85,6 +85,9 @@
       ],
       "semi-ui-vue/tag/interface": [
         "../packages/semi-ui-vue/dist/components/tag/interface.d.ts"
+      ],
+      "semi-ui-vue/badge": [
+        "../packages/semi-ui-vue/dist/components/badge/index.d.ts"
       ]
     }
   },

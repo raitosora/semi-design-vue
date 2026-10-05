@@ -11,6 +11,7 @@ const version = "2.103.0";
 const components = [
   "avatar",
   "tag",
+  "badge",
   "input",
   "tooltip",
   "popover",
@@ -100,6 +101,7 @@ const foundationFiles = {
     "collapsible/variables.scss",
   ],
   tag: ["tag/tag.scss", "tag/rtl.scss", "tag/mixin.scss", "tag/variables.scss"],
+  badge: ["badge/badge.scss", "badge/rtl.scss", "badge/variables.scss"],
   avatar: [
     "avatar/animation.scss",
     "avatar/avatar.scss",
@@ -234,6 +236,12 @@ const sourceHashes = {
     "867e1515dbf4cd3a4884ed1a73f01b22a57ea6d524d664dc9428897d2abb7c9d",
   "foundation/tag/variables.scss":
     "5b91123335141da9b77cc90c943fe45ac96c98997af2e8f445323cb7a3ce9013",
+  "foundation/badge/badge.scss":
+    "4a01d50e9461f21f56988a595a43c3db6fdeb1eddf05ee2d3a8fa0fc88003973",
+  "foundation/badge/rtl.scss":
+    "23744f499229e8261cdd21e78a75cf492f0ef026a1abd863f8bb7b40eee0ff74",
+  "foundation/badge/variables.scss":
+    "59def735a9177e5b7c7b3887a0d5a234217a0e1680f89b1b6067728d1029374e",
   "foundation/avatar/animation.scss":
     "68dff81611b74720aa6216351243a502a2b8d25b8907e27ac4642e6e37521506",
   "foundation/avatar/avatar.scss":
@@ -343,6 +351,14 @@ function entrySources() {
       '@import "../theme/variables";',
       '@import "../theme/mixins";',
       '@import "../vendor/foundation/tag/tag";',
+      "",
+    ].join("\n"),
+    "components/badge.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
     "components/avatar.scss": [
@@ -471,6 +487,7 @@ function entrySources() {
       '@import "./base";',
       '@import "./components/avatar";',
       '@import "./components/tag";',
+      '@import "./components/badge";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',

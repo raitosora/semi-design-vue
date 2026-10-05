@@ -85,3 +85,7 @@ OverflowList 的 `styles/components/overflowList`、`.css` 与 `.scss` 按需入
 Avatar 与 AvatarGroup 共用 `styles/components/avatar`、`.css` 和 `.scss` 入口，也包含在聚合样式中。它们使用固定 avatar、animation、mixin、rtl 与 variables 五份 SCSS；`styles: ["avatar"]` 选择主题插件入口，`$semi-prefix` 可定制选择器前缀，CSS tokens 仍为 `--semi-*`。顶部/底部装饰、边框与内容动画均使用同一闭包，不引入 Image、Tag 或 Badge 样式。详见 [Avatar](../components/avatar.md)。
 
 Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.scss`，主题插件支持 `styles: ["tag"]`。其固定闭包只有 tag、variables、mixin、rtl 四份 SCSS；关闭图标另引 icons，内置头像另引 avatar，溢出浮层另引 popover，或统一使用聚合样式。Tag 的数量折叠不由 CSS 容器宽度驱动。详见 [Tag](../components/tag.md)。
+
+## Badge 样式
+
+[Badge](../components/badge.md) 复用固定 2.103.0 的 badge.scss、variables.scss、rtl.scss。按需加载 base 和 badge；主题插件接受 `styles: ["base", "badge"]`。点状尺寸为 8px，数量高度为 18px；组件没有 size 属性。`style` 优先于 `countStyle`，包括空对象，二者均只作用于内部徽标；可通过外层 class 对承载容器布局。默认位置来自 ConfigProvider 的 direction，显式位置保持物理方向；仅设置 DOM dir 不会改写默认位置。

@@ -1,3 +1,4 @@
+import "semi-ui-vue/styles/components/badge.css";
 import "semi-ui-vue/styles/components/tag.css";
 import "semi-ui-vue/styles/components/avatar.css";
 import { createApp, vaporInteropPlugin } from "vue";

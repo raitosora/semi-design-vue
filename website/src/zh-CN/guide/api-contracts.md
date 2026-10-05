@@ -155,3 +155,7 @@ OverflowList 折叠计算以根、项目包装和溢出提示包装的整数 `cl
 [Avatar](../components/avatar.md) 保留显式字符串 children 的文字缩放路径，default slot 承载富内容；不能预执行 slot 判断它是否是字符串或 Avatar。hoverMask、topSlot/bottomSlot 的 text 和 render 使用同步原生内容协议，组件不克隆、缓存 VNode，也不将 renderer 结果强制字符串化。顶层 onError 是实际 Foundation 的零参数返回值回调，严格 false 阻止默认图片回退；imgAttr 的原生图片事件与它不是同一协议。
 
 AvatarGroup 通过子 Avatar 注册和真实 DOM 顺序处理稳定 key、增删重排与条件内容；组 size/shape 覆盖成员，对嵌套组遵循最近上下文。折叠项保留原生子树，用 hidden/inert/aria-hidden 阻止展示与交互，不将折叠描述成卸载或业务资源暂停。renderMore 接收数量及只读 AvatarGroupItem 描述快照（id/index/props/label），不是可克隆的 ReactNode 或可重挂的内容。默认更多提示只显示 +N，需要交互时调用者组合 Popover 与原生 button。组件没有 Avatar.Group、more 命名 slot 或公开 imperative ref。
+
+## Badge 内容与属性归属
+
+[Badge](../components/badge.md) 的 `count` 与 `children` 分别表示徽标内容与承载内容；复杂内容使用同步原生 renderer，默认 slot 优先于 `children`。默认 slot 的声明本身表示有承载内容，条件返回空内容仍保持定位；移除 slot 声明才恢复独立显示。组件不预执行或检查 slot 的返回值。`dot` 隐藏数量内容，切换时会卸载/重挂自定义数量子树；承载子树保持原所有权。`style || countStyle` 作用于内部数量节点，外层接收 class/className 和安全原生属性。没有命令式 ref、内建键盘协议或自动 aria-live。

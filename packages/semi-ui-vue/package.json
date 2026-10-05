@@ -256,7 +256,17 @@
       "default": "./dist/styles/components/tag.css"
     },
     "./styles/components/tag.css": "./dist/styles/components/tag.css",
-    "./styles/components/tag.scss": "./dist/styles/components/tag.scss"
+    "./styles/components/tag.scss": "./dist/styles/components/tag.scss",
+    "./badge": {
+      "types": "./dist/components/badge/index.d.ts",
+      "import": "./dist/components/badge/index.js"
+    },
+    "./styles/components/badge": {
+      "sass": "./dist/styles/components/badge.scss",
+      "default": "./dist/styles/components/badge.css"
+    },
+    "./styles/components/badge.css": "./dist/styles/components/badge.css",
+    "./styles/components/badge.scss": "./dist/styles/components/badge.scss"
   },
   "files": [
     "dist",

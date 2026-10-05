@@ -86,3 +86,7 @@ CSS / SCSS 保留副作用声明，JavaScript 不自动加载全部样式。请�
 ## Tag 入口
 
 浏览器根提供 Tag、TagGroup、SplitTagGroup 与三个 Props 类型；`semi-ui-vue/tag` 提供默认 Tag、三个具名组件及本族内容/slots/枚举类型，`tag/group`、`tag/splitTagGroup` 分别提供默认/具名组件，`tag/interface` 为类型入口。没有 Tag.Group、额外关闭图标 API 或公开命令式 ref。Tag 使用原生事件，关闭由 defaultPrevented 决定，Group 按数量折叠而不进行宽度测量。样式按需引入 base、tag、icons；内置头像和浮层分别配合 avatar、popover。完整 API、稳定 key 与所有权差异见 [Tag](../components/tag.md)。Node 根不提供这三个组件，SSR、水合和 CJS 未建立支持。
+
+## Badge 入口
+
+浏览器根具名导出 `Badge`；`semi-ui-vue/badge` 提供 default/Badge 以及 BadgeProps、BadgeSlots、BadgeContent、BadgeRenderResult、BadgeType、BadgeTheme、BadgePosition 类型。Node 根继续只提供静态设施。按需样式为 `semi-ui-vue/styles/base.css` 与 `semi-ui-vue/styles/components/badge.css`，对应 SCSS 与主题插件 `styles: ["base", "badge"]` 可用。Badge 不引入 Foundation 状态机、React 或 lodash 运行时；预编译 ESM 消费不代表独立 TSX 编译器严格安装、SSR、水合或 CJS 已支持。

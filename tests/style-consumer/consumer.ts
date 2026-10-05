@@ -23,6 +23,7 @@ const options: SemiThemeOptions = {
     "overflowList",
     "avatar",
     "tag",
+    "badge",
   ],
 };
 

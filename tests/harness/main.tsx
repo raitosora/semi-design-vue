@@ -1,3 +1,6 @@
+import BadgeBasic from "../../website/examples/badge/Basic.vapor";
+import BadgeDynamic from "../../website/examples/badge/Dynamic.vapor";
+import BadgeTheme from "../../website/examples/badge/Theme.vapor";
 import TagBasic from "../../website/examples/tag/Basic.vapor";
 import TagInteraction from "../../website/examples/tag/Interaction.vapor";
 import TagGroups from "../../website/examples/tag/Groups.vapor";
@@ -97,6 +100,7 @@ import "../../packages/semi-ui-vue/dist/styles/components/collapsible.css";
 import "../../packages/semi-ui-vue/dist/styles/components/overflowList.css";
 import "../../packages/semi-ui-vue/dist/styles/components/avatar.css";
 import "../../packages/semi-ui-vue/dist/styles/components/tag.css";
+import "../../packages/semi-ui-vue/dist/styles/components/badge.css";
 import "./style.css";
 
 const pulses = ref(0);
@@ -112,6 +116,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const badgeMode = new URLSearchParams(location.search).has("badge");
 const tagMode = new URLSearchParams(location.search).has("tag");
 const avatarMode = new URLSearchParams(location.search).has("avatar");
 const overflowListMode = new URLSearchParams(location.search).has(
@@ -134,10 +139,18 @@ const app = createVaporApp(
     collapsibleMode ||
     overflowListMode ||
     avatarMode ||
-    tagMode
+    tagMode ||
+    badgeMode
     ? defineVaporComponent(() => (
         <main>
-          {tagMode ? (
+          {badgeMode ? (
+            <>
+              <h1>Badge examples</h1>
+              <BadgeBasic />
+              <BadgeDynamic />
+              <BadgeTheme />
+            </>
+          ) : tagMode ? (
             <>
               <h1>Tag examples</h1>
               <TagBasic />

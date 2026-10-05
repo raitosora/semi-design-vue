@@ -27,6 +27,8 @@
     "tag-positive.tsx",
     "tag-negative.tsx",
     "tag-group-positive.tsx",
-    "tag-group-negative.tsx"
+    "tag-group-negative.tsx",
+    "badge-positive.tsx",
+    "badge-negative.tsx"
   ]
 }

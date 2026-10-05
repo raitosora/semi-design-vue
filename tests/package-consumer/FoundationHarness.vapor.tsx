@@ -1,5 +1,6 @@
 import { defineVaporComponent, ref } from "vue";
 import {
+  Badge,
   Avatar,
   AvatarGroup,
   Tag,
@@ -32,6 +33,7 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const badgeCount = ref(10);
   const tagLabel = ref("Foundation Tag");
   const tagCount = ref(1);
   const tagCloses = ref(0);
@@ -86,6 +88,15 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <Badge
+            className="foundation-badge"
+            count={badgeCount.value}
+            overflowCount={9}
+          >
+            {() => (
+              <button data-foundation-badge-anchor="">Foundation Badge</button>
+            )}
+          </Badge>
           <div data-foundation-tag="">
             <Tag
               children={tagLabel.value}
@@ -247,6 +258,14 @@ export const FoundationHarness = defineVaporComponent(() => {
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>
       <output id="visible">{String(visible.value)}</output>
+      <button
+        id="badge-update"
+        onClick={() => {
+          badgeCount.value = 9;
+        }}
+      >
+        Update Badge
+      </button>
       <output id="tag-closes">{tagCloses.value}</output>
       <button
         id="tag-update"

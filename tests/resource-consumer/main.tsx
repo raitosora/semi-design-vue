@@ -1,3 +1,4 @@
+import { checkBadgeConsumer } from "./badge.js";
 import { checkTagConsumer } from "./tag.js";
 import "semi-ui-vue/styles/base.css";
 import { checkAvatarConsumer } from "./avatar.js";
@@ -67,6 +68,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkBadge(): Promise<string>;
       checkTag(): Promise<string>;
       checkAvatar(): Promise<string>;
       checkOverflowList(): Promise<string>;
@@ -326,6 +328,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkBadge: checkBadgeConsumer,
   checkTag: checkTagConsumer,
   checkAvatar: checkAvatarConsumer,
   checkOverflowList: checkOverflowListConsumer,

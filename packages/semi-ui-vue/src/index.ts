@@ -128,3 +128,5 @@ export type {
   TagGroupProps,
   SplitTagGroupProps,
 } from "./components/tag/index.js";
+
+export { Badge } from "./components/badge/index.js";

@@ -110,6 +110,9 @@
       ],
       "semi-icons-vue/IconClose": [
         "./packages/semi-icons-vue/src/icons/IconClose.tsx"
+      ],
+      "semi-ui-vue/badge": [
+        "./packages/semi-ui-vue/src/components/badge/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

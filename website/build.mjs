@@ -197,6 +197,9 @@ await writeFile(
           "semi-ui-vue/progress": [
             "../../packages/semi-ui-vue/dist/components/progress/index.d.ts",
           ],
+          "semi-ui-vue/badge": [
+            "../../packages/semi-ui-vue/dist/components/badge/index.d.ts",
+          ],
           "semi-ui-vue/tag": [
             "../../packages/semi-ui-vue/dist/components/tag/index.d.ts",
           ],
