@@ -130,3 +130,4 @@ export type {
 } from "./components/tag/index.js";
 
 export { Badge } from "./components/badge/index.js";
+export { Typography } from "./components/typography/index.js";

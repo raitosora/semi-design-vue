@@ -79,6 +79,7 @@ describe("fixed Semi style inputs", () => {
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
       components: [
+        "typography",
         "avatar",
         "tag",
         "badge",

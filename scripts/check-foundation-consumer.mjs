@@ -117,6 +117,26 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const typography = page.locator("[data-foundation-typography-anchor]");
+    await expect(typography).toHaveText("Foundation Typography");
+    await expect(page.locator(".foundation-typography-number")).toHaveText(
+      "1234.50",
+    );
+    await page.evaluate(() => {
+      window.foundationTypographyAnchor = document.querySelector(
+        "[data-foundation-typography-anchor]",
+      );
+    });
+    await page.locator("#typography-update").click();
+    await expect(typography).toHaveText("Updated Typography");
+    assert(
+      await page.evaluate(
+        () =>
+          window.foundationTypographyAnchor ===
+          document.querySelector("[data-foundation-typography-anchor]"),
+      ),
+      `${mode} Typography update replaced slot DOM`,
+    );
     const badge = page.locator(".foundation-badge .semi-badge-count");
     await expect(badge).toHaveText("9+");
     await expect(badge).toHaveCSS("position", "absolute");
@@ -414,6 +434,8 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(page.locator(".foundation-typography")).toHaveCount(0);
+    await expect(page.locator(".foundation-typography-number")).toHaveCount(0);
     await expect(page.locator(".foundation-badge")).toHaveCount(0);
     await expect(page.locator("[data-foundation-tag]")).toHaveCount(0);
     await expect(page.locator("[data-foundation-avatar]")).toHaveCount(0);
@@ -519,6 +541,28 @@ try {
     );
     const graph = JSON.parse(
       await readFile(join(consumer, "graph.json"), "utf8"),
+    );
+    for (const [file, name] of [
+      ["paragraph", "Paragraph"],
+      ["numeral", "Numeral"],
+    ]) {
+      const chunks = implementationChunks(
+        consumer,
+        `src/components/typography/${file}.tsx`,
+        name,
+      );
+      assert(
+        graph.modules.some(
+          ({ id, renderedLength }) => chunks.includes(id) && renderedLength > 0,
+        ),
+        `Packed ${name} missing from Foundation graph`,
+      );
+    }
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/typography\.css$/.test(id),
+      ),
+      "Packed Typography styles missing from Foundation graph",
     );
     const badgeChunks = implementationChunks(
       consumer,

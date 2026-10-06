@@ -18,6 +18,18 @@ import {
   verifyTooltipInline,
 } from "./tooltip-inline-inputs.mjs";
 
+import {
+  typographyInlineSource,
+  typographyInlineGraph,
+  typographyInlineRecord,
+  verifyTypographyInline,
+} from "./typography-inline-inputs.mjs";
+
+import {
+  finalizeTypographyCopy,
+  verifyTypographyCopy,
+} from "./typography-copy-source.mjs";
+
 const compilerLicense = "vue-jsx-3.3.0-rc.2-MIT.txt";
 const compilerVersion = "3.3.0-rc.2";
 const helperPattern = /(?:^|\/)vue-jsx\/(props|vapor)$/;
@@ -84,11 +96,16 @@ async function sourceFor({ root, map, mapPath, index, packageDirectory }) {
   if (toPosix(source).includes("/node_modules/")) {
     const content = map.sourcesContent?.[index];
     if (typeof content !== "string")
-      throw new Error("Tooltip inline source content missing");
-    const entry = tooltipInlineSource({ root, resolved, content });
+      throw new Error("Inline source content missing");
+    const typography = toPosix(resolved).endsWith(
+      "/lib/es/typography/formatNumeral.js",
+    );
+    const entry = typography
+      ? typographyInlineSource({ root, resolved, content })
+      : tooltipInlineSource({ root, resolved, content });
     return {
       content,
-      kind: "tooltip-inline",
+      kind: typography ? "typography-inline" : "tooltip-inline",
       source: entry.path,
       id: entry.id,
     };
@@ -176,10 +193,12 @@ export async function finalizePackage({ root, packageDirectory }) {
     throw new Error(`${packageDirectory}: no source maps were emitted.`);
   const helpers = new Map();
   const inlineSources = new Set();
+  const typographySources = new Set();
   const buildMeta = JSON.parse(
     await readFile(join(dist, "build-meta.json"), "utf8"),
   );
   const inlineIds = tooltipInlineGraph(buildMeta);
+  const typographyIds = typographyInlineGraph(buildMeta);
   for (const mapPath of maps) {
     const map = JSON.parse(await readFile(mapPath, "utf8"));
     if (
@@ -205,8 +224,14 @@ export async function finalizePackage({ root, packageDirectory }) {
         output: snapshots,
       });
       rewritten.push(toPosix(relative(dirname(mapPath), snapshot)));
-      if (input.kind === "tooltip-inline") {
-        inlineSources.add(input.id);
+      if (
+        input.kind === "tooltip-inline" ||
+        input.kind === "typography-inline"
+      ) {
+        (input.kind === "tooltip-inline"
+          ? inlineSources
+          : typographySources
+        ).add(input.id);
         inlineSnapshots.set(
           resolve(dirname(mapPath), map.sourceRoot ?? "", map.sources[index]),
           snapshot,
@@ -240,6 +265,25 @@ export async function finalizePackage({ root, packageDirectory }) {
       JSON.stringify(record, null, 2) + "\n",
     );
   }
+  if (typographyIds.length || typographySources.size) {
+    const record = typographyInlineRecord(typographySources);
+    const licenses = join(dist, "licenses");
+    await mkdir(licenses, { recursive: true });
+    for (const pkg of record.packages)
+      await copyFile(
+        join(root, "third-party-licenses", pkg.license),
+        join(licenses, pkg.license),
+      );
+    await writeFile(
+      join(dist, "typography-inline-provenance.json"),
+      JSON.stringify(record, null, 2) + "\n",
+    );
+  }
+  finalizeTypographyCopy({
+    root,
+    directory: packageDirectory,
+    graph: buildMeta,
+  });
   if (helpers.size) {
     const licenses = join(dist, "licenses");
     await mkdir(licenses, { recursive: true });
@@ -345,6 +389,13 @@ export async function verifyPackageMaps({ root, packageDirectory }) {
     graph: buildMeta,
     referencedSnapshots,
   });
+  verifyTypographyInline({
+    root,
+    directory: packageDirectory,
+    graph: buildMeta,
+    referencedSnapshots,
+  });
+  verifyTypographyCopy({ root, directory: packageDirectory, graph: buildMeta });
   const provenance = join(dist, "compiler-provenance.json");
   let record;
   try {

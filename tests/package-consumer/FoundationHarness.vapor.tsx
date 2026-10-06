@@ -1,5 +1,6 @@
 import { defineVaporComponent, ref } from "vue";
 import {
+  Typography,
   Badge,
   Avatar,
   AvatarGroup,
@@ -33,6 +34,7 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const typographyLabel = ref("Foundation Typography");
   const badgeCount = ref(10);
   const tagLabel = ref("Foundation Tag");
   const tagCount = ref(1);
@@ -87,6 +89,19 @@ export const FoundationHarness = defineVaporComponent(() => {
                 </>
               ),
             }}
+          />
+          <Typography.Paragraph className="foundation-typography">
+            {() => (
+              <button data-foundation-typography-anchor="">
+                {typographyLabel.value}
+              </button>
+            )}
+          </Typography.Paragraph>
+          <Typography.Numeral
+            children={1234.5}
+            className="foundation-typography-number"
+            precision={2}
+            rule="numbers"
           />
           <Badge
             className="foundation-badge"
@@ -258,6 +273,14 @@ export const FoundationHarness = defineVaporComponent(() => {
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>
       <output id="visible">{String(visible.value)}</output>
+      <button
+        id="typography-update"
+        onClick={() => {
+          typographyLabel.value = "Updated Typography";
+        }}
+      >
+        Update Typography
+      </button>
       <button
         id="badge-update"
         onClick={() => {

@@ -159,3 +159,7 @@ AvatarGroup 通过子 Avatar 注册和真实 DOM 顺序处理稳定 key、增删
 ## Badge 内容与属性归属
 
 [Badge](../components/badge.md) 的 `count` 与 `children` 分别表示徽标内容与承载内容；复杂内容使用同步原生 renderer，默认 slot 优先于 `children`。默认 slot 的声明本身表示有承载内容，条件返回空内容仍保持定位；移除 slot 声明才恢复独立显示。组件不预执行或检查 slot 的返回值。`dot` 隐藏数量内容，切换时会卸载/重挂自定义数量子树；承载子树保持原所有权。`style || countStyle` 作用于内部数量节点，外层接收 class/className 和安全原生属性。没有命令式 ref、内建键盘协议或自动 aria-live。
+
+## Typography 的内容与 ref
+
+Typography 容器保留原生 `forwardRef`；Text/Title/Paragraph/Numeral 不提供 React 类实例方法。原生 default slot 按声明存在性拥有内容，组件不预执行、检查或克隆该 slot。标量 `children` 与同步 renderer 分开处理；原生富内容不会被自动字符串化用于省略或复制。省略限显式字符串，复制富内容须提供 `copyable.content`；Numeral 的嵌套格式化通过 scoped slot 的 `format(value)` 显式调用，不遍历用户 DOM。完整属性和 renderer 类型以 [Typography API](../components/typography.md) 为准。

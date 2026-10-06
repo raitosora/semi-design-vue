@@ -1,3 +1,4 @@
+import { typographyMarkup } from "./typography-markup";
 import { tagMarkup } from "./tag-markup";
 import { avatarMarkup } from "./avatar-markup";
 import { overflowListMarkup } from "./overflowList-markup";
@@ -30,4 +31,5 @@ document.body.innerHTML = `
   ${overflowListMarkup("semi")}
   ${avatarMarkup("semi")}
   ${tagMarkup("semi")}
+  ${typographyMarkup("semi")}
 `;

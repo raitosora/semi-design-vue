@@ -71,6 +71,7 @@ async function copyFoundationLicenses(directory) {
       "semi-design-2.103.0-MIT.txt",
       "semi-ui-locale-2.103.0-MIT.txt",
       "date-fns-2.30.0-MIT.txt",
+      "copy-text-to-clipboard-2.2.0-MIT.txt",
     ].map((file) =>
       copyFile(`third-party-licenses/${file}`, `${directory}/${file}`),
     ),
@@ -145,6 +146,7 @@ const foundationInputs = await checkFoundationInputs(process.cwd());
 checkFoundationBundle({
   chunks: exampleChunks,
   label: "documentation examples",
+  typographyRoot: process.cwd(),
   allowedSources: foundationInputs.esmFiles,
 });
 await preserveVirtualSources();

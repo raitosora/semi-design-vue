@@ -1,3 +1,8 @@
+import "../../packages/semi-ui-vue/dist/styles/components/typography.css";
+import TypographyBasic from "../../website/examples/typography/Basic.vapor";
+import TypographyInteractive from "../../website/examples/typography/Interactive.vapor";
+import TypographyNumeral from "../../website/examples/typography/Numeral.vapor";
+import TypographyTheme from "../../website/examples/typography/Theme.vapor";
 import BadgeBasic from "../../website/examples/badge/Basic.vapor";
 import BadgeDynamic from "../../website/examples/badge/Dynamic.vapor";
 import BadgeTheme from "../../website/examples/badge/Theme.vapor";
@@ -116,6 +121,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const typographyMode = new URLSearchParams(location.search).has("typography");
 const badgeMode = new URLSearchParams(location.search).has("badge");
 const tagMode = new URLSearchParams(location.search).has("tag");
 const avatarMode = new URLSearchParams(location.search).has("avatar");
@@ -140,10 +146,19 @@ const app = createVaporApp(
     overflowListMode ||
     avatarMode ||
     tagMode ||
-    badgeMode
+    badgeMode ||
+    typographyMode
     ? defineVaporComponent(() => (
         <main>
-          {badgeMode ? (
+          {typographyMode ? (
+            <>
+              <h1 id="typography-target">Typography examples</h1>
+              <TypographyBasic />
+              <TypographyInteractive />
+              <TypographyNumeral />
+              <TypographyTheme />
+            </>
+          ) : badgeMode ? (
             <>
               <h1>Badge examples</h1>
               <BadgeBasic />

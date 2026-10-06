@@ -1,3 +1,4 @@
+import { checkTypographyConsumer } from "./typography.js";
 import { checkBadgeConsumer } from "./badge.js";
 import { checkTagConsumer } from "./tag.js";
 import "semi-ui-vue/styles/base.css";
@@ -68,6 +69,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkTypography(): Promise<string>;
       checkBadge(): Promise<string>;
       checkTag(): Promise<string>;
       checkAvatar(): Promise<string>;
@@ -328,6 +330,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkTypography: checkTypographyConsumer,
   checkBadge: checkBadgeConsumer,
   checkTag: checkTagConsumer,
   checkAvatar: checkAvatarConsumer,

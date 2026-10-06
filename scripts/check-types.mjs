@@ -13,6 +13,8 @@ const required = [
   "tests/types/StrictFixture.tsx",
   "tests/types/positive.tsx",
   "tests/types/negative.tsx",
+  "tests/types/typography-positive.tsx",
+  "tests/types/typography-negative.tsx",
   "tests/types/badge-positive.tsx",
   "tests/types/badge-negative.tsx",
   "tests/types/tag-positive.tsx",

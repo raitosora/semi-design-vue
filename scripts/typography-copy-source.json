@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "family": "typography",
+  "kind": "adapted-source",
+  "package": "copy-text-to-clipboard",
+  "version": "2.2.0",
+  "resolved": "https://registry.yarnpkg.com/copy-text-to-clipboard/-/copy-text-to-clipboard-2.2.0.tgz",
+  "tarballSha1": "329dd6daf8c42034c763ace567418401764579ae",
+  "tarballIntegrity": "sha512-WRvoIdnTs1rgPMkgA2pUOa/M4Enh2uzCwdKsOMYNAJiz/4ZvEJgmbF4OmninPmlFdAWisfeh0tH+Cpf7ni3RqQ==",
+  "semiLockCommit": "8bed560dd3f36579f85b7a522f19762f2bace756",
+  "originalSource": {
+    "path": "index.js",
+    "bytes": 1281,
+    "sha256": "c83398f72d044d0e6335d60c3509c69f9f5011d6b24322eff16610e7b4d37a8e"
+  },
+  "adaptedSource": "src/components/typography/copy.ts",
+  "license": {
+    "spdx": "MIT",
+    "file": "copy-text-to-clipboard-2.2.0-MIT.txt",
+    "bytes": 1117,
+    "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+  }
+}

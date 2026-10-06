@@ -7,6 +7,11 @@ import {
   tooltipInlineGraph,
   verifyTooltipInline,
 } from "./tooltip-inline-inputs.mjs";
+import {
+  typographyInlineGraph,
+  verifyTypographyInline,
+} from "./typography-inline-inputs.mjs";
+import { verifyTypographyCopy } from "./typography-copy-source.mjs";
 import { fileURLToPath } from "node:url";
 
 const forbidden =
@@ -223,8 +228,21 @@ export function validatePackageDirectory(directory) {
         graph.chunks.some((chunk) => chunk.modules?.length),
       "Empty package build graph",
     );
-    const inlineIds = new Set(tooltipInlineGraph(graph));
+    const inlineIds = new Set([
+      ...tooltipInlineGraph(graph),
+      ...typographyInlineGraph(graph),
+    ]);
     verifyTooltipInline({
+      root: fileURLToPath(new URL("../", import.meta.url)),
+      directory,
+      graph,
+    });
+    verifyTypographyInline({
+      root: fileURLToPath(new URL("../", import.meta.url)),
+      directory,
+      graph,
+    });
+    verifyTypographyCopy({
       root: fileURLToPath(new URL("../", import.meta.url)),
       directory,
       graph,

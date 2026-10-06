@@ -1,3 +1,4 @@
+import type { TypographyProps } from "../components/typography/types.js";
 import type { TagProps } from "../components/tag/types.js";
 import type { AvatarProps } from "../components/avatar/types.js";
 import type { OverflowListProps } from "../components/overflowList/types.js";
@@ -12,6 +13,7 @@ import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
 export interface SemiComponentProps {
+  Typography: Omit<TypographyProps, "v-slots">;
   Avatar: Omit<AvatarProps, "v-slots">;
   Tag: Omit<TagProps, "v-slots">;
   OverflowList: Omit<OverflowListProps, "v-slots" | "children" | "class">;

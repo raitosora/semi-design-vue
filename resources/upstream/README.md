@@ -68,7 +68,9 @@ record covers dynamic switching, nested and separate apps, teardown, strict
 source/generated declarations and all 57 static language subpaths in actual
 tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
-accepted public families are icons, configProvider, locale, spin, iconButton, button, divider, space, grid, layout, skeleton, highlight, progress, tooltip, popover, collapsible, overflowList, avatar and tag (19 families). All other
+accepted public families are icons, configProvider, locale, spin, iconButton,
+button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
+popover, collapsible, overflowList, avatar, tag, badge and typography (21 families). All other
 public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
@@ -166,8 +168,8 @@ Skeleton tarball consumer surfaces passed; the separate patched Foundation
 tarball remains a regression flow. Explicit differences include the upstream
 generator's undefined type crash, Paragraph native-attribute forwarding and
 the fixed SCSS missing a dimension rule for Avatar size `default`. The Skeleton decision does not accept independent Avatar, Typography or Image
-contracts; Avatar has a separate acceptance record below. Typography and Image
-remain unaccepted. The existing
+contracts; Avatar and Typography have separate acceptance records. Image
+remains unaccepted. The existing
 TSX peer, Chromium, pixel-parity and SSR/hydration/CJS limits remain.
 
 The `progress` record accepts the fixed line/circle, indeterminate, direction,
@@ -280,3 +282,20 @@ The independent split subpath is a packaging adaptation. No close-content API,
 static group member, new public ref method or other component family is implied.
 Strict declarations, four tarball flows, browser lifecycles, themed documentation
 and representative visuals preserve the existing runtime and installation limits.
+
+The `typography` record accepts Typography with its Text, Title, Paragraph and
+Numeral static members against the fixed source, types and three Foundation
+SCSS files. Native slots and synchronous renderers own their content; ellipsis
+reads explicit string children without inspecting or cloning rich content.
+Numeral uses the pinned Foundation formatter and formats native descendants
+only through explicit scoped `format(value)` calls. Positive infinite byte
+values are rejected to avoid the upstream nonterminating conversion loop.
+Copying retains the fixed synchronous execCommand boolean result and feedback;
+rich content requires explicit copyable.content. The copy adaptation retains
+the pinned copy-text-to-clipboard 2.2.0 MIT notice. Only the container exposes
+forwardRef to its native root; React class instance methods are not adapted.
+Strict declarations, real browser measurements and ownership checks, Chinese
+examples and four isolated tarball consumers bind this independent contract.
+The existing explicit ARIA scope, current-document/realm, compiler peer,
+SSR/hydration/CJS and full pixel-equivalence limits remain. No other public
+family or additional consumer runtime dependency is accepted.

@@ -569,6 +569,27 @@ function checkGraph(mode = "vapor") {
     hasImplementation(graph.modules, "src/components/tag/Tag.tsx", "Tag"),
     "Tag implementation missing from consumer graph",
   );
+  for (const style of ["typography", "icons"])
+    assert(
+      graph.compilationInputs.some((id) =>
+        id.endsWith(`/semi-ui-vue/dist/styles/components/${style}.css`),
+      ),
+      `${mode}: Typography required public ${style} CSS input missing`,
+    );
+  for (const [file, name] of [
+    ["text", "Text"],
+    ["title", "Title"],
+    ["paragraph", "Paragraph"],
+    ["numeral", "Numeral"],
+  ])
+    assert(
+      hasImplementation(
+        graph.modules,
+        `src/components/typography/${file}.tsx`,
+        name,
+      ),
+      `${name} implementation missing from consumer graph`,
+    );
   assert(
     hasImplementation(graph.modules, "src/components/badge/Badge.tsx", "Badge"),
     "Badge implementation missing from consumer graph",
@@ -927,6 +948,126 @@ function checkTagOutput(source, mode) {
   );
 }
 
+function checkTypographyTreeShaking() {
+  for (const mode of [
+    "typography-only",
+    "typography-root-only",
+    "typography-unused",
+    "typography-text-only",
+    "typography-title-only",
+    "typography-paragraph-only",
+    "typography-numeral-only",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.typography.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    assert(
+      hasImplementation(
+        graph.modules,
+        "src/components/typography/Typography.tsx",
+        "BaseTypography",
+      ) === (mode === "typography-only" || mode === "typography-root-only"),
+      `${mode}: Typography implementation tree-shaking mismatch`,
+    );
+    for (const [sourcePath, exportName] of [
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/tag/group.tsx", "TagGroup"],
+      ["src/components/overflowList/OverflowList.tsx", "OverflowList"],
+      ["src/components/collapsible/Collapsible.tsx", "Collapsible"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, exportName),
+        `${mode}: retained unrelated ${exportName} implementation`,
+      );
+    for (const [part, file] of [
+      ["Text", "text"],
+      ["Title", "title"],
+      ["Paragraph", "paragraph"],
+      ["Numeral", "numeral"],
+    ]) {
+      const expected =
+        mode === "typography-only" ||
+        mode === "typography-root-only" ||
+        mode === `typography-${part.toLowerCase()}-only`;
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/typography/${file}.tsx`,
+          part,
+        ) === expected,
+        `${mode}: ${part} implementation tree-shaking mismatch`,
+      );
+    }
+    const entry =
+      mode === "typography-only"
+        ? "/semi-ui-vue/dist/components/typography/index.js"
+        : mode === "typography-root-only" || mode === "typography-unused"
+          ? "/semi-ui-vue/dist/index.js"
+          : `/semi-ui-vue/dist/components/typography/${{ "typography-text-only": "text", "typography-title-only": "title", "typography-paragraph-only": "paragraph", "typography-numeral-only": "numeral" }[mode]}.js`;
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-typography") === (mode !== "typography-unused"),
+      `${mode}: Typography executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
+      "semi-skeleton",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
 function checkBadgeTreeShaking() {
   for (const mode of ["badge-only", "badge-root-only", "badge-unused"]) {
     execFileSync(
@@ -960,6 +1101,7 @@ function checkBadgeTreeShaking() {
       `${mode}: Badge implementation tree-shaking mismatch`,
     );
     for (const [sourcePath, exportName] of [
+      ["src/components/typography/Typography.tsx", "BaseTypography"],
       ["src/components/tag/Tag.tsx", "Tag"],
       ["src/components/tag/group.tsx", "TagGroup"],
       ["src/components/popover/Popover.tsx", "Popover"],
@@ -991,6 +1133,7 @@ function checkBadgeTreeShaking() {
       `${mode}: Badge executable marker mismatch`,
     );
     for (const unrelated of [
+      "semi-typography",
       "semi-avatar",
       "semi-tag",
       "semi-popover",
@@ -1780,6 +1923,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkTypography())) ===
+        "typography consumer passed",
+      "Packed Typography behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkBadge())) ===
         "badge consumer passed",
       "Packed Badge behavior failed",
@@ -1997,6 +2145,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkTypography())) ===
+        "typography interop passed",
+      "Packed Typography interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkBadge())) ===
         "badge interop passed",
@@ -2717,6 +2870,9 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const typographyProducerSourceHash = hashFile(
+    join(fixture, "typography.tsx"),
+  );
   const badgeProducerSourceHash = hashFile(join(fixture, "badge.tsx"));
   const tagProducerSourceHash = hashFile(join(fixture, "tag.tsx"));
   prepareResourceApplication(root, work, consumer);
@@ -2727,6 +2883,10 @@ async function run() {
   assert(
     hashFile(join(fixture, "badge.tsx")) === badgeProducerSourceHash,
     "Badge producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "typography.tsx")) === typographyProducerSourceHash,
+    "Typography producer changed during precompilation",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -2810,6 +2970,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:tag.tsx"),
     "Tag fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:typography.tsx"),
+    "Typography fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -2838,6 +3002,15 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "typography-browser.ts",
+    "typography-interop.ts",
+    "typography-only.ts",
+    "typography-root-only.ts",
+    "typography-unused.ts",
+    "typography-text-only.ts",
+    "typography-title-only.ts",
+    "typography-paragraph-only.ts",
+    "typography-numeral-only.ts",
     "badge-browser.ts",
     "badge-interop.ts",
     "tag-browser.ts",
@@ -2854,6 +3027,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.typography.config.ts",
     "vite.badge.config.ts",
     "badge-only.ts",
     "badge-root-only.ts",
@@ -2903,6 +3077,33 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/typography-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/typography.tsx",
+          sha256: typographyProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        interop: {
+          source: "tests/resource-consumer/typography-interop.ts",
+          copiedSha256: hashFile(join(consumer, "typography-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/typography-browser.ts",
+          copiedSha256: hashFile(join(consumer, "typography-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -2974,6 +3175,15 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "typography-browser.ts",
+          "typography-interop.ts",
+          "typography-only.ts",
+          "typography-root-only.ts",
+          "typography-unused.ts",
+          "typography-text-only.ts",
+          "typography-title-only.ts",
+          "typography-paragraph-only.ts",
+          "typography-numeral-only.ts",
           "badge-browser.ts",
           "badge-interop.ts",
           "tag-browser.ts",
@@ -3094,6 +3304,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkTypographyTreeShaking();
   checkBadgeTreeShaking();
   checkTagTreeShaking();
   checkAvatarTreeShaking();
