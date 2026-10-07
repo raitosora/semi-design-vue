@@ -34,3 +34,5 @@ Popover 复用 Tooltip 的当前 document/realm HTML trigger refs、primitive ca
 Avatar 的字符串 `children` 使用真实文本节点测量；富内容使用原生默认 slot，不自动缩放。AvatarGroup 根据已挂载 Avatar 的注册和真实 DOM 顺序折叠，保留折叠实例并隔离焦点；`renderMore` 接收只读描述而非可重复挂载的子节点。图片回调代次、顶部内容与上游差异见 [Avatar](../components/avatar.md)。没有公共 Image、Avatar.Group 或实例方法。
 
 Tag 的 visible 属性按存在性区分受控，隐藏保留 DOM；富内容由原生 slot/同步 renderer 拥有。TagGroup 的稳定有效 key 在同一内容分支内保留实例，跨折叠边界可重挂；SplitTagGroup 按直接真实元素位置装饰，不检查 React/Vue VNode。无 Tag.Group 静态别名，原生事件、默认值及异常输入的差异见 [Tag](../components/tag.md)。
+
+Typography 保留浏览器原生内容所有权；React 节点遍历、克隆和类实例 ref 不在适配范围。Numeral 的富内容格式化须显式使用 `format(value)`。稳定 key 重排验证节点身份与生命周期；锁定 Vapor 在移动已聚焦 DOM 时可能丢失焦点，组件不额外引入焦点恢复协议。复制沿固定上游同步 `execCommand` 布尔结果及反馈，不宣称异步 Clipboard API 的权限或降级能力普遍可用。复制 renderer 重执行可重挂其分支；自定义复制 renderer 没有默认操作图标的 ref 测量保证。详见 [Typography 的差异与限制](../components/typography.md)。

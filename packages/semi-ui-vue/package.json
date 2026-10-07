@@ -266,7 +266,33 @@
       "default": "./dist/styles/components/badge.css"
     },
     "./styles/components/badge.css": "./dist/styles/components/badge.css",
-    "./styles/components/badge.scss": "./dist/styles/components/badge.scss"
+    "./styles/components/badge.scss": "./dist/styles/components/badge.scss",
+    "./typography": {
+      "types": "./dist/components/typography/index.d.ts",
+      "import": "./dist/components/typography/index.js"
+    },
+    "./typography/text": {
+      "types": "./dist/components/typography/text.d.ts",
+      "import": "./dist/components/typography/text.js"
+    },
+    "./typography/title": {
+      "types": "./dist/components/typography/title.d.ts",
+      "import": "./dist/components/typography/title.js"
+    },
+    "./typography/paragraph": {
+      "types": "./dist/components/typography/paragraph.d.ts",
+      "import": "./dist/components/typography/paragraph.js"
+    },
+    "./typography/numeral": {
+      "types": "./dist/components/typography/numeral.d.ts",
+      "import": "./dist/components/typography/numeral.js"
+    },
+    "./styles/components/typography": {
+      "sass": "./dist/styles/components/typography.scss",
+      "default": "./dist/styles/components/typography.css"
+    },
+    "./styles/components/typography.css": "./dist/styles/components/typography.css",
+    "./styles/components/typography.scss": "./dist/styles/components/typography.scss"
   },
   "files": [
     "dist",

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "scope": "semi-ui-vue Typography production inline formatter only",
+  "packages": [
+    {
+      "name": "@douyinfe/semi-foundation",
+      "version": "2.103.0",
+      "license": "semi-foundation-2.103.0-MIT.txt",
+      "licenseSha256": "2acf865e87e59090121369aac0575467067fdd7999923a70d785a46ceae3330f"
+    }
+  ],
+  "foundationPatchSha256": "3ebe6db68a2f0831212d97a8956510acee666180cdf3302fbd9ea230b687f37e",
+  "sources": [
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/typography/formatNumeral.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/typography/formatNumeral.js",
+      "sha256": "8f13e1a5a5944bdb96a8d3534344f85eb838d8ceadb7b1c5b4dcca67ced534f9"
+    }
+  ]
+}

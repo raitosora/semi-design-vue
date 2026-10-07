@@ -26,6 +26,7 @@ export default defineConfig({
         "overflowList",
         "avatar",
         "tag",
+        "typography",
       ],
     }),
   ],

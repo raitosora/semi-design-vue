@@ -89,3 +89,7 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Badge 样式
 
 [Badge](../components/badge.md) 复用固定 2.103.0 的 badge.scss、variables.scss、rtl.scss。按需加载 base 和 badge；主题插件接受 `styles: ["base", "badge"]`。点状尺寸为 8px，数量高度为 18px；组件没有 size 属性。`style` 优先于 `countStyle`，包括空对象，二者均只作用于内部徽标；可通过外层 class 对承载容器布局。默认位置来自 ConfigProvider 的 direction，显式位置保持物理方向；仅设置 DOM dir 不会改写默认位置。
+
+## Typography 样式
+
+[Typography](../components/typography.md) 全族共用固定 typography.scss、variables.scss、rtl.scss 三文件闭包；按需入口为 `styles/components/typography`、`.css` 和 `.scss`，也包含在聚合样式中。主题插件支持 `styles: ["base", "typography"]` 与定制类前缀，tokens 保持 `--semi-*`。默认复制与成功图标复用 Icon 包装，必须另引 `semi-ui-vue/styles/components/icons.css`；复制提示及 tooltip 需 `tooltip.css`，popover 另需 `popover.css`。主题插件可加入 `tooltip` 或 `popover`，没有 `icons` 选项；图标独立导入 CSS，定制前缀则在单独 SCSS 文件中通过 `@use "semi-ui-vue/styles/components/icons" with ($semi-prefix: your-prefix)` 配置。`base.css` 与 `typography.css` 均不隐式带入图标包装和浮层规则。实际组件类名仍为 semi，定制前缀不能单独改变运行时类名。

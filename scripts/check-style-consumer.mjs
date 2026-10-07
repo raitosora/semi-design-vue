@@ -1,3 +1,4 @@
+import { typographyStyleCheck } from "../tests/style-consumer/typography-check.mjs";
 import { badgeStyleCheck } from "../tests/style-consumer/badge-check.mjs";
 import { tagStyleCheck } from "../tests/style-consumer/tag-check.mjs";
 import { avatarStyleCheck } from "../tests/style-consumer/avatar-check.mjs";
@@ -227,6 +228,17 @@ function checkStyleMetadata() {
       sources.sources[`foundation/badge/${name}.scss`] === expected,
       `Badge source hash differs: ${name}`,
     );
+  for (const [name, expected] of Object.entries({
+    typography:
+      "27101385db16efe5b0c2e344155adc08fdeff9403da688987fe19ba4458ef679",
+    rtl: "6945a03bc34df7660eb765e41f4d8bcded877b55511bc40fad42540204bdc4c4",
+    variables:
+      "977862861b7648396c5c14045c7b998976e8ef6e62cd1a3fbcc034b52ac2c87d",
+  }))
+    assert(
+      sources.sources[`foundation/typography/${name}.scss`] === expected,
+      `Typography source hash differs: ${name}`,
+    );
   for (const name of ["overflowList", "rtl"]) {
     const file = `foundation/overflowList/${name}.scss`;
     assert(
@@ -393,6 +405,7 @@ async function browserCheck(url) {
     await page.goto(url, { waitUntil: "networkidle" });
     await avatarStyleCheck(page, "semi");
     await tagStyleCheck(page, "semi");
+    await typographyStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     for (const prefix of ["semi", "consumer"])
@@ -603,6 +616,7 @@ async function plainBrowserCheck(url) {
     await page.goto(url, { waitUntil: "networkidle" });
     await avatarStyleCheck(page, "semi");
     await tagStyleCheck(page, "semi");
+    await typographyStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
@@ -760,6 +774,80 @@ async function tooltipBrowserCheck(url) {
     await page.screenshot({
       path: resolve(root, ".vitest/attachments/style-consumer/tooltip.png"),
     });
+  } finally {
+    await browser.close();
+  }
+}
+
+async function typographyBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("typography.html", url).href);
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const color = await typographyStyleCheck(page, prefix, true);
+            assert(
+              color ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Typography theme text color missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/typography-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await typographyStyleCheck(page, prefix, true);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Typography style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/typography-narrow.png",
+        ),
+        fullPage: true,
+      });
+      assert(
+        !errors.length,
+        `Typography style browser errors: ${errors.join("; ")}`,
+      );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
   } finally {
     await browser.close();
   }
@@ -1411,6 +1499,12 @@ try {
     "progress-markup.ts",
     "progress-check.mjs",
     "progress-only.scss",
+    "typography-only.scss",
+    "typography-theme-icons.scss",
+    "typography-markup.ts",
+    "typography-main.ts",
+    "typography.html",
+    "vite.typography.config.ts",
     "badge-only.scss",
     "badge-markup.ts",
     "badge-main.ts",
@@ -1964,12 +2058,61 @@ try {
     "Badge style probe resolved aggregate styles",
   );
   assert(
-    !/\.(?:semi|consumer|theme)-(?:avatar|tag|tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+    !/\.(?:semi|consumer|theme)-(?:typography|avatar|tag|tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
       badgeCss,
     ),
     "Badge-only stylesheet retained unrelated component",
   );
   await withPreview("badge-dist", badgeBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.typography.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const typographyCss = files(join(consumer, "typography-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      typographyCss.includes(`.${prefix}-typography`) &&
+        typographyCss.includes(`.${prefix}-typography-paragraph`) &&
+        typographyCss.includes(`.${prefix}-typography-ellipsis`),
+      `${prefix} Typography CSS/SCSS/theme entry missing`,
+    );
+  const typographyGraph = checkGraph("typography-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/typography.css",
+    "/semi-ui-vue/dist/styles/components/icons.css",
+    "/typography-only.scss",
+    "/typography-theme-icons.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      typographyGraph.modules.some((id) => id.includes(fragment)),
+      `Typography public style entry missing: ${fragment}`,
+    );
+  assert(
+    !typographyGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Typography style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:badge|avatar|tag|tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+      typographyCss,
+    ),
+    "Typography-only stylesheet retained unrelated component",
+  );
+  await withPreview("typography-dist", typographyBrowserCheck);
 
   execFileSync(
     process.execPath,

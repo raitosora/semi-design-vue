@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "typography",
   "avatar",
   "tag",
   "badge",
@@ -102,6 +103,11 @@ const foundationFiles = {
   ],
   tag: ["tag/tag.scss", "tag/rtl.scss", "tag/mixin.scss", "tag/variables.scss"],
   badge: ["badge/badge.scss", "badge/rtl.scss", "badge/variables.scss"],
+  typography: [
+    "typography/typography.scss",
+    "typography/rtl.scss",
+    "typography/variables.scss",
+  ],
   avatar: [
     "avatar/animation.scss",
     "avatar/avatar.scss",
@@ -242,6 +248,12 @@ const sourceHashes = {
     "23744f499229e8261cdd21e78a75cf492f0ef026a1abd863f8bb7b40eee0ff74",
   "foundation/badge/variables.scss":
     "59def735a9177e5b7c7b3887a0d5a234217a0e1680f89b1b6067728d1029374e",
+  "foundation/typography/typography.scss":
+    "27101385db16efe5b0c2e344155adc08fdeff9403da688987fe19ba4458ef679",
+  "foundation/typography/rtl.scss":
+    "6945a03bc34df7660eb765e41f4d8bcded877b55511bc40fad42540204bdc4c4",
+  "foundation/typography/variables.scss":
+    "977862861b7648396c5c14045c7b998976e8ef6e62cd1a3fbcc034b52ac2c87d",
   "foundation/avatar/animation.scss":
     "68dff81611b74720aa6216351243a502a2b8d25b8907e27ac4642e6e37521506",
   "foundation/avatar/avatar.scss":
@@ -359,6 +371,14 @@ function entrySources() {
       '@import "../theme/variables";',
       '@import "../theme/mixins";',
       '@import "../vendor/foundation/badge/badge";',
+      "",
+    ].join("\n"),
+    "components/typography.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/typography/typography";',
       "",
     ].join("\n"),
     "components/avatar.scss": [
@@ -488,6 +508,7 @@ function entrySources() {
       '@import "./components/avatar";',
       '@import "./components/tag";',
       '@import "./components/badge";',
+      '@import "./components/typography";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',

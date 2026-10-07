@@ -12,6 +12,8 @@ import {
 import { resolveConfig } from "vite";
 import ts from "typescript";
 import { checkFoundationInputs } from "./foundation-inputs.mjs";
+import { checkTypographyInlineInputs } from "./typography-inline-inputs.mjs";
+import { checkTypographyCopySource } from "./typography-copy-source.mjs";
 import { checkStyleInputs } from "./style-inputs.mjs";
 import { checkGeneratedResources } from "./generate-resources.mjs";
 import { checkResourceInputs } from "./resource-inputs.mjs";
@@ -126,6 +128,8 @@ try {
   process.chdir(originalDirectory);
 }
 await checkFoundationInputs(root);
+checkTypographyInlineInputs(root);
+checkTypographyCopySource(root);
 await checkStyleInputs(root);
 await checkResourceInputs(root);
 await checkGeneratedResources(root);

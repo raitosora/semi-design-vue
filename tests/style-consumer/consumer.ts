@@ -24,6 +24,7 @@ const options: SemiThemeOptions = {
     "avatar",
     "tag",
     "badge",
+    "typography",
   ],
 };
 

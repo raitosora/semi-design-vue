@@ -22,6 +22,8 @@ export default defineConfig({
         "scripts/packed-consumer-registry.mjs",
         "scripts/finalize-package.mjs",
         "scripts/tooltip-inline-inputs.mjs",
+        "scripts/typography-inline-inputs.mjs",
+        "scripts/typography-copy-source.mjs",
         "scripts/upstream-source.mjs",
         "scripts/upstream-inventory.mjs",
         "scripts/upstream-matrix.mjs",

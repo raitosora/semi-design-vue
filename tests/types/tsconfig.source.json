@@ -29,6 +29,8 @@
     "tag-group-positive.tsx",
     "tag-group-negative.tsx",
     "badge-positive.tsx",
-    "badge-negative.tsx"
+    "badge-negative.tsx",
+    "typography-positive.tsx",
+    "typography-negative.tsx"
   ]
 }

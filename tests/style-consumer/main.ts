@@ -1,3 +1,4 @@
+import { typographyMarkup } from "./typography-markup";
 import { tagMarkup } from "./tag-markup";
 import { avatarMarkup } from "./avatar-markup";
 import { overflowListMarkup } from "./overflowList-markup";
@@ -39,6 +40,7 @@ document.body.innerHTML = `
   ${overflowListMarkup("semi")}
   ${avatarMarkup("semi")}
   ${tagMarkup("semi")}
+  ${typographyMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -52,4 +54,5 @@ document.body.innerHTML = `
   ${overflowListMarkup("consumer")}
   ${avatarMarkup("consumer")}
   ${tagMarkup("consumer")}
+  ${typographyMarkup("consumer")}
 `;

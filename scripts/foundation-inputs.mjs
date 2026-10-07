@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
+import { checkTypographyInlineInputs } from "./typography-inline-inputs.mjs";
 
 const packageName = "@douyinfe/semi-foundation";
 const toolkitName = "es-toolkit";
@@ -17,9 +18,13 @@ const roots = [
 ];
 const declarationRoots = roots.map((entry) => entry.replace(/\.js$/, ".d.ts"));
 const sourceRoots = ["input/foundation.ts", "tooltip/foundation.ts"];
-const allowedSpecifiers = new Set([
+const foundationSpecifiers = [
   `${packageName}/lib/es/input/foundation`,
   `${packageName}/lib/es/tooltip/foundation`,
+];
+const allowedSpecifiers = new Set([
+  ...foundationSpecifiers,
+  `${packageName}/lib/es/typography/formatNumeral`,
 ]);
 const allowedExternal = new Set(["es-toolkit/compat"]);
 const importPattern =
@@ -86,7 +91,7 @@ const collectDeclarationModules = async (entry) => {
 
 export function foundationSpecifierError(specifier) {
   const normalized = specifier.replaceAll("\\", "/");
-  if (normalized.includes(`/node_modules/${packageName}/`)) {
+  if (`/${normalized}`.includes(`/node_modules/${packageName}/`)) {
     return `Forbidden Foundation entry: ${specifier}`;
   }
   const packagePath = normalized;
@@ -141,6 +146,7 @@ export function checkFoundationBundle({
   chunks,
   label = "bundle",
   allowedSources,
+  typographyRoot,
 }) {
   if (!Array.isArray(chunks) || !chunks.length) {
     throw new Error(`${label} has no build chunks.`);
@@ -152,7 +158,7 @@ export function checkFoundationBundle({
   if (!foundationSources.length) {
     throw new Error(`${label} does not inline the Foundation input.`);
   }
-  const required = [...allowedSpecifiers].map((entry) =>
+  const required = foundationSpecifiers.map((entry) =>
     entry.slice(packageName.length + 1),
   );
   for (const entry of required) {
@@ -171,6 +177,18 @@ export function checkFoundationBundle({
       `${label} includes an unapproved Foundation source: ${illegalSource}`,
     );
   }
+  const typographySources = typographyRoot
+    ? checkTypographyInlineInputs(typographyRoot).map((entry) =>
+        realpathSync(
+          resolve(typographyRoot, "node_modules", entry.package, entry.path),
+        ).replaceAll("\\", "/"),
+      )
+    : [];
+  for (const source of typographySources) {
+    if (!foundationSources.includes(source)) {
+      throw new Error(`${label} omits verified Typography source ${source}.`);
+    }
+  }
   if (allowedSources) {
     const allowed = new Set(
       allowedSources.map((source) =>
@@ -178,6 +196,7 @@ export function checkFoundationBundle({
       ),
     );
     const unexpected = foundationSources.find((source) => {
+      if (typographySources.includes(source)) return false;
       const normalized = source.replaceAll("\\", "/");
       return !allowed.has(normalized.slice(normalized.indexOf("/lib/es/")));
     });

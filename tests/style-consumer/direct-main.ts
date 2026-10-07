@@ -1,3 +1,5 @@
+import "./typography-only.scss";
+import { typographyMarkup } from "./typography-markup";
 import "./tag-only.scss";
 import { tagMarkup } from "./tag-markup";
 import "./avatar-only.scss";
@@ -51,6 +53,7 @@ document.body.innerHTML = `
   ${overflowListMarkup("semi")}
   ${avatarMarkup("semi")}
   ${tagMarkup("semi")}
+  ${typographyMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -64,4 +67,5 @@ document.body.innerHTML = `
   ${overflowListMarkup("consumer")}
   ${avatarMarkup("consumer")}
   ${tagMarkup("consumer")}
+  ${typographyMarkup("consumer")}
 `;
