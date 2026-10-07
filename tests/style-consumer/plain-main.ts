@@ -1,3 +1,4 @@
+import { emptyMarkup } from "./empty-markup";
 import { typographyMarkup } from "./typography-markup";
 import { tagMarkup } from "./tag-markup";
 import { avatarMarkup } from "./avatar-markup";
@@ -32,4 +33,5 @@ document.body.innerHTML = `
   ${avatarMarkup("semi")}
   ${tagMarkup("semi")}
   ${typographyMarkup("semi")}
+  ${emptyMarkup("semi")}
 `;

@@ -1,3 +1,4 @@
+import { emptyStyleCheck } from "../tests/style-consumer/empty-check.mjs";
 import { typographyStyleCheck } from "../tests/style-consumer/typography-check.mjs";
 import { badgeStyleCheck } from "../tests/style-consumer/badge-check.mjs";
 import { tagStyleCheck } from "../tests/style-consumer/tag-check.mjs";
@@ -219,6 +220,16 @@ function checkStyleMetadata() {
       `Tag source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
+    empty: "7dadedf45f16bf47a6bb643dee0ea1da2bbde68fbd025dccf131ee7cc68daa3a",
+    rtl: "41b0d46adf4169d022c611215e0d7d32efc48e9c0299081cf8c9e75a23c70e6f",
+    variables:
+      "9d60c41901563445c799f64ed032f9c9058d81a326c7cdf95652c2fc6cf17dc5",
+  }))
+    assert(
+      sources.sources[`foundation/empty/${name}.scss`] === expected,
+      `Empty source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
     badge: "4a01d50e9461f21f56988a595a43c3db6fdeb1eddf05ee2d3a8fa0fc88003973",
     variables:
       "59def735a9177e5b7c7b3887a0d5a234217a0e1680f89b1b6067728d1029374e",
@@ -406,6 +417,7 @@ async function browserCheck(url) {
     await avatarStyleCheck(page, "semi");
     await tagStyleCheck(page, "semi");
     await typographyStyleCheck(page, "semi");
+    await emptyStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     for (const prefix of ["semi", "consumer"])
@@ -617,6 +629,7 @@ async function plainBrowserCheck(url) {
     await avatarStyleCheck(page, "semi");
     await tagStyleCheck(page, "semi");
     await typographyStyleCheck(page, "semi");
+    await emptyStyleCheck(page, "semi");
     const dividerLight = await dividerStyleCheck(page, "semi");
     await spaceStyleCheck(page, "semi");
     await gridStyleCheck(page, "semi");
@@ -838,6 +851,80 @@ async function typographyBrowserCheck(url) {
       assert(
         !errors.length,
         `Typography style browser errors: ${errors.join("; ")}`,
+      );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+async function emptyBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("empty.html", url).href);
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const color = await emptyStyleCheck(page, prefix);
+            assert(
+              color ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Empty custom theme token missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/empty-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await emptyStyleCheck(page, prefix);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Empty style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/empty-narrow.png",
+        ),
+        fullPage: true,
+      });
+      assert(
+        !errors.length,
+        `Empty style browser errors: ${errors.join("; ")}`,
       );
     } finally {
       await page.evaluate((value) => {
@@ -1505,6 +1592,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "empty-only.scss",
+    "empty-markup.ts",
+    "empty-main.ts",
+    "empty.html",
+    "vite.empty.config.ts",
     "badge-only.scss",
     "badge-markup.ts",
     "badge-main.ts",
@@ -2064,6 +2156,55 @@ try {
     "Badge-only stylesheet retained unrelated component",
   );
   await withPreview("badge-dist", badgeBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.empty.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const emptyCss = files(join(consumer, "empty-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    assert(
+      emptyCss.includes(`.${prefix}-empty-content`) &&
+        emptyCss.includes(`.${prefix}-empty-vertical`) &&
+        emptyCss.includes(`.${prefix}-empty-horizontal`) &&
+        emptyCss.includes(`.${prefix}-typography-h4.${prefix}-typography`) &&
+        emptyCss.includes(`.${prefix}-typography-h6.${prefix}-typography`),
+      `${prefix} Empty CSS/SCSS/theme entry missing`,
+    );
+  const emptyGraph = checkGraph("empty-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/empty.css",
+    "/empty-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      emptyGraph.modules.some((id) => id.includes(fragment)),
+      `Empty public style entry missing: ${fragment}`,
+    );
+  assert(
+    !emptyGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Empty style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:avatar|tag|tooltip|popover|button|input|spin|space|row|progress|collapsible|overflow-list)/.test(
+      emptyCss,
+    ),
+    "Empty-only stylesheet retained unrelated component",
+  );
+  await withPreview("empty-dist", emptyBrowserCheck);
   execFileSync(
     process.execPath,
     [

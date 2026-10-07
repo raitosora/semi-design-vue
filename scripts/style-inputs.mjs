@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "empty",
   "typography",
   "avatar",
   "tag",
@@ -37,6 +38,7 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  empty: ["empty/empty.scss", "empty/rtl.scss", "empty/variables.scss"],
   base: ["base/base.scss"],
   divider: ["divider/divider.scss", "divider/variables.scss"],
   space: ["space/space.scss", "space/rtl.scss", "space/variables.scss"],
@@ -129,6 +131,12 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/empty/empty.scss":
+    "7dadedf45f16bf47a6bb643dee0ea1da2bbde68fbd025dccf131ee7cc68daa3a",
+  "foundation/empty/rtl.scss":
+    "41b0d46adf4169d022c611215e0d7d32efc48e9c0299081cf8c9e75a23c70e6f",
+  "foundation/empty/variables.scss":
+    "9d60c41901563445c799f64ed032f9c9058d81a326c7cdf95652c2fc6cf17dc5",
   "foundation/base/base.scss":
     "cd6715d20a972e609a5e60c389dd851b3c11151317f2c3ecc228caa95926f60d",
   "foundation/divider/divider.scss":
@@ -373,6 +381,16 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    // Empty renders Typography.Title; its isolated entry owns that upstream CSS dependency.
+    "components/empty.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/typography/typography";',
+      '@import "../vendor/foundation/empty/empty";',
+      "",
+    ].join("\n"),
     "components/typography.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -508,7 +526,8 @@ function entrySources() {
       '@import "./components/avatar";',
       '@import "./components/tag";',
       '@import "./components/badge";',
-      '@import "./components/typography";',
+      // Empty includes Typography; keep the aggregate dependency once.
+      '@import "./components/empty";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',

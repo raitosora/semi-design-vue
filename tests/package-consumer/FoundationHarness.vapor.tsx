@@ -1,5 +1,6 @@
 import { defineVaporComponent, ref } from "vue";
 import {
+  Empty,
   Typography,
   Badge,
   Avatar,
@@ -34,6 +35,7 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const emptyTitle = ref("No matches");
   const typographyLabel = ref("Foundation Typography");
   const badgeCount = ref(10);
   const tagLabel = ref("Foundation Tag");
@@ -90,6 +92,13 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <Empty
+            data-foundation-empty=""
+            description="Try another search"
+            title={emptyTitle.value}
+          >
+            {() => <button type="button">Retry search</button>}
+          </Empty>
           <Typography.Paragraph className="foundation-typography">
             {() => (
               <button data-foundation-typography-anchor="">
@@ -269,6 +278,12 @@ export const FoundationHarness = defineVaporComponent(() => {
           />
         </div>
       )}
+      <button
+        id="empty-update"
+        onClick={() => (emptyTitle.value = "Search updated")}
+      >
+        Update Empty
+      </button>
       <output id="input-value">{input.value}</output>
       <output id="model-value">{model.value}</output>
       <output id="changes">{changes.value}</output>

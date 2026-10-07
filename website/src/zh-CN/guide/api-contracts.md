@@ -163,3 +163,7 @@ AvatarGroup 通过子 Avatar 注册和真实 DOM 顺序处理稳定 key、增删
 ## Typography 的内容与 ref
 
 Typography 容器保留原生 `forwardRef`；Text/Title/Paragraph/Numeral 不提供 React 类实例方法。原生 default slot 按声明存在性拥有内容，组件不预执行、检查或克隆该 slot。标量 `children` 与同步 renderer 分开处理；原生富内容不会被自动字符串化用于省略或复制。省略限显式字符串，复制富内容须提供 `copyable.content`；Numeral 的嵌套格式化通过 scoped slot 的 `format(value)` 显式调用，不遍历用户 DOM。完整属性和 renderer 类型以 [Typography API](../components/typography.md) 为准。
+
+## Empty 的内容与图片
+
+[Empty](../components/empty.md) 的 image/darkModeImage/title/description/default slots 分别优先对应属性，default 对应 children。声明存在与内容非空分开，不预执行 slot。图片字符串是 URL，symbol 对象仅使用 id；viewBox/url 不是图片加载功能。title/description/children 标量沿用上游 truthy 条件，slot 为空仍保留区域。没有公开 ref 方法、事件、role 或 aria-live，根只透传 data-\*；原生操作语义放在内容内。挂载时有暗图才初始化 body theme-mode 观察，卸载释放。

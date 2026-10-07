@@ -1,3 +1,5 @@
+import "./empty-only.scss";
+import { emptyMarkup } from "./empty-markup";
 import "./typography-only.scss";
 import { typographyMarkup } from "./typography-markup";
 import "./tag-only.scss";
@@ -54,6 +56,7 @@ document.body.innerHTML = `
   ${avatarMarkup("semi")}
   ${tagMarkup("semi")}
   ${typographyMarkup("semi")}
+  ${emptyMarkup("semi")}
   ${spinMarkup("consumer")}
   ${iconButtonMarkup("consumer")}
   ${buttonMarkup("consumer")}
@@ -68,4 +71,5 @@ document.body.innerHTML = `
   ${avatarMarkup("consumer")}
   ${tagMarkup("consumer")}
   ${typographyMarkup("consumer")}
+  ${emptyMarkup("consumer")}
 `;

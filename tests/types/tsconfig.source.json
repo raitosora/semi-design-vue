@@ -31,6 +31,8 @@
     "badge-positive.tsx",
     "badge-negative.tsx",
     "typography-positive.tsx",
-    "typography-negative.tsx"
+    "typography-negative.tsx",
+    "empty-positive.tsx",
+    "empty-negative.tsx"
   ]
 }

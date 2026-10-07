@@ -569,12 +569,12 @@ function checkGraph(mode = "vapor") {
     hasImplementation(graph.modules, "src/components/tag/Tag.tsx", "Tag"),
     "Tag implementation missing from consumer graph",
   );
-  for (const style of ["typography", "icons"])
+  for (const style of ["empty", "typography", "icons"])
     assert(
       graph.compilationInputs.some((id) =>
         id.endsWith(`/semi-ui-vue/dist/styles/components/${style}.css`),
       ),
-      `${mode}: Typography required public ${style} CSS input missing`,
+      `${mode}: resource fixture required public ${style} CSS input missing`,
     );
   for (const [file, name] of [
     ["text", "Text"],
@@ -589,6 +589,17 @@ function checkGraph(mode = "vapor") {
         name,
       ),
       `${name} implementation missing from consumer graph`,
+    );
+  assert(
+    hasImplementation(graph.modules, "src/components/empty/Empty.tsx", "Empty"),
+    "Empty implementation missing from consumer graph",
+  );
+  if (mode === "vapor")
+    assert(
+      graph.compilationInputs.some((id) =>
+        id.endsWith("/semi-ui-vue/dist/components/empty/index.js"),
+      ),
+      "Pure Vapor consumer did not resolve Empty public subpath",
     );
   assert(
     hasImplementation(graph.modules, "src/components/badge/Badge.tsx", "Badge"),
@@ -1036,6 +1047,113 @@ function checkTypographyTreeShaking() {
     assert(
       output.includes("semi-typography") === (mode !== "typography-unused"),
       `${mode}: Typography executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
+      "semi-skeleton",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkEmptyTreeShaking() {
+  for (const mode of ["empty-only", "empty-root-only", "empty-unused"]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.empty.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    assert(
+      hasImplementation(
+        graph.modules,
+        "src/components/empty/Empty.tsx",
+        "Empty",
+      ) ===
+        (mode !== "empty-unused"),
+      `${mode}: Empty implementation tree-shaking mismatch`,
+    );
+    for (const [sourcePath, exportName] of [
+      ["src/components/typography/Typography.tsx", "BaseTypography"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/tag/group.tsx", "TagGroup"],
+      ["src/components/overflowList/OverflowList.tsx", "OverflowList"],
+      ["src/components/collapsible/Collapsible.tsx", "Collapsible"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, exportName),
+        `${mode}: retained unrelated ${exportName} implementation`,
+      );
+    for (const [file, name] of [
+      ["text", "Text"],
+      ["title", "Title"],
+      ["paragraph", "Paragraph"],
+      ["numeral", "Numeral"],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/typography/${file}.tsx`,
+          name,
+        ) === (file === "title" && mode !== "empty-unused"),
+        `${mode}: required Title-only Typography closure mismatch for ${name}`,
+      );
+    const entry =
+      mode === "empty-only"
+        ? "/semi-ui-vue/dist/components/empty/index.js"
+        : "/semi-ui-vue/dist/index.js";
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entry)),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-empty") === (mode !== "empty-unused"),
+      `${mode}: Empty executable marker mismatch`,
     );
     for (const unrelated of [
       "semi-avatar",
@@ -1923,6 +2041,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkEmpty())) ===
+        "empty consumer passed",
+      "Packed Empty consumer behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkTypography())) ===
         "typography consumer passed",
       "Packed Typography behavior failed",
@@ -2145,6 +2268,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkEmpty())) ===
+        "empty interop passed",
+      "Packed Empty interop behavior failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkTypography())) ===
         "typography interop passed",
@@ -2870,6 +2998,7 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const emptyProducerSourceHash = hashFile(join(fixture, "empty.tsx"));
   const typographyProducerSourceHash = hashFile(
     join(fixture, "typography.tsx"),
   );
@@ -2887,6 +3016,10 @@ async function run() {
   assert(
     hashFile(join(fixture, "typography.tsx")) === typographyProducerSourceHash,
     "Typography producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "empty.tsx")) === emptyProducerSourceHash,
+    "Empty producer changed during precompilation",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -2974,6 +3107,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:typography.tsx"),
     "Typography fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:empty.tsx"),
+    "Empty fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -3002,6 +3139,11 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "empty-browser.ts",
+    "empty-interop.ts",
+    "empty-only.ts",
+    "empty-root-only.ts",
+    "empty-unused.ts",
     "typography-browser.ts",
     "typography-interop.ts",
     "typography-only.ts",
@@ -3027,6 +3169,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.empty.config.ts",
     "vite.typography.config.ts",
     "vite.badge.config.ts",
     "badge-only.ts",
@@ -3077,6 +3220,33 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/empty-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/empty.tsx",
+          sha256: emptyProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        interop: {
+          source: "tests/resource-consumer/empty-interop.ts",
+          copiedSha256: hashFile(join(consumer, "empty-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/empty-browser.ts",
+          copiedSha256: hashFile(join(consumer, "empty-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -3175,6 +3345,11 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "empty-browser.ts",
+          "empty-interop.ts",
+          "empty-only.ts",
+          "empty-root-only.ts",
+          "empty-unused.ts",
           "typography-browser.ts",
           "typography-interop.ts",
           "typography-only.ts",
@@ -3304,6 +3479,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkEmptyTreeShaking();
   checkTypographyTreeShaking();
   checkBadgeTreeShaking();
   checkTagTreeShaking();

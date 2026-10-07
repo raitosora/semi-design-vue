@@ -292,7 +292,17 @@
       "default": "./dist/styles/components/typography.css"
     },
     "./styles/components/typography.css": "./dist/styles/components/typography.css",
-    "./styles/components/typography.scss": "./dist/styles/components/typography.scss"
+    "./styles/components/typography.scss": "./dist/styles/components/typography.scss",
+    "./empty": {
+      "types": "./dist/components/empty/index.d.ts",
+      "import": "./dist/components/empty/index.js"
+    },
+    "./styles/components/empty": {
+      "sass": "./dist/styles/components/empty.scss",
+      "default": "./dist/styles/components/empty.css"
+    },
+    "./styles/components/empty.css": "./dist/styles/components/empty.css",
+    "./styles/components/empty.scss": "./dist/styles/components/empty.scss"
   },
   "files": [
     "dist",

@@ -1,3 +1,4 @@
+import { checkEmptyConsumer } from "./empty.js";
 import { checkTypographyConsumer } from "./typography.js";
 import { checkBadgeConsumer } from "./badge.js";
 import { checkTagConsumer } from "./tag.js";
@@ -69,6 +70,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkEmpty(): Promise<string>;
       checkTypography(): Promise<string>;
       checkBadge(): Promise<string>;
       checkTag(): Promise<string>;
@@ -330,6 +332,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkEmpty: checkEmptyConsumer,
   checkTypography: checkTypographyConsumer,
   checkBadge: checkBadgeConsumer,
   checkTag: checkTagConsumer,

@@ -117,6 +117,28 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const empty = page.locator("[data-foundation-empty]");
+    await expect(empty.locator("h6")).toHaveText("No matches");
+    await expect(empty.locator(".semi-empty-image")).toBeEmpty();
+    await expect(empty.locator(".semi-empty-content")).toHaveCSS(
+      "margin-top",
+      "24px",
+    );
+    await expect(empty).not.toHaveAttribute("role");
+    await expect(empty).not.toHaveAttribute("aria-live");
+    const emptyAction = empty.getByRole("button", { name: "Retry search" });
+    const emptyIdentity = await emptyAction.elementHandle();
+    await emptyAction.focus();
+    await page.locator("#empty-update").evaluate((node) => node.click());
+    await expect(empty.locator("h6")).toHaveText("Search updated");
+    await expect(emptyAction).toBeFocused();
+    assert(
+      await emptyAction.evaluate(
+        (node, before) => node === before,
+        emptyIdentity,
+      ),
+      `${mode} Empty replaced owned action`,
+    );
     const typography = page.locator("[data-foundation-typography-anchor]");
     await expect(typography).toHaveText("Foundation Typography");
     await expect(page.locator(".foundation-typography-number")).toHaveText(
@@ -434,6 +456,7 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(empty).toHaveCount(0);
     await expect(page.locator(".foundation-typography")).toHaveCount(0);
     await expect(page.locator(".foundation-typography-number")).toHaveCount(0);
     await expect(page.locator(".foundation-badge")).toHaveCount(0);
@@ -563,6 +586,24 @@ try {
         /semi-ui-vue\/dist\/styles\/components\/typography\.css$/.test(id),
       ),
       "Packed Typography styles missing from Foundation graph",
+    );
+    const emptyChunks = implementationChunks(
+      consumer,
+      "src/components/empty/Empty.tsx",
+      "Empty",
+    );
+    assert(
+      graph.modules.some(
+        ({ id, renderedLength }) =>
+          emptyChunks.includes(id) && renderedLength > 0,
+      ),
+      "Packed Empty implementation missing from Foundation consumer graph",
+    );
+    assert(
+      graph.modules.some(({ id }) =>
+        /semi-ui-vue\/dist\/styles\/components\/empty\.css$/.test(id),
+      ),
+      "Packed Empty stylesheet missing from Foundation consumer graph",
     );
     const badgeChunks = implementationChunks(
       consumer,
