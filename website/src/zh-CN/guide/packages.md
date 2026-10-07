@@ -96,3 +96,7 @@ CSS / SCSS 保留副作用声明，JavaScript 不自动加载全部样式。请�
 浏览器根提供 `Typography` 值，静态成员为 `Text`、`Title`、`Paragraph`、`Numeral`；`semi-ui-vue/typography` 提供默认/具名 Typography 与公开类型。四个小写子路径 `typography/text`、`typography/title`、`typography/paragraph`、`typography/numeral` 分别提供默认/具名组件及其类型。Node 根不导出该族。显式引入 `styles/base.css` 与 `styles/components/typography.css`；默认复制及成功反馈图标还需 `styles/components/icons.css`，复制提示及浮层需对应 Tooltip/Popover 样式。按需 SCSS 使用同名入口。
 
 Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实现记录固定 copy-text-to-clipboard 2.2.0 改写来源及完整 MIT。两者没有新增消费者运行依赖或补丁。原生内容、字符串省略、复制和格式化的具体边界见 [Typography](../components/typography.md)。
+
+## Empty 入口
+
+浏览器根具名导出 `Empty`，`semi-ui-vue/empty` 提供默认/具名组件及 EmptyProps、EmptySlots、EmptyContent、EmptyRenderResult、EmptyImage 类型；没有静态子组件或 ref 方法。Node 根不导出 Empty。按需样式加载 base 和 empty；empty 已包含内部标题所需的 Typography 样式闭包，操作按钮另加 button。组件不带默认插画；通过 `semi-illustrations-vue` 公开入口自行选择，不引入 React、lodash 或 Image 组件。详见 [Empty](../components/empty.md)。

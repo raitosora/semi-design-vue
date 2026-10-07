@@ -134,6 +134,9 @@
       ],
       "semi-icons-vue/IconTick": [
         "./packages/semi-icons-vue/src/icons/IconTick.tsx"
+      ],
+      "semi-ui-vue/empty": [
+        "./packages/semi-ui-vue/src/components/empty/index.ts"
       ]
     },
     "allowImportingTsExtensions": true

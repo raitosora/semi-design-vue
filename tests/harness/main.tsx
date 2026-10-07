@@ -1,3 +1,7 @@
+import "../../packages/semi-ui-vue/dist/styles/components/empty.css";
+import EmptyBasic from "../../website/examples/empty/Basic.vapor";
+import EmptyDynamic from "../../website/examples/empty/Dynamic.vapor";
+import EmptyTheme from "../../website/examples/empty/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/typography.css";
 import TypographyBasic from "../../website/examples/typography/Basic.vapor";
 import TypographyInteractive from "../../website/examples/typography/Interactive.vapor";
@@ -121,6 +125,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const emptyMode = new URLSearchParams(location.search).has("empty");
 const typographyMode = new URLSearchParams(location.search).has("typography");
 const badgeMode = new URLSearchParams(location.search).has("badge");
 const tagMode = new URLSearchParams(location.search).has("tag");
@@ -147,10 +152,18 @@ const app = createVaporApp(
     avatarMode ||
     tagMode ||
     badgeMode ||
-    typographyMode
+    typographyMode ||
+    emptyMode
     ? defineVaporComponent(() => (
         <main>
-          {typographyMode ? (
+          {emptyMode ? (
+            <>
+              <h1>Empty examples</h1>
+              <EmptyBasic />
+              <EmptyDynamic />
+              <EmptyTheme />
+            </>
+          ) : typographyMode ? (
             <>
               <h1 id="typography-target">Typography examples</h1>
               <TypographyBasic />

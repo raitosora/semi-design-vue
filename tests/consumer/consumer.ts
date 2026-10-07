@@ -878,3 +878,56 @@ void [
   badgeAsync,
   badgeCountSlot,
 ];
+
+import type {
+  EmptyProps,
+  EmptySlots,
+  EmptyContent,
+  EmptyImage,
+  EmptyRenderResult,
+} from "semi-ui-vue/empty";
+const emptyProps: EmptyProps = {
+  layout: "horizontal",
+  image: { id: "empty-symbol", viewBox: "0 0 48 40" },
+  darkModeImage: undefined,
+  title: "No content",
+  description: () => ["Description", 0, false, null],
+  children: undefined,
+  imageStyle: { width: "48px", height: "40px" },
+  "data-state": "empty",
+};
+const emptySlots: EmptySlots = {
+  image: () => [],
+  darkModeImage: () => [],
+  title: () => [],
+  description: () => [],
+  default: () => [],
+};
+const emptyContent: EmptyContent = () => ["safe", 0, false, null];
+const emptyImage: EmptyImage = "image.svg";
+const emptyResult: EmptyRenderResult = ["safe", [0, false, null]];
+// @ts-expect-error Empty exposes only the two fixed layouts.
+const emptyLayout: EmptyProps = { layout: "grid" };
+// @ts-expect-error Empty does not forward arbitrary native attributes.
+const emptyAria: EmptyProps = { "aria-live": "polite" };
+// @ts-expect-error Empty renderers are synchronous.
+const emptyAsync: EmptyProps = { title: async () => null };
+// @ts-expect-error Empty does not define a footer slot; actions use default.
+const emptyFooter: EmptySlots = { footer: () => [] };
+// @ts-expect-error Raw strings do not satisfy the native slot result protocol.
+const emptyStringSlot: EmptySlots = { title: () => "text" };
+// @ts-expect-error Empty does not supply imperative focus methods.
+const emptyRef: EmptyProps = { ref: { focus() {} } };
+void [
+  emptyProps,
+  emptySlots,
+  emptyContent,
+  emptyImage,
+  emptyResult,
+  emptyLayout,
+  emptyAria,
+  emptyAsync,
+  emptyFooter,
+  emptyStringSlot,
+  emptyRef,
+];

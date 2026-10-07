@@ -299,3 +299,17 @@ examples and four isolated tarball consumers bind this independent contract.
 The existing explicit ARIA scope, current-document/realm, compiler peer,
 SSR/hydration/CJS and full pixel-equivalence limits remain. No other public
 family or additional consumer runtime dependency is accepted.
+
+The `empty` record accepts the fixed Empty layout, image, title, description and
+action content contract. The upstream component supplies neither a default
+illustration nor an Empty Foundation state machine. Callers reuse the separately
+tracked G08 illustrations; the isolated Empty stylesheet includes the pinned
+Typography Title styles. Native slots and synchronous renderers retain content
+ownership, while slot declaration presence and empty output remain distinct.
+Body theme observation is enabled only by dark content present at mount and is
+released on unmount. Data attributes and the documented class alias are adapted;
+no role, live region, keyboard protocol, public ref method or other component
+family is introduced. Strict declarations, four real tarball consumer flows,
+DOM identity and lifecycle tests, themed documentation and tree-shaking support
+this decision with the existing compiler peer, document/realm, SSR/hydration/CJS
+and visual-equivalence limitations unchanged.
