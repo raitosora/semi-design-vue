@@ -1,0 +1,9 @@
+/** Fixed upstream Card DOM; owned content is verified by the runtime consumer. */
+export function cardMarkup(prefix: string) {
+  const card = `<div class="${prefix}-card ${prefix}-card-bordered ${prefix}-card-shadows ${prefix}-card-shadows-always" data-card-style-root>
+    <div class="${prefix}-card-header ${prefix}-card-header-bordered"><div class="${prefix}-card-header-wrapper"><div class="${prefix}-card-header-wrapper-extra">Extra</div><div class="${prefix}-card-header-wrapper-title ${prefix}-card-header-wrapper-spacing"><h6 class="${prefix}-typography ${prefix}-typography-h6">Card title</h6></div></div></div>
+    <div class="${prefix}-card-cover"><svg height="20" aria-hidden="true"><rect width="100%" height="20" fill="currentColor" /></svg></div>
+    <div class="${prefix}-card-body"><div class="${prefix}-card-meta"><div class="${prefix}-card-meta-avatar">A</div><div class="${prefix}-card-meta-wrapper"><div class="${prefix}-card-meta-wrapper-title">Meta title</div><div class="${prefix}-card-meta-wrapper-description">Description</div></div></div><div class="${prefix}-card-body-actions"><div class="${prefix}-space ${prefix}-space-horizontal" style="column-gap:12px"><div class="${prefix}-card-body-actions-item"><button>Save</button></div></div></div></div>
+    <div class="${prefix}-card-footer ${prefix}-card-footer-bordered">Footer</div></div>`;
+  return `<section data-card-style="${prefix}" style="padding:12px;display:grid;gap:24px;box-sizing:border-box;max-width:100%">${card}<div class="${prefix}-rtl" data-card-style-rtl>${card}</div><div class="${prefix}-card-group ${prefix}-card-group-grid ${prefix}-space ${prefix}-space-horizontal" data-card-style-grid>${card}</div><div class="${prefix}-card" data-card-style-custom style="padding:7px;border:2px solid currentColor">Custom</div></section>`;
+}

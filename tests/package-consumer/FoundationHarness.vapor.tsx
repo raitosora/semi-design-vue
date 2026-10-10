@@ -1,5 +1,7 @@
-import { defineVaporComponent, ref } from "vue";
+import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  Card,
+  CardGroup,
   Empty,
   Typography,
   Badge,
@@ -35,6 +37,15 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const cardTitle = ref("Foundation Card");
+  const cardLoading = ref(false);
+  const cardMounts = ref(0);
+  const cardUnmounts = ref(0);
+  const CardBody = defineVaporComponent(() => {
+    onMounted(() => (cardMounts.value += 1));
+    onUnmounted(() => (cardUnmounts.value += 1));
+    return <input aria-label="Card body input" value="owned card input" />;
+  });
   const emptyTitle = ref("No matches");
   const typographyLabel = ref("Foundation Typography");
   const badgeCount = ref(10);
@@ -92,6 +103,37 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <CardGroup data-foundation-card-group="" spacing={[12, 20]}>
+            {() => (
+              <Card
+                actions={[() => <button type="button">Card action</button>]}
+                data-foundation-card=""
+                loading={cardLoading.value}
+                title={cardTitle.value}
+              >
+                {{
+                  default: () => (
+                    <>
+                      <Card.Meta
+                        description="Packed native meta"
+                        title="Foundation Meta"
+                      >
+                        {{
+                          avatar: () => (
+                            <Avatar size="small">{() => <span>C</span>}</Avatar>
+                          ),
+                        }}
+                      </Card.Meta>
+                      <CardBody />
+                    </>
+                  ),
+                  footer: () => (
+                    <button type="button">Card footer action</button>
+                  ),
+                }}
+              </Card>
+            )}
+          </CardGroup>
           <Empty
             data-foundation-empty=""
             description="Try another search"
@@ -278,6 +320,20 @@ export const FoundationHarness = defineVaporComponent(() => {
           />
         </div>
       )}
+      <button
+        id="card-update"
+        onClick={() => (cardTitle.value = "Updated Card")}
+      >
+        Update Card
+      </button>
+      <button
+        id="card-loading"
+        onClick={() => (cardLoading.value = !cardLoading.value)}
+      >
+        Toggle Card loading
+      </button>
+      <output id="card-mounts">{cardMounts.value}</output>
+      <output id="card-unmounts">{cardUnmounts.value}</output>
       <button
         id="empty-update"
         onClick={() => (emptyTitle.value = "Search updated")}

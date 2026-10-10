@@ -1,3 +1,4 @@
+import "semi-ui-vue/styles/components/card.css";
 import "semi-ui-vue/styles/components/empty.css";
 import "semi-ui-vue/styles/components/typography.css";
 import "semi-ui-vue/styles/components/badge.css";

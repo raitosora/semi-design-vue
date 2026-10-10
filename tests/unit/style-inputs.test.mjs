@@ -79,6 +79,7 @@ describe("fixed Semi style inputs", () => {
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
       components: [
+        "card",
         "empty",
         "typography",
         "avatar",
@@ -101,6 +102,55 @@ describe("fixed Semi style inputs", () => {
         "progress",
       ],
     });
+  });
+
+  it("locks the Card closure and rejects each source drift", async () => {
+    const inputs = await checkStyleInputs(root);
+    const snapshot = JSON.parse(
+      await readFile(join(root, "resources/upstream/sources.json"), "utf8"),
+    );
+    for (const name of ["card", "rtl", "variables"]) {
+      const source = `foundation/card/${name}.scss`;
+      expect(inputs.sourceHashes[source]).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        await readFile(
+          join(
+            root,
+            `node_modules/@douyinfe/semi-foundation/card/${name}.scss`,
+          ),
+          "utf8",
+        ),
+      ).toBe(snapshot.files[`packages/semi-${source}`]);
+      expect(() =>
+        checkStyleSourceHashes({
+          ...inputs.sourceHashes,
+          [source]: "0".repeat(64),
+        }),
+      ).toThrow(source);
+    }
+    const output = await mkdtemp(join(tmpdir(), "semi-card-style-test-"));
+    try {
+      await buildStyles({ root, output });
+      const css = await readFile(join(output, "components/card.css"), "utf8");
+      for (const selector of [
+        "card-body",
+        "card-meta-avatar",
+        "card-group-grid",
+        "skeleton-title",
+        "space",
+        "typography-h6",
+        "tooltip-content",
+      ])
+        expect(css).toContain(`.semi-${selector}`);
+      expect(css).not.toMatch(
+        /\.semi-(?:avatar|image|list|descriptions|button|input|empty)/,
+      );
+      const aggregate = await readFile(join(output, "index.css"), "utf8");
+      expect(aggregate.match(/\.semi-card-body \{/g)).toHaveLength(1);
+      expect(aggregate.match(/\.semi-tooltip-content \{/g)).toHaveLength(1);
+    } finally {
+      await rm(output, { recursive: true, force: true });
+    }
   });
 
   it("rejects a mutated registered upstream style source", async () => {

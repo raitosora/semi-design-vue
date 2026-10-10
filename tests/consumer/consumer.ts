@@ -931,3 +931,5 @@ void [
   emptyStringSlot,
   emptyRef,
 ];
+
+import "./card-types.js";

@@ -1,3 +1,4 @@
+import { cardStyleCheck } from "../tests/style-consumer/card-check.mjs";
 import { emptyStyleCheck } from "../tests/style-consumer/empty-check.mjs";
 import { typographyStyleCheck } from "../tests/style-consumer/typography-check.mjs";
 import { badgeStyleCheck } from "../tests/style-consumer/badge-check.mjs";
@@ -218,6 +219,16 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    card: "151b5aa0fb090ac5ac6338da6c65df25a1c0e3b7af49cd773e522fd080ccd358",
+    rtl: "3bcf676c3f2dc96669ed3d9bb3d2ef782d0b13aa84ead9a47086e3459d445a70",
+    variables:
+      "da8dcf01d2be76a521124df868fe3a1c7d47858a5928b0e22269a79973be3168",
+  }))
+    assert(
+      sources.sources[`foundation/card/${name}.scss`] === expected,
+      `Card source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     empty: "7dadedf45f16bf47a6bb643dee0ea1da2bbde68fbd025dccf131ee7cc68daa3a",
@@ -852,6 +863,126 @@ async function typographyBrowserCheck(url) {
         !errors.length,
         `Typography style browser errors: ${errors.join("; ")}`,
       );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+async function cardBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("card.html", url).href);
+    const heading = page.locator("[data-card-tooltip] h6");
+    await heading.hover();
+    const tooltip = page.getByRole("tooltip");
+    await tooltip.waitFor({ state: "visible" });
+    const tooltipStyle = await tooltip.evaluate((node) => {
+      const content = node.querySelector(".semi-tooltip-content");
+      if (!content)
+        throw new Error("Card automatic title Tooltip content missing");
+      const css = getComputedStyle(node);
+      const inner = getComputedStyle(content);
+      return {
+        wrapper: {
+          background: css.backgroundColor,
+          paddingTop: css.paddingTop,
+          paddingRight: css.paddingRight,
+          radius: css.borderTopLeftRadius,
+          greyToken: css.getPropertyValue("--semi-grey-7").trim(),
+        },
+        content: {
+          background: inner.backgroundColor,
+          paddingTop: inner.paddingTop,
+          radius: inner.borderTopLeftRadius,
+          minWidth: inner.minWidth,
+        },
+      };
+    });
+    writeFileSync(
+      resolve(
+        root,
+        ".vitest/attachments/style-consumer/card-tooltip-computed.json",
+      ),
+      JSON.stringify(tooltipStyle, null, 2),
+    );
+    assert(
+      tooltipStyle.wrapper.background ===
+        `rgb(${tooltipStyle.wrapper.greyToken.match(/\d+/g)?.join(", ")})` &&
+        tooltipStyle.wrapper.paddingTop === "8px" &&
+        tooltipStyle.wrapper.paddingRight === "12px" &&
+        tooltipStyle.wrapper.radius === "6px" &&
+        tooltipStyle.content.minWidth === "0px",
+      `Card isolated title Tooltip styles differ from fixed upstream wrapper/content contract: ${JSON.stringify(tooltipStyle)}`,
+    );
+    await page.mouse.move(0, 0);
+    await tooltip.waitFor({ state: "hidden" });
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const color = await cardStyleCheck(page, prefix);
+            assert(
+              color ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Card custom theme token missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/card-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await cardStyleCheck(page, prefix);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Card style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/card-narrow.png",
+        ),
+        fullPage: true,
+      });
+      await page.evaluate(() => window.cardStyleUnmount());
+      assert(
+        (await page.locator("[data-card-tooltip-host]").count()) === 0,
+        "Card stylesheet fixture failed to unmount",
+      );
+      assert(!errors.length, `Card style browser errors: ${errors.join("; ")}`);
     } finally {
       await page.evaluate((value) => {
         for (const [key, entry] of Object.entries(value)) {
@@ -1592,6 +1723,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "card-only.scss",
+    "card-markup.ts",
+    "card-main.ts",
+    "card.html",
+    "vite.card.config.ts",
     "empty-only.scss",
     "empty-markup.ts",
     "empty-main.ts",
@@ -1662,6 +1798,29 @@ try {
       },
       files: ["consumer.ts"],
     }),
+  );
+  writeFileSync(
+    join(consumer, "tsconfig.card-browser.json"),
+    JSON.stringify({
+      compilerOptions: {
+        target: "ES2022",
+        module: "ESNext",
+        moduleResolution: "Bundler",
+        noEmit: true,
+        strict: true,
+        skipLibCheck: false,
+      },
+      files: ["card-main.ts"],
+    }),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/typescript/bin/tsc"),
+      "-p",
+      "tsconfig.card-browser.json",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
   );
   const uiRuntimeClosure = checkRuntimeClosure("semi-ui-vue");
   assert(
@@ -2156,6 +2315,61 @@ try {
     "Badge-only stylesheet retained unrelated component",
   );
   await withPreview("badge-dist", badgeBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.card.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const cardCss = files(join(consumer, "card-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "card-body",
+      "card-group-grid",
+      "card-meta-avatar",
+      "skeleton-title",
+      "space",
+      "typography-h6",
+      "tooltip-content",
+    ])
+      assert(
+        cardCss.includes(`.${prefix}-${marker}`),
+        `${prefix} Card CSS/SCSS/theme dependency missing: ${marker}`,
+      );
+  const cardGraph = checkGraph("card-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/card.css",
+    "/card-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      cardGraph.modules.some((id) => id.includes(fragment)),
+      `Card public style entry missing: ${fragment}`,
+    );
+  assert(
+    !cardGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Card style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:avatar|tag|popover|button|input|spin|row|progress|collapsible|overflow-list)/.test(
+      cardCss,
+    ),
+    "Card-only stylesheet retained unrelated component",
+  );
+  await withPreview("card-dist", cardBrowserCheck);
+
   execFileSync(
     process.execPath,
     [

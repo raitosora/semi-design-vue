@@ -36,3 +36,7 @@ Avatar 的字符串 `children` 使用真实文本节点测量；富内容使用�
 Tag 的 visible 属性按存在性区分受控，隐藏保留 DOM；富内容由原生 slot/同步 renderer 拥有。TagGroup 的稳定有效 key 在同一内容分支内保留实例，跨折叠边界可重挂；SplitTagGroup 按直接真实元素位置装饰，不检查 React/Vue VNode。无 Tag.Group 静态别名，原生事件、默认值及异常输入的差异见 [Tag](../components/tag.md)。
 
 Typography 保留浏览器原生内容所有权；React 节点遍历、克隆和类实例 ref 不在适配范围。Numeral 的富内容格式化须显式使用 `format(value)`。稳定 key 重排验证节点身份与生命周期；锁定 Vapor 在移动已聚焦 DOM 时可能丢失焦点，组件不额外引入焦点恢复协议。复制沿固定上游同步 `execCommand` 布尔结果及反馈，不宣称异步 Clipboard API 的权限或降级能力普遍可用。复制 renderer 重执行可重挂其分支；自定义复制 renderer 没有默认操作图标的 ref 测量保证。详见 [Typography 的差异与限制](../components/typography.md)。
+
+[Card](../components/card.md)、CardGroup 与 Card.Meta 使用客户端原生 Vapor 内容，浏览器根导出 Card/CardGroup，三个组件子路径分别为 `card`、`card/cardGroup`、`card/meta`。Node 根不导出该族；没有 Card.Group、根 Meta、类实例 ref 方法、size/layout/selected 属性或选中通知。Card 字符串 title 自动进入现有 Typography.Title 的单行 ellipsis/showTooltip 路径，继承其测量、资源清理和省略差异，应用需显式 provideAriaIdScope；ConfigProvider 不代替 ARIA scope。
+
+Card loading 卸载正文并显示 Skeleton，标题、封面、actions 和页尾保持各自原生所有权；恢复正文会重新挂载。CardGroup 复用 Space wrap，默认间距以固定源码的 16px 为准，grid 强制为 0；它不克隆或注入子组件，不计算列数。slot 声明存在性与空输出分开，稳定 key 列表保留未删除节点，但不保证浏览器移动后的焦点。actions 的包装身份为数组索引；需要业务 key 的列表使用原生内容与 For。以上不构成 React 元素/VDOM VNode、异步 renderer、SSR、水合、CJS 或完整像素等价支持。

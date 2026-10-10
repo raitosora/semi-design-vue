@@ -33,6 +33,8 @@
     "typography-positive.tsx",
     "typography-negative.tsx",
     "empty-positive.tsx",
-    "empty-negative.tsx"
+    "empty-negative.tsx",
+    "card-positive.tsx",
+    "card-negative.tsx"
   ]
 }

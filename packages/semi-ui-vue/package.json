@@ -302,7 +302,25 @@
       "default": "./dist/styles/components/empty.css"
     },
     "./styles/components/empty.css": "./dist/styles/components/empty.css",
-    "./styles/components/empty.scss": "./dist/styles/components/empty.scss"
+    "./styles/components/empty.scss": "./dist/styles/components/empty.scss",
+    "./card": {
+      "types": "./dist/components/card/index.d.ts",
+      "import": "./dist/components/card/index.js"
+    },
+    "./card/meta": {
+      "types": "./dist/components/card/meta.d.ts",
+      "import": "./dist/components/card/meta.js"
+    },
+    "./card/cardGroup": {
+      "types": "./dist/components/card/cardGroup.d.ts",
+      "import": "./dist/components/card/cardGroup.js"
+    },
+    "./styles/components/card": {
+      "sass": "./dist/styles/components/card.scss",
+      "default": "./dist/styles/components/card.css"
+    },
+    "./styles/components/card.css": "./dist/styles/components/card.css",
+    "./styles/components/card.scss": "./dist/styles/components/card.scss"
   },
   "files": [
     "dist",

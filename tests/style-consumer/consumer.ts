@@ -25,6 +25,7 @@ const options: SemiThemeOptions = {
     "tag",
     "badge",
     "typography",
+    "card",
     "empty",
   ],
 };

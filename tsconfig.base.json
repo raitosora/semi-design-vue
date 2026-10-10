@@ -137,6 +137,15 @@
       ],
       "semi-ui-vue/empty": [
         "./packages/semi-ui-vue/src/components/empty/index.ts"
+      ],
+      "semi-ui-vue/card": [
+        "./packages/semi-ui-vue/src/components/card/index.ts"
+      ],
+      "semi-ui-vue/card/meta": [
+        "./packages/semi-ui-vue/src/components/card/meta.tsx"
+      ],
+      "semi-ui-vue/card/cardGroup": [
+        "./packages/semi-ui-vue/src/components/card/cardGroup.tsx"
       ]
     },
     "allowImportingTsExtensions": true

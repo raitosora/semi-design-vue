@@ -8,6 +8,7 @@ import {
   shallowRef,
 } from "vue";
 import { expect, test, vi } from "vitest";
+import { page } from "vitest/browser";
 import TagGroup from "../../packages/semi-ui-vue/src/components/tag/group.js";
 import { createTagGroupEntries } from "../../packages/semi-ui-vue/src/components/tag/group-input.js";
 import type { TagGroupProps } from "../../packages/semi-ui-vue/src/components/tag/group-types.js";
@@ -105,23 +106,38 @@ test("TagGroup count trigger forwards Popover interaction and explicit content o
     motion: false,
     content: "override",
   });
-  const fixture = scopedMount(
-    defineVaporComponent(() => (
-      <TagGroup
-        maxTagCount={1}
-        onPlusNMouseEnter={enter}
-        popoverProps={popup.value}
-        showPopover
-        tagList={[{ children: "shown" }, { children: "hidden" }]}
-      />
-    )),
-  );
+  const pointerTarget = document.createElement("div");
+  Object.assign(pointerTarget.style, {
+    position: "fixed",
+    right: "0px",
+    bottom: "0px",
+    width: "24px",
+    height: "24px",
+  });
+  document.body.append(pointerTarget);
+  let fixture: ReturnType<typeof scopedMount> | undefined;
   try {
+    // Keep physical pointer input separate from the explicit synthetic event.
+    await page.elementLocator(pointerTarget).hover();
+    fixture = scopedMount(
+      defineVaporComponent(() => (
+        <TagGroup
+          maxTagCount={1}
+          onPlusNMouseEnter={enter}
+          popoverProps={popup.value}
+          showPopover
+          tagList={[{ children: "shown" }, { children: "hidden" }]}
+        />
+      )),
+    );
     await settle();
     const plus = fixture.host.querySelectorAll<HTMLElement>(".semi-tag")[1]!;
-    plus.dispatchEvent(new MouseEvent("mouseenter"));
+    const syntheticEnter = new MouseEvent("mouseenter");
+    plus.dispatchEvent(syntheticEnter);
     await settle();
     expect(enter).toHaveBeenCalledTimes(1);
+    expect(enter).toHaveBeenCalledWith(syntheticEnter);
+    expect(enter.mock.calls[0]![0].isTrusted).toBe(false);
     plus.click();
     await settle();
     expect(document.querySelector(".semi-popover-content")?.textContent).toBe(
@@ -143,7 +159,8 @@ test("TagGroup count trigger forwards Popover interaction and explicit content o
       "hidden",
     );
   } finally {
-    fixture.unmount();
+    fixture?.unmount();
+    pointerTarget.remove();
   }
 });
 
