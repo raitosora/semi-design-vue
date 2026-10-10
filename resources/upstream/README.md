@@ -70,8 +70,8 @@ tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
-popover, collapsible, overflowList, avatar, tag, badge and typography (21 families). All other
-public families remain unaccepted.
+popover, collapsible, overflowList, avatar, tag, badge, typography, empty and card
+(23 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -313,3 +313,20 @@ family is introduced. Strict declarations, four real tarball consumer flows,
 DOM identity and lifecycle tests, themed documentation and tree-shaking support
 this decision with the existing compiler peer, document/realm, SSR/hydration/CJS
 and visual-equivalence limitations unchanged.
+
+The `card` record accepts Card, CardGroup and the static Card.Meta child against
+the fixed source. Card loading replaces only its Skeleton-owned body; header,
+cover, actions and footer retain independent ownership. Native slots and
+synchronous renderers preserve content without inspecting or cloning nodes;
+slot declaration presence remains distinct from visible output. CardGroup is a
+Space wrapper with a source default gap of 16 and a zero-gap grid mode. It does
+not clone children or inherit Card props. Meta wraps supplied content without
+creating Avatar or Typography implicitly. Primitive string titles reuse Title
+ellipsis and Tooltip and require the existing explicit application ARIA scope;
+boxed String values are not supported. The isolated styles include Typography,
+Skeleton, Space and Tooltip; caller-composed Avatar and Button styles remain
+separate. Strict declarations, ownership and lifecycle tests, themed examples,
+real tarball consumers and tree-shaking checks support the documented contract.
+No selected, size, layout, imperative ref method, new Foundation state machine
+or additional public family is introduced. Existing compiler peer, current
+document/realm, SSR/hydration/CJS and visual-equivalence limits remain.

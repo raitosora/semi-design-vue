@@ -167,3 +167,9 @@ Typography 容器保留原生 `forwardRef`；Text/Title/Paragraph/Numeral 不提
 ## Empty 的内容与图片
 
 [Empty](../components/empty.md) 的 image/darkModeImage/title/description/default slots 分别优先对应属性，default 对应 children。声明存在与内容非空分开，不预执行 slot。图片字符串是 URL，symbol 对象仅使用 id；viewBox/url 不是图片加载功能。title/description/children 标量沿用上游 truthy 条件，slot 为空仍保留区域。没有公开 ref 方法、事件、role 或 aria-live，根只透传 data-\*；原生操作语义放在内容内。挂载时有暗图才初始化 body theme-mode 观察，卸载释放。
+
+## Card 的静态入口与区域所有权
+
+[Card](../components/card.md) 的根具名入口为 Card、CardGroup；只有 Card.Meta 静态成员，Meta 通过 `semi-ui-vue/card/meta` 默认/具名入口消费，不能由通用静态组件协议推断根 Meta 或 Card.Group。Card、Meta、CardGroup 均没有公开 ref 方法、受控选择字段或业务事件。
+
+Card 有 default、title、header、headerExtraContent、cover、footer 六个无参数原生 slot；Meta 有 avatar、title、description，Group 只有 default。slot 声明优先同名属性，即使其输出为空也保留对应区域，不预执行 slot 判空。CardContent 属性接受标量或同步原生 renderer；actions 为该内容类型的数组，没有 actions slot。header 优先于 title/extra，loading 只卸载正文，其他区域保持原生所有权。Card 与 Meta 将安全原生 attrs/事件转发根 div，Card 的 aria-busy 由 loading 持有；Group 公开透传范围为 data-\*、class/style，具体运行时兼容差异以组件页为准。

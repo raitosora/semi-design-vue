@@ -16,6 +16,10 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium, expect } from "@playwright/test";
+import {
+  checkFoundationCard,
+  checkCardFoundationGraph,
+} from "../tests/package-consumer/card-foundation-checks.mjs";
 import { buildFoundationFixture } from "./build-foundation-fixture.mjs";
 import { installPackedConsumer } from "./packed-consumer.mjs";
 import { checkSource } from "./dependency-policy.mjs";
@@ -117,6 +121,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const { card, cardGroup } = await checkFoundationCard(page, mode);
     const empty = page.locator("[data-foundation-empty]");
     await expect(empty.locator("h6")).toHaveText("No matches");
     await expect(empty.locator(".semi-empty-image")).toBeEmpty();
@@ -456,6 +461,9 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(cardGroup).toHaveCount(0);
+    await expect(card).toHaveCount(0);
+    await expect(page.locator("#card-unmounts")).toHaveText("2");
     await expect(empty).toHaveCount(0);
     await expect(page.locator(".foundation-typography")).toHaveCount(0);
     await expect(page.locator(".foundation-typography-number")).toHaveCount(0);
@@ -587,6 +595,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkCardFoundationGraph(graph, consumer, implementationChunks);
     const emptyChunks = implementationChunks(
       consumer,
       "src/components/empty/Empty.tsx",

@@ -1,3 +1,5 @@
+import "semi-ui-vue/styles/components/card.css";
+import { checkCardInterop } from "./card-interop.js";
 import { checkEmptyInterop } from "./empty-interop.js";
 import "semi-ui-vue/styles/components/empty.css";
 import { checkTypographyInterop } from "./typography-interop.js";
@@ -708,6 +710,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkCard(): Promise<string>;
       checkEmpty(): Promise<string>;
       checkTypography(): Promise<string>;
       checkBadge(): Promise<string>;
@@ -723,6 +726,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkCard: checkCardInterop,
   checkEmpty: checkEmptyInterop,
   checkTypography: checkTypographyInterop,
   checkBadge: checkBadgeInterop,

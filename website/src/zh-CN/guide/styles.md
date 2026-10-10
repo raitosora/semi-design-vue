@@ -97,3 +97,9 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Empty 样式
 
 [Empty](../components/empty.md) 使用固定 empty.scss、variables.scss、rtl.scss 闭包，按需入口为 `styles/components/empty`、`.css`、`.scss`，也包含于聚合样式。empty 独立 CSS/SCSS 入口包含内部标题所需的 Typography 样式闭包，聚合入口对该依赖去重；另引 base，按钮组合另引 button。主题插件可选择 `styles: ["base", "empty"]`，定制前缀只改变选择器，运行时组件类仍为 semi。没有默认图片尺寸和窄屏断点；vertical 内容上间距 24px，horizontal 左间距 32px，RTL 改为右间距。明暗 CSS tokens 与 body theme-mode 驱动的暗图选择是两项独立机制。
+
+## Card 样式
+
+[Card、CardGroup 与 Card.Meta](../components/card.md) 共用固定 2.103.0 的 card.scss、variables.scss 和 rtl.scss。按需入口为 `styles/components/card`、`.css`、`.scss`，聚合样式也包含该族。独立 Card 入口同时引入 Typography、Skeleton、Space 和完整 Tooltip 的必要 SCSS 闭包：字符串标题自动使用 Typography.Title 的单行省略提示，因此按需 Card 并非只包含卡片选择器，也不宣称排除 Tooltip。已有聚合入口分别导入这些依赖并避免重复。
+
+主题插件支持 `styles: ["base", "card"]` 与 `$semi-prefix` 定制选择器，CSS tokens 仍为 `--semi-*`，运行时类名仍使用 semi。Avatar、Button 等调用方组合另引对应样式。普通 CardGroup 默认双向间距为 16px，actions 内部 Space 为 12px；grid 间距为 0，卡片直角并合并相邻边缘。hover 阴影由真实 CSS 悬停控制，always 阴影始终显示。RTL 调整标题附加区、Meta 头像和 grid 边缘；尺寸及窄屏换行由调用方 CSS 决定，没有内置断点或 size 属性。

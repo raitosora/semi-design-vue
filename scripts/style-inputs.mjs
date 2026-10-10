@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "card",
   "empty",
   "typography",
   "avatar",
@@ -38,6 +39,7 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  card: ["card/card.scss", "card/rtl.scss", "card/variables.scss"],
   empty: ["empty/empty.scss", "empty/rtl.scss", "empty/variables.scss"],
   base: ["base/base.scss"],
   divider: ["divider/divider.scss", "divider/variables.scss"],
@@ -131,6 +133,12 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/card/card.scss":
+    "151b5aa0fb090ac5ac6338da6c65df25a1c0e3b7af49cd773e522fd080ccd358",
+  "foundation/card/rtl.scss":
+    "3bcf676c3f2dc96669ed3d9bb3d2ef782d0b13aa84ead9a47086e3459d445a70",
+  "foundation/card/variables.scss":
+    "da8dcf01d2be76a521124df868fe3a1c7d47858a5928b0e22269a79973be3168",
   "foundation/empty/empty.scss":
     "7dadedf45f16bf47a6bb643dee0ea1da2bbde68fbd025dccf131ee7cc68daa3a",
   "foundation/empty/rtl.scss":
@@ -381,6 +389,19 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    // Card owns Typography, Skeleton, Space and automatic title-tooltip presentation.
+    "components/card.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/typography/typography";',
+      '@import "../vendor/foundation/skeleton/skeleton";',
+      '@import "../vendor/foundation/space/space";',
+      '@import "../vendor/foundation/tooltip/tooltip";',
+      '@import "../vendor/foundation/card/card";',
+      "",
+    ].join("\n"),
     // Empty renders Typography.Title; its isolated entry owns that upstream CSS dependency.
     "components/empty.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -528,6 +549,7 @@ function entrySources() {
       '@import "./components/badge";',
       // Empty includes Typography; keep the aggregate dependency once.
       '@import "./components/empty";',
+      '@import "./vendor/foundation/card/card";',
       '@import "./components/input";',
       '@import "./components/tooltip";',
       '@import "./components/popover";',

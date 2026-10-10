@@ -100,3 +100,9 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 ## Empty 入口
 
 浏览器根具名导出 `Empty`，`semi-ui-vue/empty` 提供默认/具名组件及 EmptyProps、EmptySlots、EmptyContent、EmptyRenderResult、EmptyImage 类型；没有静态子组件或 ref 方法。Node 根不导出 Empty。按需样式加载 base 和 empty；empty 已包含内部标题所需的 Typography 样式闭包，操作按钮另加 button。组件不带默认插画；通过 `semi-illustrations-vue` 公开入口自行选择，不引入 React、lodash 或 Image 组件。详见 [Empty](../components/empty.md)。
+
+## Card 入口
+
+浏览器根具名导出 `Card`、`CardGroup`；`Card.Meta` 指向 Meta 子组件，没有根 Meta 或 Card.Group。`semi-ui-vue/card` 提供默认/具名 Card 以及 CardProps、CardSlots、CardContent、CardRenderResult、Shadows、MetaProps、MetaSlots、CardGroupProps、CardGroupSlots、CardGroupType 类型；`semi-ui-vue/card/meta` 提供默认/具名 Meta，`semi-ui-vue/card/cardGroup` 提供默认/具名 CardGroup。三个组件没有公开 ref 方法，Node 根不导出它们。
+
+按需加载 `styles/base.css` 与 `styles/components/card.css`，也提供同名 SCSS 入口。Card 样式包含必要的 Typography、Skeleton、Space 和 Tooltip 闭包；示例的 Avatar、Button 另引各自样式。字符串 title 的自动省略提示要求 setup 中调用既有 `provideAriaIdScope`；内容所有权、Group 默认 16px、loading 只切换正文及运行时透传边界见 [Card](../components/card.md)。不新增 Foundation 状态机、Image 或其他产品组件，不扩大独立 TSX 编译器严格安装、SSR、水合、CJS 或发布支持。

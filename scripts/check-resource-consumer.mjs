@@ -569,7 +569,17 @@ function checkGraph(mode = "vapor") {
     hasImplementation(graph.modules, "src/components/tag/Tag.tsx", "Tag"),
     "Tag implementation missing from consumer graph",
   );
-  for (const style of ["empty", "typography", "icons"])
+  for (const [file, name] of [
+    ["Card", "Card"],
+    ["meta", "Meta"],
+    ["cardGroup", "CardGroup"],
+  ]) {
+    assert(
+      hasImplementation(graph.modules, `src/components/card/${file}.tsx`, name),
+      `Card ${name} implementation missing from consumer graph`,
+    );
+  }
+  for (const style of ["card", "empty", "typography", "icons"])
     assert(
       graph.compilationInputs.some((id) =>
         id.endsWith(`/semi-ui-vue/dist/styles/components/${style}.css`),
@@ -1055,6 +1065,125 @@ function checkTypographyTreeShaking() {
       "semi-collapsible",
       "semi-progress",
       "semi-skeleton",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkCardTreeShaking() {
+  for (const mode of [
+    "card-only",
+    "card-root-only",
+    "card-group-only",
+    "card-meta-only",
+    "card-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.card.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const usesCard = mode === "card-only" || mode === "card-root-only";
+    for (const [file, name, expected] of [
+      ["Card", "Card", usesCard],
+      ["meta", "Meta", usesCard || mode === "card-meta-only"],
+      ["cardGroup", "CardGroup", mode === "card-group-only"],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/card/${file}.tsx`,
+          name,
+        ) === expected,
+        `${mode}: ${name} implementation tree-shaking mismatch`,
+      );
+    for (const [sourcePath, name] of [
+      ["src/components/empty/Empty.tsx", "Empty"],
+      ["src/components/avatar/Avatar.tsx", "Avatar"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/typography/numeral.tsx", "Numeral"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, name),
+        `${mode}: retained unrelated ${name}`,
+      );
+    for (const [sourcePath, name, expected] of [
+      ["src/components/skeleton/Skeleton.tsx", "Skeleton", usesCard],
+      ["src/components/typography/title.tsx", "Title", usesCard],
+      ["src/components/tooltip/Tooltip.tsx", "Tooltip", usesCard],
+      [
+        "src/components/space/Space.tsx",
+        "Space",
+        usesCard || mode === "card-group-only",
+      ],
+    ])
+      assert(
+        hasImplementation(graph.modules, sourcePath, name) === expected,
+        `${mode}: ${name} dependency tree-shaking mismatch`,
+      );
+    const entries = {
+      "card-only": "/semi-ui-vue/dist/components/card/index.js",
+      "card-root-only": "/semi-ui-vue/dist/index.js",
+      "card-group-only": "/semi-ui-vue/dist/components/card/cardGroup.js",
+      "card-meta-only": "/semi-ui-vue/dist/components/card/meta.js",
+      "card-unused": "/semi-ui-vue/dist/index.js",
+    };
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entries[mode])),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-card") === (mode !== "card-unused"),
+      `${mode}: Card executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
     ])
       assert(
         !output.includes(unrelated),
@@ -2041,6 +2170,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkCard())) ===
+        "card consumer passed",
+      "Packed Card resource behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkEmpty())) ===
         "empty consumer passed",
       "Packed Empty consumer behavior failed",
@@ -2268,6 +2402,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkCard())) ===
+        "card interop passed",
+      "Packed Card interop behavior failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkEmpty())) ===
         "empty interop passed",
@@ -2998,6 +3137,7 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const cardProducerSourceHash = hashFile(join(fixture, "card.tsx"));
   const emptyProducerSourceHash = hashFile(join(fixture, "empty.tsx"));
   const typographyProducerSourceHash = hashFile(
     join(fixture, "typography.tsx"),
@@ -3020,6 +3160,10 @@ async function run() {
   assert(
     hashFile(join(fixture, "empty.tsx")) === emptyProducerSourceHash,
     "Empty producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "card.tsx")) === cardProducerSourceHash,
+    "Card producer changed during precompilation",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -3111,6 +3255,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:empty.tsx"),
     "Empty fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:card.tsx"),
+    "Card fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -3139,6 +3287,13 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "card-browser.ts",
+    "card-interop.ts",
+    "card-only.ts",
+    "card-root-only.ts",
+    "card-group-only.ts",
+    "card-meta-only.ts",
+    "card-unused.ts",
     "empty-browser.ts",
     "empty-interop.ts",
     "empty-only.ts",
@@ -3169,6 +3324,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.card.config.ts",
     "vite.empty.config.ts",
     "vite.typography.config.ts",
     "vite.badge.config.ts",
@@ -3220,6 +3376,33 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/card-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/card.tsx",
+          sha256: cardProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        interop: {
+          source: "tests/resource-consumer/card-interop.ts",
+          copiedSha256: hashFile(join(consumer, "card-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/card-browser.ts",
+          copiedSha256: hashFile(join(consumer, "card-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -3345,6 +3528,13 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "card-browser.ts",
+          "card-interop.ts",
+          "card-only.ts",
+          "card-root-only.ts",
+          "card-group-only.ts",
+          "card-meta-only.ts",
+          "card-unused.ts",
           "empty-browser.ts",
           "empty-interop.ts",
           "empty-only.ts",
@@ -3479,6 +3669,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkCardTreeShaking();
   checkEmptyTreeShaking();
   checkTypographyTreeShaking();
   checkBadgeTreeShaking();

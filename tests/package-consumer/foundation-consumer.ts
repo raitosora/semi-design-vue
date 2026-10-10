@@ -161,3 +161,75 @@ void [
   unsafeHtml,
   null as SubpathProps | null,
 ];
+
+import DefaultCard, {
+  Card,
+  type CardProps,
+  type MetaProps,
+  type CardGroupProps,
+} from "semi-ui-vue/card";
+import DefaultCardGroup, {
+  CardGroup,
+  type CardGroupProps as DirectCardGroupProps,
+  type CardGroupSlots as DirectCardGroupSlots,
+  type CardGroupType as DirectCardGroupType,
+} from "semi-ui-vue/card/cardGroup";
+import DefaultMeta, {
+  Meta,
+  type MetaProps as DirectMetaProps,
+  type MetaSlots as DirectMetaSlots,
+} from "semi-ui-vue/card/meta";
+const cardIdentity: typeof DefaultCard = Card;
+const cardGroupIdentity: typeof DefaultCardGroup = CardGroup;
+const metaIdentity: typeof DefaultMeta = Card.Meta;
+const metaNamedIdentity: typeof Meta = Card.Meta;
+const card: CardProps = {
+  title: "Packed Card",
+  loading: undefined,
+  actions: [() => createTextNode("Action")],
+  "aria-label": "Packed Card",
+};
+const meta: MetaProps = {
+  title: "Title",
+  description: () => ["Description", 0, null],
+};
+const group: CardGroupProps = { spacing: [12, 20], type: "grid" };
+// @ts-expect-error Card has no selected API.
+const cardSelected: CardProps = { selected: true };
+// @ts-expect-error Card factories are synchronous.
+const cardAsync: CardProps = { title: async () => null };
+// @ts-expect-error Meta has no command ref.
+const metaRef: MetaProps = { ref: { focus() {} } };
+// @ts-expect-error CardGroup does not forward arbitrary ARIA attributes.
+const groupRole: CardGroupProps = { role: "group" };
+void [
+  cardIdentity,
+  cardGroupIdentity,
+  metaIdentity,
+  metaNamedIdentity,
+  card,
+  meta,
+  group,
+  cardSelected,
+  cardAsync,
+  metaRef,
+  groupRole,
+];
+
+const directGroupProps: DirectCardGroupProps = {
+  spacing: [12, 20],
+  type: "grid",
+};
+const directGroupSlots: DirectCardGroupSlots = { default: () => [] };
+const directGroupType: DirectCardGroupType = "grid";
+const directMetaProps: DirectMetaProps = { title: "Direct Meta" };
+const directMetaSlots: DirectMetaSlots = {
+  title: () => createTextNode("Direct"),
+};
+void [
+  directGroupProps,
+  directGroupSlots,
+  directGroupType,
+  directMetaProps,
+  directMetaSlots,
+];
