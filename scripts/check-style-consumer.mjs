@@ -1,3 +1,4 @@
+import { listStyleCheck } from "../tests/style-consumer/list-check.mjs";
 import { cardStyleCheck } from "../tests/style-consumer/card-check.mjs";
 import { emptyStyleCheck } from "../tests/style-consumer/empty-check.mjs";
 import { typographyStyleCheck } from "../tests/style-consumer/typography-check.mjs";
@@ -219,6 +220,16 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    list: "2afc37e25980ff4cb8dfb6e8221a5716ae0db251bca4f8e78303df4f6a6d580a",
+    rtl: "16edcc49f0a81ead90ff7b47db78953406fa4760a206fb2294f497c8605795f1",
+    variables:
+      "b3e448fed5b8f5f093d707e38be4f8da4414e9d8e738ae651d8e788d9c71bc70",
+  }))
+    assert(
+      sources.sources[`foundation/list/${name}.scss`] === expected,
+      `List source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     card: "151b5aa0fb090ac5ac6338da6c65df25a1c0e3b7af49cd773e522fd080ccd358",
@@ -997,6 +1008,113 @@ async function cardBrowserCheck(url) {
   }
 }
 
+async function listBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("list.html", url).href);
+    assert(
+      await page
+        .locator("[data-list-runtime-item]")
+        .evaluate((node) => node.tagName === "LI"),
+      "Runtime List.Item must retain li semantics",
+    );
+    assert(
+      await page
+        .locator("[data-list-runtime] .semi-list-items")
+        .evaluate((node) => node.tagName === "UL"),
+      "Runtime List must render ul outside Grid",
+    );
+    await page.evaluate(() => window.listStyleUpdate());
+    assert(
+      (await page
+        .locator("[data-list-runtime] .semi-row-flex > .semi-col-12 > li")
+        .count()) === 1,
+      "Runtime List Grid wrapper styles missing",
+    );
+    assert(
+      (await page
+        .locator("[data-list-runtime] .semi-list-item-body-main")
+        .textContent()) === "Updated runtime main",
+      "Runtime List dynamic content missing",
+    );
+    assert(
+      await page
+        .locator("[data-list-runtime] .semi-spin-children")
+        .evaluate((node) => getComputedStyle(node).opacity === "0.5"),
+      "Runtime List loading did not retain dimmed content",
+    );
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const color = await listStyleCheck(page, prefix);
+            assert(
+              color ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} List custom theme token missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/list-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await listStyleCheck(page, prefix);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "List style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/list-narrow.png",
+        ),
+        fullPage: true,
+      });
+      await page.evaluate(() => window.listStyleUnmount());
+      assert(
+        (await page.locator("[data-list-runtime-host]").count()) === 0,
+        "List style consumer did not clean up",
+      );
+      assert(!errors.length, `List style browser errors: ${errors.join("; ")}`);
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
 async function emptyBrowserCheck(url) {
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
@@ -1723,6 +1841,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "list-only.scss",
+    "list-markup.ts",
+    "list-main.ts",
+    "list.html",
+    "vite.list.config.ts",
     "card-only.scss",
     "card-markup.ts",
     "card-main.ts",
@@ -1810,7 +1933,7 @@ try {
         strict: true,
         skipLibCheck: false,
       },
-      files: ["card-main.ts"],
+      files: ["card-main.ts", "list-main.ts"],
     }),
   );
   execFileSync(
@@ -2370,6 +2493,60 @@ try {
   );
   await withPreview("card-dist", cardBrowserCheck);
 
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.list.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const listCss = files(join(consumer, "list-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "list-items",
+      "list-item-extra",
+      "list-grid",
+      "row-flex",
+      "col-12",
+      "spin-children",
+      "spin-large",
+    ])
+      assert(
+        listCss.includes(`.${prefix}-${marker}`),
+        `${prefix} List dependency missing: ${marker}`,
+      );
+  const listGraph = checkGraph("list-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/list.css",
+    "/list-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      listGraph.modules.some((id) => id.includes(fragment)),
+      `List public style entry missing: ${fragment}`,
+    );
+  assert(
+    !listGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "List style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:card|empty|typography|avatar|tag|tooltip|popover|button|input|space|progress|collapsible|overflow-list)/.test(
+      listCss,
+    ),
+    "List-only stylesheet retained unrelated component",
+  );
+  await withPreview("list-dist", listBrowserCheck);
   execFileSync(
     process.execPath,
     [

@@ -1,3 +1,4 @@
+import { checkListConsumer } from "./list.js";
 import { checkCardConsumer } from "./card.js";
 import { checkEmptyConsumer } from "./empty.js";
 import { checkTypographyConsumer } from "./typography.js";
@@ -71,6 +72,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkList(): Promise<string>;
       checkCard(): Promise<string>;
       checkEmpty(): Promise<string>;
       checkTypography(): Promise<string>;
@@ -334,6 +336,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkList: checkListConsumer,
   checkCard: checkCardConsumer,
   checkEmpty: checkEmptyConsumer,
   checkTypography: checkTypographyConsumer,

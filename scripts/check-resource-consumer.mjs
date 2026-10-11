@@ -1,3 +1,4 @@
+import { checkGridConsumerGraph } from "../tests/resource-consumer/grid-graph-check.mjs";
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -508,9 +509,8 @@ function checkGraph(mode = "vapor") {
       ),
       "Pure Vapor consumer did not resolve the public Space subpath",
     );
-  assert(
-    /semi-ui-vue\/dist\/grid-[^/\n]+\.js/.test(modules),
-    "Grid implementation missing from consumer graph",
+  checkGridConsumerGraph(graph.modules, (sourcePath, name) =>
+    implementationChunks(consumer, sourcePath, name),
   );
   if (mode === "vapor")
     assert(
@@ -579,7 +579,15 @@ function checkGraph(mode = "vapor") {
       `Card ${name} implementation missing from consumer graph`,
     );
   }
-  for (const style of ["card", "empty", "typography", "icons"])
+  for (const [file, name] of [
+    ["List", "List"],
+    ["item", "ListItem"],
+  ])
+    assert(
+      hasImplementation(graph.modules, `src/components/list/${file}.tsx`, name),
+      `${mode}: List ${name} implementation missing`,
+    );
+  for (const style of ["list", "card", "empty", "typography", "icons"])
     assert(
       graph.compilationInputs.some((id) =>
         id.endsWith(`/semi-ui-vue/dist/styles/components/${style}.css`),
@@ -1065,6 +1073,205 @@ function checkTypographyTreeShaking() {
       "semi-collapsible",
       "semi-progress",
       "semi-skeleton",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkListTreeShaking() {
+  for (const mode of [
+    "list-only",
+    "list-root-only",
+    "list-item-only",
+    "list-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.list.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const usesList = mode === "list-only" || mode === "list-root-only";
+    for (const [file, name, expected] of [
+      ["List", "List", usesList],
+      ["item", "ListItem", mode !== "list-unused"],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/list/${file}.tsx`,
+          name,
+        ) === expected,
+        `${mode}: ${name} implementation tree-shaking mismatch`,
+      );
+    for (const [sourcePath, name] of [
+      ["src/components/empty/Empty.tsx", "Empty"],
+      ["src/components/avatar/Avatar.tsx", "Avatar"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/typography/numeral.tsx", "Numeral"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, name),
+        `${mode}: retained unrelated ${name}`,
+      );
+    const rowChunks = implementationChunks(
+      consumer,
+      "src/components/grid/Row.tsx",
+      "Row",
+    );
+    const colChunks = implementationChunks(
+      consumer,
+      "src/components/grid/Col.tsx",
+      "Col",
+    );
+    const sharedGridChunk = rowChunks.some((path) => colChunks.includes(path));
+    for (const [sourcePath, name, expected] of [
+      // Bundlers may share Grid chunks. Executable props below distinguish Row/Col.
+      [
+        "src/components/grid/Row.tsx",
+        "Row",
+        usesList || (mode === "list-item-only" && sharedGridChunk),
+      ],
+      ["src/components/grid/Col.tsx", "Col", mode !== "list-unused"],
+      ["src/components/spin/Spin.tsx", "Spin", usesList],
+      ["src/components/locale/LocaleConsumer.tsx", "LocaleConsumer", false],
+    ])
+      assert(
+        hasImplementation(graph.modules, sourcePath, name) === expected,
+        `${mode}: ${name} dependency tree-shaking mismatch`,
+      );
+    const entries = {
+      "list-only": "/semi-ui-vue/dist/components/list/index.js",
+      "list-root-only": "/semi-ui-vue/dist/index.js",
+      "list-item-only": "/semi-ui-vue/dist/components/list/item.js",
+      "list-unused": "/semi-ui-vue/dist/index.js",
+    };
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entries[mode])),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-list") === (mode !== "list-unused"),
+      `${mode}: List executable marker mismatch`,
+    );
+    // A retained shared Grid module alone does not prove that Row's executable
+    // component survived the consumer's DCE.
+    const componentProps = [];
+    for (const path of outputFiles) {
+      const source = ts.createSourceFile(
+        path,
+        readFileSync(path, "utf8"),
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.JS,
+      );
+      const visit = (node) => {
+        if (
+          ts.isPropertyAssignment(node) &&
+          node.name.getText(source) === "props" &&
+          ts.isArrayLiteralExpression(node.initializer) &&
+          node.initializer.elements.every(ts.isStringLiteral)
+        )
+          componentProps.push(
+            node.initializer.elements.map((item) => item.text),
+          );
+        ts.forEachChild(node, visit);
+      };
+      visit(source);
+    }
+    for (const [name, props, expected] of [
+      [
+        "Row",
+        [
+          "type",
+          "align",
+          "justify",
+          "gutter",
+          "prefixCls",
+          "className",
+          "style",
+          "children",
+        ],
+        usesList,
+      ],
+      [
+        "Col",
+        [
+          "span",
+          "order",
+          "offset",
+          "push",
+          "pull",
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "xxl",
+          "prefixCls",
+          "className",
+          "style",
+          "children",
+        ],
+        mode !== "list-unused",
+      ],
+    ])
+      assert(
+        componentProps.some((actual) => isDeepStrictEqual(actual, props)) ===
+          expected,
+        `${mode}: ${name} executable component tree-shaking mismatch`,
+      );
+    assert(
+      output.includes("semi-locale-provider") === usesList,
+      `${mode}: locale context dependency tree-shaking mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
     ])
       assert(
         !output.includes(unrelated),
@@ -2170,6 +2377,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkList())) ===
+        "list consumer passed",
+      "Packed List behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkCard())) ===
         "card consumer passed",
       "Packed Card resource behavior failed",
@@ -2402,6 +2614,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkList())) ===
+        "list interop passed",
+      "Packed List interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkCard())) ===
         "card interop passed",
@@ -3137,6 +3354,8 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const listProducerSourceHash = hashFile(join(fixture, "list.tsx"));
+  const listBridgeSourceHash = hashFile(join(fixture, "list-bridge.tsx"));
   const cardProducerSourceHash = hashFile(join(fixture, "card.tsx"));
   const emptyProducerSourceHash = hashFile(join(fixture, "empty.tsx"));
   const typographyProducerSourceHash = hashFile(
@@ -3164,6 +3383,10 @@ async function run() {
   assert(
     hashFile(join(fixture, "card.tsx")) === cardProducerSourceHash,
     "Card producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "list.tsx")) === listProducerSourceHash,
+    "List producer changed during precompilation",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -3259,6 +3482,23 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:card.tsx"),
     "Card fixture was not precompiled",
   );
+  assert(
+    hashFile(join(fixture, "list-bridge.tsx")) === listBridgeSourceHash,
+    "List interop bridge changed during producer compilation",
+  );
+  const listBridgeCompilation = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        ".vitest/attachments/resource-consumer/list-bridge-compilation.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert(
+    listBridgeCompilation.modules?.includes("fixture:list-bridge.tsx"),
+    "List native interop bridge was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -3276,6 +3516,10 @@ async function run() {
     fixtureCompilation.modules?.includes("fixture:badge.tsx"),
     "Badge fixture was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:list.tsx"),
+    "List fixture was not precompiled",
+  );
   for (const name of [
     "graph-plugin.ts",
     "index.html",
@@ -3287,6 +3531,13 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "list-browser.ts",
+    "list-interop.ts",
+    "prepared-list-bridge.d.ts",
+    "list-only.ts",
+    "list-root-only.ts",
+    "list-item-only.ts",
+    "list-unused.ts",
     "card-browser.ts",
     "card-interop.ts",
     "card-only.ts",
@@ -3324,6 +3575,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.list.config.ts",
     "vite.card.config.ts",
     "vite.empty.config.ts",
     "vite.typography.config.ts",
@@ -3376,6 +3628,43 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/list-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/list.tsx",
+          sha256: listProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        bridge: {
+          source: "tests/resource-consumer/list-bridge.tsx",
+          sha256: listBridgeSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-list-bridge.js",
+          outputSha256: hashFile(join(consumer, "prepared-list-bridge.js")),
+          declarationSha256: hashFile(
+            join(consumer, "prepared-list-bridge.d.ts"),
+          ),
+        },
+        interop: {
+          source: "tests/resource-consumer/list-interop.ts",
+          copiedSha256: hashFile(join(consumer, "list-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/list-browser.ts",
+          copiedSha256: hashFile(join(consumer, "list-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -3528,6 +3817,12 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "list-browser.ts",
+          "list-interop.ts",
+          "list-only.ts",
+          "list-root-only.ts",
+          "list-item-only.ts",
+          "list-unused.ts",
           "card-browser.ts",
           "card-interop.ts",
           "card-only.ts",
@@ -3669,6 +3964,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkListTreeShaking();
   checkCardTreeShaking();
   checkEmptyTreeShaking();
   checkTypographyTreeShaking();

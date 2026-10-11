@@ -1,3 +1,8 @@
+import "../../packages/semi-ui-vue/dist/styles/components/list.css";
+import ListBasic from "../../website/examples/list/Basic.vapor";
+import ListDynamic from "../../website/examples/list/Dynamic.vapor";
+import ListGrid from "../../website/examples/list/Grid.vapor";
+import ListTheme from "../../website/examples/list/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/card.css";
 import CardBasic from "../../website/examples/card/Basic.vapor";
 import CardDynamic from "../../website/examples/card/Dynamic.vapor";
@@ -130,6 +135,7 @@ const spaceMode = new URLSearchParams(location.search).has("space");
 const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
+const listMode = new URLSearchParams(location.search).has("list");
 const cardMode = new URLSearchParams(location.search).has("card");
 const emptyMode = new URLSearchParams(location.search).has("empty");
 const typographyMode = new URLSearchParams(location.search).has("typography");
@@ -160,10 +166,19 @@ const app = createVaporApp(
     badgeMode ||
     typographyMode ||
     emptyMode ||
-    cardMode
+    cardMode ||
+    listMode
     ? defineVaporComponent(() => (
         <main>
-          {cardMode ? (
+          {listMode ? (
+            <>
+              <h1>List examples</h1>
+              <ListBasic />
+              <ListDynamic />
+              <ListGrid />
+              <ListTheme />
+            </>
+          ) : cardMode ? (
             <>
               <h1>Card examples</h1>
               <CardBasic />

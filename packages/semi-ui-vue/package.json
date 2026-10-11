@@ -320,7 +320,21 @@
       "default": "./dist/styles/components/card.css"
     },
     "./styles/components/card.css": "./dist/styles/components/card.css",
-    "./styles/components/card.scss": "./dist/styles/components/card.scss"
+    "./styles/components/card.scss": "./dist/styles/components/card.scss",
+    "./list": {
+      "types": "./dist/components/list/index.d.ts",
+      "import": "./dist/components/list/index.js"
+    },
+    "./list/item": {
+      "types": "./dist/components/list/item.d.ts",
+      "import": "./dist/components/list/item.js"
+    },
+    "./styles/components/list": {
+      "sass": "./dist/styles/components/list.scss",
+      "default": "./dist/styles/components/list.css"
+    },
+    "./styles/components/list.css": "./dist/styles/components/list.css",
+    "./styles/components/list.scss": "./dist/styles/components/list.scss"
   },
   "files": [
     "dist",

@@ -9,6 +9,7 @@ const options: SemiThemeOptions = {
   darkTokens: { "color-primary": "rgb(144, 202, 249)" },
   scss: { variables: { "height-control-default": "40px" } },
   styles: [
+    "list",
     "input",
     "spin",
     "iconButton",

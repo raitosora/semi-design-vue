@@ -70,8 +70,8 @@ tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
-popover, collapsible, overflowList, avatar, tag, badge, typography, empty and card
-(23 families). All other public families remain unaccepted.
+popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card and list
+(24 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -330,3 +330,23 @@ real tarball consumers and tree-shaking checks support the documented contract.
 No selected, size, layout, imperative ref method, new Foundation state machine
 or additional public family is introduced. Existing compiler peer, current
 document/realm, SSR/hydration/CJS and visual-equivalence limits remain.
+
+The `list` record accepts List and its static List.Item child against the fixed
+source. Data results append declared content; native data renderers own index
+positions, while application-owned keyed declarative lists retain their keys.
+Sparse data is rejected before renderer callbacks, an explicit difference in
+callback and error ordering. Ordinary content supports native factories and
+scalar/sparse arrays; data renderers require native blocks without scalar, null
+or hole leaves. Boolean loading delegates to Spin while preserving content;
+unsupported falsy runtime loading values retain the documented delayed-Spin
+behavior. Locale empty text uses an internal div, not the public Empty component.
+
+Ordinary Vue content slots are bridged through an application-owned native
+List/Item tree. Direct VDOM h(List) content that creates h(List.Item) lacks the
+locked RC9 scoped context and is not supported. The isolated stylesheet includes
+Grid and Spin. Strict source and packed declarations, DOM/lifecycle and themed
+browser checks, four real tarball consumer stages, tree-shaking and per-file
+coverage support this reviewed contract. There is no rowKey, Item.Meta, actions,
+new imperative ref method, List Foundation state machine or unrelated public
+family. Compiler peer-installation, browser ESM, SSR/hydration/CJS and visual
+equivalence limitations remain unchanged.

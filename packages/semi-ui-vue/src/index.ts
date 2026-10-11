@@ -146,3 +146,5 @@ export type {
 
 export { Badge } from "./components/badge/index.js";
 export { Typography } from "./components/typography/index.js";
+
+export { List } from "./components/list/index.js";
