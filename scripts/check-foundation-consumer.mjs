@@ -1,3 +1,8 @@
+import { checkGridConsumerGraph } from "../tests/resource-consumer/grid-graph-check.mjs";
+import {
+  checkFoundationList,
+  checkListFoundationGraph,
+} from "../tests/package-consumer/list-foundation-checks.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, realpathSync } from "node:fs";
@@ -121,6 +126,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const list = await checkFoundationList(page, mode);
     const { card, cardGroup } = await checkFoundationCard(page, mode);
     const empty = page.locator("[data-foundation-empty]");
     await expect(empty.locator("h6")).toHaveText("No matches");
@@ -461,6 +467,9 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(list).toHaveCount(0);
+    await expect(page.locator("#list-unmounts")).toHaveText("1");
+    await expect(page.locator("[data-foundation-list-grid]")).toHaveCount(0);
     await expect(cardGroup).toHaveCount(0);
     await expect(card).toHaveCount(0);
     await expect(page.locator("#card-unmounts")).toHaveText("2");
@@ -519,7 +528,11 @@ try {
   });
   const consumer = installed.directory;
   const env = installed.env;
-  for (const name of ["foundation-consumer.ts", "vite.foundation.config.mjs"])
+  for (const name of [
+    "foundation-consumer.ts",
+    "list-types.ts",
+    "vite.foundation.config.mjs",
+  ])
     await cp(join(fixture, name), join(consumer, name));
   await writeFile(
     join(consumer, "tsconfig.json"),
@@ -595,6 +608,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkListFoundationGraph(graph, consumer, implementationChunks);
     checkCardFoundationGraph(graph, consumer, implementationChunks);
     const emptyChunks = implementationChunks(
       consumer,
@@ -652,12 +666,10 @@ try {
       ),
       "Packed Space implementation is absent from Foundation consumer bundle",
     );
-    assert(
-      graph.modules.some(
-        ({ id, renderedLength }) =>
-          /semi-ui-vue\/dist\/grid-[^/]+\.js$/.test(id) && renderedLength > 0,
-      ),
-      "Packed Grid implementation is absent from Foundation consumer bundle",
+    checkGridConsumerGraph(
+      graph.modules,
+      (sourcePath, name) => implementationChunks(consumer, sourcePath, name),
+      { requireRenderedLength: true },
     );
     assert(
       graph.modules.some(

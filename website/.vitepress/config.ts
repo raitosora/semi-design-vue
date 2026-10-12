@@ -91,6 +91,7 @@ export default defineConfig({
           { text: "Typography 排版", link: "/zh-CN/components/typography" },
           { text: "Empty 空状态", link: "/zh-CN/components/empty" },
           { text: "Card 卡片", link: "/zh-CN/components/card" },
+          { text: "List 列表", link: "/zh-CN/components/list" },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

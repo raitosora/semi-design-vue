@@ -173,3 +173,7 @@ Typography 容器保留原生 `forwardRef`；Text/Title/Paragraph/Numeral 不提
 [Card](../components/card.md) 的根具名入口为 Card、CardGroup；只有 Card.Meta 静态成员，Meta 通过 `semi-ui-vue/card/meta` 默认/具名入口消费，不能由通用静态组件协议推断根 Meta 或 Card.Group。Card、Meta、CardGroup 均没有公开 ref 方法、受控选择字段或业务事件。
 
 Card 有 default、title、header、headerExtraContent、cover、footer 六个无参数原生 slot；Meta 有 avatar、title、description，Group 只有 default。slot 声明优先同名属性，即使其输出为空也保留对应区域，不预执行 slot 判空。CardContent 属性接受标量或同步原生 renderer；actions 为该内容类型的数组，没有 actions slot。header 优先于 title/extra，loading 只卸载正文，其他区域保持原生所有权。Card 与 Meta 将安全原生 attrs/事件转发根 div，Card 的 aria-busy 由 loading 持有；Group 公开透传范围为 data-\*、class/style，具体运行时兼容差异以组件页为准。
+
+## List 的内容与条目
+
+浏览器根仅导出 `List`，`List.Item` 为静态条目；`semi-ui-vue/list/item` 提供默认/具名 `ListItem` 与条目类型。数据项 `renderItem(item, index)` 返回同步原生块，数据渲染结果后追加默认 slot/children。声明了空 slot 与未声明 slot 的空态判断不同，不预执行 slot 判断可见内容。普通 header/footer/loadMore/emptyContent 与 Item header/main/extra/children 使用标量或同步原生 renderer，slot 返回原生内容。没有 `rowKey`、`actions`、`List.Item.Meta` 或新增命令式 ref 方法。原生事件替代 React 合成事件，List 回调是条目上下文的回退，不是根 div 的原生监听。

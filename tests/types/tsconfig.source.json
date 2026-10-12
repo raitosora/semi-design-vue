@@ -35,6 +35,8 @@
     "empty-positive.tsx",
     "empty-negative.tsx",
     "card-positive.tsx",
-    "card-negative.tsx"
+    "card-negative.tsx",
+    "list-positive.tsx",
+    "list-negative.tsx"
   ]
 }

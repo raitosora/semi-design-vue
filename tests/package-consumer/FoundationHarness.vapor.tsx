@@ -1,5 +1,6 @@
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  List,
   Card,
   CardGroup,
   Empty,
@@ -37,6 +38,15 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const listHeader = ref("Foundation List");
+  const listLoading = ref(false);
+  const listMounts = ref(0);
+  const listUnmounts = ref(0);
+  const ListBody = defineVaporComponent(() => {
+    onMounted(() => (listMounts.value += 1));
+    onUnmounted(() => (listUnmounts.value += 1));
+    return <input aria-label="List body input" value="owned list input" />;
+  });
   const cardTitle = ref("Foundation Card");
   const cardLoading = ref(false);
   const cardMounts = ref(0);
@@ -103,6 +113,29 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <List
+            bordered
+            data-foundation-list=""
+            header={listHeader.value}
+            loading={listLoading.value}
+          >
+            {() => (
+              <List.Item
+                extra={() => <button type="button">List action</button>}
+                header="Owned item"
+              >
+                {() => <ListBody />}
+              </List.Item>
+            )}
+          </List>
+          <List data-foundation-list-grid="" grid={{ span: 12, gutter: 16 }}>
+            {() => (
+              <>
+                <List.Item main="Grid A" />
+                <List.Item main="Grid B" />
+              </>
+            )}
+          </List>
           <CardGroup data-foundation-card-group="" spacing={[12, 20]}>
             {() => (
               <Card
@@ -332,6 +365,20 @@ export const FoundationHarness = defineVaporComponent(() => {
       >
         Toggle Card loading
       </button>
+      <button
+        id="list-update"
+        onClick={() => (listHeader.value = "Updated List")}
+      >
+        Update List
+      </button>
+      <button
+        id="list-loading"
+        onClick={() => (listLoading.value = !listLoading.value)}
+      >
+        Toggle List loading
+      </button>
+      <output id="list-mounts">{listMounts.value}</output>
+      <output id="list-unmounts">{listUnmounts.value}</output>
       <output id="card-mounts">{cardMounts.value}</output>
       <output id="card-unmounts">{cardUnmounts.value}</output>
       <button

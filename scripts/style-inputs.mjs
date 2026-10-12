@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "list",
   "card",
   "empty",
   "typography",
@@ -39,6 +40,7 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  list: ["list/list.scss", "list/rtl.scss", "list/variables.scss"],
   card: ["card/card.scss", "card/rtl.scss", "card/variables.scss"],
   empty: ["empty/empty.scss", "empty/rtl.scss", "empty/variables.scss"],
   base: ["base/base.scss"],
@@ -133,6 +135,13 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/list/list.scss":
+    "2afc37e25980ff4cb8dfb6e8221a5716ae0db251bca4f8e78303df4f6a6d580a",
+  "foundation/list/rtl.scss":
+    "16edcc49f0a81ead90ff7b47db78953406fa4760a206fb2294f497c8605795f1",
+  "foundation/list/variables.scss":
+    "b3e448fed5b8f5f093d707e38be4f8da4414e9d8e738ae651d8e788d9c71bc70",
+
   "foundation/card/card.scss":
     "151b5aa0fb090ac5ac6338da6c65df25a1c0e3b7af49cd773e522fd080ccd358",
   "foundation/card/rtl.scss":
@@ -389,6 +398,17 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    // List renders Grid and Spin internally; its isolated entry owns both.
+    "components/list.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/grid/grid";',
+      '@import "../vendor/foundation/spin/spin";',
+      '@import "../vendor/foundation/list/list";',
+      "",
+    ].join("\n"),
     // Card owns Typography, Skeleton, Space and automatic title-tooltip presentation.
     "components/card.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -561,6 +581,8 @@ function entrySources() {
       '@import "./components/divider";',
       '@import "./components/space";',
       '@import "./components/grid";',
+      // Grid and Spin are already included once above.
+      '@import "./vendor/foundation/list/list";',
       '@import "./components/layout";',
       '@import "./components/skeleton";',
       '@import "./components/highlight";',

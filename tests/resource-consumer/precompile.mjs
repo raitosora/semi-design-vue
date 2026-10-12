@@ -40,7 +40,10 @@ export function prepareResourceApplication(root, work, consumer) {
         noEmit: true,
         paths,
       },
-      files: [join(root, "tests/resource-consumer/main.tsx")],
+      files: [
+        join(root, "tests/resource-consumer/main.tsx"),
+        join(root, "tests/resource-consumer/list-bridge.tsx"),
+      ],
     }),
   );
   // Producer-owned application TSX is checked independently; it is not an
@@ -78,6 +81,30 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(directory, "dist/fixture-compilation.json"),
     join(evidence, "fixture-compilation.json"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "list-interop",
+      "--outDir",
+      join(directory, "list-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "list-bridge-dist/prepared-list-bridge.js"),
+    join(consumer, "prepared-list-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "list-bridge-dist/fixture-compilation.json"),
+    join(evidence, "list-bridge-compilation.json"),
   );
 }
 

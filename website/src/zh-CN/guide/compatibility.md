@@ -40,3 +40,11 @@ Typography 保留浏览器原生内容所有权；React 节点遍历、克隆和
 [Card](../components/card.md)、CardGroup 与 Card.Meta 使用客户端原生 Vapor 内容，浏览器根导出 Card/CardGroup，三个组件子路径分别为 `card`、`card/cardGroup`、`card/meta`。Node 根不导出该族；没有 Card.Group、根 Meta、类实例 ref 方法、size/layout/selected 属性或选中通知。Card 字符串 title 自动进入现有 Typography.Title 的单行 ellipsis/showTooltip 路径，继承其测量、资源清理和省略差异，应用需显式 provideAriaIdScope；ConfigProvider 不代替 ARIA scope。
 
 Card loading 卸载正文并显示 Skeleton，标题、封面、actions 和页尾保持各自原生所有权；恢复正文会重新挂载。CardGroup 复用 Space wrap，默认间距以固定源码的 16px 为准，grid 强制为 0；它不克隆或注入子组件，不计算列数。slot 声明存在性与空输出分开，稳定 key 列表保留未删除节点，但不保证浏览器移动后的焦点。actions 的包装身份为数组索引；需要业务 key 的列表使用原生内容与 For。以上不构成 React 元素/VDOM VNode、异步 renderer、SSR、水合、CJS 或完整像素等价支持。
+
+## List 适配边界
+
+List / List.Item 使用原生 Vapor 所有权，不探测或克隆 VNode。固定源码数据与声明式 children 为追加关系；数据 renderer 的 React child key 无法通过原生块反向读取，具体所有权/key差异见[List 文档](../components/list.md)。没有 rowKey、Item.Meta、actions、额外角色、aria-live 或键盘协议。loading 通过 Spin 保留内容。空态只显示 List 语言文本或自定义 emptyContent，不实例化 Empty；也没有 List Foundation 状态机。组件仅提供浏览器 ESM，纯 Vapor 和普通 Vue interop 分开验证，既有严格 TSX 编译器 peer 安装限制、SSR/水合/CJS 边界保持。
+
+锁定 Vue RC9 的互操作边界：普通 Vue `h(List)` 的 VDOM slot 再直接创建 `h(List.Item)` 时，Item 无法取得 List 的原生上下文；该组合不受支持。需要先用原生 Vapor 应用组件组合 List 与 Item，再通过普通 Vue 挂载该应用组件并传入 VDOM 内容 slot。此限制不以 slot 预执行、VNode 检查或私有实例字段规避；具体已验证组合见 [List 的普通 Vue 互操作边界](../components/list.md#普通-vue-互操作边界)。
+
+List 的公开 `loading` 类型仍是 boolean。非法运行时真值被归一为 `true`，非法假值 `null`、`0`、`NaN`、空字符串则保留 Spin 原有语义；在全局 `Spin.delay > 0` 时可能持续 busy，因此这些越过类型边界的输入不宣称与上游完全等价。

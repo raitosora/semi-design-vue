@@ -233,3 +233,5 @@ void [
   directMetaProps,
   directMetaSlots,
 ];
+
+import "./list-types.js";
