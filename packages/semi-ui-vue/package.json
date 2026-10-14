@@ -334,7 +334,21 @@
       "default": "./dist/styles/components/list.css"
     },
     "./styles/components/list.css": "./dist/styles/components/list.css",
-    "./styles/components/list.scss": "./dist/styles/components/list.scss"
+    "./styles/components/list.scss": "./dist/styles/components/list.scss",
+    "./descriptions": {
+      "types": "./dist/components/descriptions/index.d.ts",
+      "import": "./dist/components/descriptions/index.js"
+    },
+    "./descriptions/item": {
+      "types": "./dist/components/descriptions/item.d.ts",
+      "import": "./dist/components/descriptions/item.js"
+    },
+    "./styles/components/descriptions": {
+      "sass": "./dist/styles/components/descriptions.scss",
+      "default": "./dist/styles/components/descriptions.css"
+    },
+    "./styles/components/descriptions.css": "./dist/styles/components/descriptions.css",
+    "./styles/components/descriptions.scss": "./dist/styles/components/descriptions.scss"
   },
   "files": [
     "dist",

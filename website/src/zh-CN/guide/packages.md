@@ -110,3 +110,7 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 ## List 入口
 
 `semi-ui-vue` 浏览器根导出 `List`；`semi-ui-vue/list` 提供默认/具名 `List` 和 `ListProps<T>`、`ListItemProps`、`ListSlots`、`ListItemSlots`、`ListContent`、`ListRenderResult`、`Grid` 类型。`semi-ui-vue/list/item` 提供默认/具名 `ListItem` 和条目 props/slots 类型，和 `List.Item` 身份一致。Node 根仍是基础设施入口，没有 List 组件；不提供 React 旧版 lib/es/lib/cjs 路径或 CJS。独立 Item 按需入口不需要 List/Spin/LocaleConsumer 实现；正常 List 包含静态 Item 及实际 Grid/Spin/语言协作。
+
+## Descriptions 包入口补充
+
+浏览器根入口提供 `Descriptions`；`semi-ui-vue/descriptions` 提供默认/具名 `Descriptions` 和公共类型；`semi-ui-vue/descriptions/item` 提供默认子组件，对应 `Descriptions.Item`。Node 条件根仍只提供基础设施。按需样式为 `semi-ui-vue/styles/components/descriptions`（或显式 `.css` / `.scss`）。详见[描述列表](../components/descriptions.md)。没有独立 `DescriptionsItem` 根值、额外 ref 方法、SSR、水合或 CJS 支持。

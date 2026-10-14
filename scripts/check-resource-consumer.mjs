@@ -63,6 +63,15 @@ function implementationChunks(directory, sourcePath, exportName) {
           source.startsWith(`map-sources/${hash}.`),
         `Packed map snapshot hash mismatch: ${source}`,
       );
+      // Descriptions.Item has a default-only public entry. Match its complete
+      // source bytes; an invented named export must not become a probe contract.
+      if (
+        sourcePath === "src/components/descriptions/item.tsx" &&
+        exportName === "default"
+      )
+        return snapshot.equals(
+          readFileSync(join(root, "packages/semi-ui-vue", sourcePath)),
+        );
       return new RegExp(`export const ${exportName}\\b`).test(
         snapshot.toString("utf8"),
       );
@@ -587,7 +596,26 @@ function checkGraph(mode = "vapor") {
       hasImplementation(graph.modules, `src/components/list/${file}.tsx`, name),
       `${mode}: List ${name} implementation missing`,
     );
-  for (const style of ["list", "card", "empty", "typography", "icons"])
+  for (const [file, name] of [
+    ["Descriptions", "Descriptions"],
+    ["item", "default"],
+  ])
+    assert(
+      hasImplementation(
+        graph.modules,
+        `src/components/descriptions/${file}.tsx`,
+        name,
+      ),
+      `${mode}: Descriptions ${name} implementation missing`,
+    );
+  for (const style of [
+    "descriptions",
+    "list",
+    "card",
+    "empty",
+    "typography",
+    "icons",
+  ])
     assert(
       graph.compilationInputs.some((id) =>
         id.endsWith(`/semi-ui-vue/dist/styles/components/${style}.css`),
@@ -1073,6 +1101,110 @@ function checkTypographyTreeShaking() {
       "semi-collapsible",
       "semi-progress",
       "semi-skeleton",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkDescriptionsTreeShaking() {
+  for (const mode of [
+    "descriptions-only",
+    "descriptions-root-only",
+    "descriptions-item-only",
+    "descriptions-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.descriptions.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const usesDescriptions =
+      mode === "descriptions-only" || mode === "descriptions-root-only";
+    for (const [file, name, expected] of [
+      ["Descriptions", "Descriptions", usesDescriptions],
+      ["item", "default", mode !== "descriptions-unused"],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/descriptions/${file}.tsx`,
+          name,
+        ) === expected,
+        `${mode}: ${name} implementation tree-shaking mismatch`,
+      );
+    for (const [sourcePath, name] of [
+      ["src/components/empty/Empty.tsx", "Empty"],
+      ["src/components/avatar/Avatar.tsx", "Avatar"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/typography/numeral.tsx", "Numeral"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, name),
+        `${mode}: retained unrelated ${name}`,
+      );
+    const entries = {
+      "descriptions-only": "/semi-ui-vue/dist/components/descriptions/index.js",
+      "descriptions-root-only": "/semi-ui-vue/dist/index.js",
+      "descriptions-item-only":
+        "/semi-ui-vue/dist/components/descriptions/item.js",
+      "descriptions-unused": "/semi-ui-vue/dist/index.js",
+    };
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entries[mode])),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-descriptions") === (mode !== "descriptions-unused"),
+      `${mode}: Descriptions executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
     ])
       assert(
         !output.includes(unrelated),
@@ -2377,6 +2509,12 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() =>
+        window.resourceConsumer.checkDescriptions(),
+      )) === "descriptions consumer passed",
+      "Packed Descriptions behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkList())) ===
         "list consumer passed",
       "Packed List behavior failed",
@@ -2614,6 +2752,12 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() =>
+        window.interopConsumer.checkDescriptions(),
+      )) === "descriptions interop passed",
+      "Packed Descriptions interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkList())) ===
         "list interop passed",
@@ -3354,6 +3498,12 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const descriptionsProducerSourceHash = hashFile(
+    join(fixture, "descriptions.tsx"),
+  );
+  const descriptionsBridgeSourceHash = hashFile(
+    join(fixture, "descriptions-bridge.tsx"),
+  );
   const listProducerSourceHash = hashFile(join(fixture, "list.tsx"));
   const listBridgeSourceHash = hashFile(join(fixture, "list-bridge.tsx"));
   const cardProducerSourceHash = hashFile(join(fixture, "card.tsx"));
@@ -3387,6 +3537,31 @@ async function run() {
   assert(
     hashFile(join(fixture, "list.tsx")) === listProducerSourceHash,
     "List producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "descriptions.tsx")) ===
+      descriptionsProducerSourceHash,
+    "Descriptions producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "descriptions-bridge.tsx")) ===
+      descriptionsBridgeSourceHash,
+    "Descriptions bridge changed during precompilation",
+  );
+  const descriptionsBridgeCompilation = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        ".vitest/attachments/resource-consumer/descriptions-bridge-compilation.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert(
+    descriptionsBridgeCompilation.modules?.includes(
+      "fixture:descriptions-bridge.tsx",
+    ),
+    "Descriptions native interop bridge was not precompiled",
   );
   const tagProducerOutputHash = hashFile(join(consumer, "prepared-app.js"));
   const fixtureCompilation = JSON.parse(
@@ -3499,6 +3674,10 @@ async function run() {
     listBridgeCompilation.modules?.includes("fixture:list-bridge.tsx"),
     "List native interop bridge was not precompiled",
   );
+  assert(
+    fixtureCompilation.modules?.includes("fixture:descriptions.tsx"),
+    "Descriptions fixture was not precompiled",
+  );
   const installation = await installPackedConsumer({
     root,
     directory: consumer,
@@ -3531,6 +3710,12 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "descriptions-browser.ts",
+    "descriptions-interop.ts",
+    "descriptions-only.ts",
+    "descriptions-root-only.ts",
+    "descriptions-item-only.ts",
+    "descriptions-unused.ts",
     "list-browser.ts",
     "list-interop.ts",
     "prepared-list-bridge.d.ts",
@@ -3575,6 +3760,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.descriptions.config.ts",
     "vite.list.config.ts",
     "vite.card.config.ts",
     "vite.empty.config.ts",
@@ -3628,6 +3814,45 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/descriptions-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/descriptions.tsx",
+          sha256: descriptionsProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        bridge: {
+          source: "tests/resource-consumer/descriptions-bridge.tsx",
+          sha256: descriptionsBridgeSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-descriptions-bridge.js",
+          outputSha256: hashFile(
+            join(consumer, "prepared-descriptions-bridge.js"),
+          ),
+          declarationSha256: hashFile(
+            join(consumer, "prepared-descriptions-bridge.d.ts"),
+          ),
+        },
+        interop: {
+          source: "tests/resource-consumer/descriptions-interop.ts",
+          copiedSha256: hashFile(join(consumer, "descriptions-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/descriptions-browser.ts",
+          copiedSha256: hashFile(join(consumer, "descriptions-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -3817,6 +4042,12 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "descriptions-browser.ts",
+          "descriptions-interop.ts",
+          "descriptions-only.ts",
+          "descriptions-root-only.ts",
+          "descriptions-item-only.ts",
+          "descriptions-unused.ts",
           "list-browser.ts",
           "list-interop.ts",
           "list-only.ts",
@@ -3964,6 +4195,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkDescriptionsTreeShaking();
   checkListTreeShaking();
   checkCardTreeShaking();
   checkEmptyTreeShaking();

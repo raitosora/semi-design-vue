@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "descriptions",
   "list",
   "card",
   "empty",
@@ -40,6 +41,11 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  descriptions: [
+    "descriptions/descriptions.scss",
+    "descriptions/rtl.scss",
+    "descriptions/variables.scss",
+  ],
   list: ["list/list.scss", "list/rtl.scss", "list/variables.scss"],
   card: ["card/card.scss", "card/rtl.scss", "card/variables.scss"],
   empty: ["empty/empty.scss", "empty/rtl.scss", "empty/variables.scss"],
@@ -135,6 +141,12 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/descriptions/descriptions.scss":
+    "d5fabb8b5e93149ad87cc4ca81108a9b76f7cb52bed257f4c81b902627d382c5",
+  "foundation/descriptions/rtl.scss":
+    "ad6fdc81bfa5475c593980700a282e0830b4965e6cf5a444b44d2b7c8b2cf678",
+  "foundation/descriptions/variables.scss":
+    "0ed7a598feb7e70e1c16ed7f4677a6d111081aa334d22dad9862d7fe9aa39ebc",
   "foundation/list/list.scss":
     "2afc37e25980ff4cb8dfb6e8221a5716ae0db251bca4f8e78303df4f6a6d580a",
   "foundation/list/rtl.scss":
@@ -398,6 +410,14 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    "components/descriptions.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/descriptions/descriptions";',
+      "",
+    ].join("\n"),
     // List renders Grid and Spin internally; its isolated entry owns both.
     "components/list.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -564,6 +584,7 @@ function entrySources() {
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
       '@import "./base";',
+      '@import "./components/descriptions";',
       '@import "./components/avatar";',
       '@import "./components/tag";',
       '@import "./components/badge";',

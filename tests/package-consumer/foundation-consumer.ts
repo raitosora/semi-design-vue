@@ -235,3 +235,5 @@ void [
 ];
 
 import "./list-types.js";
+
+import "./descriptions-types.js";

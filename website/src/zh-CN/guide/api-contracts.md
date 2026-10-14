@@ -177,3 +177,7 @@ Card 有 default、title、header、headerExtraContent、cover、footer 六个�
 ## List 的内容与条目
 
 浏览器根仅导出 `List`，`List.Item` 为静态条目；`semi-ui-vue/list/item` 提供默认/具名 `ListItem` 与条目类型。数据项 `renderItem(item, index)` 返回同步原生块，数据渲染结果后追加默认 slot/children。声明了空 slot 与未声明 slot 的空态判断不同，不预执行 slot 判断可见内容。普通 header/footer/loadMore/emptyContent 与 Item header/main/extra/children 使用标量或同步原生 renderer，slot 返回原生内容。没有 `rowKey`、`actions`、`List.Item.Meta` 或新增命令式 ref 方法。原生事件替代 React 合成事件，List 回调是条目上下文的回退，不是根 div 的原生监听。
+
+## Descriptions 内容契约补充
+
+`Descriptions` 与静态 `Descriptions.Item` 使用原生 Vapor 内容所有权。非空 `data` 优先于声明式内容；空数据恢复默认 slot，声明 slot 的存在不等于输出可见字段。`Data.value` 和内容属性使用同步原生 renderer，复杂内容可使用 Item 的默认和 `itemKey` slot；不预执行 slot 判断内容，不检查或克隆 VNode。固定上游只有字段 `keyStyle`，没有 `valueStyle`、字段点击事件或新 ref 方法。布局、跨列与声明式注册差异详见[描述列表](../components/descriptions.md)。

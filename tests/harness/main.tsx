@@ -3,6 +3,11 @@ import ListBasic from "../../website/examples/list/Basic.vapor";
 import ListDynamic from "../../website/examples/list/Dynamic.vapor";
 import ListGrid from "../../website/examples/list/Grid.vapor";
 import ListTheme from "../../website/examples/list/Theme.vapor";
+import "../../packages/semi-ui-vue/dist/styles/components/descriptions.css";
+import DescriptionsBasic from "../../website/examples/descriptions/Basic.vapor";
+import DescriptionsLayout from "../../website/examples/descriptions/Layout.vapor";
+import DescriptionsDynamic from "../../website/examples/descriptions/Dynamic.vapor";
+import DescriptionsTheme from "../../website/examples/descriptions/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/card.css";
 import CardBasic from "../../website/examples/card/Basic.vapor";
 import CardDynamic from "../../website/examples/card/Dynamic.vapor";
@@ -136,6 +141,9 @@ const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const listMode = new URLSearchParams(location.search).has("list");
+const descriptionsMode = new URLSearchParams(location.search).has(
+  "descriptions",
+);
 const cardMode = new URLSearchParams(location.search).has("card");
 const emptyMode = new URLSearchParams(location.search).has("empty");
 const typographyMode = new URLSearchParams(location.search).has("typography");
@@ -167,10 +175,19 @@ const app = createVaporApp(
     typographyMode ||
     emptyMode ||
     cardMode ||
-    listMode
+    listMode ||
+    descriptionsMode
     ? defineVaporComponent(() => (
         <main>
-          {listMode ? (
+          {descriptionsMode ? (
+            <>
+              <h1>Descriptions examples</h1>
+              <DescriptionsBasic />
+              <DescriptionsLayout />
+              <DescriptionsDynamic />
+              <DescriptionsTheme />
+            </>
+          ) : listMode ? (
             <>
               <h1>List examples</h1>
               <ListBasic />

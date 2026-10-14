@@ -1,3 +1,4 @@
+import "semi-ui-vue/styles/components/descriptions.css";
 import "semi-ui-vue/styles/components/list.css";
 import "semi-ui-vue/styles/components/card.css";
 import "semi-ui-vue/styles/components/empty.css";
