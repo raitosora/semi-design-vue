@@ -107,3 +107,7 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## List 按需样式
 
 使用 `semi-ui-vue/styles/components/list.css`，或对应 `.scss` /主题插件 `styles: ["list"]`。该入口包含固定 List、Grid 和 Spin 的样式闭包；空态来自语言文本 div，不依赖公共 Empty 或其样式。调用方组合的 Avatar、Button、Card 等仍按各自用法加载样式。List 尺寸为 small/default/large；grid 保留 Row/Col 的固定断点、gutter 与 RTL 边界。
+
+## Descriptions 样式补充
+
+`semi-ui-vue/styles/components/descriptions` 沿用固定来源的 Descriptions、variables 与 RTL 三份 SCSS，支持单独 CSS/SCSS 和主题插件的 `descriptions` 项。其内部不依赖 Typography；组合的 Typography、Tag、Card 等需分别加载对应样式。水平布局使用固定表格列，`column` 不是断点配置；窄屏不会自动改变列数。详见[描述列表](../components/descriptions.md)。

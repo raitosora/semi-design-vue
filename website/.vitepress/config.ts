@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitepress";
+import { defineConfig, postcssIsolateStyles } from "vitepress";
 const favicon =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23006'/%3E%3C/svg%3E";
 export default defineConfig({
@@ -19,6 +19,18 @@ export default defineConfig({
     ],
   ],
   vite: {
+    css: {
+      postcss: {
+        plugins: [
+          postcssIsolateStyles({
+            includeFiles: [/vp-doc\.css$/],
+            // Isolate this component's table from article prose rules only.
+            prefix:
+              ":not(:where(.vapor-demo .semi-descriptions, .vapor-demo .semi-descriptions *))",
+          }),
+        ],
+      },
+    },
     plugins: [
       {
         name: "semi-docs-dev-favicon",
@@ -92,6 +104,10 @@ export default defineConfig({
           { text: "Empty 空状态", link: "/zh-CN/components/empty" },
           { text: "Card 卡片", link: "/zh-CN/components/card" },
           { text: "List 列表", link: "/zh-CN/components/list" },
+          {
+            text: "Descriptions 描述列表",
+            link: "/zh-CN/components/descriptions",
+          },
           { text: "国际化指南", link: "/zh-CN/guide/internationalization" },
           { text: "图标、插画与语言数据", link: "/zh-CN/guide/resources" },
           { text: "资源索引", link: "/zh-CN/guide/resource-index" },

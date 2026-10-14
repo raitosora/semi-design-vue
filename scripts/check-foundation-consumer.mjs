@@ -1,3 +1,7 @@
+import {
+  checkFoundationDescriptions,
+  checkDescriptionsFoundationGraph,
+} from "../tests/package-consumer/descriptions-foundation-checks.mjs";
 import { checkGridConsumerGraph } from "../tests/resource-consumer/grid-graph-check.mjs";
 import {
   checkFoundationList,
@@ -56,6 +60,15 @@ function implementationChunks(directory, sourcePath, exportName) {
           source.startsWith(`map-sources/${hash}.`),
         `Packed map snapshot hash mismatch: ${source}`,
       );
+      // Descriptions.Item has a default-only public entry. Match its complete
+      // source bytes; an invented named export must not become a probe contract.
+      if (
+        sourcePath === "src/components/descriptions/item.tsx" &&
+        exportName === "default"
+      )
+        return snapshot.equals(
+          readFileSync(join(root, "packages/semi-ui-vue", sourcePath)),
+        );
       return new RegExp(`export const ${exportName}\\b`).test(
         snapshot.toString("utf8"),
       );
@@ -126,6 +139,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const descriptions = await checkFoundationDescriptions(page, mode);
     const list = await checkFoundationList(page, mode);
     const { card, cardGroup } = await checkFoundationCard(page, mode);
     const empty = page.locator("[data-foundation-empty]");
@@ -467,6 +481,11 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(descriptions).toHaveCount(0);
+    await expect(
+      page.locator("[data-foundation-descriptions-data]"),
+    ).toHaveCount(0);
+    await expect(page.locator("#descriptions-unmounts")).toHaveText("1");
     await expect(list).toHaveCount(0);
     await expect(page.locator("#list-unmounts")).toHaveText("1");
     await expect(page.locator("[data-foundation-list-grid]")).toHaveCount(0);
@@ -530,6 +549,7 @@ try {
   const env = installed.env;
   for (const name of [
     "foundation-consumer.ts",
+    "descriptions-types.ts",
     "list-types.ts",
     "vite.foundation.config.mjs",
   ])
@@ -608,6 +628,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkDescriptionsFoundationGraph(graph, consumer, implementationChunks);
     checkListFoundationGraph(graph, consumer, implementationChunks);
     checkCardFoundationGraph(graph, consumer, implementationChunks);
     const emptyChunks = implementationChunks(

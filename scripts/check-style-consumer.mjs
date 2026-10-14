@@ -1,3 +1,4 @@
+import { descriptionsStyleCheck } from "../tests/style-consumer/descriptions-check.mjs";
 import { listStyleCheck } from "../tests/style-consumer/list-check.mjs";
 import { cardStyleCheck } from "../tests/style-consumer/card-check.mjs";
 import { emptyStyleCheck } from "../tests/style-consumer/empty-check.mjs";
@@ -220,6 +221,17 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    descriptions:
+      "d5fabb8b5e93149ad87cc4ca81108a9b76f7cb52bed257f4c81b902627d382c5",
+    rtl: "ad6fdc81bfa5475c593980700a282e0830b4965e6cf5a444b44d2b7c8b2cf678",
+    variables:
+      "0ed7a598feb7e70e1c16ed7f4677a6d111081aa334d22dad9862d7fe9aa39ebc",
+  }))
+    assert(
+      sources.sources[`foundation/descriptions/${name}.scss`] === expected,
+      `Descriptions source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     list: "2afc37e25980ff4cb8dfb6e8221a5716ae0db251bca4f8e78303df4f6a6d580a",
@@ -1002,6 +1014,147 @@ async function cardBrowserCheck(url) {
           else document.body.setAttribute(name, entry);
         }
       }, original);
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+async function descriptionsBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("descriptions.html", url).href);
+    assert(
+      (await page.locator("[data-descriptions-runtime] tr").count()) === 2,
+      "Runtime Descriptions vertical rows missing",
+    );
+    assert(
+      await page
+        .locator("[data-descriptions-runtime] .semi-descriptions-key")
+        .first()
+        .evaluate(
+          (node) => getComputedStyle(node).color === "rgb(31, 71, 111)",
+        ),
+      "Runtime Descriptions keyStyle missing",
+    );
+    await page.evaluate(() => window.descriptionsStyleUpdate());
+    assert(
+      (await page.locator("[data-descriptions-runtime] tr").count()) === 1,
+      "Runtime Descriptions horizontal packing missing",
+    );
+    assert(
+      (await page
+        .locator("[data-descriptions-runtime] td")
+        .first()
+        .getAttribute("colspan")) === "3",
+      "Runtime Descriptions span missing",
+    );
+    assert(
+      (await page
+        .locator("[data-descriptions-runtime] .semi-descriptions-value")
+        .first()
+        .textContent()) === "Updated runtime value",
+      "Runtime Descriptions dynamic value missing",
+    );
+    await page.evaluate(() => window.descriptionsStyleRow());
+    assert(
+      await page
+        .locator("[data-descriptions-runtime] .semi-descriptions-value")
+        .first()
+        .evaluate((node) => getComputedStyle(node).fontSize === "20px"),
+      "Runtime Descriptions row size styles missing",
+    );
+    assert(
+      await page
+        .locator("[data-descriptions-runtime] tr")
+        .first()
+        .evaluate((node) => getComputedStyle(node).flexDirection === "column"),
+      "Runtime Descriptions row layout missing",
+    );
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+          }, direction);
+          const valueColor = await page.evaluate(
+            () => getComputedStyle(document.body).color,
+          );
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const colors = await descriptionsStyleCheck(page, prefix);
+            assert(
+              colors.key ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Descriptions custom theme key token missing`,
+            );
+            assert(
+              colors.value === valueColor,
+              `${prefix} Descriptions value theme token missing`,
+            );
+          }
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/descriptions-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await descriptionsStyleCheck(page, prefix);
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Descriptions short-content style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/descriptions-narrow.png",
+        ),
+        fullPage: true,
+      });
+      await page.evaluate(() => window.descriptionsStyleUnmount());
+      assert(
+        (await page.locator("[data-descriptions-runtime-host]").count()) === 0,
+        "Descriptions style consumer did not clean up",
+      );
+      assert(
+        !errors.length,
+        `Descriptions style browser errors: ${errors.join("; ")}`,
+      );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries(value)) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+      }, original);
+      const restored = await page.evaluate(() => ({
+        dir: document.body.getAttribute("dir"),
+        theme: document.body.getAttribute("theme-mode"),
+      }));
+      assert(
+        restored.dir === original.dir && restored.theme === original.theme,
+        "Descriptions style consumer did not restore body attributes exactly",
+      );
     }
   } finally {
     await browser.close();
@@ -1841,6 +1994,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "descriptions-only.scss",
+    "descriptions-markup.ts",
+    "descriptions-main.ts",
+    "descriptions.html",
+    "vite.descriptions.config.ts",
     "list-only.scss",
     "list-markup.ts",
     "list-main.ts",
@@ -1933,7 +2091,7 @@ try {
         strict: true,
         skipLibCheck: false,
       },
-      files: ["card-main.ts", "list-main.ts"],
+      files: ["card-main.ts", "list-main.ts", "descriptions-main.ts"],
     }),
   );
   execFileSync(
@@ -2547,6 +2705,60 @@ try {
     "List-only stylesheet retained unrelated component",
   );
   await withPreview("list-dist", listBrowserCheck);
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.descriptions.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const descriptionsCss = files(join(consumer, "descriptions-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "descriptions-key",
+      "descriptions-value",
+      "descriptions-double-small",
+      "descriptions-double-medium",
+      "descriptions-double-large",
+      "descriptions-horizontal",
+    ])
+      assert(
+        descriptionsCss.includes(`.${prefix}-${marker}`),
+        `${prefix} Descriptions selector missing: ${marker}`,
+      );
+  const descriptionsGraph = checkGraph("descriptions-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/descriptions.css",
+    "/descriptions-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      descriptionsGraph.modules.some((id) => id.includes(fragment)),
+      `Descriptions public style entry missing: ${fragment}`,
+    );
+  assert(
+    !descriptionsGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Descriptions style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:card|empty|typography|avatar|tooltip|popover|button|input|space|spin|row|col|list|progress|collapsible|overflow-list)/.test(
+      descriptionsCss,
+    ),
+    "Descriptions-only stylesheet retained unrelated component",
+  );
+  await withPreview("descriptions-dist", descriptionsBrowserCheck);
+
   execFileSync(
     process.execPath,
     [

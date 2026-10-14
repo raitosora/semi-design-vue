@@ -152,6 +152,12 @@
       ],
       "semi-ui-vue/list/item": [
         "./packages/semi-ui-vue/src/components/list/item.tsx"
+      ],
+      "semi-ui-vue/descriptions": [
+        "./packages/semi-ui-vue/src/components/descriptions/index.ts"
+      ],
+      "semi-ui-vue/descriptions/item": [
+        "./packages/semi-ui-vue/src/components/descriptions/item.tsx"
       ]
     },
     "allowImportingTsExtensions": true

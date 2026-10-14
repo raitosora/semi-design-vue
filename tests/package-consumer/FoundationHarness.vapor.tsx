@@ -1,5 +1,6 @@
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  Descriptions,
   List,
   Card,
   CardGroup,
@@ -38,6 +39,19 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const descriptionsLabel = ref("Foundation Descriptions");
+  const descriptionsMounts = ref(0);
+  const descriptionsUnmounts = ref(0);
+  const DescriptionsBody = defineVaporComponent(() => {
+    onMounted(() => (descriptionsMounts.value += 1));
+    onUnmounted(() => (descriptionsUnmounts.value += 1));
+    return (
+      <input
+        aria-label="Descriptions body input"
+        value="owned descriptions input"
+      />
+    );
+  });
   const listHeader = ref("Foundation List");
   const listLoading = ref(false);
   const listMounts = ref(0);
@@ -112,6 +126,22 @@ export const FoundationHarness = defineVaporComponent(() => {
                 </>
               ),
             }}
+          />
+          <Descriptions data-foundation-descriptions="">
+            {() => (
+              <Descriptions.Item itemKey={descriptionsLabel.value}>
+                {() => <DescriptionsBody />}
+              </Descriptions.Item>
+            )}
+          </Descriptions>
+          <Descriptions
+            column={3}
+            data={[
+              { key: "Across", value: "Two", span: 2 },
+              { key: "Zero", value: 0 },
+            ]}
+            data-foundation-descriptions-data=""
+            layout="horizontal"
           />
           <List
             bordered
@@ -377,6 +407,14 @@ export const FoundationHarness = defineVaporComponent(() => {
       >
         Toggle List loading
       </button>
+      <button
+        id="descriptions-update"
+        onClick={() => (descriptionsLabel.value = "Updated Descriptions")}
+      >
+        Update Descriptions
+      </button>
+      <output id="descriptions-mounts">{descriptionsMounts.value}</output>
+      <output id="descriptions-unmounts">{descriptionsUnmounts.value}</output>
       <output id="list-mounts">{listMounts.value}</output>
       <output id="list-unmounts">{listUnmounts.value}</output>
       <output id="card-mounts">{cardMounts.value}</output>

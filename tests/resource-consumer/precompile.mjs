@@ -43,6 +43,7 @@ export function prepareResourceApplication(root, work, consumer) {
       files: [
         join(root, "tests/resource-consumer/main.tsx"),
         join(root, "tests/resource-consumer/list-bridge.tsx"),
+        join(root, "tests/resource-consumer/descriptions-bridge.tsx"),
       ],
     }),
   );
@@ -105,6 +106,34 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(directory, "list-bridge-dist/fixture-compilation.json"),
     join(evidence, "list-bridge-compilation.json"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "descriptions-interop",
+      "--outDir",
+      join(directory, "descriptions-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "descriptions-bridge-dist/prepared-descriptions-bridge.js"),
+    join(consumer, "prepared-descriptions-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "descriptions-bridge-dist/fixture-compilation.json"),
+    join(evidence, "descriptions-bridge-compilation.json"),
+  );
+  copyFileSync(
+    join(root, "tests/resource-consumer/descriptions-bridge.d.ts"),
+    join(consumer, "prepared-descriptions-bridge.d.ts"),
   );
 }
 

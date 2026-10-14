@@ -70,8 +70,8 @@ tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
-popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card and list
-(24 families). All other public families remain unaccepted.
+popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list
+and descriptions (25 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -350,3 +350,20 @@ coverage support this reviewed contract. There is no rowKey, Item.Meta, actions,
 new imperative ref method, List Foundation state machine or unrelated public
 family. Compiler peer-installation, browser ESM, SSR/hydration/CJS and visual
 equivalence limitations remain unchanged.
+
+The `descriptions` record accepts Descriptions and its static Item against the
+fixed source. Nonempty data takes precedence over declared content. Native data
+positions and caller-owned keyed Item ranges have separate ownership; private
+registration and table-row coordination preserve DOM identity during regrouping.
+Structural layout branches can remount content, and cross-row moves do not
+guarantee focus retention. Caller DOM reordering requires MutationObserver.
+
+The fixed Foundation grouping algorithm is adapted privately without mutating
+caller data or expanding the Foundation patch. KeyStyle applies to labels;
+valueStyle, rowKey, responsive column logic and new imperative ref methods are
+not added. Direct ordinary Vue data and Item slots are tested separately from
+precompiled native consumers. Strict declarations, abnormal-input differential
+tests, owned content/lifecycle checks, themed examples, four real tarball
+consumer stages, per-file coverage and tree-shaking support the reviewed
+contract. Existing peer-installation, current-document/realm, SSR/hydration/CJS
+and visual-equivalence limits remain.

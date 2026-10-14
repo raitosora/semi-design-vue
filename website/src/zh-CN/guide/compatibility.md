@@ -48,3 +48,7 @@ List / List.Item 使用原生 Vapor 所有权，不探测或克隆 VNode。固�
 锁定 Vue RC9 的互操作边界：普通 Vue `h(List)` 的 VDOM slot 再直接创建 `h(List.Item)` 时，Item 无法取得 List 的原生上下文；该组合不受支持。需要先用原生 Vapor 应用组件组合 List 与 Item，再通过普通 Vue 挂载该应用组件并传入 VDOM 内容 slot。此限制不以 slot 预执行、VNode 检查或私有实例字段规避；具体已验证组合见 [List 的普通 Vue 互操作边界](../components/list.md#普通-vue-互操作边界)。
 
 List 的公开 `loading` 类型仍是 boolean。非法运行时真值被归一为 `true`，非法假值 `null`、`0`、`NaN`、空字符串则保留 Spin 原有语义；在全局 `Spin.delay > 0` 时可能持续 busy，因此这些越过类型边界的输入不宣称与上游完全等价。
+
+## Descriptions 适配边界补充
+
+固定上游的 Descriptions 调用 Foundation 分行，并会修改尾行数据的 span。Vapor 使用固定算法的私有不可变适配，保留布局与数值运算规则，避免修改调用方数据；不扩大 Foundation 补丁或运行时来源闭包。React children 提取改为原生 Item 注册，原生 renderer 仅执行实际显示分支，不能依赖上游重复调用的副作用。类型、DOM、上下文、动态内容和普通 Vue 互操作支持面见[描述列表](../components/descriptions.md)。既有 Vue RC peer 严格安装限制及 SSR、水合、CJS、完整像素等价的未支持状态保持。

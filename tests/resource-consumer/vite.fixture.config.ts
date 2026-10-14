@@ -12,7 +12,12 @@ const external = (id: string) =>
 // No library implementation is resolved here: every library import is external.
 export default defineConfig(({ mode }) => {
   const listBridge = mode === "list-interop";
-  const entry = listBridge ? "list-bridge.tsx" : "main.tsx";
+  const descriptionsBridge = mode === "descriptions-interop";
+  const entry = descriptionsBridge
+    ? "descriptions-bridge.tsx"
+    : listBridge
+      ? "list-bridge.tsx"
+      : "main.tsx";
   return {
     plugins: [
       vueJsx({ vapor: true, macros: true }),
@@ -25,7 +30,11 @@ export default defineConfig(({ mode }) => {
           if (
             !modules.some((id) =>
               id.endsWith(
-                listBridge ? "list-bridge.tsx" : "virtual-pointer.tsx",
+                descriptionsBridge
+                  ? "descriptions-bridge.tsx"
+                  : listBridge
+                    ? "list-bridge.tsx"
+                    : "virtual-pointer.tsx",
               ),
             )
           )
@@ -71,7 +80,11 @@ export default defineConfig(({ mode }) => {
         entry: resolve(fixture, entry),
         formats: ["es"],
         fileName: () =>
-          listBridge ? "prepared-list-bridge.js" : "prepared-app.js",
+          descriptionsBridge
+            ? "prepared-descriptions-bridge.js"
+            : listBridge
+              ? "prepared-list-bridge.js"
+              : "prepared-app.js",
       },
       rolldownOptions: { external },
     },

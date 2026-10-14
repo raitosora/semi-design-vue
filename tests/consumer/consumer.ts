@@ -1,3 +1,4 @@
+import "./descriptions-types.js";
 import "./list-types.js";
 import { version as animationVersion } from "semi-animation-vue";
 import {
