@@ -689,7 +689,8 @@ export async function checkStyleInputs(root) {
   };
 }
 
-export async function buildStyles({ root, output }) {
+/** Stage the locked Foundation/Theme Sass inputs; Icons and CSS are built separately. */
+export async function prepareStyleSources({ root, output }) {
   const inputs = await checkStyleInputs(root);
   const foundationRoot = await rootFor(root, foundationPackage);
   const themeRoot = await rootFor(root, themePackage);
@@ -744,6 +745,11 @@ export async function buildStyles({ root, output }) {
     await mkdir(dirname(join(output, file)), { recursive: true }).then(() =>
       writeFile(join(output, file), source),
     );
+  return inputs;
+}
+
+export async function buildStyles({ root, output }) {
+  const inputs = await prepareStyleSources({ root, output });
   await buildIconStyles({
     root,
     output: join(output, "icons"),

@@ -3,6 +3,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -43,6 +44,46 @@ async function copyInputs(destination) {
 }
 
 describe("fixed Semi style inputs", () => {
+  it("prepares locked Foundation and Theme Sass without compiling CSS and rejects source drift", async () => {
+    const { prepareStyleSources } =
+      await import("../../scripts/style-inputs.mjs");
+    expect(prepareStyleSources).toBeTypeOf("function");
+    const isolated = await mkdtemp(join(tmpdir(), "semi-style-staging-"));
+    const output = join(isolated, "styles");
+    try {
+      await copyInputs(isolated);
+      const inputs = await prepareStyleSources({ root: isolated, output });
+      const files = await readdir(output, { recursive: true });
+      expect(files).toContain("base.scss");
+      expect(files.some((file) => file.endsWith(".css"))).toBe(false);
+      for (const source of Object.keys(inputs.sourceHashes)) {
+        if (source === "theme/variables.scss") continue;
+        const theme = source.startsWith("theme/");
+        const original = theme
+          ? `node_modules/@douyinfe/semi-theme-default/scss/${source.slice(6)}`
+          : `node_modules/@douyinfe/semi-foundation/${source.slice(11)}`;
+        const staged = theme
+          ? source.replace("theme/mixin.scss", "theme/source-mixins.scss")
+          : `vendor/${source}`;
+        expect(await readFile(join(output, staged))).toEqual(
+          await readFile(join(isolated, original)),
+        );
+      }
+      const input = join(
+        isolated,
+        "node_modules/@douyinfe/semi-foundation/input/input.scss",
+      );
+      await writeFile(input, (await readFile(input, "utf8")) + "\n.drift {}\n");
+      await expect(
+        prepareStyleSources({ root: isolated, output }),
+      ).rejects.toThrow(
+        "Locked style source drift: foundation/input/input.scss.",
+      );
+    } finally {
+      await rm(isolated, { recursive: true, force: true });
+    }
+  });
+
   it("delivers locked motion variables required by Collapsible transitions", async () => {
     const inputs = await checkStyleInputs(root);
     expect(inputs.sourceHashes["theme/animation.scss"]).toMatch(

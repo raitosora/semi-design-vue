@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import * as sass from "sass";
 import { describe, expect, it } from "vitest";
-import { buildStyles } from "../../scripts/style-inputs.mjs";
+import { prepareStyleSources } from "../../scripts/style-inputs.mjs";
 import semiTheme, {
   SEMI_THEME_VIRTUAL_CSS_ID as CSS,
   SEMI_THEME_VIRTUAL_SCSS_ID as SCSS,
@@ -90,7 +90,7 @@ describe("explicit Semi theme style generation", () => {
   it("compiles actual self-contained Sass entries with prefix and dimensions, and rejects undeclared variables", async () => {
     const output = await mkdtemp(join(tmpdir(), "semi-theme-sass-"));
     try {
-      await buildStyles({ root: process.cwd(), output });
+      await prepareStyleSources({ root: process.cwd(), output });
       const compile = (plugin) =>
         sass.compileString(source(plugin, SCSS), {
           importers: [
