@@ -748,6 +748,24 @@ export async function prepareStyleSources({ root, output }) {
   return inputs;
 }
 
+/** Compile registered entries from the same sources used by the full style build. */
+export async function compileStyleEntries({ output, entries }) {
+  const sources = entrySources();
+  const selected = [...(entries ?? Object.keys(sources))];
+  for (const file of selected)
+    if (typeof file !== "string" || !Object.hasOwn(sources, file))
+      throw new Error(`Unknown style entry: ${file}.`);
+  for (const file of selected) {
+    const source = sources[file];
+    const css = sass.compileString(source, {
+      loadPaths: [output],
+      url: pathToFileURL(join(output, file)),
+      style: "expanded",
+    }).css;
+    await writeFile(join(output, file.replace(/\.scss$/, ".css")), css);
+  }
+}
+
 export async function buildStyles({ root, output }) {
   const inputs = await prepareStyleSources({ root, output });
   await buildIconStyles({
@@ -758,14 +776,7 @@ export async function buildStyles({ root, output }) {
   const iconSources = JSON.parse(
     await readFile(join(output, "sources.json"), "utf8"),
   );
-  for (const [file, source] of Object.entries(entrySources())) {
-    const css = sass.compileString(source, {
-      loadPaths: [output],
-      url: pathToFileURL(join(output, file)),
-      style: "expanded",
-    }).css;
-    await writeFile(join(output, file.replace(/\.scss$/, ".css")), css);
-  }
+  await compileStyleEntries({ output });
   await writeFile(
     join(output, "sources.json"),
     JSON.stringify(

@@ -19,6 +19,8 @@ import {
   checkStyleInputs,
 } from "../../scripts/style-inputs.mjs";
 
+import { buildStyleFixture } from "../support/style-fixture.mjs";
+
 const root = fileURLToPath(new URL("../../", import.meta.url));
 
 async function copyInputs(destination) {
@@ -44,6 +46,58 @@ async function copyInputs(destination) {
 }
 
 describe("fixed Semi style inputs", () => {
+  it("compiles only requested style fixture CSS with the complete aggregate", async () => {
+    const output = await mkdtemp(join(tmpdir(), "semi-selected-styles-"));
+    const entries = [
+      "components/empty.scss",
+      "components/list.scss",
+      "components/input.scss",
+      "components/popover.scss",
+      "components/tag.scss",
+      "index.scss",
+    ];
+    try {
+      await buildStyleFixture({ root, output, entries });
+      const files = await readdir(output, { recursive: true });
+      expect(files.filter((file) => file.endsWith(".css")).sort()).toEqual(
+        [
+          ...entries.map((entry) => entry.replace(/\.scss$/, ".css")),
+          "icons/index.css",
+        ].sort(),
+      );
+      const aggregate = await readFile(join(output, "index.css"), "utf8");
+      for (const selector of [".semi-timeline", ".semi-icon", ".semi-progress"])
+        expect(aggregate).toContain(selector);
+    } finally {
+      await rm(output, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects unknown selected style entries before compiling or writing any entry", async () => {
+    const { compileStyleEntries } =
+      await import("../../scripts/style-inputs.mjs");
+    expect(compileStyleEntries).toBeTypeOf("function");
+    const output = await mkdtemp(join(tmpdir(), "semi-invalid-styles-"));
+    try {
+      for (const invalid of [
+        "missing.scss",
+        "../escape.scss",
+        "__proto__",
+        "constructor",
+      ]) {
+        await expect(
+          compileStyleEntries({
+            output,
+            entries: ["components/empty.scss", invalid],
+          }),
+        ).rejects.toThrow(`Unknown style entry: ${invalid}.`);
+        expect(await readdir(output)).toEqual([]);
+      }
+    } finally {
+      await rm(output, { recursive: true, force: true });
+    }
+  });
+
   it("prepares locked Foundation and Theme Sass without compiling CSS and rejects source drift", async () => {
     const { prepareStyleSources } =
       await import("../../scripts/style-inputs.mjs");
