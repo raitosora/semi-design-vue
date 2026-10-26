@@ -21,7 +21,7 @@ JavaScript 为预编译 ESM，声明为 `.d.ts`，附带 source map 和随包可
 
 ## 依赖与构建
 
-当前浏览器包要求精确的 `vue@3.6.0-rc.9`。UI 包通过正式依赖声明使用 `semi-animation-vue` 和 `date-fns@2.30.0`；主题插件要求 `vite@8.3.0`。应用自己编写 Vapor TSX 时使用 `vue-jsx@3.3.0-rc.2`，配置见[编写示例](./authoring.md)。
+当前浏览器包要求精确的 `vue@3.6.0-rc.9`。UI 包通过正式依赖声明使用 `semi-animation-vue` 和 `date-fns@2.30.0`；主题插件要求 `vite@8.3.3`。应用自己编写 Vapor TSX 时使用 `vue-jsx@3.3.0-rc.2`，配置见[编写示例](./authoring.md)。
 
 当前六包的编译辅助代码已内联，产物没有需要消费者另装的 `vue-jsx` / `@vue-jsx/runtime` 外部运行时导入。内联代码保留 MIT 许可；不能由应用的编译依赖推断库的 peer 依赖。后续产物若出现新的外部导入，必须同步包清单并重新验收。
 
@@ -114,3 +114,7 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 ## Descriptions 包入口补充
 
 浏览器根入口提供 `Descriptions`；`semi-ui-vue/descriptions` 提供默认/具名 `Descriptions` 和公共类型；`semi-ui-vue/descriptions/item` 提供默认子组件，对应 `Descriptions.Item`。Node 条件根仍只提供基础设施。按需样式为 `semi-ui-vue/styles/components/descriptions`（或显式 `.css` / `.scss`）。详见[描述列表](../components/descriptions.md)。没有独立 `DescriptionsItem` 根值、额外 ref 方法、SSR、水合或 CJS 支持。
+
+## Timeline 包入口补充
+
+浏览器根入口提供 `Timeline`；`semi-ui-vue/timeline` 提供默认/具名 Timeline 和公共类型；`semi-ui-vue/timeline/item` 提供默认子组件，对应 `Timeline.Item`。没有根具名 Item、TimelineItem 值导出或额外 ref 方法。独立样式为 `semi-ui-vue/styles/components/timeline`（可显式 `.css` / `.scss`）。Node 条件根与 SSR、水合、CJS 的原有边界保持，详见[时间轴](../components/timeline.md)。

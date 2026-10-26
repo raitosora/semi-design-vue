@@ -46,7 +46,7 @@ document.body.removeAttribute("theme-mode");
 
 ## 构建主题
 
-当前本地插件配合 Vite `8.3.0` 与 Sass `1.97.3` 使用。它不自动加载任何组件样式。CSS variables 必须通过显式虚拟入口加载，放在基础样式之后以遵循 CSS 层叠顺序。
+当前本地插件配合 Vite `8.3.3` 与 Sass `1.97.3` 使用。它不自动加载任何组件样式。CSS variables 必须通过显式虚拟入口加载，放在基础样式之后以遵循 CSS 层叠顺序。
 
 ```ts
 // vite.config.ts

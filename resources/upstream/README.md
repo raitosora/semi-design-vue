@@ -70,8 +70,8 @@ tarballs. Date language formatting is demonstrated separately from timeZone
 configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
-popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list
-and descriptions (25 families). All other public families remain unaccepted.
+popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list,
+descriptions and timeline (26 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -367,3 +367,26 @@ tests, owned content/lifecycle checks, themed examples, four real tarball
 consumer stages, per-file coverage and tree-shaking support the reviewed
 contract. Existing peer-installation, current-document/realm, SSR/hydration/CJS
 and visual-equivalence limits remain.
+
+The `timeline` record accepts Timeline and its static Item against the fixed
+source. Nonempty dataSource takes precedence over declared content; empty data
+falls back to a declared default slot, then children. Data content overrides
+children, sparse holes are skipped while source-index parity is preserved, and
+native slot declaration presence is distinct from visible output. Synchronous
+native content factories replace ReactNode without probing or cloning VNodes.
+
+Left/right modes force position; center/alternate honor truthy Item position.
+Private registration follows direct native Item DOM order, with a root childList
+MutationObserver that disconnects on unmount. Without MutationObserver only
+initial and registration-driven order is supported. React logical-child/fragment
+indexing is not equivalent. Stable caller keys retain content identity, but
+actual DOM moves do not guarantee focus retention and structural branches may
+remount. Fixed theme SCSS supplies dot decoration and last-child tail behavior.
+
+There is no direction, reverse, pending, size, rowKey or imperative ref API and
+no Timeline Foundation state machine. Strict source and packed declarations,
+ownership and abnormal-input tests, themed examples, four real tarball consumer
+stages, per-file coverage and tree-shaking support the reviewed contract. Direct
+ordinary Vue data and Item slots are checked separately from native consumers.
+Existing peer-installation, current-document/realm, SSR/hydration/CJS and
+representative-only visual verification limitations remain unchanged.

@@ -181,3 +181,7 @@ Card 有 default、title、header、headerExtraContent、cover、footer 六个�
 ## Descriptions 内容契约补充
 
 `Descriptions` 与静态 `Descriptions.Item` 使用原生 Vapor 内容所有权。非空 `data` 优先于声明式内容；空数据恢复默认 slot，声明 slot 的存在不等于输出可见字段。`Data.value` 和内容属性使用同步原生 renderer，复杂内容可使用 Item 的默认和 `itemKey` slot；不预执行 slot 判断内容，不检查或克隆 VNode。固定上游只有字段 `keyStyle`，没有 `valueStyle`、字段点击事件或新 ref 方法。布局、跨列与声明式注册差异详见[描述列表](../components/descriptions.md)。
+
+## Timeline 内容契约补充
+
+非空 `Timeline.dataSource` 优先于 default slot 和 children；数据 `content` 覆盖数据项 children。`Timeline.Item` 提供 default/dot/extra/time 原生 slots，同名 slot 的声明存在性优先于属性，不预执行内容探测。mode=left/right 强制位置，center/alternate 才允许 truthy position 覆盖。没有 direction/reverse/pending、rowKey 或新 ref 方法；倒序由调用方改变稳定 key 列表。直接原生 Item 排列与 React.Children 对 fragment、空位的处理差异见[时间轴](../components/timeline.md)。

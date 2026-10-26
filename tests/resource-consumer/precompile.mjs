@@ -43,6 +43,7 @@ export function prepareResourceApplication(root, work, consumer) {
       files: [
         join(root, "tests/resource-consumer/main.tsx"),
         join(root, "tests/resource-consumer/list-bridge.tsx"),
+        join(root, "tests/resource-consumer/timeline-bridge.tsx"),
         join(root, "tests/resource-consumer/descriptions-bridge.tsx"),
       ],
     }),
@@ -134,6 +135,34 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(root, "tests/resource-consumer/descriptions-bridge.d.ts"),
     join(consumer, "prepared-descriptions-bridge.d.ts"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "timeline-interop",
+      "--outDir",
+      join(directory, "timeline-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "timeline-bridge-dist/prepared-timeline-bridge.js"),
+    join(consumer, "prepared-timeline-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "timeline-bridge-dist/fixture-compilation.json"),
+    join(evidence, "timeline-bridge-compilation.json"),
+  );
+  copyFileSync(
+    join(root, "tests/resource-consumer/timeline-bridge.d.ts"),
+    join(consumer, "prepared-timeline-bridge.d.ts"),
   );
 }
 

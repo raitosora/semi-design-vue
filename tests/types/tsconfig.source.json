@@ -39,6 +39,8 @@
     "list-positive.tsx",
     "list-negative.tsx",
     "descriptions-positive.tsx",
-    "descriptions-negative.tsx"
+    "descriptions-negative.tsx",
+    "timeline-positive.tsx",
+    "timeline-negative.tsx"
   ]
 }

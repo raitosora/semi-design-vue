@@ -4,7 +4,7 @@
 
 文档 shell 为 VitePress 普通 Vue SSR/客户端水合；真实 TSX 示例预编译为 Vapor，在 ClientOnly 中动态导入并使用独立 `createVaporApp` 挂载。示例不复用服务端 DOM，不把客户端挂载称为示例水合。
 
-另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.9、vue-jsx 3.3.0-rc.2、Vite 8.3.0、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。浏览器 Bundler 条件下的 UI 根入口提供 `Tag`、`TagGroup`、`SplitTagGroup`、`Avatar`、`AvatarGroup`、`OverflowList`、`Collapsible`、`Popover`、`Tooltip`、`Progress`、`Highlight`、`Skeleton`、`Layout`、`Row`、`Col`、`Space`、`Divider`、`Button`、`ButtonGroup`、`SplitButtonGroup`、`IconButton`、`Spin`、`Icon`、`ConfigProvider`、`ConfigConsumer`、`LocaleProvider` 与 `LocaleConsumer`；纯 Node 条件的根入口只保留静态工具，其声明也按同一条件收窄。
+另行验证 shell 的 interop 及独立纯 Vapor 构建。当前组合为 Vue 3.6.0-rc.9、vue-jsx 3.3.0-rc.2、Vite 8.3.3、VitePress 2.0.0-alpha.20；均以锁文件为准，预发布工具链仍需持续验收。浏览器 Bundler 条件下的 UI 根入口提供 `Tag`、`TagGroup`、`SplitTagGroup`、`Avatar`、`AvatarGroup`、`OverflowList`、`Collapsible`、`Popover`、`Tooltip`、`Progress`、`Highlight`、`Skeleton`、`Layout`、`Row`、`Col`、`Space`、`Divider`、`Button`、`ButtonGroup`、`SplitButtonGroup`、`IconButton`、`Spin`、`Icon`、`ConfigProvider`、`ConfigConsumer`、`LocaleProvider` 与 `LocaleConsumer`；纯 Node 条件的根入口只保留静态工具，其声明也按同一条件收窄。
 
 ## 尚未验证的能力
 
@@ -52,3 +52,7 @@ List 的公开 `loading` 类型仍是 boolean。非法运行时真值被归一�
 ## Descriptions 适配边界补充
 
 固定上游的 Descriptions 调用 Foundation 分行，并会修改尾行数据的 span。Vapor 使用固定算法的私有不可变适配，保留布局与数值运算规则，避免修改调用方数据；不扩大 Foundation 补丁或运行时来源闭包。React children 提取改为原生 Item 注册，原生 renderer 仅执行实际显示分支，不能依赖上游重复调用的副作用。类型、DOM、上下文、动态内容和普通 Vue 互操作支持面见[描述列表](../components/descriptions.md)。既有 Vue RC peer 严格安装限制及 SSR、水合、CJS、完整像素等价的未支持状态保持。
+
+## Timeline 适配边界补充
+
+固定上游 Timeline 不实例化 Foundation，仅使用 constants、SCSS 和 React children 检查/克隆。Vapor 使用原生直接 Item 的顺序注册，保留内容所有权，支持调用方稳定 key；fragment、空位、包装组件的排列不宣称与 React.Children 完全等价。MutationObserver 仅观察根 childList 并在卸载断开；缺少该能力时不保证纯 DOM 重排的位置同步。没有横向、reverse 或 pending API。普通 Vue 显式安装 `vaporInteropPlugin` 后，已验证直接 `h(Timeline)` 数据路径与 default slot 中直接 `h(Timeline.Item)` 的 default/time slots、上下文、mode 更新、DOM 身份与焦点、条件内容卸载重挂及清理；该范围无需额外包装组件，不扩展为原生 renderer 支持任意 VNode。纯 Vapor、interop 与异常值边界见[时间轴](../components/timeline.md)。

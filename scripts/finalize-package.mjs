@@ -142,7 +142,7 @@ async function writeSnapshot({ content, extension, output }) {
   return path;
 }
 
-async function rewriteInlineRegionComments(path, packageDirectory, snapshots) {
+async function rewriteInlineSourceComments(path, packageDirectory, snapshots) {
   const source = await readFile(path, "utf8");
   const tree = ts.createSourceFile(
     path,
@@ -162,16 +162,17 @@ async function rewriteInlineRegionComments(path, packageDirectory, snapshots) {
   };
   visit(tree);
   const edits = [...comments.values()].flatMap((comment) => {
-    const match = /^\/\/#region (.+)$/.exec(
+    // Bundler versions use either region markers or plain source-path comments.
+    const match = /^(\/\/(?:#region)? )(.+)$/.exec(
       source.slice(comment.pos, comment.end),
     );
     if (!match) return [];
-    const snapshot = snapshots.get(resolve(packageDirectory, match[1]));
+    const snapshot = snapshots.get(resolve(packageDirectory, match[2]));
     if (!snapshot) return [];
     return [
       {
         ...comment,
-        text: `//#region ${toPosix(relative(dirname(path), snapshot))}`,
+        text: `${match[1]}${toPosix(relative(dirname(path), snapshot))}`,
       },
     ];
   });
@@ -241,7 +242,7 @@ export async function finalizePackage({ root, packageDirectory }) {
         helpers.set(input.source, sha256(input.content));
     }
     if (inlineSnapshots.size)
-      await rewriteInlineRegionComments(
+      await rewriteInlineSourceComments(
         mapPath.slice(0, -4),
         packageDirectory,
         inlineSnapshots,

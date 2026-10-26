@@ -5,6 +5,7 @@ export const SEMI_THEME_VIRTUAL_SCSS_ID = "virtual:semi-theme.scss";
 export const version = "0.0.0";
 
 const entries = {
+  timeline: "semi-ui-vue/styles/components/timeline.scss",
   descriptions: "semi-ui-vue/styles/components/descriptions.scss",
   list: "semi-ui-vue/styles/components/list.scss",
   card: "semi-ui-vue/styles/components/card.scss",

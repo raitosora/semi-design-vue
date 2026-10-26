@@ -1,3 +1,7 @@
+import {
+  timelineStyleCheck,
+  timelineGeometryCheck,
+} from "../tests/style-consumer/timeline-check.mjs";
 import { descriptionsStyleCheck } from "../tests/style-consumer/descriptions-check.mjs";
 import { listStyleCheck } from "../tests/style-consumer/list-check.mjs";
 import { cardStyleCheck } from "../tests/style-consumer/card-check.mjs";
@@ -221,6 +225,17 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    timeline:
+      "6a7f752525c3968b41e5856a057ff8e3e53c9bd6b84fa5d4a6340f388f3b6a54",
+    rtl: "03aeee28b4d548c21da8305f94b8373ba9de811d8730e1edd1391031a7cf99ae",
+    variables:
+      "e0fe52920bd5266552b31e0e61dfa95eb7fb070866d91253292f852b3e518203",
+  }))
+    assert(
+      sources.sources[`foundation/timeline/${name}.scss`] === expected,
+      `Timeline source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     descriptions:
@@ -1014,6 +1029,193 @@ async function cardBrowserCheck(url) {
           else document.body.setAttribute(name, entry);
         }
       }, original);
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+async function timelineBrowserCheck(url) {
+  const browser = await chromium.launch({
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 960, height: 540 },
+    });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(new URL("timeline.html", url).href);
+    assert(
+      (await page.locator("[data-timeline-runtime] > li").count()) === 2,
+      "Timeline runtime items missing",
+    );
+    assert(
+      await page
+        .locator("[data-timeline-runtime] .semi-timeline-item-head")
+        .first()
+        .evaluate(
+          (node) =>
+            getComputedStyle(node).backgroundColor === "rgb(31, 71, 111)",
+        ),
+      "Timeline runtime custom color missing",
+    );
+    assert(
+      await page
+        .locator("[data-timeline-runtime]")
+        .evaluate((node) => getComputedStyle(node).boxSizing === "border-box"),
+      "Timeline runtime caller border-box style missing",
+    );
+    await page.evaluate(() => window.timelineStyleUpdate());
+    assert(
+      await page
+        .locator("[data-timeline-runtime]")
+        .evaluate((node) => node.classList.contains("semi-timeline-center")),
+      "Timeline runtime mode update missing",
+    );
+    assert(
+      (await page.locator("[data-timeline-runtime]").textContent()).includes(
+        "Updated runtime value",
+      ),
+      "Timeline runtime content update missing",
+    );
+    const original = await page.evaluate(() => ({
+      dir: document.body.getAttribute("dir"),
+      theme: document.body.getAttribute("theme-mode"),
+      classes: [
+        "[data-timeline-style=semi]",
+        "[data-timeline-style=consumer]",
+        "[data-timeline-style=theme]",
+        "[data-timeline-runtime-host]",
+      ].map((selector) => ({
+        selector,
+        value: document.querySelector(selector).getAttribute("class"),
+      })),
+    }));
+    try {
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate(
+          (value) => document.body.setAttribute("theme-mode", value),
+          theme,
+        );
+        for (const direction of ["ltr", "rtl"]) {
+          await page.evaluate((value) => {
+            document.body.dir = value;
+            for (const prefix of ["semi", "consumer", "theme"])
+              document
+                .querySelector(`[data-timeline-style="${prefix}"]`)
+                .classList.toggle(`${prefix}-rtl`, value === "rtl");
+            document
+              .querySelector("[data-timeline-runtime-host]")
+              .classList.toggle("semi-rtl", value === "rtl");
+          }, direction);
+          const valueColor = await page.evaluate(
+            () => getComputedStyle(document.body).color,
+          );
+          for (const prefix of ["semi", "consumer", "theme"]) {
+            const colors = await timelineStyleCheck(page, prefix, direction);
+            assert(
+              colors.key ===
+                (theme === "light" ? "rgb(17, 91, 177)" : "rgb(110, 180, 250)"),
+              `${prefix} Timeline custom theme key token missing`,
+            );
+            assert(
+              colors.value === valueColor,
+              `${prefix} Timeline value theme token missing`,
+            );
+          }
+          assert(
+            await page
+              .locator("[data-timeline-runtime]")
+              .evaluate(
+                (node, direction) =>
+                  getComputedStyle(node).direction === direction,
+                direction,
+              ),
+            "Timeline runtime direction missing",
+          );
+          await timelineGeometryCheck(
+            page,
+            "[data-timeline-runtime-host]",
+            "semi",
+          );
+          await page.screenshot({
+            path: resolve(
+              root,
+              `.vitest/attachments/style-consumer/timeline-${theme}-${direction}.png`,
+            ),
+            fullPage: true,
+          });
+        }
+      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      for (const prefix of ["semi", "consumer", "theme"])
+        await timelineStyleCheck(page, prefix, "rtl");
+      await timelineGeometryCheck(page, "[data-timeline-runtime-host]", "semi");
+      assert(
+        await page.evaluate(() => document.documentElement.scrollWidth <= 320),
+        "Timeline short-content style fixture overflowed narrow viewport",
+      );
+      await page.screenshot({
+        path: resolve(
+          root,
+          ".vitest/attachments/style-consumer/timeline-narrow.png",
+        ),
+        fullPage: true,
+      });
+      await page.evaluate((classes) => {
+        for (const { selector, value } of classes) {
+          const node = document.querySelector(selector);
+          if (value === null) node.removeAttribute("class");
+          else node.setAttribute("class", value);
+        }
+      }, original.classes);
+      assert(
+        await page.evaluate(
+          (classes) =>
+            classes.every(
+              ({ selector, value }) =>
+                document.querySelector(selector).getAttribute("class") ===
+                value,
+            ),
+          original.classes,
+        ),
+        "Timeline fixture classes not restored exactly",
+      );
+      await page.evaluate(() => window.timelineStyleUnmount());
+      assert(
+        (await page.locator("[data-timeline-runtime-host]").count()) === 0,
+        "Timeline style consumer did not clean up",
+      );
+      assert(
+        !errors.length,
+        `Timeline style browser errors: ${errors.join("; ")}`,
+      );
+    } finally {
+      await page.evaluate((value) => {
+        for (const [key, entry] of Object.entries({
+          dir: value.dir,
+          theme: value.theme,
+        })) {
+          const name = key === "dir" ? "dir" : "theme-mode";
+          if (entry === null) document.body.removeAttribute(name);
+          else document.body.setAttribute(name, entry);
+        }
+        for (const { selector, value: className } of value.classes) {
+          const node = document.querySelector(selector);
+          if (!node) continue;
+          if (className === null) node.removeAttribute("class");
+          else node.setAttribute("class", className);
+        }
+      }, original);
+      const restored = await page.evaluate(() => ({
+        dir: document.body.getAttribute("dir"),
+        theme: document.body.getAttribute("theme-mode"),
+      }));
+      assert(
+        restored.dir === original.dir && restored.theme === original.theme,
+        "Timeline style consumer did not restore body attributes exactly",
+      );
     }
   } finally {
     await browser.close();
@@ -1936,7 +2138,7 @@ try {
     dependencies: { vue: "3.6.0-rc.9" },
     devDependencies: {
       typescript: "5.9.3",
-      vite: "8.3.0",
+      vite: "8.3.3",
       sass: "1.97.3",
       "@types/node": "24.12.0",
     },
@@ -1994,6 +2196,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "timeline-only.scss",
+    "timeline-markup.ts",
+    "timeline-main.ts",
+    "timeline.html",
+    "vite.timeline.config.ts",
     "descriptions-only.scss",
     "descriptions-markup.ts",
     "descriptions-main.ts",
@@ -2091,7 +2298,12 @@ try {
         strict: true,
         skipLibCheck: false,
       },
-      files: ["card-main.ts", "list-main.ts", "descriptions-main.ts"],
+      files: [
+        "card-main.ts",
+        "list-main.ts",
+        "descriptions-main.ts",
+        "timeline-main.ts",
+      ],
     }),
   );
   execFileSync(
@@ -2758,6 +2970,60 @@ try {
     "Descriptions-only stylesheet retained unrelated component",
   );
   await withPreview("descriptions-dist", descriptionsBrowserCheck);
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.timeline.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const timelineCss = files(join(consumer, "timeline-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "timeline-item-head-custom",
+      "timeline-item-content-time",
+      "timeline-item-content-extra",
+      "timeline-right",
+      "timeline-center",
+      "timeline-alternate",
+    ])
+      assert(
+        timelineCss.includes(`.${prefix}-${marker}`),
+        `${prefix} Timeline selector missing: ${marker}`,
+      );
+  const timelineGraph = checkGraph("timeline-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/timeline.css",
+    "/timeline-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      timelineGraph.modules.some((id) => id.includes(fragment)),
+      `Timeline public style entry missing: ${fragment}`,
+    );
+  assert(
+    !timelineGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Timeline style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:card|empty|typography|avatar|tooltip|popover|button|input|space|spin|row|col|list|progress|collapsible|overflow-list)/.test(
+      timelineCss,
+    ),
+    "Timeline-only stylesheet retained unrelated component",
+  );
+  await withPreview("timeline-dist", timelineBrowserCheck);
 
   execFileSync(
     process.execPath,

@@ -348,7 +348,21 @@
       "default": "./dist/styles/components/descriptions.css"
     },
     "./styles/components/descriptions.css": "./dist/styles/components/descriptions.css",
-    "./styles/components/descriptions.scss": "./dist/styles/components/descriptions.scss"
+    "./styles/components/descriptions.scss": "./dist/styles/components/descriptions.scss",
+    "./timeline": {
+      "types": "./dist/components/timeline/index.d.ts",
+      "import": "./dist/components/timeline/index.js"
+    },
+    "./timeline/item": {
+      "types": "./dist/components/timeline/item.d.ts",
+      "import": "./dist/components/timeline/item.js"
+    },
+    "./styles/components/timeline": {
+      "sass": "./dist/styles/components/timeline.scss",
+      "default": "./dist/styles/components/timeline.css"
+    },
+    "./styles/components/timeline.css": "./dist/styles/components/timeline.css",
+    "./styles/components/timeline.scss": "./dist/styles/components/timeline.scss"
   },
   "files": [
     "dist",

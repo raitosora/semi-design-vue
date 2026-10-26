@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "timeline",
   "descriptions",
   "list",
   "card",
@@ -41,6 +42,11 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  timeline: [
+    "timeline/timeline.scss",
+    "timeline/rtl.scss",
+    "timeline/variables.scss",
+  ],
   descriptions: [
     "descriptions/descriptions.scss",
     "descriptions/rtl.scss",
@@ -141,6 +147,12 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/timeline/timeline.scss":
+    "6a7f752525c3968b41e5856a057ff8e3e53c9bd6b84fa5d4a6340f388f3b6a54",
+  "foundation/timeline/rtl.scss":
+    "03aeee28b4d548c21da8305f94b8373ba9de811d8730e1edd1391031a7cf99ae",
+  "foundation/timeline/variables.scss":
+    "e0fe52920bd5266552b31e0e61dfa95eb7fb070866d91253292f852b3e518203",
   "foundation/descriptions/descriptions.scss":
     "d5fabb8b5e93149ad87cc4ca81108a9b76f7cb52bed257f4c81b902627d382c5",
   "foundation/descriptions/rtl.scss":
@@ -410,6 +422,14 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    "components/timeline.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../vendor/foundation/timeline/timeline";',
+      "",
+    ].join("\n"),
     "components/descriptions.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -584,6 +604,7 @@ function entrySources() {
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
       '@import "./base";',
+      '@import "./components/timeline";',
       '@import "./components/descriptions";',
       '@import "./components/avatar";',
       '@import "./components/tag";',

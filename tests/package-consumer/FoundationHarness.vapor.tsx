@@ -1,5 +1,6 @@
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  Timeline,
   Descriptions,
   List,
   Card,
@@ -39,6 +40,16 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const timelineLabel = ref("Foundation Timeline");
+  const timelineMounts = ref(0);
+  const timelineUnmounts = ref(0);
+  const TimelineBody = defineVaporComponent(() => {
+    onMounted(() => (timelineMounts.value += 1));
+    onUnmounted(() => (timelineUnmounts.value += 1));
+    return (
+      <input aria-label="Timeline body input" value="owned timeline input" />
+    );
+  });
   const descriptionsLabel = ref("Foundation Descriptions");
   const descriptionsMounts = ref(0);
   const descriptionsUnmounts = ref(0);
@@ -126,6 +137,21 @@ export const FoundationHarness = defineVaporComponent(() => {
                 </>
               ),
             }}
+          />
+          <Timeline
+            aria-label="Foundation events"
+            data-foundation-timeline=""
+            mode="alternate"
+          >
+            {() => (
+              <Timeline.Item time={timelineLabel.value}>
+                {() => <TimelineBody />}
+              </Timeline.Item>
+            )}
+          </Timeline>
+          <Timeline
+            data-foundation-timeline-data=""
+            dataSource={[{ content: "First", type: "success" }, { content: 0 }]}
           />
           <Descriptions data-foundation-descriptions="">
             {() => (
@@ -407,6 +433,14 @@ export const FoundationHarness = defineVaporComponent(() => {
       >
         Toggle List loading
       </button>
+      <button
+        id="timeline-update"
+        onClick={() => (timelineLabel.value = "Updated Timeline")}
+      >
+        Update Timeline
+      </button>
+      <output id="timeline-mounts">{timelineMounts.value}</output>
+      <output id="timeline-unmounts">{timelineUnmounts.value}</output>
       <button
         id="descriptions-update"
         onClick={() => (descriptionsLabel.value = "Updated Descriptions")}

@@ -1,3 +1,8 @@
+import "../../packages/semi-ui-vue/dist/styles/components/timeline.css";
+import TimelineBasic from "../../website/examples/timeline/Basic.vapor";
+import TimelineLayout from "../../website/examples/timeline/Layout.vapor";
+import TimelineDynamic from "../../website/examples/timeline/Dynamic.vapor";
+import TimelineTheme from "../../website/examples/timeline/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/list.css";
 import ListBasic from "../../website/examples/list/Basic.vapor";
 import ListDynamic from "../../website/examples/list/Dynamic.vapor";
@@ -141,6 +146,7 @@ const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const listMode = new URLSearchParams(location.search).has("list");
+const timelineMode = new URLSearchParams(location.search).has("timeline");
 const descriptionsMode = new URLSearchParams(location.search).has(
   "descriptions",
 );
@@ -176,10 +182,19 @@ const app = createVaporApp(
     emptyMode ||
     cardMode ||
     listMode ||
-    descriptionsMode
+    descriptionsMode ||
+    timelineMode
     ? defineVaporComponent(() => (
         <main>
-          {descriptionsMode ? (
+          {timelineMode ? (
+            <>
+              <h1>Timeline examples</h1>
+              <TimelineBasic />
+              <TimelineLayout />
+              <TimelineDynamic />
+              <TimelineTheme />
+            </>
+          ) : descriptionsMode ? (
             <>
               <h1>Descriptions examples</h1>
               <DescriptionsBasic />

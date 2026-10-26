@@ -8,6 +8,12 @@
     "outDir": ".generated/examples",
     "paths": {
       "semi-ui-vue": ["../packages/semi-ui-vue/dist/index.d.ts"],
+      "semi-ui-vue/timeline": [
+        "../packages/semi-ui-vue/dist/components/timeline/index.d.ts"
+      ],
+      "semi-ui-vue/timeline/item": [
+        "../packages/semi-ui-vue/dist/components/timeline/item.d.ts"
+      ],
       "semi-ui-vue/descriptions": [
         "../packages/semi-ui-vue/dist/components/descriptions/index.d.ts"
       ],

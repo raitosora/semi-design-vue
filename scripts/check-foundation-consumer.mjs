@@ -1,4 +1,8 @@
 import {
+  checkFoundationTimeline,
+  checkTimelineFoundationGraph,
+} from "../tests/package-consumer/timeline-foundation-checks.mjs";
+import {
   checkFoundationDescriptions,
   checkDescriptionsFoundationGraph,
 } from "../tests/package-consumer/descriptions-foundation-checks.mjs";
@@ -60,10 +64,13 @@ function implementationChunks(directory, sourcePath, exportName) {
           source.startsWith(`map-sources/${hash}.`),
         `Packed map snapshot hash mismatch: ${source}`,
       );
-      // Descriptions.Item has a default-only public entry. Match its complete
-      // source bytes; an invented named export must not become a probe contract.
+      // Both Item entries are default-only. Match their complete source bytes;
+      // an invented named export must not become a probe contract.
       if (
-        sourcePath === "src/components/descriptions/item.tsx" &&
+        [
+          "src/components/descriptions/item.tsx",
+          "src/components/timeline/item.tsx",
+        ].includes(sourcePath) &&
         exportName === "default"
       )
         return snapshot.equals(
@@ -139,6 +146,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const timeline = await checkFoundationTimeline(page, mode);
     const descriptions = await checkFoundationDescriptions(page, mode);
     const list = await checkFoundationList(page, mode);
     const { card, cardGroup } = await checkFoundationCard(page, mode);
@@ -481,6 +489,11 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(timeline).toHaveCount(0);
+    await expect(page.locator("[data-foundation-timeline-data]")).toHaveCount(
+      0,
+    );
+    await expect(page.locator("#timeline-unmounts")).toHaveText("1");
     await expect(descriptions).toHaveCount(0);
     await expect(
       page.locator("[data-foundation-descriptions-data]"),
@@ -539,7 +552,7 @@ try {
     additionalTarballs: { [packed.name]: packed.tarball },
     dependencies: { vue: "3.6.0-rc.9" },
     devDependencies: {
-      vite: "8.3.0",
+      vite: "8.3.3",
       typescript: "5.9.3",
       "@types/node": "24.12.0",
     },
@@ -549,6 +562,7 @@ try {
   const env = installed.env;
   for (const name of [
     "foundation-consumer.ts",
+    "timeline-types.ts",
     "descriptions-types.ts",
     "list-types.ts",
     "vite.foundation.config.mjs",
@@ -628,6 +642,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkTimelineFoundationGraph(graph, consumer, implementationChunks);
     checkDescriptionsFoundationGraph(graph, consumer, implementationChunks);
     checkListFoundationGraph(graph, consumer, implementationChunks);
     checkCardFoundationGraph(graph, consumer, implementationChunks);
