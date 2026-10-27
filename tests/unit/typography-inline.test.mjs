@@ -12,7 +12,7 @@ import {
 } from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
-import { dirname, join, relative } from "node:path";
+import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, expect, it } from "vitest";
 import {
@@ -181,6 +181,72 @@ it.each([false, true])(
         packed(directory).filter((path) => !path.startsWith("package/src/")),
       ),
     ).not.toThrow();
+  },
+);
+
+it.each(["//#region ", "// "])(
+  "rewrites registered inline source comments with %s without altering other content",
+  async (prefix) => {
+    const directory = fixture({ tooltip: true });
+    const path = join(directory, "dist/index.js");
+    const originalMap = json(`${path}.map`);
+    const inlinePaths = originalMap.sources
+      .slice(1)
+      .map((source) => relative(directory, resolve(directory, "dist", source)));
+    const unregistered = relative(
+      directory,
+      join(foundation, "lib/es/typography/unregistered.js"),
+    );
+    const preserved = [
+      `const regionText = ${JSON.stringify(`//#region ${inlinePaths[0]}`)};`,
+      `const lineText = ${JSON.stringify(`// ${inlinePaths[0]}`)};`,
+      `const template = \`\n//#region ${inlinePaths[0]}\n// ${inlinePaths[0]}\n\`;`,
+      `// Keep source attribution for ${inlinePaths[0]}`,
+      `/* // ${inlinePaths[0]} */`,
+      "/*! MIT license: retain this notice. */",
+      `//#region ${unregistered}`,
+      `// ${unregistered}`,
+    ].join("\n");
+    writeFileSync(
+      path,
+      `${preserved}\n${inlinePaths.map((source) => `${prefix}${source}`).join("\n")}\nexport const Numeral = 1;\n`,
+    );
+
+    await finalizePackage({ root, packageDirectory: directory });
+    await verifyPackageMaps({ root, packageDirectory: directory });
+    const expectedSources = originalMap.sources.map(
+      (source, index) =>
+        `map-sources/${createHash("sha256").update(originalMap.sourcesContent[index]).digest("hex")}${extname(source)}`,
+    );
+    expect(readFileSync(path, "utf8")).toBe(
+      `${preserved}\n${expectedSources
+        .slice(1)
+        .map((source) => `${prefix}${source}`)
+        .join("\n")}\nexport const Numeral = 1;\n`,
+    );
+    const map = json(`${path}.map`);
+    expect(map.sources).toEqual(expectedSources);
+    expect(map.sourcesContent).toBeUndefined();
+    expect(map.mappings).toBe(originalMap.mappings);
+    expect(
+      json(join(directory, "dist/typography-inline-provenance.json")).sources,
+    ).toEqual([
+      {
+        id,
+        package: "@douyinfe/semi-foundation",
+        path: sourcePath,
+        sha256: digest,
+      },
+    ]);
+    expect(
+      json(join(directory, "dist/tooltip-inline-provenance.json")).sources,
+    ).toEqual(tooltipInlineProfile.sources);
+    for (const pkg of tooltipInlineProfile.packages)
+      expect(
+        readFileSync(join(directory, "dist/licenses", pkg.license), "utf8"),
+      ).toBe(
+        readFileSync(join(root, "third-party-licenses", pkg.license), "utf8"),
+      );
   },
 );
 

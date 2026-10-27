@@ -158,6 +158,12 @@
       ],
       "semi-ui-vue/descriptions/item": [
         "./packages/semi-ui-vue/src/components/descriptions/item.tsx"
+      ],
+      "semi-ui-vue/timeline": [
+        "./packages/semi-ui-vue/src/components/timeline/index.ts"
+      ],
+      "semi-ui-vue/timeline/item": [
+        "./packages/semi-ui-vue/src/components/timeline/item.tsx"
       ]
     },
     "allowImportingTsExtensions": true

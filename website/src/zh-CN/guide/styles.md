@@ -111,3 +111,7 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Descriptions 样式补充
 
 `semi-ui-vue/styles/components/descriptions` 沿用固定来源的 Descriptions、variables 与 RTL 三份 SCSS，支持单独 CSS/SCSS 和主题插件的 `descriptions` 项。其内部不依赖 Typography；组合的 Typography、Tag、Card 等需分别加载对应样式。水平布局使用固定表格列，`column` 不是断点配置；窄屏不会自动改变列数。详见[描述列表](../components/descriptions.md)。
+
+## Timeline 样式补充
+
+`semi-ui-vue/styles/components/timeline` 包含固定来源 timeline、rtl、variables 三份 SCSS，支持独立 CSS/SCSS、定制前缀和主题插件的 `timeline` 项。内部没有其他组件样式依赖；自定义 dot 使用的图标及正文组合组件须分别加载样式。末项连线由固定 `:last-child` 规则隐藏；RTL 来自既有祖先类。详见[时间轴](../components/timeline.md)。

@@ -3,9 +3,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as sass from "sass";
+import { buildStyleFixture } from "../support/style-fixture.mjs";
 import { describe, expect, it } from "vitest";
 import {
-  buildStyles,
   checkStyleInputs,
   checkStyleSourceHashes,
 } from "../../scripts/style-inputs.mjs";
@@ -41,7 +41,15 @@ describe("List fixed styles", () => {
   it("owns the Grid and Spin style closure without duplicating aggregate rules", async () => {
     const output = await mkdtemp(join(tmpdir(), "semi-list-style-test-"));
     try {
-      await buildStyles({ root, output });
+      await buildStyleFixture({
+        root,
+        output,
+        entries: [
+          "components/list.scss",
+          "components/input.scss",
+          "index.scss",
+        ],
+      });
       const css = await readFile(join(output, "components/list.css"), "utf8");
       for (const selector of [
         "list-items",

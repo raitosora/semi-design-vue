@@ -3,12 +3,12 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as sass from "sass";
+import { buildStyleFixture } from "../support/style-fixture.mjs";
 import { expect, test } from "vitest";
 import semiTheme, {
   SEMI_THEME_VIRTUAL_SCSS_ID,
 } from "../../packages/vite-plugin-semi-theme/src/index.ts";
 import {
-  buildStyles,
   checkStyleInputs,
   checkStyleSourceHashes,
 } from "../../scripts/style-inputs.mjs";
@@ -58,7 +58,11 @@ test("Empty pins the official Empty sources and Typography dependency", async ()
 test("Empty isolated styles retain layout, typography hook and image ownership", async () => {
   const output = await mkdtemp(join(tmpdir(), "semi-empty-style-"));
   try {
-    await buildStyles({ root: process.cwd(), output });
+    await buildStyleFixture({
+      root: process.cwd(),
+      output,
+      entries: ["components/empty.scss", "index.scss"],
+    });
     const css = await readFile(join(output, "components/empty.css"), "utf8");
     for (const fragment of [
       ".semi-empty-image",

@@ -1,3 +1,5 @@
+import { checkTimelineInterop } from "./timeline-interop.js";
+import "semi-ui-vue/styles/components/timeline.css";
 import "semi-ui-vue/styles/components/descriptions.css";
 import { checkDescriptionsInterop } from "./descriptions-interop.js";
 import "semi-ui-vue/styles/components/list.css";
@@ -714,6 +716,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkTimeline(): Promise<string>;
       checkDescriptions(): Promise<string>;
       checkList(): Promise<string>;
       checkCard(): Promise<string>;
@@ -732,6 +735,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkTimeline: checkTimelineInterop,
   checkDescriptions: checkDescriptionsInterop,
   checkList: checkListInterop,
   checkCard: checkCardInterop,

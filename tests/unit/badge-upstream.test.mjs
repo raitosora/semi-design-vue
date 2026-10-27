@@ -19,6 +19,20 @@ const nativeInput = readFileSync(
   "utf8",
 );
 
+function transpile(source) {
+  return ts.transpileModule(source, {
+    compilerOptions: {
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.CommonJS,
+      jsx: ts.JsxEmit.React,
+    },
+  }).outputText;
+}
+// Reuse only compiled text; each evaluation still owns its VM and exports.
+const compiledUpstream = transpile(upstream);
+const compiledNative = transpile(native);
+const compiledNativeInput = transpile(nativeInput);
+
 // Test-only dependency shims record render expressions. They do not render DOM,
 // emulate Vapor ownership, or duplicate Badge's classification/overflow rules.
 function classes(...values) {
@@ -38,7 +52,7 @@ function classes(...values) {
 function element(type, props, ...children) {
   return { type, props: props ?? {}, children };
 }
-function evaluate(source, dependencies, globals = {}) {
+function evaluate(compiledSource, dependencies, globals = {}) {
   const exported = {};
   const realm = createContext({
     exports: exported,
@@ -49,17 +63,7 @@ function evaluate(source, dependencies, globals = {}) {
     },
     ...globals,
   });
-  runInContext(
-    ts.transpileModule(source, {
-      compilerOptions: {
-        target: ts.ScriptTarget.ES2022,
-        module: ts.ModuleKind.CommonJS,
-        jsx: ts.JsxEmit.React,
-      },
-    }).outputText,
-    realm,
-    { timeout: 1000 },
-  );
+  runInContext(compiledSource, realm, { timeout: 1000 });
   return exported;
 }
 
@@ -68,7 +72,7 @@ class Component {
     this.props = props;
   }
 }
-const Reference = evaluate(upstream, {
+const Reference = evaluate(compiledUpstream, {
   react: { default: { createElement: element }, PureComponent: Component },
   "prop-types": {
     default: new Proxy({}, { get: () => () => undefined }),
@@ -99,7 +103,7 @@ function reference(raw = {}, direction = "ltr") {
   return instance.render();
 }
 function candidate(props = {}, direction = "ltr", slots = {}) {
-  const Native = evaluate(native, {
+  const Native = evaluate(compiledNative, {
     vue: {
       computed: (getter) => ({
         get value() {
@@ -114,7 +118,7 @@ function candidate(props = {}, direction = "ltr", slots = {}) {
     "../../context/index.js": {
       useSemiContext: () => ({ value: { direction } }),
     },
-    "./input.js": evaluate(nativeInput, {}),
+    "./input.js": evaluate(compiledNativeInput, {}),
     "./render.js": { BadgeContentView: "OwnedBadgeContent" },
   }).default;
   return Native(props);

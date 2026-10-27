@@ -24,9 +24,9 @@ export default defineConfig({
         plugins: [
           postcssIsolateStyles({
             includeFiles: [/vp-doc\.css$/],
-            // Isolate this component's table from article prose rules only.
+            // Keep component lists and tables independent of article prose rules.
             prefix:
-              ":not(:where(.vapor-demo .semi-descriptions, .vapor-demo .semi-descriptions *))",
+              ":not(:where(.vapor-demo .semi-descriptions, .vapor-demo .semi-descriptions *, .vapor-demo .semi-timeline, .vapor-demo .semi-timeline *))",
           }),
         ],
       },
@@ -104,6 +104,10 @@ export default defineConfig({
           { text: "Empty 空状态", link: "/zh-CN/components/empty" },
           { text: "Card 卡片", link: "/zh-CN/components/card" },
           { text: "List 列表", link: "/zh-CN/components/list" },
+          {
+            text: "Timeline 时间轴",
+            link: "/zh-CN/components/timeline",
+          },
           {
             text: "Descriptions 描述列表",
             link: "/zh-CN/components/descriptions",

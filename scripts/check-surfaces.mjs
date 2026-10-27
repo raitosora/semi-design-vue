@@ -53,11 +53,11 @@ const report = {
       "built ESM entry import",
       "plain TypeScript declaration consumption",
       "isolated CSS/SCSS theme consumer build and Chromium checks",
-      "isolated Descriptions/Descriptions.Item/List/List.Item/Card/CardGroup/Card.Meta/Empty/Typography/Text/Title/Paragraph/Numeral/Badge/Tag/TagGroup/SplitTagGroup/Avatar/AvatarGroup/OverflowList/Collapsible/Popover/Tooltip/Progress/Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/LocaleProvider/LocaleConsumer/ConfigProvider/Icon/SVG/locale consumer types, tree shaking, provenance and Chromium checks",
-      "public Descriptions, Descriptions.Item, List, List.Item, Card, CardGroup, Card.Meta, Empty, Typography family, Badge, Tag, TagGroup, SplitTagGroup, Avatar, AvatarGroup, OverflowList, Collapsible, Popover and Tooltip plus patched Foundation fixture tarball in pure Vapor and interop",
+      "isolated Timeline/Timeline.Item/Descriptions/Descriptions.Item/List/List.Item/Card/CardGroup/Card.Meta/Empty/Typography/Text/Title/Paragraph/Numeral/Badge/Tag/TagGroup/SplitTagGroup/Avatar/AvatarGroup/OverflowList/Collapsible/Popover/Tooltip/Progress/Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/LocaleProvider/LocaleConsumer/ConfigProvider/Icon/SVG/locale consumer types, tree shaking, provenance and Chromium checks",
+      "public Timeline, Timeline.Item, Descriptions, Descriptions.Item, List, List.Item, Card, CardGroup, Card.Meta, Empty, Typography family, Badge, Tag, TagGroup, SplitTagGroup, Avatar, AvatarGroup, OverflowList, Collapsible, Popover and Tooltip plus patched Foundation fixture tarball in pure Vapor and interop",
     ],
     limitation:
-      "Four isolated tarball consumer flows check ESM/declarations, styles, Descriptions/Descriptions.Item/List/List.Item/Card/CardGroup/Card.Meta/Empty/Typography/Text/Title/Paragraph/Numeral/Badge/Tag/TagGroup/SplitTagGroup/Avatar/AvatarGroup/OverflowList/Collapsible/Popover/Tooltip/Progress/Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
+      "Four isolated tarball consumer flows check ESM/declarations, styles, Timeline/Timeline.Item/Descriptions/Descriptions.Item/List/List.Item/Card/CardGroup/Card.Meta/Empty/Typography/Text/Title/Paragraph/Numeral/Badge/Tag/TagGroup/SplitTagGroup/Avatar/AvatarGroup/OverflowList/Collapsible/Popover/Tooltip/Progress/Highlight/Skeleton/Layout/Grid/Space/Divider/Button/ButtonGroup/SplitButtonGroup/IconButton/Spin/Locale/ConfigProvider/Icon/resources and patched Foundation fixtures; other public components and full publication acceptance remain unestablished.",
   },
 };
 await mkdir(join(root, "artifacts"), { recursive: true });
