@@ -234,7 +234,11 @@ describe("fixed Semi style inputs", () => {
     }
     const output = await mkdtemp(join(tmpdir(), "semi-card-style-test-"));
     try {
-      await buildStyles({ root, output });
+      await buildStyleFixture({
+        root,
+        output,
+        entries: ["components/card.scss", "index.scss"],
+      });
       const css = await readFile(join(output, "components/card.css"), "utf8");
       for (const selector of [
         "card-body",
