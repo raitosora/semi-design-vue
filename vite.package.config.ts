@@ -44,6 +44,7 @@ const resourceEntries = globSync([
   "src/components/*/index.ts",
   "src/components/avatar/avatarGroup.tsx",
   "src/components/timeline/item.tsx",
+  "src/components/breadcrumb/item.tsx",
   "src/components/descriptions/item.tsx",
   "src/components/list/item.tsx",
   "src/components/card/meta.tsx",

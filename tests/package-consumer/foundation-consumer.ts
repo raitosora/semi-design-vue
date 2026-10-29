@@ -1,3 +1,4 @@
+import "./breadcrumb-types.js";
 import "./timeline-types.js";
 import { createVaporApp, createApp, vaporInteropPlugin } from "vue";
 import {

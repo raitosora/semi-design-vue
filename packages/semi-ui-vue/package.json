@@ -362,7 +362,21 @@
       "default": "./dist/styles/components/timeline.css"
     },
     "./styles/components/timeline.css": "./dist/styles/components/timeline.css",
-    "./styles/components/timeline.scss": "./dist/styles/components/timeline.scss"
+    "./styles/components/timeline.scss": "./dist/styles/components/timeline.scss",
+    "./breadcrumb": {
+      "types": "./dist/components/breadcrumb/index.d.ts",
+      "import": "./dist/components/breadcrumb/index.js"
+    },
+    "./breadcrumb/item": {
+      "types": "./dist/components/breadcrumb/item.d.ts",
+      "import": "./dist/components/breadcrumb/item.js"
+    },
+    "./styles/components/breadcrumb": {
+      "sass": "./dist/styles/components/breadcrumb.scss",
+      "default": "./dist/styles/components/breadcrumb.css"
+    },
+    "./styles/components/breadcrumb.css": "./dist/styles/components/breadcrumb.css",
+    "./styles/components/breadcrumb.scss": "./dist/styles/components/breadcrumb.scss"
   },
   "files": [
     "dist",

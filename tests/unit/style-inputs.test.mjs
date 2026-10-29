@@ -66,7 +66,12 @@ describe("fixed Semi style inputs", () => {
         ].sort(),
       );
       const aggregate = await readFile(join(output, "index.css"), "utf8");
-      for (const selector of [".semi-timeline", ".semi-icon", ".semi-progress"])
+      for (const selector of [
+        ".semi-breadcrumb",
+        ".semi-timeline",
+        ".semi-icon",
+        ".semi-progress",
+      ])
         expect(aggregate).toContain(selector);
     } finally {
       await rm(output, { recursive: true, force: true });
@@ -174,6 +179,7 @@ describe("fixed Semi style inputs", () => {
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
       components: [
+        "breadcrumb",
         "timeline",
         "descriptions",
         "list",

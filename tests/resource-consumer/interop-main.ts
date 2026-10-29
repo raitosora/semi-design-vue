@@ -1,4 +1,6 @@
+import { checkBreadcrumbInterop } from "./breadcrumb-interop.js";
 import { checkTimelineInterop } from "./timeline-interop.js";
+import "semi-ui-vue/styles/components/breadcrumb.css";
 import "semi-ui-vue/styles/components/timeline.css";
 import "semi-ui-vue/styles/components/descriptions.css";
 import { checkDescriptionsInterop } from "./descriptions-interop.js";
@@ -716,6 +718,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkBreadcrumb(): Promise<string>;
       checkTimeline(): Promise<string>;
       checkDescriptions(): Promise<string>;
       checkList(): Promise<string>;
@@ -735,6 +738,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkBreadcrumb: checkBreadcrumbInterop,
   checkTimeline: checkTimelineInterop,
   checkDescriptions: checkDescriptionsInterop,
   checkList: checkListInterop,

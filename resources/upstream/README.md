@@ -71,7 +71,7 @@ configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
 popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list,
-descriptions and timeline (26 families). All other public families remain unaccepted.
+descriptions, timeline and breadcrumb (27 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -390,3 +390,44 @@ stages, per-file coverage and tree-shaking support the reviewed contract. Direct
 ordinary Vue data and Item slots are checked separately from native consumers.
 Existing peer-installation, current-document/realm, SSR/hydration/CJS and
 representative-only visual verification limitations remain unchanged.
+
+The `breadcrumb` record accepts Breadcrumb and its static Item against the fixed
+source. Nonempty routes take precedence over declared content; sparse source
+indices, collapse-rest lengths and holes remain distinct from visible Items.
+Private direct-Item registration waits until its initial order is ready before
+mounting More. Root scalar or ordinary native content does not participate in
+Item count, active, separator or collapse coordination. Item retains its
+`isBreadcrumbItem: true` marker without native VNode inspection or cloning.
+
+Native slots and synchronous factories retain content ownership. Hidden route
+renderItem content is lazy, unlike React's eager render-before-slice path.
+renderMore receives readonly lazy Item factories with sparse positions intact.
+Changes to that rest argument replace the custom native content branch even
+when renderMore keeps the same function identity; the previous scope is disposed.
+Arbitrary returned native content is not reconciled across this boundary. The
+built-in Popover preserves unchanged Items by original rest position while the
+route count and content branch remain stable and only the collapse limit changes.
+Popover separators use original rest indices, including a trailing hole.
+Changing collapsed/data branches or href/active between anchor and span can
+remount content; physical DOM moves do not guarantee focus retention. A root
+MutationObserver observes direct ordering and disconnects on teardown.
+
+Item click notifies its own callback then the parent with the native event;
+noLink changes styling, not native navigation. Collapsed popover Item clicks
+and descendant keypress Enter also expand through internal cooperation. Other
+portal event propagation follows physical DOM rather than React's logical
+portal ancestry. Keydown Enter, Space, arrow navigation and new imperative ref
+methods are not added. An isolated Item renders but clicking invokes its own
+callback then throws because the parent click context is absent.
+
+The fixed Breadcrumb Foundation classes are not imported directly: minimal
+private adapters cover routing, notification and Enter behavior without reaching
+unpatched lodash/get or expanding the existing Foundation patch. Fixed-source
+VM differential tests support this boundary. Popover, Tooltip and Typography
+retain their existing contracts; OverflowList is not a dependency. Strict
+source and installed declarations, native and separate interop content tests,
+themed browser examples, four real tarball consumers and DCE checks support
+this reviewed contract. Root provides only Breadcrumb; family and Item ESM
+subpaths provide their corresponding values/types and standalone styles.
+Existing strict compiler peer-installation, current-document/realm,
+SSR/hydration/CJS and representative-only visual limits remain.

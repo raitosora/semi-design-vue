@@ -936,3 +936,5 @@ void [
 ];
 
 import "./card-types.js";
+
+import "./breadcrumb-types.js";

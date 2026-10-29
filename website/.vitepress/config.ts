@@ -104,6 +104,7 @@ export default defineConfig({
           { text: "Empty 空状态", link: "/zh-CN/components/empty" },
           { text: "Card 卡片", link: "/zh-CN/components/card" },
           { text: "List 列表", link: "/zh-CN/components/list" },
+          { text: "Breadcrumb 面包屑", link: "/zh-CN/components/breadcrumb" },
           {
             text: "Timeline 时间轴",
             link: "/zh-CN/components/timeline",

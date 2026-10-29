@@ -1,3 +1,4 @@
+import { breadcrumbBrowserCheck } from "../tests/style-consumer/breadcrumb-check.mjs";
 import {
   timelineStyleCheck,
   timelineGeometryCheck,
@@ -225,6 +226,19 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    breadcrumb:
+      "e1fad29c00bd46c48659d079132ed458fa944902c9018d895ad9fb90a175f776",
+    animation:
+      "35f42db1f90a2173affac0cdd2121b6c0f1225cc8ba9a746192f9471ab29a9fe",
+    rtl: "4cdff5cc192cd63a4560ee94932c7c9545756a4d7b0e31ad88766011088809b3",
+    variables:
+      "1bd48437d642052db15ec0e492cbdcb571f0245d3aa0e95b290be69ab8b2f4c8",
+  }))
+    assert(
+      sources.sources[`foundation/breadcrumb/${name}.scss`] === expected,
+      `Breadcrumb source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     timeline:
@@ -2196,6 +2210,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "breadcrumb-only.scss",
+    "breadcrumb-markup.ts",
+    "breadcrumb-main.ts",
+    "breadcrumb.html",
+    "vite.breadcrumb.config.ts",
     "timeline-only.scss",
     "timeline-markup.ts",
     "timeline-main.ts",
@@ -2303,6 +2322,7 @@ try {
         "list-main.ts",
         "descriptions-main.ts",
         "timeline-main.ts",
+        "breadcrumb-main.ts",
       ],
     }),
   );
@@ -3024,6 +3044,63 @@ try {
     "Timeline-only stylesheet retained unrelated component",
   );
   await withPreview("timeline-dist", timelineBrowserCheck);
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.breadcrumb.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const breadcrumbCss = files(join(consumer, "breadcrumb-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "wrapper-compact",
+      "wrapper-loose",
+      "item-active",
+      "item-link",
+      "collapse",
+      "separator",
+      "restItem",
+    ])
+      assert(
+        breadcrumbCss.includes(`.${prefix}-breadcrumb-${marker}`),
+        `${prefix} Breadcrumb selector missing: ${marker}`,
+      );
+  const breadcrumbGraph = checkGraph("breadcrumb-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/breadcrumb.css",
+    "/breadcrumb-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      breadcrumbGraph.modules.some((id) => id.includes(fragment)),
+      `Breadcrumb public style entry missing: ${fragment}`,
+    );
+  assert(
+    !breadcrumbGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Breadcrumb style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:card|empty|avatar|button|input|space|spin|row|col|list|progress|timeline|descriptions)/.test(
+      breadcrumbCss,
+    ),
+    "Breadcrumb stylesheet retained unrelated component",
+  );
+  await withPreview("breadcrumb-dist", (url) =>
+    breadcrumbBrowserCheck(url, root),
+  );
 
   execFileSync(
     process.execPath,

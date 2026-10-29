@@ -1,3 +1,8 @@
+import "../../packages/semi-ui-vue/dist/styles/components/breadcrumb.css";
+import BreadcrumbBasic from "../../website/examples/breadcrumb/Basic.vapor";
+import BreadcrumbCollapse from "../../website/examples/breadcrumb/Collapse.vapor";
+import BreadcrumbDynamic from "../../website/examples/breadcrumb/Dynamic.vapor";
+import BreadcrumbTheme from "../../website/examples/breadcrumb/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/timeline.css";
 import TimelineBasic from "../../website/examples/timeline/Basic.vapor";
 import TimelineLayout from "../../website/examples/timeline/Layout.vapor";
@@ -146,6 +151,7 @@ const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const listMode = new URLSearchParams(location.search).has("list");
+const breadcrumbMode = new URLSearchParams(location.search).has("breadcrumb");
 const timelineMode = new URLSearchParams(location.search).has("timeline");
 const descriptionsMode = new URLSearchParams(location.search).has(
   "descriptions",
@@ -183,10 +189,31 @@ const app = createVaporApp(
     cardMode ||
     listMode ||
     descriptionsMode ||
-    timelineMode
+    timelineMode ||
+    breadcrumbMode
     ? defineVaporComponent(() => (
         <main>
-          {timelineMode ? (
+          {breadcrumbMode ? (
+            <>
+              <h1>Breadcrumb examples</h1>
+              <BreadcrumbBasic />
+              <p id="breadcrumb-home" tabindex={-1}>
+                首页锚点目标
+              </p>
+              <p id="breadcrumb-safe" tabindex={-1}>
+                安全路径锚点目标
+              </p>
+              <p id="breadcrumb-details" tabindex={-1}>
+                详情锚点目标
+              </p>
+              <BreadcrumbCollapse />
+              <BreadcrumbDynamic />
+              <BreadcrumbTheme />
+              <p id="breadcrumb-theme-home" tabindex={-1}>
+                主题示例首页锚点目标
+              </p>
+            </>
+          ) : timelineMode ? (
             <>
               <h1>Timeline examples</h1>
               <TimelineBasic />

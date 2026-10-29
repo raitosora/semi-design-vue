@@ -164,6 +164,12 @@
       ],
       "semi-ui-vue/timeline/item": [
         "./packages/semi-ui-vue/src/components/timeline/item.tsx"
+      ],
+      "semi-ui-vue/breadcrumb": [
+        "./packages/semi-ui-vue/src/components/breadcrumb/index.ts"
+      ],
+      "semi-ui-vue/breadcrumb/item": [
+        "./packages/semi-ui-vue/src/components/breadcrumb/item.tsx"
       ]
     },
     "allowImportingTsExtensions": true

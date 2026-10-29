@@ -56,3 +56,7 @@ List 的公开 `loading` 类型仍是 boolean。非法运行时真值被归一�
 ## Timeline 适配边界补充
 
 固定上游 Timeline 不实例化 Foundation，仅使用 constants、SCSS 和 React children 检查/克隆。Vapor 使用原生直接 Item 的顺序注册，保留内容所有权，支持调用方稳定 key；fragment、空位、包装组件的排列不宣称与 React.Children 完全等价。MutationObserver 仅观察根 childList 并在卸载断开；缺少该能力时不保证纯 DOM 重排的位置同步。没有横向、reverse 或 pending API。普通 Vue 显式安装 `vaporInteropPlugin` 后，已验证直接 `h(Timeline)` 数据路径与 default slot 中直接 `h(Timeline.Item)` 的 default/time slots、上下文、mode 更新、DOM 身份与焦点、条件内容卸载重挂及清理；该范围无需额外包装组件，不扩展为原生 renderer 支持任意 VNode。纯 Vapor、interop 与异常值边界见[时间轴](../components/timeline.md)。
+
+## Breadcrumb 适配边界补充
+
+Breadcrumb 按固定 Foundation 源码以最小原生函数适配路由归一、点击和展开协议，避免引入未补丁的 lodash 路径；声明式 Item 通过原生协作处理顺序，不检查或克隆 VNode。fragment、条件空位、包装组件的处理不宣称与 React.Children 完全等价。Item 图标不自动注入属性，使用 icon slot 的 className/size 显式绑定；renderMore 使用只读原生内容工厂数组；隐藏路由的 renderItem 按实际内容挂载惰性执行，与固定 React 先 map 全部 routes 再裁剪的调用次数和时机不同，不承诺副作用等价。调用方未阻止事件传播时，点击弹层省略项在自身和父级回调后触发展开并移除弹层；在 Item.onClick 或 Breadcrumb.onClick 中调用 stopPropagation 可阻止内部容器展开，但不取消 Item→Breadcrumb 显式通知，preventDefault 本身不阻止展开。更广的事件冒泡遵循原生 Portal 的实际 DOM，不重新派发事件模拟 React 的逻辑祖先传播。折叠、弹层与展开之间允许内容重挂；稳定 key 的身份保留以渲染分支不变为前提，带 href 项切换 active 时 span/a 分支会重建。稀疏 routes 的 renderMore rest 保留隐藏区原始 length 与空位，Popover 仍按原索引分隔，不按可见项压缩。根层标量和普通原生节点不参与 Item 排序与折叠，不能视为固定 React children 的完全等价路径。没有 Breadcrumb 上下文的 Item 虽可渲染，点击仍会在自身回调之后因缺少父级通知函数抛 TypeError，子路径不提供独立点击能力。没有按宽度折叠、受控 collapsed 或新增 ref 方法；纯 Vapor、interop、字符串截断、ARIA scope 与异常输入边界见[面包屑](../components/breadcrumb.md)。

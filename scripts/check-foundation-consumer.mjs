@@ -1,4 +1,8 @@
 import {
+  checkFoundationBreadcrumb,
+  checkBreadcrumbFoundationGraph,
+} from "../tests/package-consumer/breadcrumb-foundation-checks.mjs";
+import {
   checkFoundationTimeline,
   checkTimelineFoundationGraph,
 } from "../tests/package-consumer/timeline-foundation-checks.mjs";
@@ -64,12 +68,13 @@ function implementationChunks(directory, sourcePath, exportName) {
           source.startsWith(`map-sources/${hash}.`),
         `Packed map snapshot hash mismatch: ${source}`,
       );
-      // Both Item entries are default-only. Match their complete source bytes;
+      // These Item entries are default-only. Match their complete source bytes;
       // an invented named export must not become a probe contract.
       if (
         [
           "src/components/descriptions/item.tsx",
           "src/components/timeline/item.tsx",
+          "src/components/breadcrumb/item.tsx",
         ].includes(sourcePath) &&
         exportName === "default"
       )
@@ -146,6 +151,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const breadcrumb = await checkFoundationBreadcrumb(page, mode);
     const timeline = await checkFoundationTimeline(page, mode);
     const descriptions = await checkFoundationDescriptions(page, mode);
     const list = await checkFoundationList(page, mode);
@@ -489,6 +495,11 @@ async function browserCheck(directory, mode) {
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(breadcrumb).toHaveCount(0);
+    await expect(
+      page.locator("[data-foundation-breadcrumb-routes]"),
+    ).toHaveCount(0);
+    await expect(page.locator("#breadcrumb-unmounts")).toHaveText("1");
     await expect(timeline).toHaveCount(0);
     await expect(page.locator("[data-foundation-timeline-data]")).toHaveCount(
       0,
@@ -563,6 +574,7 @@ try {
   for (const name of [
     "foundation-consumer.ts",
     "timeline-types.ts",
+    "breadcrumb-types.ts",
     "descriptions-types.ts",
     "list-types.ts",
     "vite.foundation.config.mjs",
@@ -642,6 +654,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkBreadcrumbFoundationGraph(graph, consumer, implementationChunks);
     checkTimelineFoundationGraph(graph, consumer, implementationChunks);
     checkDescriptionsFoundationGraph(graph, consumer, implementationChunks);
     checkListFoundationGraph(graph, consumer, implementationChunks);

@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const required = [
+  "tests/types/breadcrumb-positive.tsx",
+  "tests/types/breadcrumb-negative.tsx",
   "tests/types/timeline-positive.tsx",
   "tests/types/timeline-negative.tsx",
   "tests/types/descriptions-positive.tsx",

@@ -1,3 +1,4 @@
+import { checkBreadcrumbConsumer } from "./breadcrumb.js";
 import { checkTimelineConsumer } from "./timeline.js";
 import { checkDescriptionsConsumer } from "./descriptions.js";
 import { checkListConsumer } from "./list.js";
@@ -74,6 +75,7 @@ declare global {
       checkLayout(): Promise<string>;
       checkSkeleton(): Promise<string>;
       checkHighlight(): Promise<string>;
+      checkBreadcrumb(): Promise<string>;
       checkTimeline(): Promise<string>;
       checkDescriptions(): Promise<string>;
       checkList(): Promise<string>;
@@ -340,6 +342,7 @@ window.resourceConsumer = {
   checkSkeleton: checkSkeletonConsumer,
   checkHighlight: checkHighlightConsumer,
   checkTooltip: checkTooltipConsumer,
+  checkBreadcrumb: checkBreadcrumbConsumer,
   checkTimeline: checkTimelineConsumer,
   checkDescriptions: checkDescriptionsConsumer,
   checkList: checkListConsumer,

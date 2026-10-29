@@ -12,15 +12,18 @@ const external = (id: string) =>
 // No library implementation is resolved here: every library import is external.
 export default defineConfig(({ mode }) => {
   const listBridge = mode === "list-interop";
+  const breadcrumbBridge = mode === "breadcrumb-interop";
   const timelineBridge = mode === "timeline-interop";
   const descriptionsBridge = mode === "descriptions-interop";
-  const entry = timelineBridge
-    ? "timeline-bridge.tsx"
-    : descriptionsBridge
-      ? "descriptions-bridge.tsx"
-      : listBridge
-        ? "list-bridge.tsx"
-        : "main.tsx";
+  const entry = breadcrumbBridge
+    ? "breadcrumb-bridge.tsx"
+    : timelineBridge
+      ? "timeline-bridge.tsx"
+      : descriptionsBridge
+        ? "descriptions-bridge.tsx"
+        : listBridge
+          ? "list-bridge.tsx"
+          : "main.tsx";
   return {
     plugins: [
       vueJsx({ vapor: true, macros: true }),
@@ -33,13 +36,15 @@ export default defineConfig(({ mode }) => {
           if (
             !modules.some((id) =>
               id.endsWith(
-                timelineBridge
-                  ? "timeline-bridge.tsx"
-                  : descriptionsBridge
-                    ? "descriptions-bridge.tsx"
-                    : listBridge
-                      ? "list-bridge.tsx"
-                      : "virtual-pointer.tsx",
+                breadcrumbBridge
+                  ? "breadcrumb-bridge.tsx"
+                  : timelineBridge
+                    ? "timeline-bridge.tsx"
+                    : descriptionsBridge
+                      ? "descriptions-bridge.tsx"
+                      : listBridge
+                        ? "list-bridge.tsx"
+                        : "virtual-pointer.tsx",
               ),
             )
           )
@@ -85,13 +90,15 @@ export default defineConfig(({ mode }) => {
         entry: resolve(fixture, entry),
         formats: ["es"],
         fileName: () =>
-          timelineBridge
-            ? "prepared-timeline-bridge.js"
-            : descriptionsBridge
-              ? "prepared-descriptions-bridge.js"
-              : listBridge
-                ? "prepared-list-bridge.js"
-                : "prepared-app.js",
+          breadcrumbBridge
+            ? "prepared-breadcrumb-bridge.js"
+            : timelineBridge
+              ? "prepared-timeline-bridge.js"
+              : descriptionsBridge
+                ? "prepared-descriptions-bridge.js"
+                : listBridge
+                  ? "prepared-list-bridge.js"
+                  : "prepared-app.js",
       },
       rolldownOptions: { external },
     },

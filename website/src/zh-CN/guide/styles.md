@@ -115,3 +115,7 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Timeline 样式补充
 
 `semi-ui-vue/styles/components/timeline` 包含固定来源 timeline、rtl、variables 三份 SCSS，支持独立 CSS/SCSS、定制前缀和主题插件的 `timeline` 项。内部没有其他组件样式依赖；自定义 dot 使用的图标及正文组合组件须分别加载样式。末项连线由固定 `:last-child` 规则隐藏；RTL 来自既有祖先类。详见[时间轴](../components/timeline.md)。
+
+## Breadcrumb 样式补充
+
+`semi-ui-vue/styles/components/breadcrumb` 使用固定 breadcrumb、variables、animation、rtl SCSS 与实际依赖闭包，支持 CSS/SCSS、定制前缀和主题插件 `breadcrumb` 项。数量折叠与宽度测量无关，窄容器按 flex-wrap 换行；RTL 来自既有祖先类。字符串截断使用 Typography，省略提示使用 Popover，图标使用既有 Icon 包装。自定义内容及额外组合组件须加载相应样式。详见[面包屑](../components/breadcrumb.md)。
