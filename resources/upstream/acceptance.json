@@ -2628,7 +2628,8 @@
           "tests/unit/style-inputs.test.mjs",
           "tests/e2e/avatar.spec.ts",
           "tests/harness/main.tsx",
-          "tests/browser/avatar-followup.test.tsx"
+          "tests/browser/avatar-followup.test.tsx",
+          "tests/support/style-fixture.mjs"
         ],
         "documentation": [
           "website/examples/avatar/Basic.vapor.tsx",
@@ -2763,7 +2764,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "c-breadcrumb-ci-fixtures-20261030-r1",
+        "reviewId": "style-fixture-equivalence-20261030-r1",
         "evidenceHashes": {
           "packages/semi-ui-vue/package.json": "e60eca9c9f9aaaa5e8f429a856f157fa2868031ab065ef1d4daabcf5f916f25e",
           "packages/semi-ui-vue/src/components/avatar/Avatar.tsx": "bcdbad73cafa96a74cde546e4dcd1c7d6a87d905e43cf80045c9324d0b673cb3",
@@ -2834,7 +2835,7 @@
           "tests/types/avatar-negative.tsx": "f6e23eae03a101b0d6190c0139580613cfb1b3aff46f3d86e080b4502427d86a",
           "tests/types/avatar-positive.tsx": "447812046057aedab0f7327ed278502fd6367053aaae0973b67ae113610d1062",
           "tests/types/tsconfig.source.json": "dc38203e527b565fabc87435aafaf8145c2295dfdb5850675070e4dff7f3b3da",
-          "tests/unit/avatar-style.test.mjs": "9369bfa46256d4feff6215a6caa7d2d303035cc91c04bf63a6dd85050a52acc8",
+          "tests/unit/avatar-style.test.mjs": "bc797a0736647b3553deb8d67d4c5d68832cca344a2fdc58486b89c7d3d1d95d",
           "tests/unit/avatar-upstream.test.mjs": "ad36714030e2ce3ac45bf72dbd974baa62a0ca5e09b409833afc9d9e3b5997f8",
           "tests/unit/style-inputs.test.mjs": "ceff53858706b305a244c8725dddb9de6a0ef4d1fd253c82fb5b9cf415a9b86f",
           "website/build.mjs": "8a38e5ffcd8aeac1712343449e587826a211e87293e79c3ee51583faf2a60a9e",
@@ -2851,7 +2852,8 @@
           "website/tests/avatar.spec.ts": "57ae33ebd6257df3eaeefb293cba8d8803daf8831ae3d96680f3426cd6277a31",
           "website/tests/contracts-negative.tsx": "0e696a82d1a9dc7c8be2122411caac3b7ac5dd0cc17cb744a494455f25da02d1",
           "website/tests/contracts-positive.tsx": "8a899dfd268c4f24b3c92c17bbbc0e5042c3b33e92f2c705607a2dc03cfc2fdc",
-          "website/tsconfig.examples.json": "3ee7c863822d7753100acc1869c127660a32bca3a723bf8fec28160f007dc3c3"
+          "website/tsconfig.examples.json": "3ee7c863822d7753100acc1869c127660a32bca3a723bf8fec28160f007dc3c3",
+          "tests/support/style-fixture.mjs": "74ee6b09aea323c164e3a2c09a794b39647370a8b8b852daab203aab19d78ff2"
         }
       }
     },
@@ -4256,7 +4258,8 @@
           "tests/e2e/descriptions.spec.ts",
           "tests/unit/descriptions-integration.test.mjs",
           "tests/unit/descriptions-style.test.mjs",
-          "tests/unit/descriptions-upstream.test.mjs"
+          "tests/unit/descriptions-upstream.test.mjs",
+          "tests/support/style-fixture.mjs"
         ],
         "documentation": [
           "website/src/zh-CN/components/descriptions.md",
@@ -4356,7 +4359,7 @@
       },
       "verification": {
         "status": "complete",
-        "reviewId": "c-breadcrumb-local-review-20261029-r1",
+        "reviewId": "style-fixture-equivalence-20261030-r1",
         "evidenceHashes": {
           "packages/semi-ui-vue/src/components/descriptions/types.ts": "13e859b9c58b5e1007bdcafb1d46aee2c08d7b0787cb96878ec10c4ab1376248",
           "website/src/zh-CN/components/descriptions.md": "2a0a77cedbcb6f634fe5d97b074eee2264322f8013055b435947fc3719961f48",
@@ -4386,7 +4389,7 @@
           "tests/browser/descriptions.test.tsx": "3b2bd5f2dfd128bc6b10861d5c4ac47e067de62215f4ded28b1ffd45f5dad203",
           "tests/e2e/descriptions.spec.ts": "710d2fa1b1ec908f0941240a993d038df0a88de1fb85776820e0c6159fcf29ee",
           "tests/unit/descriptions-integration.test.mjs": "9e5802b6de01de5c42cae3614946605785edbc048bb3f2f18b7d22c12e5e98f7",
-          "tests/unit/descriptions-style.test.mjs": "cf9f72ef9b9605e7666560502e6e05d17876053ef0cdcfaef0e27e04f4df44dd",
+          "tests/unit/descriptions-style.test.mjs": "3845c392968a702d0b67e2434fdd927acfe5f539c3283e200527b68e30ac2273",
           "tests/unit/descriptions-upstream.test.mjs": "fe3e2231d08bc6681360c80d03a9b1ca72a4d72f69581ff7bf2491c4f9ab60f3",
           "website/src/zh-CN/guide/packages.md": "537d75099a6fe3d422c701c056470f1f1d0a8d7e2782c1b7d839ac4be4dd3527",
           "website/src/zh-CN/guide/api-contracts.md": "1ab1f92a8bba3e58cb5c09d0f57a41c90a37ef2f1fae18d14f156d1ea2475075",
@@ -4417,7 +4420,8 @@
           "tests/resource-consumer/descriptions-unused.ts": "cd00ac3f2414a256f9272c3d5c3cdd22858dbd9d927e572c7857889a717007cf",
           "tests/style-consumer/descriptions-markup.ts": "161f7649993132aeacd8509cadb8e84f788ac9f505065d7d52e249e418a6de74",
           "tests/style-consumer/descriptions-only.scss": "cf5cb53d81a8477a69869d8c0c12936910c455d37818a8f970327c6c2b387917",
-          "tests/style-consumer/descriptions.html": "e2bfec886dd1309cac57b0c69ee0daebedbf0f8c785597e0d68903ecfa0566cf"
+          "tests/style-consumer/descriptions.html": "e2bfec886dd1309cac57b0c69ee0daebedbf0f8c785597e0d68903ecfa0566cf",
+          "tests/support/style-fixture.mjs": "74ee6b09aea323c164e3a2c09a794b39647370a8b8b852daab203aab19d78ff2"
         }
       }
     },
