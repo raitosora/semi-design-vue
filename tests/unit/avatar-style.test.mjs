@@ -7,10 +7,10 @@ import semiTheme, {
   SEMI_THEME_VIRTUAL_SCSS_ID,
 } from "../../packages/vite-plugin-semi-theme/src/index.ts";
 import {
-  buildStyles,
   checkStyleInputs,
   checkStyleSourceHashes,
 } from "../../scripts/style-inputs.mjs";
+import { buildStyleFixture } from "../support/style-fixture.mjs";
 
 test("Avatar pins all five official SCSS inputs and rejects changed sources", async () => {
   const inputs = await checkStyleInputs(process.cwd());
@@ -35,7 +35,11 @@ test("Avatar pins all five official SCSS inputs and rejects changed sources", as
 test("Avatar isolated styles include groups, decoration and RTL with configurable prefix", async () => {
   const output = await mkdtemp(join(tmpdir(), "semi-avatar-style-"));
   try {
-    await buildStyles({ root: process.cwd(), output });
+    await buildStyleFixture({
+      root: process.cwd(),
+      output,
+      entries: ["components/avatar.scss", "index.scss"],
+    });
     const css = await readFile(join(output, "components/avatar.css"), "utf8");
     for (const fragment of [
       ".semi-avatar-group",

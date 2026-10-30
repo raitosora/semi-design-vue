@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "breadcrumb",
   "timeline",
   "descriptions",
   "list",
@@ -42,6 +43,12 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  breadcrumb: [
+    "breadcrumb/breadcrumb.scss",
+    "breadcrumb/rtl.scss",
+    "breadcrumb/variables.scss",
+    "breadcrumb/animation.scss",
+  ],
   timeline: [
     "timeline/timeline.scss",
     "timeline/rtl.scss",
@@ -147,6 +154,14 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/breadcrumb/breadcrumb.scss":
+    "e1fad29c00bd46c48659d079132ed458fa944902c9018d895ad9fb90a175f776",
+  "foundation/breadcrumb/rtl.scss":
+    "4cdff5cc192cd63a4560ee94932c7c9545756a4d7b0e31ad88766011088809b3",
+  "foundation/breadcrumb/variables.scss":
+    "1bd48437d642052db15ec0e492cbdcb571f0245d3aa0e95b290be69ab8b2f4c8",
+  "foundation/breadcrumb/animation.scss":
+    "35f42db1f90a2173affac0cdd2121b6c0f1225cc8ba9a746192f9471ab29a9fe",
   "foundation/timeline/timeline.scss":
     "6a7f752525c3968b41e5856a057ff8e3e53c9bd6b84fa5d4a6340f388f3b6a54",
   "foundation/timeline/rtl.scss":
@@ -422,6 +437,19 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    // Breadcrumb renders Typography, Tooltip, Popover and IconMore internally.
+    "components/breadcrumb.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../icons/index";',
+      '@import "../vendor/foundation/typography/typography";',
+      '@import "../vendor/foundation/tooltip/tooltip";',
+      '@import "../vendor/foundation/popover/popover";',
+      '@import "../vendor/foundation/breadcrumb/breadcrumb";',
+      "",
+    ].join("\n"),
     "components/timeline.scss": [
       "$semi-prefix: 'semi' !default;",
       "$height-control-default: 32px !default;",
@@ -605,6 +633,8 @@ function entrySources() {
       "$height-control-default: 32px !default;",
       '@import "./base";',
       '@import "./components/timeline";',
+      // Its composition dependencies are already included below.
+      '@import "./vendor/foundation/breadcrumb/breadcrumb";',
       '@import "./components/descriptions";',
       '@import "./components/avatar";',
       '@import "./components/tag";',

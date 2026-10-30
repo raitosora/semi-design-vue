@@ -118,3 +118,7 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 ## Timeline 包入口补充
 
 浏览器根入口提供 `Timeline`；`semi-ui-vue/timeline` 提供默认/具名 Timeline 和公共类型；`semi-ui-vue/timeline/item` 提供默认子组件，对应 `Timeline.Item`。没有根具名 Item、TimelineItem 值导出或额外 ref 方法。独立样式为 `semi-ui-vue/styles/components/timeline`（可显式 `.css` / `.scss`）。Node 条件根与 SSR、水合、CJS 的原有边界保持，详见[时间轴](../components/timeline.md)。
+
+## Breadcrumb 包入口补充
+
+浏览器根入口提供 `Breadcrumb`；`semi-ui-vue/breadcrumb` 提供默认/具名 Breadcrumb 和公共类型；`semi-ui-vue/breadcrumb/item` 提供默认子组件，对应 `Breadcrumb.Item`。没有根具名 Item、BreadcrumbItem 值导出或公开 ref 方法。独立样式为 `semi-ui-vue/styles/components/breadcrumb`（可显式 `.css` / `.scss`），包含组件实际依赖样式闭包。Node 条件根、SSR、水合、CJS 的既有边界保持，详见[面包屑](../components/breadcrumb.md)。

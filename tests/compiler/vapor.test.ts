@@ -13,7 +13,11 @@ beforeAll(async () => {
     plugins: [vueJsx(jsxOptions)],
     resolve: { alias: sourceAliases },
     optimizeDeps: { noDiscovery: true, include: [] },
-    server: { middlewareMode: true, hmr: false },
+    server: {
+      middlewareMode: true,
+      hmr: false,
+      preTransformRequests: false,
+    },
     appType: "custom",
   });
 });

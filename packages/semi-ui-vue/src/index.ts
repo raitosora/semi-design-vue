@@ -150,3 +150,4 @@ export { Typography } from "./components/typography/index.js";
 export { List } from "./components/list/index.js";
 export { Descriptions } from "./components/descriptions/index.js";
 export { Timeline } from "./components/timeline/index.js";
+export { Breadcrumb } from "./components/breadcrumb/index.js";

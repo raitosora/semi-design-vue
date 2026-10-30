@@ -33,6 +33,8 @@ jobs:
         run: pnpm check:component-changes
       - run: pnpm exec playwright install --with-deps chromium --only-shell
       - name: Verify source, packages and isolated tarball consumers
+        env:
+          VITEST_MAX_WORKERS: "1"
         run: pnpm verify
       - run: pnpm audit --audit-level moderate
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

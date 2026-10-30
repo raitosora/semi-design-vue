@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 import * as sass from "sass";
 import { describe, expect, it } from "vitest";
 import {
-  buildStyles,
   checkStyleInputs,
   checkStyleSourceHashes,
 } from "../../scripts/style-inputs.mjs";
+import { buildStyleFixture } from "../support/style-fixture.mjs";
 import semiTheme from "../../packages/vite-plugin-semi-theme/src/index.ts";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
@@ -43,7 +43,16 @@ describe("Descriptions fixed styles", () => {
       join(tmpdir(), "semi-descriptions-style-test-"),
     );
     try {
-      await buildStyles({ root, output });
+      await buildStyleFixture({
+        root,
+        output,
+        entries: [
+          "components/descriptions.scss",
+          "components/input.scss",
+          "components/list.scss",
+          "index.scss",
+        ],
+      });
       const css = await readFile(
         join(output, "components/descriptions.css"),
         "utf8",

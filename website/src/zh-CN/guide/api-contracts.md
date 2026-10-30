@@ -185,3 +185,7 @@ Card 有 default、title、header、headerExtraContent、cover、footer 六个�
 ## Timeline 内容契约补充
 
 非空 `Timeline.dataSource` 优先于 default slot 和 children；数据 `content` 覆盖数据项 children。`Timeline.Item` 提供 default/dot/extra/time 原生 slots，同名 slot 的声明存在性优先于属性，不预执行内容探测。mode=left/right 强制位置，center/alternate 才允许 truthy position 覆盖。没有 direction/reverse/pending、rowKey 或新 ref 方法；倒序由调用方改变稳定 key 列表。直接原生 Item 排列与 React.Children 对 fragment、空位的处理差异见[时间轴](../components/timeline.md)。
+
+## Breadcrumb 内容契约补充
+
+非空 `Breadcrumb.routes` 优先于 default slot 与 children；空数组回退声明式内容。Item 的 default/icon/separator slots 依据声明存在性选择内容，icon slot 显式接收响应式 className/size。renderItem 仅用于 routes；renderMore 接收省略项的原生内容工厂只读数组，工厂只能在实际原生输出内调用，不能预执行探测或克隆。activeIndex 控制当前页，默认末项；没有 collapsed/v-model/expand ref。数量折叠不使用宽度计算，noLink 只影响样式。根与 Item.onClick 保留固定上游的 RouteProps 参数类型及 string name 声明；声明式内容未传 route 时，运行时 name 可以是内容来源或原生工厂，这一差异须由调用方显式 route 避免，组件不预执行 slot 提取文本。详见[面包屑](../components/breadcrumb.md)。

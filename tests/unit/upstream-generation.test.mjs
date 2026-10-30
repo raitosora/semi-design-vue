@@ -45,11 +45,13 @@ it("checks formal inputs alone and fails on real source, generated output and in
       repository,
       validateAcceptanceRecords(acceptance),
     );
+    const paths = new Set();
     for (const record of verifiedAcceptance.families) {
       if (record.status !== "accepted") continue;
       for (const kind of copyableEvidenceKinds)
-        for (const path of record.evidence[kind]) await copy(path);
+        for (const path of record.evidence[kind]) paths.add(path);
     }
+    for (const path of paths) await copy(path);
   };
   const run = (args = ["--check"]) =>
     execFileSync(process.execPath, ["scripts/check-upstream.mjs", ...args], {

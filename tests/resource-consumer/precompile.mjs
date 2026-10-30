@@ -43,6 +43,7 @@ export function prepareResourceApplication(root, work, consumer) {
       files: [
         join(root, "tests/resource-consumer/main.tsx"),
         join(root, "tests/resource-consumer/list-bridge.tsx"),
+        join(root, "tests/resource-consumer/breadcrumb-bridge.tsx"),
         join(root, "tests/resource-consumer/timeline-bridge.tsx"),
         join(root, "tests/resource-consumer/descriptions-bridge.tsx"),
       ],
@@ -163,6 +164,34 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(root, "tests/resource-consumer/timeline-bridge.d.ts"),
     join(consumer, "prepared-timeline-bridge.d.ts"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "breadcrumb-interop",
+      "--outDir",
+      join(directory, "breadcrumb-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "breadcrumb-bridge-dist/prepared-breadcrumb-bridge.js"),
+    join(consumer, "prepared-breadcrumb-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "breadcrumb-bridge-dist/fixture-compilation.json"),
+    join(evidence, "breadcrumb-bridge-compilation.json"),
+  );
+  copyFileSync(
+    join(root, "tests/resource-consumer/breadcrumb-bridge.d.ts"),
+    join(consumer, "prepared-breadcrumb-bridge.d.ts"),
   );
 }
 

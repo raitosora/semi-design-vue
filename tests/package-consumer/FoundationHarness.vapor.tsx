@@ -1,5 +1,6 @@
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  Breadcrumb,
   Timeline,
   Descriptions,
   List,
@@ -40,6 +41,21 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const breadcrumbLabel = ref("Current Foundation path");
+  const breadcrumbSeparator = ref("/");
+  const breadcrumbMounts = ref(0);
+  const breadcrumbUnmounts = ref(0);
+  const breadcrumbClicks = ref(0);
+  const BreadcrumbBody = defineVaporComponent(() => {
+    onMounted(() => (breadcrumbMounts.value += 1));
+    onUnmounted(() => (breadcrumbUnmounts.value += 1));
+    return (
+      <input
+        aria-label="Breadcrumb body input"
+        value="owned breadcrumb input"
+      />
+    );
+  });
   const timelineLabel = ref("Foundation Timeline");
   const timelineMounts = ref(0);
   const timelineUnmounts = ref(0);
@@ -137,6 +153,33 @@ export const FoundationHarness = defineVaporComponent(() => {
                 </>
               ),
             }}
+          />
+          <Breadcrumb
+            aria-label="Foundation path"
+            autoCollapse={false}
+            data-foundation-breadcrumb=""
+            separator={breadcrumbSeparator.value}
+          >
+            {() => (
+              <>
+                <Breadcrumb.Item>{() => <BreadcrumbBody />}</Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {() => <span>{breadcrumbLabel.value}</span>}
+                </Breadcrumb.Item>
+              </>
+            )}
+          </Breadcrumb>
+          <Breadcrumb
+            data-foundation-breadcrumb-routes=""
+            onClick={() => (breadcrumbClicks.value += 1)}
+            routes={[
+              {
+                key: "home",
+                name: "Foundation Home",
+                href: "#foundation-home",
+              },
+              { key: "current", name: "Foundation Current" },
+            ]}
           />
           <Timeline
             aria-label="Foundation events"
@@ -433,6 +476,18 @@ export const FoundationHarness = defineVaporComponent(() => {
       >
         Toggle List loading
       </button>
+      <button
+        id="breadcrumb-update"
+        onClick={() => {
+          breadcrumbLabel.value = "Updated Foundation path";
+          breadcrumbSeparator.value = ">";
+        }}
+      >
+        Update Breadcrumb
+      </button>
+      <output id="breadcrumb-mounts">{breadcrumbMounts.value}</output>
+      <output id="breadcrumb-unmounts">{breadcrumbUnmounts.value}</output>
+      <output id="breadcrumb-clicks">{breadcrumbClicks.value}</output>
       <button
         id="timeline-update"
         onClick={() => (timelineLabel.value = "Updated Timeline")}

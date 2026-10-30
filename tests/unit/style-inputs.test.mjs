@@ -66,7 +66,12 @@ describe("fixed Semi style inputs", () => {
         ].sort(),
       );
       const aggregate = await readFile(join(output, "index.css"), "utf8");
-      for (const selector of [".semi-timeline", ".semi-icon", ".semi-progress"])
+      for (const selector of [
+        ".semi-breadcrumb",
+        ".semi-timeline",
+        ".semi-icon",
+        ".semi-progress",
+      ])
         expect(aggregate).toContain(selector);
     } finally {
       await rm(output, { recursive: true, force: true });
@@ -174,6 +179,7 @@ describe("fixed Semi style inputs", () => {
       foundationVersion: "2.103.0",
       themeVersion: "2.103.0",
       components: [
+        "breadcrumb",
         "timeline",
         "descriptions",
         "list",
@@ -228,7 +234,11 @@ describe("fixed Semi style inputs", () => {
     }
     const output = await mkdtemp(join(tmpdir(), "semi-card-style-test-"));
     try {
-      await buildStyles({ root, output });
+      await buildStyleFixture({
+        root,
+        output,
+        entries: ["components/card.scss", "index.scss"],
+      });
       const css = await readFile(join(output, "components/card.css"), "utf8");
       for (const selector of [
         "card-body",

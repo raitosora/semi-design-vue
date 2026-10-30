@@ -41,6 +41,8 @@
     "descriptions-positive.tsx",
     "descriptions-negative.tsx",
     "timeline-positive.tsx",
-    "timeline-negative.tsx"
+    "timeline-negative.tsx",
+    "breadcrumb-positive.tsx",
+    "breadcrumb-negative.tsx"
   ]
 }
