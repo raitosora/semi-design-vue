@@ -1,3 +1,5 @@
+import "semi-ui-vue/styles/components/input.css";
+import { checkInputInterop } from "./input-interop.js";
 import "semi-ui-vue/styles/components/steps.css";
 import { checkStepsInterop } from "./steps-interop.js";
 import { checkBreadcrumbInterop } from "./breadcrumb-interop.js";
@@ -720,6 +722,7 @@ declare global {
         spacing: number | "medium",
       ): Promise<void>;
       updateGrid(span: number): Promise<void>;
+      checkInput(): Promise<string>;
       checkSteps(): Promise<string>;
       checkBreadcrumb(): Promise<string>;
       checkTimeline(): Promise<string>;
@@ -741,6 +744,7 @@ declare global {
   }
 }
 window.interopConsumer = {
+  checkInput: checkInputInterop,
   checkSteps: checkStepsInterop,
   checkBreadcrumb: checkBreadcrumbInterop,
   checkTimeline: checkTimelineInterop,

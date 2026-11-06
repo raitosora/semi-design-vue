@@ -23,6 +23,7 @@ export default defineConfig({
         "scripts/finalize-package.mjs",
         "scripts/tooltip-inline-inputs.mjs",
         "scripts/typography-inline-inputs.mjs",
+        "scripts/input-inline-inputs.mjs",
         "scripts/typography-copy-source.mjs",
         "scripts/upstream-source.mjs",
         "scripts/upstream-inventory.mjs",

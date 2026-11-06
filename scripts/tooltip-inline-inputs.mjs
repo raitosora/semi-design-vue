@@ -19,6 +19,14 @@ const typographyIds = new Set(
     ),
   ).sources.map((entry) => entry.id),
 );
+const inputIds = new Set(
+  JSON.parse(
+    readFileSync(
+      new URL("./input-inline-inputs.json", import.meta.url),
+      "utf8",
+    ),
+  ).sources.map((entry) => entry.id),
+);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const entries = new Map(
   tooltipInlineProfile.sources.map((entry) => [entry.id, entry]),
@@ -31,7 +39,12 @@ export function tooltipInlineGraph(graph) {
     ...new Set(
       (graph.chunks ?? [])
         .flatMap((chunk) => chunk.modules ?? [])
-        .filter((id) => id.startsWith("npm:") && !typographyIds.has(id)),
+        .filter(
+          (id) =>
+            id.startsWith("npm:") &&
+            !typographyIds.has(id) &&
+            !inputIds.has(id),
+        ),
     ),
   ];
   const hasTooltip = (graph.chunks ?? []).some((chunk) =>

@@ -176,6 +176,24 @@
       ],
       "semi-ui-vue/steps/step": [
         "./packages/semi-ui-vue/src/components/steps/step.tsx"
+      ],
+      "semi-ui-vue/input": [
+        "./packages/semi-ui-vue/src/components/input/index.ts"
+      ],
+      "semi-ui-vue/input/textarea": [
+        "./packages/semi-ui-vue/src/components/input/textarea.tsx"
+      ],
+      "semi-ui-vue/input/inputGroup": [
+        "./packages/semi-ui-vue/src/components/input/inputGroup.tsx"
+      ],
+      "semi-icons-vue/IconClear": [
+        "./packages/semi-icons-vue/src/icons/IconClear.tsx"
+      ],
+      "semi-icons-vue/IconEyeOpened": [
+        "./packages/semi-icons-vue/src/icons/IconEyeOpened.tsx"
+      ],
+      "semi-icons-vue/IconEyeClosedSolid": [
+        "./packages/semi-icons-vue/src/icons/IconEyeClosedSolid.tsx"
       ]
     },
     "allowImportingTsExtensions": true

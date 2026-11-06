@@ -45,6 +45,8 @@
     "breadcrumb-positive.tsx",
     "breadcrumb-negative.tsx",
     "steps-positive.tsx",
-    "steps-negative.tsx"
+    "steps-negative.tsx",
+    "input-positive.tsx",
+    "input-negative.tsx"
   ]
 }

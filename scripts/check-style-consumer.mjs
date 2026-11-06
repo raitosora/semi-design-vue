@@ -1,3 +1,4 @@
+import { inputBrowserCheck } from "../tests/style-consumer/input-check.mjs";
 import { stepsBrowserCheck } from "../tests/style-consumer/steps-check.mjs";
 import { breadcrumbBrowserCheck } from "../tests/style-consumer/breadcrumb-check.mjs";
 import {
@@ -2205,6 +2206,10 @@ try {
   for (const name of [
     "consumer.ts",
     "input-only.scss",
+    "input-markup.ts",
+    "input-main.ts",
+    "input.html",
+    "vite.input.config.ts",
     "spin-only.scss",
     "spin-markup.ts",
     "iconButton-markup.ts",
@@ -2348,6 +2353,7 @@ try {
         "timeline-main.ts",
         "breadcrumb-main.ts",
         "steps-main.ts",
+        "input-main.ts",
       ],
     }),
   );
@@ -3184,6 +3190,60 @@ try {
     "Steps stylesheet retained unrelated component",
   );
   await withPreview("steps-dist", (url) => stepsBrowserCheck(url, root));
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.input.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const inputCss = files(join(consumer, "input-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "input-wrapper",
+      "input-group",
+      "input-group-wrapper-with-top-label",
+      "form-field-label",
+      "form-field-label-required",
+      "input-textarea",
+    ])
+      assert(
+        inputCss.includes(`.${prefix}-${marker}`),
+        `${prefix} Input selector missing: ${marker}`,
+      );
+  const inputGraph = checkGraph("input-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/input.css",
+    "/input-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      inputGraph.modules.some((id) => id.includes(fragment)),
+      `Input public style entry missing: ${fragment}`,
+    );
+  assert(
+    !inputGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Input style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:steps|breadcrumb|timeline|card|empty|typography|avatar|button|space|spin|list|progress|form-section|form-field-error-message)/.test(
+      inputCss,
+    ),
+    "Input stylesheet retained unrelated component",
+  );
+  await withPreview("input-dist", (url) => inputBrowserCheck(url, root));
 
   execFileSync(
     process.execPath,

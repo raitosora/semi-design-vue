@@ -602,6 +602,19 @@ function checkGraph(mode = "vapor") {
       `${mode}: List ${name} implementation missing`,
     );
   for (const [file, name] of [
+    ["Input", "Input"],
+    ["textarea", "TextArea"],
+    ["inputGroup", "InputGroup"],
+  ])
+    assert(
+      hasImplementation(
+        graph.modules,
+        `src/components/input/${file}.tsx`,
+        name,
+      ),
+      `${mode}: Input ${name} implementation missing`,
+    );
+  for (const [file, name] of [
     ["Steps", "Steps"],
     ["step", "default"],
   ])
@@ -650,6 +663,7 @@ function checkGraph(mode = "vapor") {
       `${mode}: Descriptions ${name} implementation missing`,
     );
   for (const style of [
+    "input",
     "steps",
     "breadcrumb",
     "timeline",
@@ -1248,6 +1262,131 @@ function checkBreadcrumbTreeShaking() {
       "semi-tag",
       "semi-progress",
       "semi-overflow-list",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkInputTreeShaking() {
+  for (const mode of [
+    "input-only",
+    "input-root-only",
+    "input-textarea-only",
+    "input-root-textarea-only",
+    "input-group-only",
+    "input-root-group-only",
+    "input-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.input.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const usesInput = mode === "input-only" || mode === "input-root-only";
+    for (const [file, name, expected] of [
+      ["Input", "Input", usesInput],
+      [
+        "textarea",
+        "TextArea",
+        mode === "input-textarea-only" || mode === "input-root-textarea-only",
+      ],
+      [
+        "inputGroup",
+        "InputGroup",
+        mode === "input-group-only" || mode === "input-root-group-only",
+      ],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/input/${file}.tsx`,
+          name,
+        ) === expected,
+        `${mode}: ${name} implementation tree-shaking mismatch`,
+      );
+    assert(
+      hasImplementation(
+        graph.modules,
+        "src/internal/label/Label.tsx",
+        "Label",
+      ) === (mode === "input-group-only" || mode === "input-root-group-only"),
+      `${mode}: internal Label dependency tree-shaking mismatch`,
+    );
+    for (const [sourcePath, name] of [
+      ["src/components/empty/Empty.tsx", "Empty"],
+      ["src/components/avatar/Avatar.tsx", "Avatar"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/typography/numeral.tsx", "Numeral"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, name),
+        `${mode}: retained unrelated ${name}`,
+      );
+    const entries = {
+      "input-only": "/semi-ui-vue/dist/components/input/index.js",
+      "input-root-only": "/semi-ui-vue/dist/index.js",
+      "input-textarea-only": "/semi-ui-vue/dist/components/input/textarea.js",
+      "input-root-textarea-only": "/semi-ui-vue/dist/index.js",
+      "input-group-only": "/semi-ui-vue/dist/components/input/inputGroup.js",
+      "input-root-group-only": "/semi-ui-vue/dist/index.js",
+      "input-unused": "/semi-ui-vue/dist/index.js",
+    };
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entries[mode])),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-input") === (mode !== "input-unused"),
+      `${mode}: Input executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
     ])
       assert(
         !output.includes(unrelated),
@@ -2863,6 +3002,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkInput())) ===
+        "input consumer passed",
+      "Packed Input/TextArea/InputGroup behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkSteps())) ===
         "steps consumer passed",
       "Packed Steps behavior failed",
@@ -3121,6 +3265,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkInput())) ===
+        "input interop passed",
+      "Packed Input/TextArea/InputGroup interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkSteps())) ===
         "steps interop passed",
@@ -3882,6 +4031,8 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const inputProducerSourceHash = hashFile(join(fixture, "input.tsx"));
+  const inputBridgeSourceHash = hashFile(join(fixture, "input-bridge.tsx"));
   const stepsProducerSourceHash = hashFile(join(fixture, "steps.tsx"));
   const stepsBridgeSourceHash = hashFile(join(fixture, "steps-bridge.tsx"));
   const breadcrumbProducerSourceHash = hashFile(
@@ -3933,6 +4084,27 @@ async function run() {
   assert(
     hashFile(join(fixture, "list.tsx")) === listProducerSourceHash,
     "List producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "input.tsx")) === inputProducerSourceHash,
+    "Input producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "input-bridge.tsx")) === inputBridgeSourceHash,
+    "Input bridge changed during precompilation",
+  );
+  const inputBridgeCompilation = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        ".vitest/attachments/resource-consumer/input-bridge-compilation.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert(
+    inputBridgeCompilation.modules?.includes("fixture:input-bridge.tsx"),
+    "Input native interop bridge was not precompiled",
   );
   assert(
     hashFile(join(fixture, "steps.tsx")) === stepsProducerSourceHash,
@@ -4137,6 +4309,10 @@ async function run() {
     "List native interop bridge was not precompiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:input.tsx"),
+    "Input fixture was not precompiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:steps.tsx"),
     "Steps fixture was not precompiled",
   );
@@ -4184,6 +4360,15 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "input-browser.ts",
+    "input-interop.ts",
+    "input-only.ts",
+    "input-root-only.ts",
+    "input-textarea-only.ts",
+    "input-root-textarea-only.ts",
+    "input-group-only.ts",
+    "input-root-group-only.ts",
+    "input-unused.ts",
     "steps-browser.ts",
     "breadcrumb-browser.ts",
     "timeline-browser.ts",
@@ -4253,6 +4438,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.input.config.ts",
     "vite.steps.config.ts",
     "vite.breadcrumb.config.ts",
     "vite.timeline.config.ts",
@@ -4310,6 +4496,43 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/input-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/input.tsx",
+          sha256: inputProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        bridge: {
+          source: "tests/resource-consumer/input-bridge.tsx",
+          sha256: inputBridgeSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-input-bridge.js",
+          outputSha256: hashFile(join(consumer, "prepared-input-bridge.js")),
+          declarationSha256: hashFile(
+            join(consumer, "prepared-input-bridge.d.ts"),
+          ),
+        },
+        interop: {
+          source: "tests/resource-consumer/input-interop.ts",
+          copiedSha256: hashFile(join(consumer, "input-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/input-browser.ts",
+          copiedSha256: hashFile(join(consumer, "input-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -4651,6 +4874,15 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "input-browser.ts",
+          "input-interop.ts",
+          "input-only.ts",
+          "input-root-only.ts",
+          "input-textarea-only.ts",
+          "input-root-textarea-only.ts",
+          "input-group-only.ts",
+          "input-root-group-only.ts",
+          "input-unused.ts",
           "steps-browser.ts",
           "breadcrumb-browser.ts",
           "timeline-browser.ts",
@@ -4823,6 +5055,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkInputTreeShaking();
   checkStepsTreeShaking();
   checkBreadcrumbTreeShaking();
   checkTimelineTreeShaking();

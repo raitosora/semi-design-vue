@@ -97,9 +97,11 @@ const foundationFiles = {
   input: [
     "input/animation.scss",
     "input/input.scss",
+    "input/textarea.scss",
     "input/rtl.scss",
     "input/variables.scss",
   ],
+  label: ["form/form.scss", "form/rtl.scss", "form/variables.scss"],
   tooltip: [
     "tooltip/animation.scss",
     "tooltip/arrow.scss",
@@ -265,10 +267,18 @@ const sourceHashes = {
     "68d6fb5ce35945ab2e046f02c64d71225686f3b925c0eac8bb227b7a1d6328f3",
   "foundation/input/input.scss":
     "f7f8267f9ed5bcfd0535b15d6425412af9c1aecef4f4813581df703fdce6150e",
+  "foundation/input/textarea.scss":
+    "3bdf35dd949d22f5ad529e1dc4ed77943da1957d5a60ff58f051747cf808ec4f",
   "foundation/input/rtl.scss":
     "97ee05130e8822bae3c9e8100eceb3b05c83bff7f6a852e20be2b546d1c8e6b8",
   "foundation/input/variables.scss":
     "f3f41f692473f0f3b2ec160aaf78aff02e4a69ecd2a7ee7a945680ab30d6464c",
+  "foundation/form/form.scss":
+    "2ff27d9f9f43dd80112b3d908badf2910779a7e3a2a93e2ab93f0193a0b7a4cc",
+  "foundation/form/rtl.scss":
+    "686635c68c758e80e5446759c9bfc1a4fd86b3b0694377b32dcf2218e1b4fc73",
+  "foundation/form/variables.scss":
+    "ab7a3b0f290ace07912af117119d30b5d1bfa38c12bd48d64128d060c715b2b5",
   "foundation/tooltip/animation.scss":
     "e0d44bdd1807072f8e05e2cfcd6a052dfad44292df44d3d65aa163cb1c1963c8",
   "foundation/tooltip/arrow.scss":
@@ -398,6 +408,23 @@ export function popoverMotionSource(source) {
     blocks[2],
     blocks[3],
     "}",
+    "",
+  ].join("\n");
+}
+
+// InputGroup uses only Form.Label, not the Form field/layout stylesheet.
+function labelStyleSource(form, rtl) {
+  const header = "&-field-label {";
+  return [
+    '@import "./variables";',
+    "$form: #{$prefix}-form;",
+    "$field: #{$prefix}-form-field;",
+    ".#{$form} {",
+    extractStyleBlock(form, header),
+    "}",
+    ".#{$prefix}-rtl, .#{$prefix}-portal-rtl { .#{$form} {",
+    extractStyleBlock(rtl, header),
+    "} }",
     "",
   ].join("\n");
 }
@@ -609,7 +636,10 @@ function entrySources() {
       "$height-control-default: 32px !default;",
       '@import "../theme/variables";',
       '@import "../theme/mixins";',
+      '@import "../icons/index";',
       '@import "../vendor/foundation/input/input";',
+      '@import "../vendor/foundation/input/textarea";',
+      '@import "../vendor/foundation/form/label";',
       "",
     ].join("\n"),
     "components/tooltip.scss": [
@@ -798,11 +828,19 @@ export async function prepareStyleSources({ root, output }) {
   ).replace("$prefix: 'semi' !default;", "$prefix: $semi-prefix !default;");
   await writeFile(join(output, "theme/variables.scss"), transformed);
   for (const files of Object.values(foundationFiles))
-    for (const file of files)
+    for (const file of files) {
       await copySource(
         join(foundationRoot, file),
         join(output, "vendor/foundation", file),
       );
+    }
+  await writeFile(
+    join(output, "vendor/foundation/form/label.scss"),
+    labelStyleSource(
+      await readFile(join(foundationRoot, "form/form.scss"), "utf8"),
+      await readFile(join(foundationRoot, "form/rtl.scss"), "utf8"),
+    ),
+  );
   await writeFile(
     join(output, "vendor/foundation/tooltip/popover-motion.scss"),
     popoverMotionSource(
@@ -854,6 +892,11 @@ export async function buildStyles({ root, output }) {
         sources: inputs.sourceHashes,
         icons: iconSources,
         adaptation: {
+          "vendor/foundation/form/label.scss": [
+            "extract exact &-field-label blocks from locked form/form.scss and form/rtl.scss",
+            "reuse locked form/variables.scss and existing theme mixins",
+            "omit Form layout, field wrappers, validation messages, sections and other control rules",
+          ],
           "vendor/foundation/tooltip/popover-motion.scss": [
             "extract exact zoomIn/zoomOut keyframes and animation-show/hide rules from locked tooltip/tooltip.scss",
             "reuse locked tooltip/animation.scss duration/easing and tooltip/variables.scss zoom values",

@@ -18,6 +18,14 @@ const tooltipIds = new Set(
     ),
   ).sources.map((entry) => entry.id),
 );
+const inputIds = new Set(
+  JSON.parse(
+    readFileSync(
+      new URL("./input-inline-inputs.json", import.meta.url),
+      "utf8",
+    ),
+  ).sources.map((entry) => entry.id),
+);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const entries = new Map(
   typographyInlineProfile.sources.map((entry) => [entry.id, entry]),
@@ -30,7 +38,10 @@ export function typographyInlineGraph(graph) {
     ...new Set(
       (graph.chunks ?? [])
         .flatMap((chunk) => chunk.modules ?? [])
-        .filter((id) => id.startsWith("npm:") && !tooltipIds.has(id)),
+        .filter(
+          (id) =>
+            id.startsWith("npm:") && !tooltipIds.has(id) && !inputIds.has(id),
+        ),
     ),
   ];
   const hasTypography = (graph.chunks ?? []).some((chunk) =>

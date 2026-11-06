@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import * as sass from "sass";
 import { describe, expect, it } from "vitest";
-import { prepareStyleSources } from "../../scripts/style-inputs.mjs";
+import { buildStyleFixture } from "../support/style-fixture.mjs";
 import semiTheme, {
   SEMI_THEME_VIRTUAL_CSS_ID as CSS,
   SEMI_THEME_VIRTUAL_SCSS_ID as SCSS,
@@ -90,7 +90,7 @@ describe("explicit Semi theme style generation", () => {
   it("compiles actual self-contained Sass entries with prefix and dimensions, and rejects undeclared variables", async () => {
     const output = await mkdtemp(join(tmpdir(), "semi-theme-sass-"));
     try {
-      await prepareStyleSources({ root: process.cwd(), output });
+      await buildStyleFixture({ root: process.cwd(), output, entries: [] });
       const compile = (plugin) =>
         sass.compileString(source(plugin, SCSS), {
           importers: [
@@ -123,6 +123,8 @@ describe("explicit Semi theme style generation", () => {
         }),
       );
       expect(css).toContain(".acme-input-wrapper");
+      expect(css).toContain(".acme-icon");
+      expect(css).not.toContain(".semi-icon");
       expect(css).toContain("height: 40px");
       expect(css).toContain(".acme-tooltip-wrapper");
       expect(css).toContain(".acme-spin-wrapper");

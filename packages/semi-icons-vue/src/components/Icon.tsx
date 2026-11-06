@@ -51,6 +51,7 @@ const IconComponent = defineVaporComponent<
           props.type && `${prefix.value}-icon-${props.type}`,
           props.className,
         ]}
+        data-semi-icon=""
         ref={element}
         style={[
           {
