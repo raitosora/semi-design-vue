@@ -170,6 +170,12 @@
       ],
       "semi-ui-vue/breadcrumb/item": [
         "./packages/semi-ui-vue/src/components/breadcrumb/item.tsx"
+      ],
+      "semi-ui-vue/steps": [
+        "./packages/semi-ui-vue/src/components/steps/index.ts"
+      ],
+      "semi-ui-vue/steps/step": [
+        "./packages/semi-ui-vue/src/components/steps/step.tsx"
       ]
     },
     "allowImportingTsExtensions": true

@@ -1,3 +1,4 @@
+import { stepsBrowserCheck } from "../tests/style-consumer/steps-check.mjs";
 import { breadcrumbBrowserCheck } from "../tests/style-consumer/breadcrumb-check.mjs";
 import {
   timelineStyleCheck,
@@ -226,6 +227,24 @@ function checkStyleMetadata() {
     assert(
       sources.sources[`foundation/tag/${name}.scss`] === expected,
       `Tag source hash differs: ${name}`,
+    );
+  for (const [name, expected] of Object.entries({
+    steps: "f582116053deb558c6e73fe73da4d9103e181eb72289d2362a2179635a9bf447",
+    animation:
+      "9fdd45a388ceec2896d6bf4046cfb35e8b5395427a84e2c18066239b427ccfa7",
+    variables:
+      "d61bf2fddbcbd4945cefbf00a86a688d59ebe1a11e2c6d05e05a7b1b109bcf21",
+    fillSteps:
+      "1d4f3aff7397a9367fef752b98a34535a430eeeaadb8a2cc66471228c5d2d0d2",
+    bacisSteps:
+      "a503b6589736aee170e094456f53f154a59dabcf8fe66eebff1886a26c0bceac",
+    navSteps:
+      "0dbdfead65ff23fddc9f68abf39b961c95f3e37238ed33a40034ba19439ce8ed",
+    rtl: "fbd86fa6184f7cdde5ab1a8c313de7d79756ae3961d2bbfd69aa21eda8cff257",
+  }))
+    assert(
+      sources.sources[`foundation/steps/${name}.scss`] === expected,
+      `Steps source hash differs: ${name}`,
     );
   for (const [name, expected] of Object.entries({
     breadcrumb:
@@ -2210,6 +2229,11 @@ try {
     "typography-main.ts",
     "typography.html",
     "vite.typography.config.ts",
+    "steps-only.scss",
+    "steps-markup.ts",
+    "steps-main.ts",
+    "steps.html",
+    "vite.steps.config.ts",
     "breadcrumb-only.scss",
     "breadcrumb-markup.ts",
     "breadcrumb-main.ts",
@@ -2323,6 +2347,7 @@ try {
         "descriptions-main.ts",
         "timeline-main.ts",
         "breadcrumb-main.ts",
+        "steps-main.ts",
       ],
     }),
   );
@@ -3101,6 +3126,64 @@ try {
   await withPreview("breadcrumb-dist", (url) =>
     breadcrumbBrowserCheck(url, root),
   );
+
+  execFileSync(
+    process.execPath,
+    [
+      resolve(consumer, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "vite.steps.config.ts",
+    ],
+    { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+  );
+  const stepsCss = files(join(consumer, "steps-dist"))
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  for (const prefix of ["semi", "consumer", "theme"])
+    for (const marker of [
+      "steps-basic",
+      "steps-nav",
+      "steps-vertical",
+      "steps-small",
+      "steps-item-error",
+      "steps-item-warning",
+      "steps-item-number-icon",
+      "row-flex",
+      "col",
+      "icon",
+    ])
+      assert(
+        stepsCss.includes(`.${prefix}-${marker}`),
+        `${prefix} Steps selector missing: ${marker}`,
+      );
+  const stepsGraph = checkGraph("steps-style-graph.json");
+  for (const fragment of [
+    "/semi-ui-vue/dist/styles/components/steps.css",
+    "/steps-only.scss",
+    "virtual:semi-theme.scss",
+    "virtual:semi-theme.css",
+  ])
+    assert(
+      stepsGraph.modules.some((id) => id.includes(fragment)),
+      `Steps public style entry missing: ${fragment}`,
+    );
+  assert(
+    !stepsGraph.modules.some((id) =>
+      /semi-ui-vue\/dist\/styles\/index\.(?:css|scss)$/.test(id),
+    ),
+    "Steps style probe resolved aggregate styles",
+  );
+  assert(
+    !/\.(?:semi|consumer|theme)-(?:breadcrumb|timeline|card|empty|typography|avatar|tooltip|popover|button|input|space|spin|list|progress|collapsible|overflow-list)/.test(
+      stepsCss,
+    ),
+    "Steps stylesheet retained unrelated component",
+  );
+  await withPreview("steps-dist", (url) => stepsBrowserCheck(url, root));
 
   execFileSync(
     process.execPath,

@@ -248,6 +248,10 @@ try {
     readFileSync(resolve(root, "tests/consumer/consumer.ts"), "utf8"),
   );
   writeFileSync(
+    join(work, "steps-types.ts"),
+    readFileSync(resolve(root, "tests/consumer/steps-types.ts"), "utf8"),
+  );
+  writeFileSync(
     join(work, "breadcrumb-types.ts"),
     readFileSync(resolve(root, "tests/consumer/breadcrumb-types.ts"), "utf8"),
   );
@@ -343,6 +347,7 @@ try {
   const rejectedHighlightExports = [];
   const rejectedProgressExports = [];
   const rejectedTooltipExports = [];
+  const rejectedStepsExports = [];
   const rejectedBreadcrumbExports = [];
   const rejectedTimelineExports = [];
   const rejectedDescriptionsExports = [];
@@ -380,6 +385,8 @@ try {
     "OverflowList",
     "Avatar",
     "AvatarGroup",
+    "Steps",
+    "Step",
     "Breadcrumb",
     "Timeline",
     "Descriptions",
@@ -402,11 +409,13 @@ try {
         readFileSync(
           resolve(
             root,
-            `tests/consumer/node-${exportName === "Breadcrumb" ? "breadcrumb" : exportName === "Timeline" ? "timeline" : exportName === "Descriptions" ? "descriptions" : exportName === "List" ? "list" : exportName === "Card" ? "card" : exportName === "CardGroup" ? "cardGroup" : exportName === "Empty" ? "empty" : exportName === "Typography" ? "typography" : exportName === "Badge" ? "badge" : exportName === "Tag" ? "tag" : exportName === "TagGroup" ? "tagGroup" : exportName === "SplitTagGroup" ? "splitTagGroup" : exportName === "Avatar" ? "avatar" : exportName === "AvatarGroup" ? "avatarGroup" : exportName === "OverflowList" ? "overflowList" : exportName === "Collapsible" ? "collapsible" : exportName === "Popover" ? "popover" : exportName === "Tooltip" ? "tooltip" : exportName === "Progress" ? "progress" : exportName === "Highlight" ? "highlight" : exportName === "Skeleton" ? "skeleton" : exportName === "Layout" ? "layout" : ["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
+            `tests/consumer/node-${exportName === "Steps" ? "steps" : exportName === "Step" ? "step" : exportName === "Breadcrumb" ? "breadcrumb" : exportName === "Timeline" ? "timeline" : exportName === "Descriptions" ? "descriptions" : exportName === "List" ? "list" : exportName === "Card" ? "card" : exportName === "CardGroup" ? "cardGroup" : exportName === "Empty" ? "empty" : exportName === "Typography" ? "typography" : exportName === "Badge" ? "badge" : exportName === "Tag" ? "tag" : exportName === "TagGroup" ? "tagGroup" : exportName === "SplitTagGroup" ? "splitTagGroup" : exportName === "Avatar" ? "avatar" : exportName === "AvatarGroup" ? "avatarGroup" : exportName === "OverflowList" ? "overflowList" : exportName === "Collapsible" ? "collapsible" : exportName === "Popover" ? "popover" : exportName === "Tooltip" ? "tooltip" : exportName === "Progress" ? "progress" : exportName === "Highlight" ? "highlight" : exportName === "Skeleton" ? "skeleton" : exportName === "Layout" ? "layout" : ["Row", "Col"].includes(exportName) ? "grid" : exportName === "Space" ? "space" : exportName === "Divider" ? "divider" : exportName === "IconButton" ? "iconButton" : exportName === "Spin" ? "spin" : exportName === "Button" ? "button" : exportName === "ButtonGroup" ? "buttonGroup" : exportName === "SplitButtonGroup" ? "splitButtonGroup" : exportName.startsWith("Locale") ? "locale" : "configProvider"}-negative.${extension}`,
           ),
           "utf8",
         ).replaceAll(
           [
+            "Steps",
+            "Step",
             "Breadcrumb",
             "Timeline",
             "Descriptions",
@@ -488,63 +497,67 @@ try {
       { cwd: work, env },
       new RegExp(`does not provide an export named ['"]?${exportName}['"]?`),
     );
-    (exportName === "Breadcrumb"
-      ? rejectedBreadcrumbExports
-      : exportName === "Timeline"
-        ? rejectedTimelineExports
-        : exportName === "Descriptions"
-          ? rejectedDescriptionsExports
-          : exportName === "List"
-            ? rejectedListExports
-            : ["Card", "CardGroup"].includes(exportName)
-              ? rejectedCardExports
-              : exportName === "Empty"
-                ? rejectedEmptyExports
-                : exportName === "Typography"
-                  ? rejectedTypographyExports
-                  : exportName === "Badge"
-                    ? rejectedBadgeExports
-                    : ["Tag", "TagGroup", "SplitTagGroup"].includes(exportName)
-                      ? rejectedTagExports
-                      : ["Avatar", "AvatarGroup"].includes(exportName)
-                        ? rejectedAvatarExports
-                        : exportName === "OverflowList"
-                          ? rejectedOverflowListExports
-                          : exportName === "Collapsible"
-                            ? rejectedCollapsibleExports
-                            : exportName === "Popover"
-                              ? rejectedPopoverExports
-                              : exportName === "Tooltip"
-                                ? rejectedTooltipExports
-                                : exportName === "Progress"
-                                  ? rejectedProgressExports
-                                  : exportName === "Highlight"
-                                    ? rejectedHighlightExports
-                                    : exportName === "Skeleton"
-                                      ? rejectedSkeletonExports
-                                      : exportName === "Layout"
-                                        ? rejectedLayoutExports
-                                        : ["Row", "Col"].includes(exportName)
-                                          ? rejectedGridExports
-                                          : exportName === "Space"
-                                            ? rejectedSpaceExports
-                                            : exportName === "Divider"
-                                              ? rejectedDividerExports
-                                              : exportName === "IconButton"
-                                                ? rejectedIconButtonExports
-                                                : exportName === "Spin"
-                                                  ? rejectedSpinExports
-                                                  : [
-                                                        "Button",
-                                                        "ButtonGroup",
-                                                        "SplitButtonGroup",
-                                                      ].includes(exportName)
-                                                    ? rejectedButtonExports
-                                                    : exportName.startsWith(
-                                                          "Locale",
-                                                        )
-                                                      ? rejectedLocaleExports
-                                                      : rejectedConfigExports
+    (["Steps", "Step"].includes(exportName)
+      ? rejectedStepsExports
+      : exportName === "Breadcrumb"
+        ? rejectedBreadcrumbExports
+        : exportName === "Timeline"
+          ? rejectedTimelineExports
+          : exportName === "Descriptions"
+            ? rejectedDescriptionsExports
+            : exportName === "List"
+              ? rejectedListExports
+              : ["Card", "CardGroup"].includes(exportName)
+                ? rejectedCardExports
+                : exportName === "Empty"
+                  ? rejectedEmptyExports
+                  : exportName === "Typography"
+                    ? rejectedTypographyExports
+                    : exportName === "Badge"
+                      ? rejectedBadgeExports
+                      : ["Tag", "TagGroup", "SplitTagGroup"].includes(
+                            exportName,
+                          )
+                        ? rejectedTagExports
+                        : ["Avatar", "AvatarGroup"].includes(exportName)
+                          ? rejectedAvatarExports
+                          : exportName === "OverflowList"
+                            ? rejectedOverflowListExports
+                            : exportName === "Collapsible"
+                              ? rejectedCollapsibleExports
+                              : exportName === "Popover"
+                                ? rejectedPopoverExports
+                                : exportName === "Tooltip"
+                                  ? rejectedTooltipExports
+                                  : exportName === "Progress"
+                                    ? rejectedProgressExports
+                                    : exportName === "Highlight"
+                                      ? rejectedHighlightExports
+                                      : exportName === "Skeleton"
+                                        ? rejectedSkeletonExports
+                                        : exportName === "Layout"
+                                          ? rejectedLayoutExports
+                                          : ["Row", "Col"].includes(exportName)
+                                            ? rejectedGridExports
+                                            : exportName === "Space"
+                                              ? rejectedSpaceExports
+                                              : exportName === "Divider"
+                                                ? rejectedDividerExports
+                                                : exportName === "IconButton"
+                                                  ? rejectedIconButtonExports
+                                                  : exportName === "Spin"
+                                                    ? rejectedSpinExports
+                                                    : [
+                                                          "Button",
+                                                          "ButtonGroup",
+                                                          "SplitButtonGroup",
+                                                        ].includes(exportName)
+                                                      ? rejectedButtonExports
+                                                      : exportName.startsWith(
+                                                            "Locale",
+                                                          )
+                                                        ? rejectedLocaleExports
+                                                        : rejectedConfigExports
     ).push({
       name: exportName,
       types: "rejected",
@@ -605,6 +618,7 @@ try {
         rejectedHighlightExports,
         rejectedProgressExports,
         rejectedTooltipExports,
+        rejectedStepsExports,
         rejectedBreadcrumbExports,
         rejectedTimelineExports,
         rejectedDescriptionsExports,

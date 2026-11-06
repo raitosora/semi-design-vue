@@ -43,6 +43,7 @@ export function prepareResourceApplication(root, work, consumer) {
       files: [
         join(root, "tests/resource-consumer/main.tsx"),
         join(root, "tests/resource-consumer/list-bridge.tsx"),
+        join(root, "tests/resource-consumer/steps-bridge.tsx"),
         join(root, "tests/resource-consumer/breadcrumb-bridge.tsx"),
         join(root, "tests/resource-consumer/timeline-bridge.tsx"),
         join(root, "tests/resource-consumer/descriptions-bridge.tsx"),
@@ -192,6 +193,34 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(root, "tests/resource-consumer/breadcrumb-bridge.d.ts"),
     join(consumer, "prepared-breadcrumb-bridge.d.ts"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "steps-interop",
+      "--outDir",
+      join(directory, "steps-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "steps-bridge-dist/prepared-steps-bridge.js"),
+    join(consumer, "prepared-steps-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "steps-bridge-dist/fixture-compilation.json"),
+    join(evidence, "steps-bridge-compilation.json"),
+  );
+  copyFileSync(
+    join(root, "tests/resource-consumer/steps-bridge.d.ts"),
+    join(consumer, "prepared-steps-bridge.d.ts"),
   );
 }
 

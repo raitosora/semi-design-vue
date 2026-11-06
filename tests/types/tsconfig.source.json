@@ -43,6 +43,8 @@
     "timeline-positive.tsx",
     "timeline-negative.tsx",
     "breadcrumb-positive.tsx",
-    "breadcrumb-negative.tsx"
+    "breadcrumb-negative.tsx",
+    "steps-positive.tsx",
+    "steps-negative.tsx"
   ]
 }

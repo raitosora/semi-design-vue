@@ -376,7 +376,21 @@
       "default": "./dist/styles/components/breadcrumb.css"
     },
     "./styles/components/breadcrumb.css": "./dist/styles/components/breadcrumb.css",
-    "./styles/components/breadcrumb.scss": "./dist/styles/components/breadcrumb.scss"
+    "./styles/components/breadcrumb.scss": "./dist/styles/components/breadcrumb.scss",
+    "./steps": {
+      "types": "./dist/components/steps/index.d.ts",
+      "import": "./dist/components/steps/index.js"
+    },
+    "./steps/step": {
+      "types": "./dist/components/steps/step.d.ts",
+      "import": "./dist/components/steps/step.js"
+    },
+    "./styles/components/steps": {
+      "sass": "./dist/styles/components/steps.scss",
+      "default": "./dist/styles/components/steps.css"
+    },
+    "./styles/components/steps.css": "./dist/styles/components/steps.css",
+    "./styles/components/steps.scss": "./dist/styles/components/steps.scss"
   },
   "files": [
     "dist",

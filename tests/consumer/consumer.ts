@@ -1,3 +1,4 @@
+import "./steps-types.js";
 import "./timeline-types.js";
 import "./descriptions-types.js";
 import "./list-types.js";

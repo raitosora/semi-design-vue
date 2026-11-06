@@ -122,3 +122,9 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 ## Breadcrumb 包入口补充
 
 浏览器根入口提供 `Breadcrumb`；`semi-ui-vue/breadcrumb` 提供默认/具名 Breadcrumb 和公共类型；`semi-ui-vue/breadcrumb/item` 提供默认子组件，对应 `Breadcrumb.Item`。没有根具名 Item、BreadcrumbItem 值导出或公开 ref 方法。独立样式为 `semi-ui-vue/styles/components/breadcrumb`（可显式 `.css` / `.scss`），包含组件实际依赖样式闭包。Node 条件根、SSR、水合、CJS 的既有边界保持，详见[面包屑](../components/breadcrumb.md)。
+
+## Steps 包入口
+
+浏览器根 `semi-ui-vue` 同时提供 `Steps`、`Step`；`semi-ui-vue/steps` 提供默认/具名Steps及公共类型，`semi-ui-vue/steps/step` 只提供默认Step和条目类型，与Steps.Step同一身份。Node条件根仍只提供基础设施。固定上游basic/fill/nav及context的legacy文件路径属于内部协作，不作为本包公开入口。
+
+样式入口为 `semi-ui-vue/styles/components/steps`，可显式使用 `.css` / `.scss`；包含Steps所需Grid和Icons闭包。按需Step入口不带Steps容器实现；未使用Steps/Step可由生产构建消除。SSR、水合、CJS及独立TSX编译器RC peer安装限制保持，详见[步骤条](../components/steps.md)。

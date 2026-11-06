@@ -193,6 +193,28 @@ describe("fixed Foundation patch applicability", () => {
     }
   });
 
+  it("requires the exact estree security override beside the unchanged Foundation policy", async () => {
+    const workspace = await readFile(
+      resolve(root, "pnpm-workspace.yaml"),
+      "utf8",
+    );
+    const exact =
+      '  "@typescript-eslint/typescript-estree@8.70.0>minimatch": 11.0.1';
+    expect(workspace).toContain(exact);
+    expect(checkFoundationConfig(workspace)).toBe(true);
+    for (const replacement of [
+      "",
+      "  minimatch: 11.0.1",
+      '  "@typescript-eslint/typescript-estree>minimatch": 11.0.1',
+      '  "@typescript-eslint/typescript-estree@8.70.1>minimatch": 11.0.1',
+      '  "@typescript-eslint/typescript-estree@8.70.0>minimatch": ^11.0.1',
+      '  "@typescript-eslint/typescript-estree@8.70.0>minimatch": 10.2.6',
+    ])
+      expect(() =>
+        checkFoundationConfig(workspace.replace(exact, replacement)),
+      ).toThrow(/configuration/);
+  });
+
   it("removes stale success evidence when the runner fails", async () => {
     const work = await mkdtemp(join(tmpdir(), "foundation-runner-failure-"));
     const evidence = join(

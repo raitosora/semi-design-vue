@@ -1,3 +1,4 @@
+import "semi-ui-vue/styles/components/steps.css";
 import "semi-ui-vue/styles/components/breadcrumb.css";
 import "semi-ui-vue/styles/components/timeline.css";
 import "semi-ui-vue/styles/components/descriptions.css";

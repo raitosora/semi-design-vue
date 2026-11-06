@@ -125,7 +125,7 @@ const section = (source, name) => {
 };
 export function checkFoundationConfig(workspace) {
   const expected = {
-    overrides: `overrides:\n  "@vue/shared": 3.6.0-rc.9\n  vue: 3.6.0-rc.9\n  "${FOUNDATION_PATCH.packageName}@${FOUNDATION_PATCH.version}>lodash": "-"`,
+    overrides: `overrides:\n  "@vue/shared": 3.6.0-rc.9\n  vue: 3.6.0-rc.9\n  "${FOUNDATION_PATCH.packageName}@${FOUNDATION_PATCH.version}>lodash": "-"\n  "@typescript-eslint/typescript-estree@8.70.0>minimatch": 11.0.1`,
     packageExtensions: `packageExtensions:\n  "${FOUNDATION_PATCH.packageName}@${FOUNDATION_PATCH.version}":\n    dependencies:\n      es-toolkit: 1.39.10`,
     patchedDependencies: `patchedDependencies:\n  "${FOUNDATION_PATCH.packageName}@${FOUNDATION_PATCH.version}": ${FOUNDATION_PATCH.patch}`,
   };

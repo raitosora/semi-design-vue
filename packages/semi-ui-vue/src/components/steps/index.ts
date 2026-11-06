@@ -1,0 +1,21 @@
+export { Steps, default } from "./Steps.js";
+export type {
+  Status,
+  Size,
+  Direction,
+  StepsContent,
+  StepsRenderResult,
+  StepsSlots,
+  StepSlots,
+  StepProps,
+  StepsProps,
+  BasicStepProps,
+  FillStepProps,
+  NavStepProps,
+  BasicStepsProps,
+  FillStepsProps,
+  NavStepsProps,
+  BasicStepsAllProps,
+  FillStepsAllProps,
+  NavStepsAllProps,
+} from "./types.js";

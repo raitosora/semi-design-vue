@@ -71,7 +71,7 @@ configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
 popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list,
-descriptions, timeline and breadcrumb (27 families). All other public families remain unaccepted.
+descriptions, timeline, breadcrumb and steps (28 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -431,3 +431,29 @@ this reviewed contract. Root provides only Breadcrumb; family and Item ESM
 subpaths provide their corresponding values/types and standalone styles.
 Existing strict compiler peer-installation, current-document/realm,
 SSR/hydration/CJS and representative-only visual limits remain.
+
+The `steps` record accepts Steps and its static Step against the fixed source.
+Browser root Steps and the default/named ./steps exports share identity.
+Steps.Step, browser root Step and the default ./steps/step export share identity.
+Fill reuses Grid; basic and nav retain their distinct status, size, direction,
+icon, last-item and event rules. Status compares initial plus position, while
+change notification compares the raw position to current before adding initial.
+Explicit child status and the parent's next-error class replacement keep their
+fixed precedence. Click and Enter notify the child before the parent without
+preventing native behavior; Space and arrow navigation are not added.
+
+Native slots and synchronous renderers retain their owners without probing or
+cloning VNodes. Direct registered DOM children define order; fragments, keyed
+ranges and nested contexts are covered separately from React child filtering.
+Changing view type remounts content. MutationObserver owns DOM-order updates and
+disconnects on teardown. No public ref methods, extra low-level view components,
+Foundation state machine or new runtime dependency are introduced.
+
+Fixed styles preserve overflow behavior: narrow horizontal layouts and vertical
+fill with long scalar titles can exceed their container. Independent fixed DOM
+geometry constrains this behavior without adding a responsive width clamp.
+Strict declarations, real browser ownership and lifecycle checks, themed Chinese
+examples, four isolated tarball consumers, per-file coverage and tree-shaking
+support the reviewed contract. Existing compiler peer-installation,
+current-document/realm, browser ESM, SSR/hydration/CJS and representative-only
+visual limitations remain unchanged.

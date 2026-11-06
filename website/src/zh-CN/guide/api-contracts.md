@@ -189,3 +189,9 @@ Card 有 default、title、header、headerExtraContent、cover、footer 六个�
 ## Breadcrumb 内容契约补充
 
 非空 `Breadcrumb.routes` 优先于 default slot 与 children；空数组回退声明式内容。Item 的 default/icon/separator slots 依据声明存在性选择内容，icon slot 显式接收响应式 className/size。renderItem 仅用于 routes；renderMore 接收省略项的原生内容工厂只读数组，工厂只能在实际原生输出内调用，不能预执行探测或克隆。activeIndex 控制当前页，默认末项；没有 collapsed/v-model/expand ref。数量折叠不使用宽度计算，noLink 只影响样式。根与 Item.onClick 保留固定上游的 RouteProps 参数类型及 string name 声明；声明式内容未传 route 时，运行时 name 可以是内容来源或原生工厂，这一差异须由调用方显式 route 避免，组件不预执行 slot 提取文本。详见[面包屑](../components/breadcrumb.md)。
+
+## Steps 与 Step 的状态及内容
+
+[Steps](../components/steps.md) 的默认类型为 fill，根同时具名导出 Steps 和 Step，Steps.Step 与独立 Step 身份一致。current 只读控制显示；onChange 通知调用方更新，不增加 defaultCurrent 或 v-model。fill/basic 的状态按 initial + index 比较 current，回调触发条件仍是 index !== current，回调值为 index + initial；nav active 只比较 index。显式 truthy 子 status 优先，但 basic active/done 独立推导。
+
+原生 default slot 声明优先于 children；Step 的 title/description/icon slots 对应内容属性，没有默认正文slot。声明存在性与显示内容不同，不预执行slot、不检查VNode。三个模式均保留源码的点击和 Enter 顺序，不将Space或方向键映射为选择；每个条目 tabindex=0、aria-current=step。没有公开ref方法，类型与内容映射差异见组件页。

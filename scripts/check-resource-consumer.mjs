@@ -69,6 +69,7 @@ function implementationChunks(directory, sourcePath, exportName) {
         [
           "src/components/descriptions/item.tsx",
           "src/components/breadcrumb/item.tsx",
+          "src/components/steps/step.tsx",
           "src/components/timeline/item.tsx",
         ].includes(sourcePath) &&
         exportName === "default"
@@ -601,6 +602,18 @@ function checkGraph(mode = "vapor") {
       `${mode}: List ${name} implementation missing`,
     );
   for (const [file, name] of [
+    ["Steps", "Steps"],
+    ["step", "default"],
+  ])
+    assert(
+      hasImplementation(
+        graph.modules,
+        `src/components/steps/${file}.tsx`,
+        name,
+      ),
+      `${mode}: Steps ${name} implementation missing`,
+    );
+  for (const [file, name] of [
     ["Breadcrumb", "Breadcrumb"],
     ["item", "default"],
   ])
@@ -637,6 +650,7 @@ function checkGraph(mode = "vapor") {
       `${mode}: Descriptions ${name} implementation missing`,
     );
   for (const style of [
+    "steps",
     "breadcrumb",
     "timeline",
     "descriptions",
@@ -1234,6 +1248,110 @@ function checkBreadcrumbTreeShaking() {
       "semi-tag",
       "semi-progress",
       "semi-overflow-list",
+    ])
+      assert(
+        !output.includes(unrelated),
+        `${mode}: retained unrelated ${unrelated}`,
+      );
+    const outputs = outputFiles.map((path) => {
+      const source = readFileSync(path, "utf8");
+      const errors = checkSource(source, path, { foundationBundled: true });
+      assert(!errors.length, `${mode}: ${errors.join("\n")}`);
+      return {
+        file: path.slice(directory.length + 1),
+        sha256: createHash("sha256").update(source).digest("hex"),
+      };
+    });
+    const evidence = join(root, ".vitest/attachments/resource-consumer");
+    mkdirSync(evidence, { recursive: true });
+    copyFileSync(graphPath, join(evidence, `${mode}-graph.json`));
+    writeFileSync(
+      join(evidence, `${mode}-bundle.json`),
+      JSON.stringify({ mode, outputs }, null, 2),
+    );
+  }
+}
+
+function checkStepsTreeShaking() {
+  for (const mode of [
+    "steps-only",
+    "steps-root-only",
+    "steps-step-only",
+    "steps-root-step-only",
+    "steps-unused",
+  ]) {
+    execFileSync(
+      process.execPath,
+      [
+        join(consumer, "node_modules/vite/bin/vite.js"),
+        "build",
+        "--configLoader",
+        "runner",
+        "--config",
+        "vite.steps.config.ts",
+        "--mode",
+        mode,
+      ],
+      { cwd: consumer, env: consumerEnv, stdio: "inherit" },
+    );
+    const directory = join(consumer, `${mode}-dist`);
+    const graphPath = join(directory, "resource-graph.json");
+    const graph = JSON.parse(readFileSync(graphPath, "utf8"));
+    assert(
+      graph.modules?.length > 0 && graph.compilationInputs?.length > 0,
+      `${mode}: empty tree-shaking evidence`,
+    );
+    const usesSteps = mode === "steps-only" || mode === "steps-root-only";
+    for (const [file, name, expected] of [
+      ["Steps", "Steps", usesSteps],
+      ["step", "default", mode !== "steps-unused"],
+    ])
+      assert(
+        hasImplementation(
+          graph.modules,
+          `src/components/steps/${file}.tsx`,
+          name,
+        ) === expected,
+        `${mode}: ${name} implementation tree-shaking mismatch`,
+      );
+    for (const [sourcePath, name] of [
+      ["src/components/empty/Empty.tsx", "Empty"],
+      ["src/components/avatar/Avatar.tsx", "Avatar"],
+      ["src/components/tag/Tag.tsx", "Tag"],
+      ["src/components/typography/numeral.tsx", "Numeral"],
+    ])
+      assert(
+        !hasImplementation(graph.modules, sourcePath, name),
+        `${mode}: retained unrelated ${name}`,
+      );
+    const entries = {
+      "steps-only": "/semi-ui-vue/dist/components/steps/index.js",
+      "steps-root-only": "/semi-ui-vue/dist/index.js",
+      "steps-step-only": "/semi-ui-vue/dist/components/steps/step.js",
+      "steps-root-step-only": "/semi-ui-vue/dist/index.js",
+      "steps-unused": "/semi-ui-vue/dist/index.js",
+    };
+    assert(
+      graph.compilationInputs.some((id) => id.endsWith(entries[mode])),
+      `${mode}: public entry was not resolved`,
+    );
+    const outputFiles = files(directory).filter((path) =>
+      /\.[cm]?js$/.test(path),
+    );
+    assert(outputFiles.length > 0, `${mode}: no JavaScript output`);
+    const output = outputFiles
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n");
+    assert(
+      output.includes("semi-steps") === (mode !== "steps-unused"),
+      `${mode}: Steps executable marker mismatch`,
+    );
+    for (const unrelated of [
+      "semi-avatar",
+      "semi-tag",
+      "semi-overflow-list",
+      "semi-collapsible",
+      "semi-progress",
     ])
       assert(
         !output.includes(unrelated),
@@ -2745,6 +2863,11 @@ async function browserCheck(url) {
       "Packed Progress behavior failed",
     );
     assert(
+      (await page.evaluate(() => window.resourceConsumer.checkSteps())) ===
+        "steps consumer passed",
+      "Packed Steps behavior failed",
+    );
+    assert(
       (await page.evaluate(() => window.resourceConsumer.checkBreadcrumb())) ===
         "breadcrumb consumer passed",
       "Packed Breadcrumb behavior failed",
@@ -2998,6 +3121,11 @@ async function interopBrowserCheck(url) {
     });
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await page.goto(`${url}interop.html`, { waitUntil: "networkidle" });
+    assert(
+      (await page.evaluate(() => window.interopConsumer.checkSteps())) ===
+        "steps interop passed",
+      "Packed Steps interop failed",
+    );
     assert(
       (await page.evaluate(() => window.interopConsumer.checkBreadcrumb())) ===
         "breadcrumb interop passed",
@@ -3754,6 +3882,8 @@ async function run() {
   mkdirSync(consumer, { recursive: true });
   const hashFile = (path) =>
     createHash("sha256").update(readFileSync(path)).digest("hex");
+  const stepsProducerSourceHash = hashFile(join(fixture, "steps.tsx"));
+  const stepsBridgeSourceHash = hashFile(join(fixture, "steps-bridge.tsx"));
   const breadcrumbProducerSourceHash = hashFile(
     join(fixture, "breadcrumb.tsx"),
   );
@@ -3803,6 +3933,27 @@ async function run() {
   assert(
     hashFile(join(fixture, "list.tsx")) === listProducerSourceHash,
     "List producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "steps.tsx")) === stepsProducerSourceHash,
+    "Steps producer changed during precompilation",
+  );
+  assert(
+    hashFile(join(fixture, "steps-bridge.tsx")) === stepsBridgeSourceHash,
+    "Steps bridge changed during precompilation",
+  );
+  const stepsBridgeCompilation = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        ".vitest/attachments/resource-consumer/steps-bridge-compilation.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert(
+    stepsBridgeCompilation.modules?.includes("fixture:steps-bridge.tsx"),
+    "Steps native interop bridge was not precompiled",
   );
   assert(
     hashFile(join(fixture, "breadcrumb.tsx")) === breadcrumbProducerSourceHash,
@@ -3986,6 +4137,10 @@ async function run() {
     "List native interop bridge was not precompiled",
   );
   assert(
+    fixtureCompilation.modules?.includes("fixture:steps.tsx"),
+    "Steps fixture was not precompiled",
+  );
+  assert(
     fixtureCompilation.modules?.includes("fixture:breadcrumb.tsx"),
     "Breadcrumb fixture was not precompiled",
   );
@@ -4029,21 +4184,28 @@ async function run() {
     "skeleton-browser.ts",
     "highlight-browser.ts",
     "progress-browser.ts",
+    "steps-browser.ts",
     "breadcrumb-browser.ts",
     "timeline-browser.ts",
     "descriptions-browser.ts",
+    "steps-interop.ts",
     "breadcrumb-interop.ts",
     "timeline-interop.ts",
     "descriptions-interop.ts",
+    "steps-only.ts",
     "breadcrumb-only.ts",
     "timeline-only.ts",
     "descriptions-only.ts",
+    "steps-root-only.ts",
     "breadcrumb-root-only.ts",
     "timeline-root-only.ts",
     "descriptions-root-only.ts",
+    "steps-root-step-only.ts",
+    "steps-step-only.ts",
     "breadcrumb-item-only.ts",
     "timeline-item-only.ts",
     "descriptions-item-only.ts",
+    "steps-unused.ts",
     "breadcrumb-unused.ts",
     "timeline-unused.ts",
     "descriptions-unused.ts",
@@ -4091,6 +4253,7 @@ async function run() {
     "vite.interop.config.ts",
     "vite.highlight.config.ts",
     "vite.progress.config.ts",
+    "vite.steps.config.ts",
     "vite.breadcrumb.config.ts",
     "vite.timeline.config.ts",
     "vite.descriptions.config.ts",
@@ -4147,6 +4310,43 @@ async function run() {
         : join(fixture, name),
       join(consumer, name),
     );
+  writeFileSync(
+    join(
+      root,
+      ".vitest/attachments/resource-consumer/steps-fixture-inputs.json",
+    ),
+    JSON.stringify(
+      {
+        producer: {
+          source: "tests/resource-consumer/steps.tsx",
+          sha256: stepsProducerSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-app.js",
+          outputSha256: tagProducerOutputHash,
+        },
+        bridge: {
+          source: "tests/resource-consumer/steps-bridge.tsx",
+          sha256: stepsBridgeSourceHash,
+          unchangedDuringCompilation: true,
+          output: "prepared-steps-bridge.js",
+          outputSha256: hashFile(join(consumer, "prepared-steps-bridge.js")),
+          declarationSha256: hashFile(
+            join(consumer, "prepared-steps-bridge.d.ts"),
+          ),
+        },
+        interop: {
+          source: "tests/resource-consumer/steps-interop.ts",
+          copiedSha256: hashFile(join(consumer, "steps-interop.ts")),
+        },
+        declarations: {
+          source: "tests/resource-consumer/steps-browser.ts",
+          copiedSha256: hashFile(join(consumer, "steps-browser.ts")),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   writeFileSync(
     join(
       root,
@@ -4451,21 +4651,28 @@ async function run() {
           "skeleton-browser.ts",
           "highlight-browser.ts",
           "progress-browser.ts",
+          "steps-browser.ts",
           "breadcrumb-browser.ts",
           "timeline-browser.ts",
           "descriptions-browser.ts",
+          "steps-interop.ts",
           "breadcrumb-interop.ts",
           "timeline-interop.ts",
           "descriptions-interop.ts",
+          "steps-only.ts",
           "breadcrumb-only.ts",
           "timeline-only.ts",
           "descriptions-only.ts",
+          "steps-root-only.ts",
           "breadcrumb-root-only.ts",
           "timeline-root-only.ts",
           "descriptions-root-only.ts",
+          "steps-root-step-only.ts",
+          "steps-step-only.ts",
           "breadcrumb-item-only.ts",
           "timeline-item-only.ts",
           "descriptions-item-only.ts",
+          "steps-unused.ts",
           "breadcrumb-unused.ts",
           "timeline-unused.ts",
           "descriptions-unused.ts",
@@ -4616,6 +4823,7 @@ async function run() {
   checkProgressTreeShaking();
   checkTooltipTreeShaking();
   checkCollapsibleTreeShaking();
+  checkStepsTreeShaking();
   checkBreadcrumbTreeShaking();
   checkTimelineTreeShaking();
   checkDescriptionsTreeShaking();

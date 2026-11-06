@@ -1,5 +1,7 @@
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
+  Steps,
+  Step,
   Breadcrumb,
   Timeline,
   Descriptions,
@@ -41,6 +43,16 @@ export const FoundationHarness = defineVaporComponent(() => {
   const changes = ref(0);
   const visible = ref(false);
   const exposed = ref("");
+  const stepsTitle = ref("Foundation <progress>");
+  const stepsCurrent = ref(2);
+  const stepsEvents = ref<string[]>([]);
+  const stepsMounts = ref(0);
+  const stepsUnmounts = ref(0);
+  const StepsBody = defineVaporComponent(() => {
+    onMounted(() => (stepsMounts.value += 1));
+    onUnmounted(() => (stepsUnmounts.value += 1));
+    return <input aria-label="Steps body input" value="owned steps input" />;
+  });
   const breadcrumbLabel = ref("Current Foundation path");
   const breadcrumbSeparator = ref("/");
   const breadcrumbMounts = ref(0);
@@ -154,6 +166,49 @@ export const FoundationHarness = defineVaporComponent(() => {
               ),
             }}
           />
+          <Steps
+            aria-label="Foundation progress"
+            current={stepsCurrent.value}
+            data-foundation-steps=""
+            initial={2}
+            onChange={(current) => {
+              stepsEvents.value = [...stepsEvents.value, `change:${current}`];
+              stepsCurrent.value = current;
+            }}
+            type="basic"
+          >
+            {() => (
+              <>
+                <Step
+                  v-slots={{
+                    title: () => <span>{stepsTitle.value}</span>,
+                    description: () => <StepsBody />,
+                  }}
+                />
+                <Steps.Step
+                  onClick={() => {
+                    stepsEvents.value = [...stepsEvents.value, "click"];
+                  }}
+                  title="Next foundation step"
+                />
+                <Step
+                  status="warning"
+                  title="Explicit warning"
+                  v-slots={{
+                    icon: () => <span data-step-custom-icon="">!</span>,
+                  }}
+                />
+              </>
+            )}
+          </Steps>
+          <Steps data-foundation-steps-nav="" type="nav">
+            {() => (
+              <>
+                <Step title="Packed root entry" />
+                <Steps.Step title="Packed static entry" />
+              </>
+            )}
+          </Steps>
           <Breadcrumb
             aria-label="Foundation path"
             autoCollapse={false}
@@ -476,6 +531,18 @@ export const FoundationHarness = defineVaporComponent(() => {
       >
         Toggle List loading
       </button>
+      <button
+        id="steps-update"
+        onClick={() => {
+          stepsTitle.value = "Updated Foundation progress";
+          stepsCurrent.value = 3;
+        }}
+      >
+        Update Steps
+      </button>
+      <output id="steps-events">{stepsEvents.value.join(",")}</output>
+      <output id="steps-mounts">{stepsMounts.value}</output>
+      <output id="steps-unmounts">{stepsUnmounts.value}</output>
       <button
         id="breadcrumb-update"
         onClick={() => {
