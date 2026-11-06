@@ -151,3 +151,5 @@ export { List } from "./components/list/index.js";
 export { Descriptions } from "./components/descriptions/index.js";
 export { Timeline } from "./components/timeline/index.js";
 export { Breadcrumb } from "./components/breadcrumb/index.js";
+export { Steps } from "./components/steps/index.js";
+export { default as Step } from "./components/steps/step.js";

@@ -119,3 +119,7 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Breadcrumb 样式补充
 
 `semi-ui-vue/styles/components/breadcrumb` 使用固定 breadcrumb、variables、animation、rtl SCSS 与实际依赖闭包，支持 CSS/SCSS、定制前缀和主题插件 `breadcrumb` 项。数量折叠与宽度测量无关，窄容器按 flex-wrap 换行；RTL 来自既有祖先类。字符串截断使用 Typography，省略提示使用 Popover，图标使用既有 Icon 包装。自定义内容及额外组合组件须加载相应样式。详见[面包屑](../components/breadcrumb.md)。
+
+## Steps 按需样式
+
+`semi-ui-vue/styles/components/steps.css`（以及同名SCSS/无后缀入口）来自固定Semi Foundation 2.103.0 Steps七份SCSS，包含上游文件名 `bacisSteps.scss`、fill/basic/nav、变量及RTL规则。独立入口包含真实fill布局所需Grid和Icons，聚合入口复用既有闭包。主题插件支持 `styles: ["base", "steps"]`；样式来源哈希与MIT notice沿既有生成和tarball验证流程维护。布局/长内容/深浅色与RTL边界见[Steps](../components/steps.md)。

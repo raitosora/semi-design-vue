@@ -9,6 +9,7 @@ const foundationPackage = "@douyinfe/semi-foundation";
 const themePackage = "@douyinfe/semi-theme-default";
 const version = "2.103.0";
 const components = [
+  "steps",
   "breadcrumb",
   "timeline",
   "descriptions",
@@ -43,6 +44,15 @@ const themeFiles = [
   "animation.scss",
 ];
 const foundationFiles = {
+  steps: [
+    "steps/steps.scss",
+    "steps/animation.scss",
+    "steps/variables.scss",
+    "steps/fillSteps.scss",
+    "steps/bacisSteps.scss",
+    "steps/navSteps.scss",
+    "steps/rtl.scss",
+  ],
   breadcrumb: [
     "breadcrumb/breadcrumb.scss",
     "breadcrumb/rtl.scss",
@@ -154,6 +164,21 @@ const sourceHashes = {
     "754ccb6ef6975034787632c5f02e806c86555e12eb14cdf6f35dd53f5bcfa56e",
   "theme/variables.scss":
     "df505608c5177bcbe9e82e60d29980f3deca297bf483e7c276450af418f98d8d",
+  "foundation/steps/steps.scss":
+    "f582116053deb558c6e73fe73da4d9103e181eb72289d2362a2179635a9bf447",
+  "foundation/steps/animation.scss":
+    "9fdd45a388ceec2896d6bf4046cfb35e8b5395427a84e2c18066239b427ccfa7",
+  "foundation/steps/variables.scss":
+    "d61bf2fddbcbd4945cefbf00a86a688d59ebe1a11e2c6d05e05a7b1b109bcf21",
+  "foundation/steps/fillSteps.scss":
+    "1d4f3aff7397a9367fef752b98a34535a430eeeaadb8a2cc66471228c5d2d0d2",
+  "foundation/steps/bacisSteps.scss":
+    "a503b6589736aee170e094456f53f154a59dabcf8fe66eebff1886a26c0bceac",
+  "foundation/steps/navSteps.scss":
+    "0dbdfead65ff23fddc9f68abf39b961c95f3e37238ed33a40034ba19439ce8ed",
+  "foundation/steps/rtl.scss":
+    "fbd86fa6184f7cdde5ab1a8c313de7d79756ae3961d2bbfd69aa21eda8cff257",
+
   "foundation/breadcrumb/breadcrumb.scss":
     "e1fad29c00bd46c48659d079132ed458fa944902c9018d895ad9fb90a175f776",
   "foundation/breadcrumb/rtl.scss":
@@ -437,6 +462,17 @@ function entrySources() {
       '@import "../vendor/foundation/badge/badge";',
       "",
     ].join("\n"),
+    // Fill Steps renders Grid; all variants use the existing icon primitives.
+    "components/steps.scss": [
+      "$semi-prefix: 'semi' !default;",
+      "$height-control-default: 32px !default;",
+      '@import "../theme/variables";',
+      '@import "../theme/mixins";',
+      '@import "../icons/index";',
+      '@import "../vendor/foundation/grid/grid";',
+      '@import "../vendor/foundation/steps/steps";',
+      "",
+    ].join("\n"),
     // Breadcrumb renders Typography, Tooltip, Popover and IconMore internally.
     "components/breadcrumb.scss": [
       "$semi-prefix: 'semi' !default;",
@@ -653,6 +689,8 @@ function entrySources() {
       '@import "./components/divider";',
       '@import "./components/space";',
       '@import "./components/grid";',
+      // Steps shares the existing Grid and Icon aggregate copies.
+      '@import "./vendor/foundation/steps/steps";',
       // Grid and Spin are already included once above.
       '@import "./vendor/foundation/list/list";',
       '@import "./components/layout";',

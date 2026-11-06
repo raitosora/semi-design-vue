@@ -1,3 +1,8 @@
+import "../../packages/semi-ui-vue/dist/styles/components/steps.css";
+import StepsBasic from "../../website/examples/steps/Basic.vapor";
+import StepsVariants from "../../website/examples/steps/Variants.vapor";
+import StepsDynamic from "../../website/examples/steps/Dynamic.vapor";
+import StepsTheme from "../../website/examples/steps/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/breadcrumb.css";
 import BreadcrumbBasic from "../../website/examples/breadcrumb/Basic.vapor";
 import BreadcrumbCollapse from "../../website/examples/breadcrumb/Collapse.vapor";
@@ -151,6 +156,7 @@ const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const listMode = new URLSearchParams(location.search).has("list");
+const stepsMode = new URLSearchParams(location.search).has("steps");
 const breadcrumbMode = new URLSearchParams(location.search).has("breadcrumb");
 const timelineMode = new URLSearchParams(location.search).has("timeline");
 const descriptionsMode = new URLSearchParams(location.search).has(
@@ -190,10 +196,22 @@ const app = createVaporApp(
     listMode ||
     descriptionsMode ||
     timelineMode ||
-    breadcrumbMode
+    breadcrumbMode ||
+    stepsMode
     ? defineVaporComponent(() => (
         <main>
-          {breadcrumbMode ? (
+          {stepsMode ? (
+            <>
+              <h1>Steps examples</h1>
+              <StepsBasic />
+              <p id="steps-details" tabindex={-1}>
+                流程详情：链接保持原生导航，Steps 不阻止默认行为。
+              </p>
+              <StepsVariants />
+              <StepsDynamic />
+              <StepsTheme />
+            </>
+          ) : breadcrumbMode ? (
             <>
               <h1>Breadcrumb examples</h1>
               <BreadcrumbBasic />

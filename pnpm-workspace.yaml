@@ -8,6 +8,7 @@ overrides:
   "@vue/shared": 3.6.0-rc.9
   vue: 3.6.0-rc.9
   "@douyinfe/semi-foundation@2.103.0>lodash": "-"
+  "@typescript-eslint/typescript-estree@8.70.0>minimatch": 11.0.1
 
 packageExtensions:
   "@douyinfe/semi-foundation@2.103.0":
