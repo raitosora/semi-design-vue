@@ -50,6 +50,17 @@ SVG 作用域而不检查或克隆渲染节点。上面示例的 `FactoryIcon` �
 
 图标按钮的可访问名称应来自 `button`，内部图标保持 `aria-hidden="true"`，避免重复朗读。
 
+### 与 Input 配合
+
+上例通过 `Input` 的 `prefix`、`suffix` renderer 放入 `Icon`，后缀加载图标与
+“开始旋转”按钮共享状态。图标也可以放在同名 slot 中；单个 `Icon` 或原生 SVG
+作为该位置的直接内容时，Input 会应用对应的图标间距样式。额外包裹元素或图标与文本
+混排按普通内容处理。
+
+更换 `Icon` 的 `prefixCls` 不影响 Input 对图标的识别，但自定义前缀对应的图标
+样式仍需由应用提供。这里的识别由组件内部完成，调用方不需要添加标记属性或检查渲染节点。
+搜索框的可访问名称由 Input 的 `aria-label` 提供，装饰图标沿用默认隐藏语义。
+
 ## 可搜索资源目录
 
 <ClientOnly><VaporDemo example="icons/Catalog.vapor" /></ClientOnly>
