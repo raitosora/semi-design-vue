@@ -390,7 +390,19 @@
       "default": "./dist/styles/components/steps.css"
     },
     "./styles/components/steps.css": "./dist/styles/components/steps.css",
-    "./styles/components/steps.scss": "./dist/styles/components/steps.scss"
+    "./styles/components/steps.scss": "./dist/styles/components/steps.scss",
+    "./input": {
+      "types": "./dist/components/input/index.d.ts",
+      "import": "./dist/components/input/index.js"
+    },
+    "./input/textarea": {
+      "types": "./dist/components/input/textarea.d.ts",
+      "import": "./dist/components/input/textarea.js"
+    },
+    "./input/inputGroup": {
+      "types": "./dist/components/input/inputGroup.d.ts",
+      "import": "./dist/components/input/inputGroup.js"
+    }
   },
   "files": [
     "dist",

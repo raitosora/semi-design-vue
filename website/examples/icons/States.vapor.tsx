@@ -1,6 +1,6 @@
 import { defineVaporComponent, ref } from "vue";
-import { Icon } from "semi-ui-vue";
-import { IconHome, IconLoading } from "semi-icons-vue";
+import { Icon, Input } from "semi-ui-vue";
+import { IconHome, IconLoading, IconSearch } from "semi-icons-vue";
 
 export default defineVaporComponent(() => {
   const spinning = ref(false);
@@ -38,6 +38,22 @@ export default defineVaporComponent(() => {
       <Icon aria-label="正在加载" data-icon-spinner="" spin={spinning.value}>
         {() => <IconLoading aria-hidden="true" size="inherit" />}
       </Icon>
+      <p>输入框的前缀与后缀图标</p>
+      <Input
+        aria-label="搜索图标资源"
+        data-icon-input=""
+        placeholder="搜索图标资源"
+        prefix={() => (
+          <Icon size="inherit">
+            {() => <IconSearch aria-hidden="true" size="inherit" />}
+          </Icon>
+        )}
+        suffix={() => (
+          <Icon size="inherit" spin={spinning.value}>
+            {() => <IconLoading aria-hidden="true" size="inherit" />}
+          </Icon>
+        )}
+      />
     </section>
   );
 });

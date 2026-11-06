@@ -128,3 +128,9 @@ Numeral 内联固定 Foundation 2.103.0 的单个纯格式化模块，复制实�
 浏览器根 `semi-ui-vue` 同时提供 `Steps`、`Step`；`semi-ui-vue/steps` 提供默认/具名Steps及公共类型，`semi-ui-vue/steps/step` 只提供默认Step和条目类型，与Steps.Step同一身份。Node条件根仍只提供基础设施。固定上游basic/fill/nav及context的legacy文件路径属于内部协作，不作为本包公开入口。
 
 样式入口为 `semi-ui-vue/styles/components/steps`，可显式使用 `.css` / `.scss`；包含Steps所需Grid和Icons闭包。按需Step入口不带Steps容器实现；未使用Steps/Step可由生产构建消除。SSR、水合、CJS及独立TSX编译器RC peer安装限制保持，详见[步骤条](../components/steps.md)。
+
+## Input 包入口
+
+浏览器根入口具名导出 `Input`、`TextArea`、`InputGroup`。`semi-ui-vue/input` 提供默认/具名 Input，及 InputProps、InputSlots、InputContent、InputRenderResult、InputSize、InputMode、ValidateStatus 和两子模块 Props 类型；`semi-ui-vue/input/textarea` 默认导出 TextArea，`semi-ui-vue/input/inputGroup` 默认/具名导出 InputGroup，并分别提供自身类型。没有 Input.TextArea / Input.Group，内部 Label 与组 context 不公开。Node 条件根仍只有基础设施。
+
+按需样式入口为 `semi-ui-vue/styles/components/input`（支持显式 .css / .scss），包含三个输入组件及必要标签规则。Input 复用已审固定 Foundation 输入，TextArea 私有适配保留来源和许可证，不要求消费者安装 Foundation 或配置补丁。浏览器 ESM、普通 Vue interop 与独立 TSX 编译器安装限制保持，详见[输入框](../components/input.md)。

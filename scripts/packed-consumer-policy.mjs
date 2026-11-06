@@ -26,6 +26,15 @@ const typographyInlineSnapshots = new Set(
   ),
 );
 
+const inputInlineProfile = JSON.parse(
+  readFileSync(new URL("./input-inline-inputs.json", import.meta.url), "utf8"),
+);
+const inputInlineSnapshots = new Set(
+  inputInlineProfile.sources.map(
+    ({ sha256 }) => `package/dist/map-sources/${sha256}.js`,
+  ),
+);
+
 const contains = (parent, child) => {
   const path = relative(parent, child);
   return path === "" || (!path.startsWith("..") && !isAbsolute(path));
@@ -98,7 +107,9 @@ export function assertPackFiles(files) {
         path === "package/dist/tooltip-inline-provenance.json" ||
         typographyInlineSnapshots.has(path) ||
         path === "package/dist/typography-inline-provenance.json" ||
-        path === "package/dist/typography-copy-provenance.json"
+        path === "package/dist/typography-copy-provenance.json" ||
+        inputInlineSnapshots.has(path) ||
+        path === "package/dist/input-inline-provenance.json"
       ) ||
       path
         .split("/")

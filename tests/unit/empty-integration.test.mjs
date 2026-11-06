@@ -45,7 +45,16 @@ test("Empty and its transitive project imports resolve with package dist unavail
     resolve(root, "tsconfig.base.json"),
     ts.sys.readFile,
   );
-  const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
+  // Only compiler options are needed; avoid enumerating unrelated repository files.
+  // The resolver below still walks every transitive import with dist unavailable.
+  const parsed = ts.parseJsonConfigFileContent(
+    {
+      ...config.config,
+      files: ["packages/semi-ui-vue/src/components/empty/index.ts"],
+    },
+    ts.sys,
+    root,
+  );
   const isProjectDist = (path) =>
     /[/\\]packages[/\\][^/\\]+[/\\]dist(?:[/\\]|$)/.test(path);
   const host = {

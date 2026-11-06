@@ -1,4 +1,8 @@
 import {
+  checkFoundationInput,
+  checkInputFoundationGraph,
+} from "../tests/package-consumer/input-foundation-checks.mjs";
+import {
   checkFoundationSteps,
   checkStepsFoundationGraph,
 } from "../tests/package-consumer/steps-foundation-checks.mjs";
@@ -156,6 +160,7 @@ async function browserCheck(directory, mode) {
         errors.push(message.text());
     });
     await page.goto(url);
+    const publicInput = await checkFoundationInput(page, mode);
     const steps = await checkFoundationSteps(page, mode);
     const breadcrumb = await checkFoundationBreadcrumb(page, mode);
     const timeline = await checkFoundationTimeline(page, mode);
@@ -492,15 +497,20 @@ async function browserCheck(directory, mode) {
     await expect(page.getByRole("tooltip")).toHaveText("packed-tooltip");
     await expect(page.locator("#visible")).toHaveText("true");
     // Keep detached nodes to prove the Foundation-owned native listeners release.
-    await page.evaluate(() => {
-      window.detachedTrigger = document.querySelector("button");
+    await trigger.evaluate((node) => {
+      window.detachedTrigger = node;
     });
+    assert(
+      await trigger.evaluate((node) => node === window.detachedTrigger),
+      `${mode} cleanup probe did not retain the Foundation Tooltip trigger`,
+    );
     await page.locator("#remove").click();
     await expect(input).toHaveCount(0);
     await expect(page.getByRole("tooltip")).toHaveCount(0);
     await expect(page.locator("#foundation-public-tooltip")).toHaveCount(0);
     await expect(page.locator(".semi-popover-wrapper")).toHaveCount(0);
     const state = await page.locator("#visible").textContent();
+    await expect(publicInput).toHaveCount(0);
     await expect(steps).toHaveCount(0);
     await expect(page.locator("[data-foundation-steps-nav]")).toHaveCount(0);
     await expect(page.locator("#steps-unmounts")).toHaveText("1");
@@ -582,6 +592,7 @@ try {
   const env = installed.env;
   for (const name of [
     "foundation-consumer.ts",
+    "input-types.ts",
     "steps-types.ts",
     "timeline-types.ts",
     "breadcrumb-types.ts",
@@ -664,6 +675,7 @@ try {
       ),
       "Packed Typography styles missing from Foundation graph",
     );
+    checkInputFoundationGraph(graph, consumer, implementationChunks);
     checkStepsFoundationGraph(graph, consumer, implementationChunks);
     checkBreadcrumbFoundationGraph(graph, consumer, implementationChunks);
     checkTimelineFoundationGraph(graph, consumer, implementationChunks);

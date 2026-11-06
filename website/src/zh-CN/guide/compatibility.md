@@ -66,3 +66,9 @@ Breadcrumb 按固定 Foundation 源码以最小原生函数适配路由归一、
 Steps默认fill，basic/nav按各自真实类型提供属性；nav源码支持onClick/Enter/onChange，优先于上游中文页“不支持交互”的过时描述。全部条目保留tabindex=0和aria-current=step，不添加自动role或方向键选择。initial偏移下的状态/点击判定差异按源码保留，未擅自修正。
 
 React children筛选和clone注入改为原生slot/renderer所有权与直接DOM注册。fragment、多根及For按实际挂载Step排序；普通内容由调用方拥有，不被预执行、枚举VNode或克隆。slot声明存在不代表返回可见内容；basic自定义icon的原生内容分支及普通Vue interop区别在[Steps API](../components/steps.md)明确。Step类型补齐源码与中文API实际支持的role、aria-label、onKeyDown；不增加ref方法或旧legacy实现子路径。
+
+## Input 固定源码与 Vapor 适配
+
+Input / TextArea 使用原生 Event，不复制 React SyntheticEvent；onChange 由原生 input 驱动，命名 update:value 在 change 前通知。值的存在性和 cachedValue 差异保留，composition 期间允许临时内部文本。Input 与 TextArea 的 clear 触发事件、readonly、blur、计数及错误 ARIA 不同，详见[完整输入契约](../components/input.md)。maxCount 不截断，TextArea.onPressEnter 与用户 onScroll 不冒充有效产品通知。
+
+React 默认 forwardRef 原生节点改为显式 forwardRef 属性；Vue 组件 ref 不是 HTMLElement，也不提供额外命令式方法。InputGroup 的 clone 注入改为最近上下文协作，不隐式改写未知子树；slot 声明存在性优先，而非探测返回内容。内部 Label 不公开为 Form.Label。TextArea 的测量节点、监听和待执行任务由实例拥有并在卸载释放，行号采用近似字体测量而非保证逐字换行一致。原生缩放浏览器差异、操作系统 IME、SSR/水合/CJS 和 RC 编译器安装限制不因这些组件而扩大。

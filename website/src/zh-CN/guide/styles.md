@@ -123,3 +123,9 @@ Tag、TagGroup 与 SplitTagGroup 共用 `styles/components/tag`、`.css` 和 `.s
 ## Steps 按需样式
 
 `semi-ui-vue/styles/components/steps.css`（以及同名SCSS/无后缀入口）来自固定Semi Foundation 2.103.0 Steps七份SCSS，包含上游文件名 `bacisSteps.scss`、fill/basic/nav、变量及RTL规则。独立入口包含真实fill布局所需Grid和Icons，聚合入口复用既有闭包。主题插件支持 `styles: ["base", "steps"]`；样式来源哈希与MIT notice沿既有生成和tarball验证流程维护。布局/长内容/深浅色与RTL边界见[Steps](../components/steps.md)。
+
+## Input / TextArea / InputGroup 样式
+
+`semi-ui-vue/styles/components/input.css` 及同名 SCSS/无后缀入口复用固定 Foundation 2.103.0 的 input、textarea、inputGroup 和 RTL/变量规则，并包含组标签实际使用的私有 Label 样式与图标。标签样式不意味着提供公开 Form 组件。主题插件支持 `styles: ["base", "input"]`，定制前缀与 tokens 沿既有流程生成。
+
+Input 的 style 在 wrapper，inputStyle 在原生 input；TextArea 的 style 在 wrapper，textareaStyle 在 textarea。autosize 优先设置 resize:none，显式 resize 决定原生缩放和外层跟随尺寸；行号的测量高度覆盖同名高度样式。深浅色、RTL、长文本和窄容器的行为见[输入框](../components/input.md)。

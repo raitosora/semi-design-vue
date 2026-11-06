@@ -1,3 +1,4 @@
+import "./input-browser.js";
 import IconHome, { IconHome as NamedHome } from "semi-icons-vue/IconHome";
 import Icon, {
   convertIcon,

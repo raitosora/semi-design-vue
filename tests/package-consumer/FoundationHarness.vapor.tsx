@@ -1,3 +1,4 @@
+import { InputHarness } from "./InputHarness.vapor";
 import { defineVaporComponent, onMounted, onUnmounted, ref } from "vue";
 import {
   Steps,
@@ -125,6 +126,7 @@ export const FoundationHarness = defineVaporComponent(() => {
     <section>
       {alive.value && (
         <div>
+          <InputHarness />
           <Space
             align="baseline"
             aria-label="Foundation actions"

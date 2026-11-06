@@ -1,3 +1,9 @@
+import "../../packages/semi-ui-vue/dist/styles/components/input.css";
+import InputBasic from "../../website/examples/input/Basic.vapor";
+import InputComposition from "../../website/examples/input/Composition.vapor";
+import InputTextArea from "../../website/examples/input/TextArea.vapor";
+import InputGroupDemo from "../../website/examples/input/Group.vapor";
+import InputTheme from "../../website/examples/input/Theme.vapor";
 import "../../packages/semi-ui-vue/dist/styles/components/steps.css";
 import StepsBasic from "../../website/examples/steps/Basic.vapor";
 import StepsVariants from "../../website/examples/steps/Variants.vapor";
@@ -156,6 +162,7 @@ const gridMode = new URLSearchParams(location.search).has("grid");
 const layoutMode = new URLSearchParams(location.search).has("layout");
 const skeletonMode = new URLSearchParams(location.search).has("skeleton");
 const listMode = new URLSearchParams(location.search).has("list");
+const inputMode = new URLSearchParams(location.search).has("input");
 const stepsMode = new URLSearchParams(location.search).has("steps");
 const breadcrumbMode = new URLSearchParams(location.search).has("breadcrumb");
 const timelineMode = new URLSearchParams(location.search).has("timeline");
@@ -197,10 +204,20 @@ const app = createVaporApp(
     descriptionsMode ||
     timelineMode ||
     breadcrumbMode ||
-    stepsMode
+    stepsMode ||
+    inputMode
     ? defineVaporComponent(() => (
         <main>
-          {stepsMode ? (
+          {inputMode ? (
+            <>
+              <h1>Input examples</h1>
+              <InputBasic />
+              <InputComposition />
+              <InputTextArea />
+              <InputGroupDemo />
+              <InputTheme />
+            </>
+          ) : stepsMode ? (
             <>
               <h1>Steps examples</h1>
               <StepsBasic />
