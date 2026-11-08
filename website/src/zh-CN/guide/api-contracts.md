@@ -195,3 +195,9 @@ Card 有 default、title、header、headerExtraContent、cover、footer 六个�
 [Steps](../components/steps.md) 的默认类型为 fill，根同时具名导出 Steps 和 Step，Steps.Step 与独立 Step 身份一致。current 只读控制显示；onChange 通知调用方更新，不增加 defaultCurrent 或 v-model。fill/basic 的状态按 initial + index 比较 current，回调触发条件仍是 index !== current，回调值为 index + initial；nav active 只比较 index。显式 truthy 子 status 优先，但 basic active/done 独立推导。
 
 原生 default slot 声明优先于 children；Step 的 title/description/icon slots 对应内容属性，没有默认正文slot。声明存在性与显示内容不同，不预执行slot、不检查VNode。三个模式均保留源码的点击和 Enter 顺序，不将Space或方向键映射为选择；每个条目 tabindex=0、aria-current=step。没有公开ref方法，类型与内容映射差异见组件页。
+
+## Input 的值、原生 ref 与内容
+
+[Input / TextArea / InputGroup](../components/input.md) 保留 value 键存在性与固定上游的 cachedValue 同步规则，使用命名 `v-model:value` / `update:value`，没有 modelValue 别名。先通知 update:value，再通知 onChange；程序化赋值不伪造输入事件。Input 清空使用 mousedown，TextArea 使用 click，并保留各自 blur、readonly 和冒泡顺序。composition 模式只在结束时提交 change，期间仍显示临时文字。
+
+forwardRef 明确接收原生 HTMLInputElement / HTMLTextAreaElement，而 Vue 组件 ref 不提供原生方法或 `$el`。Input 的六个命名 slot、InputGroup.default 使用原生内容所有权，声明存在性与显示内容分开；TextArea 没有 slot，三个组件都没有静态子组件。组上下文仅作用于接入的控件，不克隆未知内容。标签 htmlFor、原生 required 与 ARIA 的实际边界见组件页。

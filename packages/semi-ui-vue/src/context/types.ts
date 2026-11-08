@@ -1,3 +1,4 @@
+import type { InputProps } from "../components/input/input-types.js";
 import type { TypographyProps } from "../components/typography/types.js";
 import type { TagProps } from "../components/tag/types.js";
 import type { AvatarProps } from "../components/avatar/types.js";
@@ -13,6 +14,7 @@ import type { Locale } from "../locale/interface.js";
 
 /** Extend this interface as public component prop types become available. */
 export interface SemiComponentProps {
+  Input: Omit<InputProps, "v-slots">;
   Typography: Omit<TypographyProps, "v-slots">;
   Avatar: Omit<AvatarProps, "v-slots">;
   Tag: Omit<TagProps, "v-slots">;

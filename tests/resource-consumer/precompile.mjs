@@ -44,6 +44,7 @@ export function prepareResourceApplication(root, work, consumer) {
         join(root, "tests/resource-consumer/main.tsx"),
         join(root, "tests/resource-consumer/list-bridge.tsx"),
         join(root, "tests/resource-consumer/steps-bridge.tsx"),
+        join(root, "tests/resource-consumer/input-bridge.tsx"),
         join(root, "tests/resource-consumer/breadcrumb-bridge.tsx"),
         join(root, "tests/resource-consumer/timeline-bridge.tsx"),
         join(root, "tests/resource-consumer/descriptions-bridge.tsx"),
@@ -221,6 +222,34 @@ export function prepareResourceApplication(root, work, consumer) {
   copyFileSync(
     join(root, "tests/resource-consumer/steps-bridge.d.ts"),
     join(consumer, "prepared-steps-bridge.d.ts"),
+  );
+  execFileSync(
+    process.execPath,
+    [
+      join(root, "node_modules/vite/bin/vite.js"),
+      "build",
+      "--configLoader",
+      "runner",
+      "--config",
+      "tests/resource-consumer/vite.fixture.config.ts",
+      "--mode",
+      "input-interop",
+      "--outDir",
+      join(directory, "input-bridge-dist"),
+    ],
+    { cwd: root, stdio: "inherit" },
+  );
+  copyFileSync(
+    join(directory, "input-bridge-dist/prepared-input-bridge.js"),
+    join(consumer, "prepared-input-bridge.js"),
+  );
+  copyFileSync(
+    join(directory, "input-bridge-dist/fixture-compilation.json"),
+    join(evidence, "input-bridge-compilation.json"),
+  );
+  copyFileSync(
+    join(root, "tests/resource-consumer/input-bridge.d.ts"),
+    join(consumer, "prepared-input-bridge.d.ts"),
   );
 }
 

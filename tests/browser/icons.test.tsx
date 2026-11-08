@@ -15,7 +15,49 @@ import type {
 } from "../../packages/semi-icons-vue/src/components/types.js";
 import { IconHome } from "../../packages/semi-icons-vue/src/icons/IconHome.js";
 import { IconDatePicker } from "../../packages/semi-icons-lab-vue/src/icons/IconDatePicker.js";
+import Input from "../../packages/semi-ui-vue/src/components/input/Input.js";
 import { mountVapor } from "../support/mount-vapor.js";
+
+test("icons retain native identity and Input affix recognition across custom prefix and attribute updates", async () => {
+  const incoming = shallowRef<IconProps>({ prefixCls: "custom" });
+  const handle = ref<IconHandle | null>(null);
+  const fixture = mountVapor(
+    defineVaporComponent(() => (
+      <Input
+        aria-label="搜索资源"
+        prefix={() => (
+          <Icon {...incoming.value} ref={handle}>
+            {() => <IconHome aria-hidden="true" size="inherit" />}
+          </Icon>
+        )}
+      />
+    )),
+  );
+  try {
+    await nextTick();
+    const root = handle.value!.getElement()!;
+    const prefix = fixture.host.querySelector(".semi-input-prefix")!;
+    expect(prefix.classList.contains("semi-input-prefix-icon")).toBe(true);
+    expect(root.getAttribute("data-semi-icon")).toBe("");
+    expect(root.classList.contains("custom-icon")).toBe(true);
+    incoming.value = {
+      prefixCls: "search",
+      "aria-label": "搜索图标",
+      title: "搜索资源",
+    };
+    await nextTick();
+    expect(handle.value!.getElement()).toBe(root);
+    expect(root.classList.contains("search-icon")).toBe(true);
+    expect(root.classList.contains("custom-icon")).toBe(false);
+    expect(root.getAttribute("role")).toBe("img");
+    expect(root.getAttribute("aria-label")).toBe("搜索图标");
+    expect(root.title).toBe("搜索资源");
+    expect(root.getAttribute("data-semi-icon")).toBe("");
+    expect(prefix.classList.contains("semi-input-prefix-icon")).toBe(true);
+  } finally {
+    fixture.unmount();
+  }
+});
 
 test("icons convertIcon creates a reactive Vapor wrapper with an explicit DOM handle", async () => {
   const Svg: NonNullable<IconSlots["svg"]> = (slot) => (

@@ -71,7 +71,7 @@ configuration; no picker or automatic timezone conversion is accepted. The
 accepted public families are icons, configProvider, locale, spin, iconButton,
 button, divider, space, grid, layout, skeleton, highlight, progress, tooltip,
 popover, collapsible, overflowList, avatar, tag, badge, typography, empty, card, list,
-descriptions, timeline, breadcrumb and steps (28 families). All other public families remain unaccepted.
+descriptions, timeline, breadcrumb, steps and input (29 families). All other public families remain unaccepted.
 
 When a shared evidence file changes, rerun its affected checks and independently
 review the new content before refreshing its hash and review identifier. An
@@ -456,4 +456,43 @@ Strict declarations, real browser ownership and lifecycle checks, themed Chinese
 examples, four isolated tarball consumers, per-file coverage and tree-shaking
 support the reviewed contract. Existing compiler peer-installation,
 current-document/realm, browser ESM, SSR/hydration/CJS and representative-only
+visual limitations remain unchanged.
+
+The Input production source profile pins four incremental Foundation ESM inputs:
+`input/foundation`, `input/constants`, `input/util/truncateValue` and `utils/keyCode`.
+The shared Foundation base and log sources retain the existing Tooltip profile;
+that profile's eighteen inputs and the Typography formatter profile are unchanged.
+The complete UI package validates these profiles jointly against build modules,
+materialized source maps, provenance and full MIT notices. Input's toolkit imports
+use the UI package's existing external es-toolkit dependency. This does not expand
+the Foundation patch, consumer overrides or runtime dependency versions.
+
+The Input family stylesheet includes the pinned TextArea stylesheet and a private
+Label sheet extracted from the exact `&-field-label` blocks in Form's default and
+RTL sources. Its source manifest retains the original style hashes and extraction
+notes. Form field layout, validation-message and section rules are not compiled
+into this entry, and there is no public Form component or Form style entry.
+
+The `input` record accepts Input, TextArea and InputGroup against the fixed source.
+Browser root and their corresponding ESM subpaths expose the components; Input's
+default and named exports share the native Vapor component identity. No static
+Input.Group or Input.TextArea, public Form.Label or InputNumber is introduced.
+Named v-model:value emits update:value before change. Property presence and the
+upstream value cache remain observable, including controlled transitions; callbacks
+receive native DOM events. The forwardRef prop receives the native input or
+textarea node; Vue component refs expose no upstream class methods.
+Input clears on mousedown, while TextArea clears on click with distinct blur,
+notification and read-only rules. TextArea keeps its source-backed autosize,
+resize, approximate line numbers, scrolling and owned-resource cleanup.
+
+Native slots and renderers keep their owners, including conditional, keyed and
+multi-root content. InputGroup uses direct native DOM context cooperation instead
+of React child cloning. Size, explicit disabled values and callback precedence
+retain their documented contract. Its private Label primitive preserves required,
+optional, extra, locale and name-to-htmlFor behavior; the group wrapper is not a
+labelable control. Icon adornments classify one committed direct Icon marker or
+SVG root, an explicit adaptation from upstream React elementType inspection.
+Strict declarations, browser behavior, themed Chinese examples, four isolated
+tarball consumers, per-file coverage and tree-shaking bind the contract. Existing
+strict TSX peer-installation, browser ESM, SSR/hydration/CJS and representative-only
 visual limitations remain unchanged.

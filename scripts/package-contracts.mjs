@@ -14,6 +14,8 @@ import {
 import { verifyTypographyCopy } from "./typography-copy-source.mjs";
 import { fileURLToPath } from "node:url";
 
+import { inputInlineGraph, verifyInputInline } from "./input-inline-inputs.mjs";
+
 const forbidden =
   /^(?:@types\/)?(?:react(?:-dom)?|lodash(?:-es|\.[^/]+)?)(?:\/|$)|^@douyinfe\/semi-(?:foundation|ui)(?:\/|$)/;
 const packageName = (id) =>
@@ -231,6 +233,7 @@ export function validatePackageDirectory(directory) {
     const inlineIds = new Set([
       ...tooltipInlineGraph(graph),
       ...typographyInlineGraph(graph),
+      ...inputInlineGraph(graph),
     ]);
     verifyTooltipInline({
       root: fileURLToPath(new URL("../", import.meta.url)),
@@ -238,6 +241,11 @@ export function validatePackageDirectory(directory) {
       graph,
     });
     verifyTypographyInline({
+      root: fileURLToPath(new URL("../", import.meta.url)),
+      directory,
+      graph,
+    });
+    verifyInputInline({
       root: fileURLToPath(new URL("../", import.meta.url)),
       directory,
       graph,

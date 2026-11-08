@@ -153,3 +153,7 @@ export { Timeline } from "./components/timeline/index.js";
 export { Breadcrumb } from "./components/breadcrumb/index.js";
 export { Steps } from "./components/steps/index.js";
 export { default as Step } from "./components/steps/step.js";
+
+export { Input } from "./components/input/index.js";
+export { default as TextArea } from "./components/input/textarea.js";
+export { default as InputGroup } from "./components/input/inputGroup.js";

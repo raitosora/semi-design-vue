@@ -12,21 +12,24 @@ const external = (id: string) =>
 // No library implementation is resolved here: every library import is external.
 export default defineConfig(({ mode }) => {
   const listBridge = mode === "list-interop";
+  const inputBridge = mode === "input-interop";
   const stepsBridge = mode === "steps-interop";
   const breadcrumbBridge = mode === "breadcrumb-interop";
   const timelineBridge = mode === "timeline-interop";
   const descriptionsBridge = mode === "descriptions-interop";
-  const entry = stepsBridge
-    ? "steps-bridge.tsx"
-    : breadcrumbBridge
-      ? "breadcrumb-bridge.tsx"
-      : timelineBridge
-        ? "timeline-bridge.tsx"
-        : descriptionsBridge
-          ? "descriptions-bridge.tsx"
-          : listBridge
-            ? "list-bridge.tsx"
-            : "main.tsx";
+  const entry = inputBridge
+    ? "input-bridge.tsx"
+    : stepsBridge
+      ? "steps-bridge.tsx"
+      : breadcrumbBridge
+        ? "breadcrumb-bridge.tsx"
+        : timelineBridge
+          ? "timeline-bridge.tsx"
+          : descriptionsBridge
+            ? "descriptions-bridge.tsx"
+            : listBridge
+              ? "list-bridge.tsx"
+              : "main.tsx";
   return {
     plugins: [
       vueJsx({ vapor: true, macros: true }),
@@ -39,17 +42,19 @@ export default defineConfig(({ mode }) => {
           if (
             !modules.some((id) =>
               id.endsWith(
-                stepsBridge
-                  ? "steps-bridge.tsx"
-                  : breadcrumbBridge
-                    ? "breadcrumb-bridge.tsx"
-                    : timelineBridge
-                      ? "timeline-bridge.tsx"
-                      : descriptionsBridge
-                        ? "descriptions-bridge.tsx"
-                        : listBridge
-                          ? "list-bridge.tsx"
-                          : "virtual-pointer.tsx",
+                inputBridge
+                  ? "input-bridge.tsx"
+                  : stepsBridge
+                    ? "steps-bridge.tsx"
+                    : breadcrumbBridge
+                      ? "breadcrumb-bridge.tsx"
+                      : timelineBridge
+                        ? "timeline-bridge.tsx"
+                        : descriptionsBridge
+                          ? "descriptions-bridge.tsx"
+                          : listBridge
+                            ? "list-bridge.tsx"
+                            : "virtual-pointer.tsx",
               ),
             )
           )
@@ -95,17 +100,19 @@ export default defineConfig(({ mode }) => {
         entry: resolve(fixture, entry),
         formats: ["es"],
         fileName: () =>
-          stepsBridge
-            ? "prepared-steps-bridge.js"
-            : breadcrumbBridge
-              ? "prepared-breadcrumb-bridge.js"
-              : timelineBridge
-                ? "prepared-timeline-bridge.js"
-                : descriptionsBridge
-                  ? "prepared-descriptions-bridge.js"
-                  : listBridge
-                    ? "prepared-list-bridge.js"
-                    : "prepared-app.js",
+          inputBridge
+            ? "prepared-input-bridge.js"
+            : stepsBridge
+              ? "prepared-steps-bridge.js"
+              : breadcrumbBridge
+                ? "prepared-breadcrumb-bridge.js"
+                : timelineBridge
+                  ? "prepared-timeline-bridge.js"
+                  : descriptionsBridge
+                    ? "prepared-descriptions-bridge.js"
+                    : listBridge
+                      ? "prepared-list-bridge.js"
+                      : "prepared-app.js",
       },
       rolldownOptions: { external },
     },

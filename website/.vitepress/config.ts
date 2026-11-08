@@ -106,6 +106,7 @@ export default defineConfig({
           { text: "List 列表", link: "/zh-CN/components/list" },
           { text: "Breadcrumb 面包屑", link: "/zh-CN/components/breadcrumb" },
           { text: "Steps 步骤", link: "/zh-CN/components/steps" },
+          { text: "Input 输入框", link: "/zh-CN/components/input" },
           {
             text: "Timeline 时间轴",
             link: "/zh-CN/components/timeline",

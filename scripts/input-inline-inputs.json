@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "scope": "semi-ui-vue Input production incremental sources; shared base and log remain in the Tooltip profile",
+  "packages": [
+    {
+      "name": "@douyinfe/semi-foundation",
+      "version": "2.103.0",
+      "license": "semi-foundation-2.103.0-MIT.txt",
+      "licenseSha256": "2acf865e87e59090121369aac0575467067fdd7999923a70d785a46ceae3330f"
+    }
+  ],
+  "foundationPatchSha256": "3ebe6db68a2f0831212d97a8956510acee666180cdf3302fbd9ea230b687f37e",
+  "sources": [
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/input/foundation.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/input/foundation.js",
+      "sha256": "f4586a865d8628cbf029cf65f8a6d91efa67eadf168eb1fccb49b4b2b477ddc7"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/input/constants.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/input/constants.js",
+      "sha256": "667f425d24cc18b5af431815ae1324645db0e7747222e04c4e242ed142e6a983"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/input/util/truncateValue.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/input/util/truncateValue.js",
+      "sha256": "e224f2171371c789e538ebe165b13a6320489ad20a094f3fe3846b05fca57727"
+    },
+    {
+      "id": "npm:@douyinfe/semi-foundation/lib/es/utils/keyCode.js",
+      "package": "@douyinfe/semi-foundation",
+      "path": "lib/es/utils/keyCode.js",
+      "sha256": "217b361944746ebb7847ef342ec233977f159b2dc9db29962b37ed4ccc0d2572"
+    }
+  ]
+}

@@ -30,6 +30,14 @@ import {
   verifyTypographyCopy,
 } from "./typography-copy-source.mjs";
 
+import {
+  inputInlineProfile,
+  inputInlineSource,
+  inputInlineGraph,
+  inputInlineRecord,
+  verifyInputInline,
+} from "./input-inline-inputs.mjs";
+
 const compilerLicense = "vue-jsx-3.3.0-rc.2-MIT.txt";
 const compilerVersion = "3.3.0-rc.2";
 const helperPattern = /(?:^|\/)vue-jsx\/(props|vapor)$/;
@@ -100,12 +108,21 @@ async function sourceFor({ root, map, mapPath, index, packageDirectory }) {
     const typography = toPosix(resolved).endsWith(
       "/lib/es/typography/formatNumeral.js",
     );
-    const entry = typography
-      ? typographyInlineSource({ root, resolved, content })
-      : tooltipInlineSource({ root, resolved, content });
+    const input = inputInlineProfile.sources.some((entry) =>
+      toPosix(resolved).endsWith(`/${entry.path}`),
+    );
+    const entry = input
+      ? inputInlineSource({ root, resolved, content })
+      : typography
+        ? typographyInlineSource({ root, resolved, content })
+        : tooltipInlineSource({ root, resolved, content });
     return {
       content,
-      kind: typography ? "typography-inline" : "tooltip-inline",
+      kind: input
+        ? "input-inline"
+        : typography
+          ? "typography-inline"
+          : "tooltip-inline",
       source: entry.path,
       id: entry.id,
     };
@@ -195,11 +212,13 @@ export async function finalizePackage({ root, packageDirectory }) {
   const helpers = new Map();
   const inlineSources = new Set();
   const typographySources = new Set();
+  const inputSources = new Set();
   const buildMeta = JSON.parse(
     await readFile(join(dist, "build-meta.json"), "utf8"),
   );
   const inlineIds = tooltipInlineGraph(buildMeta);
   const typographyIds = typographyInlineGraph(buildMeta);
+  const inputIds = inputInlineGraph(buildMeta);
   for (const mapPath of maps) {
     const map = JSON.parse(await readFile(mapPath, "utf8"));
     if (
@@ -227,11 +246,14 @@ export async function finalizePackage({ root, packageDirectory }) {
       rewritten.push(toPosix(relative(dirname(mapPath), snapshot)));
       if (
         input.kind === "tooltip-inline" ||
-        input.kind === "typography-inline"
+        input.kind === "typography-inline" ||
+        input.kind === "input-inline"
       ) {
         (input.kind === "tooltip-inline"
           ? inlineSources
-          : typographySources
+          : input.kind === "input-inline"
+            ? inputSources
+            : typographySources
         ).add(input.id);
         inlineSnapshots.set(
           resolve(dirname(mapPath), map.sourceRoot ?? "", map.sources[index]),
@@ -277,6 +299,20 @@ export async function finalizePackage({ root, packageDirectory }) {
       );
     await writeFile(
       join(dist, "typography-inline-provenance.json"),
+      JSON.stringify(record, null, 2) + "\n",
+    );
+  }
+  if (inputIds.length || inputSources.size) {
+    const record = inputInlineRecord(inputSources);
+    const licenses = join(dist, "licenses");
+    await mkdir(licenses, { recursive: true });
+    for (const pkg of record.packages)
+      await copyFile(
+        join(root, "third-party-licenses", pkg.license),
+        join(licenses, pkg.license),
+      );
+    await writeFile(
+      join(dist, "input-inline-provenance.json"),
       JSON.stringify(record, null, 2) + "\n",
     );
   }
@@ -391,6 +427,12 @@ export async function verifyPackageMaps({ root, packageDirectory }) {
     referencedSnapshots,
   });
   verifyTypographyInline({
+    root,
+    directory: packageDirectory,
+    graph: buildMeta,
+    referencedSnapshots,
+  });
+  verifyInputInline({
     root,
     directory: packageDirectory,
     graph: buildMeta,
